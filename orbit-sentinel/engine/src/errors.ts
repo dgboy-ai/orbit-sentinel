@@ -19,6 +19,8 @@ export interface SentinelError {
 }
 
 export class OrbitSentinelError extends Error {
+  public originalError?: Error;
+
   constructor(
     message: string,
     public type: ErrorType,
