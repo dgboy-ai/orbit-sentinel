@@ -120,7 +120,7 @@ export class DigitalTwinBuilder {
           if (incNode) nodes.set(incNode.id, incNode);
 
           const fileNode3 = this.extractNodesFromRow(row, "f");
-          if (fileNode3) {
+          if (fileNode3 && incNode) {
             const k = edgeKey(fileNode3.id, incNode.id, "CAUSED_INCIDENT");
             edges.set(k, { source: fileNode3.id, target: incNode.id, type: "CAUSED_INCIDENT" });
           }

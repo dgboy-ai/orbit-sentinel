@@ -1,175 +1,105 @@
 name: Orbit Sentinel — Engineering Digital Twin
 description: >
-  When a merge request is created or updated, Orbit Sentinel automatically
-  builds a digital twin of the software system using GitLab Orbit, simulates
-  the proposed change, predicts failures, finds historical precedents,
-  recommends reviewers, generates test and rollback plans, and posts a
-  comprehensive impact analysis report on the MR.
-version: "1.0.0"
+  When a merge request is opened, Orbit Sentinel builds an engineering digital
+  twin using GitLab Orbit. It runs traversal, aggregation, path finding, and
+  neighbors queries to discover blast radius, historical incidents, reviewer
+  ownership, and rollback strategies — then posts a full impact analysis on
+  the MR.
+version: "v1"
 visibility: public
-trigger:
-  types:
-    - merge_request
-    - merge_request:merge
-  events:
-    - mr_created
-    - mr_updated
-  filters:
-    - condition: $event.merge_request.state == "opened"
-    - condition: $event.merge_request.draft == false
 
-context:
-  project_id: $event.project.id
-  merge_request:
-    iid: $event.merge_request.iid
-    title: $event.merge_request.title
-    description: $event.merge_request.description
-    source_branch: $event.merge_request.source_branch
-    target_branch: $event.merge_request.target_branch
-    changed_files: $event.merge_request.changed_files
-    author: $event.merge_request.author.username
+inputs:
+  - "context:goal"
+
+flow:
+  entry_point: orbit_sentinel
 
 components:
-  - name: Graph Analyst Agent
+  - name: orbit_sentinel
     type: agent
-    agent: graph-analyst
+    agent: orbit-sentinel
     input:
-      project_id: $context.project_id
-      mr_iid: $context.merge_request.iid
-      changed_files: $context.merge_request.changed_files
-    output:
-      digital_twin: $steps.graph_analyst.digital_twin
-      orbit_queries_executed: $steps.graph_analyst.queries_executed
-
-  - name: Memory Agent
-    type: agent
-    agent: memory-agent
-    input:
-      project_path: $context.project.full_path
-      changed_files: $context.merge_request.changed_files
-      digital_twin: $steps.graph_analyst.digital_twin
-    output:
-      historical_matches: $steps.memory_agent.historical_matches
-      incident_records: $steps.memory_agent.incident_records
-
-  - name: Simulation Agent
-    type: agent
-    agent: simulation-agent
-    input:
-      digital_twin: $steps.graph_analyst.digital_twin
-      change_description: $context.merge_request.description
-      changed_files: $context.merge_request.changed_files
-      historical_matches: $steps.memory_agent.historical_matches
-    output:
-      simulation_result: $steps.simulation_agent.simulation
-      failure_predictions: $steps.simulation_agent.failure_predictions
-
-  - name: Risk Assessment Agent
-    type: agent
-    agent: risk-agent
-    input:
-      digital_twin: $steps.graph_analyst.digital_twin
-      simulation: $steps.simulation_agent.simulation
-      failure_predictions: $steps.simulation_agent.failure_predictions
-      historical_matches: $steps.memory_agent.historical_matches
-    output:
-      risk_score: $steps.risk_agent.risk_score
-      risk_level: $steps.risk_agent.risk_level
-      rollback_plan: $steps.risk_agent.rollback_plan
-      test_plan: $steps.risk_agent.test_plan
-
-  - name: Reviewer Recommendation Agent
-    type: agent
-    agent: reviewer-agent
-    input:
-      digital_twin: $steps.graph_analyst.digital_twin
-      changed_files: $context.merge_request.changed_files
-      project_id: $context.project_id
-    output:
-      reviewer_recommendations: $steps.reviewer_agent.recommendations
-
-  - name: Remediation Agent
-    type: agent
-    agent: remediation-agent
-    input:
-      failure_predictions: $steps.simulation_agent.failure_predictions
-      risk_level: $steps.risk_agent.risk_level
-      digital_twin: $steps.graph_analyst.digital_twin
-      changed_files: $context.merge_request.changed_files
-    output:
-      remediations: $steps.remediation_agent.remediations
-      fix_mrs: $steps.remediation_agent.fix_mrs
-
-  - name: Reporting Agent
-    type: agent
-    agent: reporting-agent
-    input:
-      digital_twin: $steps.graph_analyst.digital_twin
-      simulation: $steps.simulation_agent.simulation
-      failure_predictions: $steps.simulation_agent.failure_predictions
-      historical_matches: $steps.memory_agent.historical_matches
-      reviewer_recommendations: $steps.reviewer_agent.recommendations
-      rollback_plan: $steps.risk_agent.rollback_plan
-      test_plan: $steps.risk_agent.test_plan
-      remediations: $steps.remediation_agent.remediations
-    output:
-      report: $steps.reporting_agent.report
-      mr_comment: $steps.reporting_agent.mr_comment
-
-routers:
-  - from: Graph Analyst Agent
-    to: Memory Agent
-  - from: Memory Agent
-    to: Simulation Agent
-  - from: Simulation Agent
-    to:
-      - Risk Assessment Agent
-      - Reviewer Recommendation Agent
-  - from: Risk Assessment Agent
-    to: Remediation Agent
-  - from: Reviewer Recommendation Agent
-    to: Remediation Agent
-  - from: Remediation Agent
-    to: Reporting Agent
-  - from: Reporting Agent
-    to: __end__
+      goal: "{{goal}}"
+      merge_request_iid: "{{ context.merge_request.iid }}"
+      project_id: "{{ context.project.id }}"
+      project_path: "{{ context.project.full_path }}"
+      changed_files: "{{ context.merge_request.changed_files }}"
+      source_branch: "{{ context.merge_request.source_branch }}"
+      target_branch: "{{ context.merge_request.target_branch }}"
+      author: "{{ context.merge_request.author.username }}"
+      mr_title: "{{ context.merge_request.title }}"
+      mr_description: "{{ context.merge_request.description }}"
 
 toolsets:
   - name: orbit-sentinel-tools
     tools:
       - name: query_graph
-        description: Execute an Orbit graph query to find nodes, traverse relationships, or aggregate data
+        description: Execute an Orbit graph query to find nodes, traverse relationships, or aggregate data across the knowledge graph
       - name: get_graph_schema
-        description: Fetch the current Orbit graph schema, node types, and relationship types
-      - name: glab_orbit_query
-        description: Run a glab orbit remote query command against the GitLab Knowledge Graph
+        description: Fetch the current Orbit graph schema, available node types, and relationship types
       - name: post_mr_comment
-        description: Post a comment on the merge request with the Sentinel report
-      - name: create_mr
-        description: Create a new merge request (for auto-remediation)
+        description: Post a formatted comment on the merge request with the complete Sentinel impact report
       - name: add_label
-        description: Add a label to the merge request (e.g., orbit-sentinel-reviewed, risk-critical)
-      - name: trigger_pipeline
-        description: Trigger a CI/CD pipeline for validation tests
+        description: Add a label to the merge request (e.g., orbit-sentinel-reviewed, risk-high)
 
 prompts:
   system: |
-    You are Orbit Sentinel, an autonomous engineering digital twin system.
-    Your purpose is to simulate the future of a codebase before changes are merged.
-    You use GitLab Orbit's knowledge graph to build a digital twin of the software
-    system, then analyze, predict, and explain the impact of proposed changes.
-    Always provide evidence from the Orbit graph for your conclusions.
-    Be precise, data-driven, and actionable.
+    You are Orbit Sentinel, an autonomous engineering digital twin powered by GitLab Orbit.
+
+    ## Your Mission
+    When a merge request is opened, build a digital twin of the software system,
+    simulate the change, predict failures, find historical precedents, and
+    recommend actions — all before the change reaches production.
+
+    ## Required Workflow (execute in order)
+    Step 1 — Schema Discovery
+    Call get_graph_schema first to understand what node and relationship types
+    are available in this project's Orbit graph.
+
+    Step 2 — Blast Radius (NEIGHBORS query)
+    For each changed file, run a NEIGHBORS query to find directly and
+    transitively affected nodes. Identify impacted services, pipelines,
+    deployments, and teams.
+
+    Step 3 — Dependency Chains (PATH_FINDING query)
+    Run PATH_FINDING queries from changed files through their dependency
+    chains to production deployments. Find critical paths.
+
+    Step 4 — Historical Context (TRAVERSAL query)
+    Run TRAVERSAL queries to find historical merge requests and incidents
+    involving the same or similar files. Compute similarity scores.
+
+    Step 5 — Pipeline Risk (AGGREGATION query)
+    Run AGGREGATION queries on recent pipelines for the affected services
+    to compute failure rates and risk probabilities.
+
+    Step 6 — Analysis & Prediction
+    Based on all Orbit data:
+    - Score risks (probability × severity)
+    - Predict failure modes and outcomes
+    - Recommend reviewers based on graph ownership
+    - Generate a rollback plan
+    - Suggest mitigations
+
+    Step 7 — Post Report
+    Call post_mr_comment with a complete report containing:
+    1. Executive Summary with risk level
+    2. Orbit queries executed (show the evidence)
+    3. Blast Radius (affected nodes, dependency chains)
+    4. Historical matches with similarity scores
+    5. Risk assessment (probability × severity matrix)
+    6. Recommended reviewers
+    7. Rollback plan
+    8. Recommended actions
+
+    Step 8 — Label MR
+    Call add_label with "orbit-sentinel-reviewed" and "risk-{level}"
+
+    ## Critical Rules
+    - You MUST call get_graph_schema before any other query
+    - You MUST use ALL four Orbit query types (NEIGHBORS, PATH_FINDING,
+      TRAVERSAL, AGGREGATION)
+    - Every risk prediction MUST cite specific Orbit query evidence
+    - Do NOT guess or hallucinate — only report what Orbit actually returns
+    - The report must be professional, actionable, and data-driven
   output_format: markdown
-
-labels:
-  - orbit-sentinel-reviewed
-  - risk-{risk_level}
-
-on_complete:
-  - action: post_mr_comment
-    content: $steps.reporting_agent.mr_comment
-  - action: add_label
-    label: orbit-sentinel-reviewed
-  - action: add_label
-    label: risk-{$steps.risk_agent.risk_level}

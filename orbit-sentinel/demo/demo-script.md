@@ -1,138 +1,145 @@
 # Orbit Sentinel — Demo Script (3 minutes)
 
-## Setup (0:00-0:15)
+**Core message:** "GitHub Copilot predicts code. Orbit Sentinel predicts consequences."
 
-**Screen:** Browser showing GitLab merge request MR !184 — "Refactor auth token validation"
-
-**Narrator:**
-"This is MR !184. The developer is changing the authentication token validation logic. Before anyone hits merge, Orbit Sentinel automatically activates."
-
-**[Action:** Click on MR to show it's been opened]
+**Do NOT show:** architecture, YAML, code, implementation details.
+**DO show:** the MR, the prediction, the evidence, the decision.
 
 ---
 
-## Activation & Digital Twin Construction (0:15-0:45)
+## 0:00–0:15 — The Problem
 
-**Screen:** Split view — MR on left, Orbit Sentinel panel sliding in from right
+**Screen:** GitLab MR !184 — `fix(auth): validate JWT expiry before token refresh`
 
-**Narrator:**
-"Sentinel is triggered by the MR creation event. It immediately calls GitLab Orbit to build an Engineering Digital Twin of the entire software system."
-
-**[Action:** Show Orbit query logs appearing in real-time]
-- `TRAVERSAL: Finding files that import auth_service.ts...`
-- `NEIGHBORS: Computing blast radius (3 hops)...`
-- `PATH_FINDING: Tracing deployment paths to production...`
-- `AGGREGATION: Counting pipeline failures in payment-api...`
+Changed files: auth_service.ts, permissions.ts
 
 **Narrator:**
-"Sentinel uses all four Orbit query types — traversal, neighbors, path_finding, and aggregation — to construct a complete digital twin with 20 nodes and 22 edges."
-
-**[Action:** Show the digital twin graph appearing, nodes lighting up]
+"A developer changes authentication logic. Before anyone hits merge, Orbit Sentinel activates."
 
 ---
 
-## Blast Radius Visualization (0:45-1:15)
+## 0:15–0:30 — Auto-Play Demo
 
-**Screen:** Full-screen interactive digital twin graph — AuthService highlighted in red, connected services pulsing
+**Screen:** Open visualizer with `?demo=true` — auto-cycles: Overview → Blast Radius → Risk → Simulation → History → Report
 
-**Narrator:**
-"Here's the digital twin. AuthService is the center of a blast radius that spans three downstream services — UserService, PaymentService, and NotificationService. Six files are transitively impacted. Two deployment targets are in the chain."
-
-**[Action:** Click on AuthService node → blast radius highlights in red]
-**[Action:** Show dependency chain tracing from auth_service.ts → production deployment]
+Overlay labels appear on each view explaining what's shown.
 
 **Narrator:**
-"What used to take a senior engineer 30 minutes of manual tracing happens in 3 seconds through Orbit."
+"Within seconds, Sentinel calls GitLab Orbit using all four query types — Traversal, Path Finding, Neighbors, and Aggregation — and builds an engineering digital twin. Watch the auto-demo cycle through all six analysis views."
 
 ---
 
-## Historical Memory (1:15-1:40)
+## 0:30–0:50 — Evidence, Not Black Box
 
-**Screen:** Historical matches panel slides up
+**Screen:** Orbit Evidence panel — 4 query cards animate in sequentially
 
-**Narrator:**
-"Here's where Sentinel separates itself from every other analysis tool. It doesn't just analyze the current code — it remembers the past."
-
-**[Action:** Scroll through historical MR cards]
-- MR !184: Auth token change → **caused production failure** (87% match)
-- MR !156: Similar refactor → **successful** with feature flags (72% match)
-- MR !118: OAuth migration → **Incident #42** (58% match)
+- TRAVERSAL → 8 downstream services
+- PATH_FINDING → auth_service.ts → Production
+- NEIGHBORS → 6 files, 3 services affected
+- AGGREGATION → 2 historical incidents, 4 pipeline failures
 
 **Narrator:**
-"Sentinel found MR #184 — an almost identical authentication change that caused production failures in three downstream services. This isn't speculation. It's institutional memory, powered by Orbit."
+"Every conclusion has an evidence source. No black box AI. The judge can see exactly which query produced which result."
 
 ---
 
-## Failure Prediction & Risk Score (1:40-2:10)
+## 0:50–1:05 — Interactive What-If Simulation
 
-**Screen:** Risk assessment panel appears with score bar and predictions
+**Screen:** Counterfactual panel — **click each mitigation bar as you narrate**
 
-**Narrator:**
-"Now Sentinel simulates the change and predicts what happens."
-
-**[Action:** Show risk assessment sliding in]
-- Risk Score: 72% — HIGH
-- 4 failure modes predicted
-- 3 services in critical path
+1. Click "Feature Flag Added" — risk drops from 72% to 34%
+2. Click "Integration Tests" — risk drops to 21%
+3. Click "All Mitigations" — risk drops to 6%
 
 **Narrator:**
-"Four failure modes predicted, including a 72% probability of downstream breakage. The system recommends blocking this merge and adds a `risk-high` label to the MR."
+"Sentinel answers the most important question: 'What if we apply mitigations?' Click any bar to see the risk animate down. From 72% to 6%."
 
 ---
 
-## Remediation & Auto-Fix (2:10-2:40)
+## 1:05–1:20 — History Repeats
 
-**Screen:** Remediation panel with action items
+**Screen:** Incident Intelligence panel — 3 incident cards with similarity badges
 
-**Narrator:**
-"But Sentinel doesn't just report problems — it fixes them. Here are the remediation suggestions:"
-
-**[Action:** Scroll through remediations]
-1. 🚩 Wrap behind feature flag (critical)
-2. 🔧 Auto-generated fix MR for UserService compatibility
-3. 🧪 Add regression tests for JWT validation
-4. ⚙️ Add canary deployment stage
+MR #184 — 87% match — Production Outage
+MR #142 — 65% match — Rollback
+MR #118 — 58% match — Incident
 
 **Narrator:**
-"Sentinel has already generated a fix MR that maintains backward compatibility for downstream consumers. The developer can review and merge it with one click."
+"It finds MR #184 — an almost identical auth change that caused a production outage. This isn't speculation. It's institutional memory, powered by Orbit."
 
 ---
 
-## Full Report & Conclusion (2:40-3:00)
+## 1:20–1:35 — Decision Center
 
-**Screen:** Final report posted as MR comment — scrollable, beautifully formatted
+**Screen:** Decision Center panel
+
+Strategy: Feature flag rollout (5% → 25% → 50% → 100%)
+Reviewers: @alice (Auth Owner), @bob (Platform Team)
+Tests: auth integration, token validation, payment regression
+Rollback: Instant rollback available
 
 **Narrator:**
-"The full report is posted on the merge request — executive summary, blast radius, failure predictions, historical context, reviewer recommendations, rollback plan, test plan, and remediations."
-
-**[Action:** Scroll through the MR comment report quickly]
-
-**Narrator:**
-"Predicted before merge. Prevented before production."
+"Sentinel recommends @alice as primary reviewer, a staged rollout strategy, and has the rollback plan ready."
 
 ---
 
-## End Card
+## 1:35–1:50 — Interactive Digital Twin Graph
 
-**Screen:**
-```
-🛰️ Orbit Sentinel
-🏆 Autonomous Engineering Digital Twin
+**Screen:** D3 force-directed graph — **click nodes as you narrate**
+
+1. Click "AuthService" — detail panel shows CRITICAL risk, connection count
+2. Click "Incident #42" — shows relationship to auth_service.ts
+3. Hover to see glow on critical nodes
+
+**Narrator:**
+"The digital twin shows the full picture: 20 nodes, 22 edges. Click any node — see its type, risk level, and connections. AuthService at the center, connected to six files, two pipelines, two deployments at risk."
+
+---
+
+## 1:50–2:00 — Final Verdict
+
+**Screen:** Back to Hero section — zoom on the recommendation
+
+**Narrator:**
+"Final verdict: HIGH risk. Do not deploy directly to production. Use a feature flag rollout with staged traffic ramping."
+
+---
+
+## 2:00–2:15 — The Full Report
+
+**Screen:** Click to Report tab — scroll through sections
+
+**Narrator:**
+"The full report is posted on the MR — executive summary, blast radius, failure predictions, reviewer recommendations, rollback plan, test plan, and remediation suggestions."
+
+---
+
+## 2:15–2:30 — Closing
+
+**Screen:** End card
+
+Orbit Sentinel
+
+"GitHub Copilot predicts code. Orbit Sentinel predicts consequences."
 
 GitLab Orbit: Traversal | Aggregation | Path Finding | Neighbors
-Duo Agent Platform: 7-Agent Flow | AI Catalog | Published
+Duo Agent Platform | AI Catalog
+
 Built for the GitLab Transcend Hackathon
-```
+
+**Narrator:**
+"Most AI tools understand code. Orbit Sentinel understands the future state of a software system."
 
 ---
 
-## Technical Notes for Judges
+## Technical Notes
 
-| Element | Shown At | What It Demonstrates |
-|---------|----------|---------------------|
-| Orbit queries (4 types) | 0:15-0:45 | Deep Orbit integration |
-| Digital twin graph | 0:45-1:15 | Digital twin concept |
-| Historical memory | 1:15-1:40 | Repository memory layer |
-| Risk scoring | 1:40-2:10 | Simulation engine |
-| Auto-remediation | 2:10-2:40 | Autonomous action |
-| MR comment report | 2:40-3:00 | Full output |
+| Moment | Time | Judges See |
+|--------|------|------------|
+| MR + auto-play demo | 0:00–0:30 | Auto-cycle through all 6 views with labels |
+| Evidence panel | 0:30–0:50 | Every claim cites a specific Orbit query |
+| Interactive counterfactual | 0:50–1:05 | Click bars to animate risk changes |
+| Incidents | 1:05–1:20 | Repository memory, similarity scoring |
+| Decision center | 1:20–1:35 | Actionable output (reviewers, strategy, tests) |
+| Interactive graph | 1:35–1:50 | Click nodes for detail panel, D3 visualization |
+| Report | 2:00–2:15 | Complete formatted MR comment |

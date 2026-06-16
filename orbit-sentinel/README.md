@@ -1,189 +1,209 @@
-# 🛰️ Orbit Sentinel — Autonomous Engineering Digital Twin
+# Orbit Sentinel — Engineering Digital Twin
 
-> Simulate the future of your codebase before you merge.
+> GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
 
-Orbit Sentinel is an autonomous engineering digital twin that uses **GitLab Orbit** to build a living model of your software system, simulate proposed changes, predict failures, and generate remediation plans — all before code reaches production.
+Orbit Sentinel is an autonomous engineering digital twin powered by **GitLab Orbit**. When a developer opens a merge request, it builds a living model of the software system — discovering blast radius, historical incidents, reviewer ownership, deployment dependencies, and rollback strategies — then posts a complete impact analysis on the MR.
 
-## The Vision
+## 🏆 Breakthrough: Real Orbit Queries Executed
 
-Most AI coding tools understand the current code. Orbit Sentinel understands the **future** of the code.
+The agent was tested in GitLab Duo Chat and successfully ran **live Orbit queries** against the actual project (`transcend/39251857`). Results:
 
-When a developer opens a merge request, Orbit Sentinel:
+| Query | Findings |
+|-------|----------|
+| `get_graph_schema` | 18 node types, ~45 relationship types discovered |
+| Full Graph Traversal | **22 nodes, 40 relationships** across 6 node types |
+| Merge Requests | 3 MRs (!1, !2, !3) — all authored by @pjphillips |
+| Issues | 2 closed issues — duplicate pattern detected |
+| Pipelines | 1 pipeline (success, 0% coverage) |
+| Files | 11 files tracked in graph |
+| Risk Signals | 3 High (bus factor, no coverage, no reviewers), 2 Medium |
 
-1. **Constructs a digital twin** of the software system using GitLab Orbit
-2. **Simulates the change** across the full dependency graph
-3. **Predicts failure modes** with probability and severity scoring
-4. **Finds historical precedents** — similar changes and their outcomes
-5. **Recommends reviewers** based on expertise and workload
-6. **Generates rollback plans** and test strategies
-7. **Creates remediation suggestions**, including auto-generated fix MRs
-8. **Posts a comprehensive report** on the merge request
+[Full traversal results](/docs/orbit-traversal-results.md)
 
-## Architecture
+The visualizer now shows **real data from your actual project** — not fictional mock data.
+
+## Quick Start
+
+```powershell
+.\setup.ps1        # One-click: install deps, build, start visualizer
+# → http://localhost:5173
+```
+
+**Or visit the live demo** (if deployed to GitLab Pages):  
+`https://gitlab-ai-hackathon.gitlab.io/transcend/39251857/`
+
+## How It Works
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                   GitLab Merge Request                    │
-└──────────────────────┬──────────────────────────────────┘
-                       │ trigger (opened/updated)
-┌──────────────────────▼──────────────────────────────────┐
-│              Orbit Sentinel Flow (7 Agents)              │
-│  ┌──────────┐  ┌────────┐  ┌──────────┐  ┌──────────┐  │
-│  │  Graph   │─▶│ Memory │─▶│Simulation│─▶│   Risk   │  │
-│  │ Analyst  │  │ Agent  │  │  Agent   │  │  Agent   │  │
-│  └──────────┘  └────────┘  └──────────┘  └──────────┘  │
-│        │            │            │              │        │
-│        ▼            ▼            ▼              ▼        │
-│  ┌──────────┐  ┌────────────┐  ┌──────────┐  ┌────────┐│
-│  │ Reviewer │  │Remediation │  │Reporting │  │  Risk  ││
-│  │  Agent   │  │   Agent    │  │  Agent   │  │Engine  ││
-│  └──────────┘  └────────────┘  └──────────┘  └────────┘│
-└──────────────────────┬──────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│              GitLab Merge Request Opened             │
+└──────────────────────┬──────────────────────────────┘
+                       │ trigger
+┌──────────────────────▼──────────────────────────────┐
+│         Orbit Sentinel Flow (Duo Agent Platform)     │
+│                                                       │
+│  Step 1  get_graph_schema → understand the ontology   │
+│  Step 2  NEIGHBORS query → blast radius computation   │
+│  Step 3  PATH_FINDING query → dependency chains       │
+│  Step 4  TRAVERSAL query → historical matches         │
+│  Step 5  AGGREGATION query → pipeline risk scoring   │
+│  Step 6  Analyze + predict failure modes              │
+│  Step 7  post_mr_comment → full impact report         │
+│  Step 8  add_label → tag risk level on MR             │
+└──────────────────────┬──────────────────────────────┘
                        │ output
-┌──────────────────────▼──────────────────────────────────┐
-│         MR Comment: Impact Report + Visualization        │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────▼──────────────────────────────┐
+│   MR Comment: Risk Score | Blast Radius | History    │
+│   Reviewers | Rollback Plan | Remediations           │
+└─────────────────────────────────────────────────────┘
 ```
 
-### Engine Components
+**Key principle:** Every conclusion cites specific Orbit query evidence. No black box.
 
-```
-engine/src/
-├── index.ts              # Main OrbitSentinel class
-├── types.ts              # All type definitions
-├── config.ts             # Configuration
-├── orbit/
-│   ├── client.ts         # Orbit API client (all 4 query types)
-│   └── queries.ts        # Pre-built query library (12 queries)
-├── twin/
-│   ├── builder.ts        # Digital twin construction
-│   └── simulator.ts      # Change simulation & failure prediction
-├── memory/
-│   ├── store.ts          # Historical data retrieval
-│   └── similarity.ts     # Change similarity scoring
-├── risk/
-│   └── engine.ts         # Risk scoring, rollback & test plan generation
-├── remediation/
-│   ├── planner.ts        # Remediation prioritization
-│   ├── rollback.ts       # Rollback strategy generation
-│   └── test-generator.ts # Automated test plan generation
-└── reporter/
-    ├── markdown.ts       # Human-readable MR reports
-    └── visualizer.ts     # Visualization data preparation
-```
+## Visualizer Features
 
-### Flow Configuration
+The interactive dashboard (`localhost:5173` or GitLab Pages) demonstrates the complete analysis in 6 views with interactive controls:
 
-```
-flow/
-├── orbit-sentinel-flow.yaml     # Duo Agent Platform flow (7 agents)
-├── trigger-examples.yaml        # Trigger configuration examples
-└── agents/
-    ├── 01-graph-analyst.yaml     # Orbit query specialist
-    ├── 02-memory-agent.yaml      # Historical pattern analysis
-    ├── 03-simulation-agent.yaml  # What-if simulation
-    ├── 04-risk-agent.yaml        # Risk assessment
-    ├── 05-reviewer-agent.yaml    # Reviewer recommendation
-    ├── 06-remediation-agent.yaml # Fix generation
-    └── 07-reporting-agent.yaml   # Report compilation
-```
+### Views
 
-### Skill & Configuration
+| View | What It Shows |
+|------|---------------|
+| **Overview** | Hero prediction + Orbit evidence + Decision center + Counterfactual simulation + Incidents + Interactive Graph |
+| **Blast Radius** | Interactive dependency explorer with depth control |
+| **Risk** | Risk score breakdown with probability bars |
+| **Simulation** | Change impact analysis with timeline |
+| **History** | Repository memory with similarity scoring |
+| **Report** | Full formatted impact report |
 
-```
-skills/orbit-sentinel/
-├── SKILL.md                     # Orbit Sentinel skill definition
-└── recipes/
-    ├── blast-radius.json        # NEIGHBORS query recipe
-    ├── dependency-chain.json    # PATH_FINDING query recipe
-    ├── deployment-impact.json   # TRAVERSAL query recipe
-    ├── historical-similarity.json # TRAVERSAL query recipe
-    ├── ownership-discovery.json # NEIGHBORS query recipe
-    └── pipeline-risk.json       # AGGREGATION query recipe
+### Interactive Features
 
-.gitlab/duo/
-└── mcp.json                     # MCP server configuration
+| Feature | How |
+|---------|-----|
+| **Auto-Play Demo** | Press **Space** or click **▶ Play Demo** — cycles all 6 views with overlay labels |
+| **What-If Simulation** | **Click any mitigation bar** — risk gauge animates to show the impact |
+| **Graph Exploration** | **Click any node** — detail panel shows type, risk level, and connection count |
+| **URL Params** | `?view=blast-radius` opens directly to a view. `?demo=true` auto-starts demo |
 
-AGENTS.md                        # Project-level agent instructions
-```
-
-## Orbit Query Types Used
-
-| Query Type | Count | Purpose |
-|-----------|-------|---------|
-| **Traversal** | 4 | File search, historical MRs, incidents, deployment trace |
-| **Aggregation** | 2 | Pipeline failures, open MR counts |
-| **Path Finding** | 2 | Dependency chains, deployment paths |
-| **Neighbors** | 3 | Blast radius, ownership, dependency mapping |
-
-## Getting Started
-
-### Prerequisites
-
-- GitLab CLI (`glab`) v1.95+
-- GitLab Orbit enabled on your top-level group
-- `glab auth login` configured
-
-### Installation
+### Run the Visualizer
 
 ```bash
-# 1. Install the Orbit skill
-glab skills install --global orbit
+# Option A: One-click setup
+.\setup.ps1
 
-# 2. Install Orbit Sentinel skill
-glab skills install --global orbit-sentinel
-
-# 3. Set up MCP configuration
-cp .gitlab/duo/mcp.json ~/.gitlab/duo/mcp.json
-
-# 4. Enable the flow in your project
-# Go to AI > Flows > New Flow > Upload orbit-sentinel-flow.yaml
-```
-
-### Running the Engine
-
-```bash
-cd engine
-npm install
-npm run build
-
-# Analyze a specific merge request
-GITLAB_ACCESS_TOKEN=your_token \
-ORBIT_GROUP_PATH=my-org/my-project \
-node dist/index.js
-```
-
-### Visualizer
-
-```bash
+# Option B: Manual
 cd visualizer
 npm install
 npm run dev
-# Opens at http://localhost:5173
+# → http://localhost:5173
+# → http://localhost:5173/?demo=true (auto-demo)
 ```
 
-## Demo
+## Flow Configuration
 
-**[View Demo Script](demo/demo-script.md)** — 3-minute walkthrough designed for the hackathon submission.
+The flow is defined at `flow/orbit-sentinel-flow.yaml`. It uses a single-agent v1 architecture that orchestrates 8 steps across 4 Orbit query types:
+
+1. `get_graph_schema` — discover available schema
+2. `query_graph` (NEIGHBORS) — blast radius
+3. `query_graph` (PATH_FINDING) — dependency chains
+4. `query_graph` (TRAVERSAL) — historical context
+5. `query_graph` (AGGREGATION) — pipeline risk
+6. `post_mr_comment` — post report to MR
+7. `add_label` — tag MR with risk level
+
+### Deploy the Flow
+
+```bash
+# 1. Go to your project → AI → Flows → New Flow
+# 2. Upload flow/orbit-sentinel-flow.yaml
+# 3. Save → Enable
+# 4. Open a test MR to trigger
+# 5. Publish to AI Catalog
+```
+
+## GitLab Pages Deployment
+
+The `.gitlab-ci.yml` automatically deploys the visualizer to GitLab Pages on every push to `main`:
+
+```
+https://gitlab-ai-hackathon.gitlab.io/transcend/39251857/
+```
+
+The pipeline also runs TypeScript checks on the engine and visualizer.
+
+## Duo Chat Integration
+
+The skill at `.gitlab/duo/skill.yml` makes Orbit Sentinel available in Duo Chat with:
+
+- Triggers on MR open and new commits
+- All 4 Orbit query types available as tools
+- 300-second timeout for complex analyses
+- Single-threaded execution
+
+The MCP configuration at `.gitlab/duo/mcp.json` connects the GitLab Orbit MCP server.
+
+## Engine
+
+```
+engine/src/
+├── orbit/
+│   ├── client.ts     # Orbit API client (all 4 query types)
+│   └── queries.ts    # 12 pre-built queries
+├── twin/
+│   ├── builder.ts    # Digital twin construction
+│   └── simulator.ts  # Change simulation
+├── risk/
+│   └── engine.ts     # Risk scoring
+├── remediation/
+│   ├── planner.ts
+│   ├── rollback.ts
+│   └── test-generator.ts
+└── reporter/
+    ├── markdown.ts
+    └── visualizer.ts
+```
+
+All four Orbit query types are used: **Traversal**, **Aggregation**, **Path Finding**, **Neighbors**.
+
+## Project Status
+
+| Component | Status |
+|-----------|--------|
+| Flow YAML (Duo Agent Platform) | ✅ Built, validated v1 syntax |
+| Visualizer (React/D3 dashboard) | ✅ Built, tested, interactive |
+| Engine (TypeScript Orbit client) | ✅ Built, compiles clean |
+| Orbit skill + 6 query recipes | ✅ Built, 4 query types covered |
+| GitLab Pages CI/CD | ✅ Configured |
+| Duo Chat skill definition | ✅ Built |
+| One-click setup script | ✅ Built |
+| AI Catalog publication | ⏳ Needs user action on GitLab |
+| Demo video | ⏳ Needs recording (≤3 min) |
 
 ## Project Structure
 
 ```
 orbit-sentinel/
-├── engine/          # TypeScript engine (Orbit client, digital twin, simulation)
-├── visualizer/      # React/D3 visualization dashboard
-├── flow/            # Duo Agent Platform flow & agent definitions
-├── skills/          # Orbit Sentinel skill with query recipes
-├── .gitlab/duo/     # MCP configuration
-├── demo/            # Demo script and assets
-├── AGENTS.md        # Agent instructions
-└── LICENSE          # MIT License
+├── .gitlab-ci.yml       # GitLab Pages deployment
+├── .gitlab/duo/
+│   ├── skill.yml        # Duo Chat skill definition
+│   └── mcp.json         # MCP server config
+├── visualizer/          # React/D3 interactive dashboard
+├── engine/              # TypeScript Orbit client + twin
+├── flow/
+│   └── orbit-sentinel-flow.yaml  # Duo Agent Platform flow
+├── skills/              # Orbit skill with 6 query recipes
+├── demo/
+│   ├── demo-script.md   # 3-minute video script
+│   └── devpost-submission.md  # Devpost entry text
+├── docs/
+│   └── screenshots/     # UI screenshots (11 images)
+├── setup.ps1            # One-click install & run
+├── SETUP.md             # Setup instructions
+├── AGENTS.md            # Agent instructions
+└── LICENSE              # MIT
 ```
 
-## License
+## Built For
 
-MIT — see [LICENSE](LICENSE).
+[GitLab Transcend Hackathon](https://gitlab-transcend.devpost.com/) — Showcase Track
 
----
-
-Built for the [GitLab Transcend Hackathon](https://gitlab-transcend.devpost.com/).
+**License:** MIT

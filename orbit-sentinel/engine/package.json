@@ -15,7 +15,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@gitlab/glab": "^1.95.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {

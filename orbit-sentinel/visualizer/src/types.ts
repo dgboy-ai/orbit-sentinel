@@ -31,6 +31,41 @@ export interface TimelineItem {
   color: string;
 }
 
+export interface OrbitQueryEvidence {
+  queryType: string;
+  queryName: string;
+  result: string;
+}
+
+export interface DecisionCenterData {
+  deploymentStrategy: string;
+  reviewers: { name: string; role: string }[];
+  requiredTests: string[];
+  rollbackStrategy: string;
+  riskReduction: {
+    current: number;
+    afterRecommendation: number;
+  };
+}
+
+export interface CounterfactualScenario {
+  label: string;
+  riskAfter: number;
+  color: string;
+}
+
+export interface HistoricalIncident {
+  similarity: number;
+  mrIid: number;
+  title: string;
+  files: string[];
+  outcome: string;
+  rootCause: string;
+  mitigation: string;
+  recommendedAction: string;
+  date: string;
+}
+
 export interface VisualizationData {
   graph: {
     nodes: GraphNode[];
@@ -43,4 +78,17 @@ export interface VisualizationData {
   };
   timelines: TimelineItem[];
   summary: Record<string, string | number>;
+  hero: {
+    mrIid: number;
+    riskLevel: string;
+    riskScore: number;
+    predictedOutcome: string;
+    recommendedAction: string;
+    confidence: string;
+    generatedUsing: string;
+  };
+  evidence: OrbitQueryEvidence[];
+  decisionCenter: DecisionCenterData;
+  counterfactuals: CounterfactualScenario[];
+  incidents: HistoricalIncident[];
 }

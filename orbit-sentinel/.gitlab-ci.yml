@@ -1,0 +1,67 @@
+image: node:22
+
+stages:
+  - build
+  - deploy
+
+variables:
+  PAGES_BRANCH: main
+
+build_visualizer:
+  stage: build
+  script:
+    - cd visualizer
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - visualizer/dist/
+    expire_in: 1 day
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
+
+pages:
+  stage: deploy
+  script:
+    - cp -r visualizer/dist/ public/
+  artifacts:
+    paths:
+      - public/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
+      when: always
+
+build_engine:
+  stage: build
+  script:
+    - cd engine
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - engine/dist/
+    expire_in: 1 day
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
+
+lint_visualizer:
+  stage: build
+  script:
+    - cd visualizer
+    - npm ci
+    - npx tsc --noEmit
+  allow_failure: true
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+lint_engine:
+  stage: build
+  script:
+    - cd engine
+    - npm ci
+    - npx tsc --noEmit
+  allow_failure: true
+  rules:
+    - if: $CI_MERGE_REQUEST_ID

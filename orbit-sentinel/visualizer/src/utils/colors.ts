@@ -1,34 +1,37 @@
-export const NODE_COLORS: Record<string, string> = {
-  Project: "#1f77b4",
-  Service: "#ff7f0e",
-  File: "#2ca02c",
-  Definition: "#d62728",
-  MergeRequest: "#9467bd",
-  Pipeline: "#8c564b",
-  Deployment: "#e377c2",
-  Incident: "#7f7f7f",
-  Team: "#bcbd22",
-  User: "#17becf",
-};
+export const RISK = {
+  critical: { hex: "#ef4444", rgba: "rgba(239,68,68,", gradient: "linear-gradient(135deg, #ef4444, #dc2626)", glow: "rgba(239,68,68,0.4)" },
+  high:    { hex: "#f97316", rgba: "rgba(249,115,22,", gradient: "linear-gradient(135deg, #f97316, #ea580c)", glow: "rgba(249,115,22,0.35)" },
+  medium:  { hex: "#eab308", rgba: "rgba(234,179,8,", gradient: "linear-gradient(135deg, #eab308, #ca8a04)", glow: "rgba(234,179,8,0.3)" },
+  low:     { hex: "#22c55e", rgba: "rgba(34,197,94,", gradient: "linear-gradient(135deg, #22c55e, #16a34a)", glow: "rgba(34,197,94,0.3)" },
+} as const;
 
-export const RISK_COLORS: Record<string, string> = {
-  low: "#2ea043",
-  medium: "#d29922",
-  high: "#d1242f",
-  critical: "#8b1a1a",
-};
-
-export function getNodeColor(type: string): string {
-  return NODE_COLORS[type] ?? "#999";
-}
-
-export function getRiskColor(level: string): string {
-  return RISK_COLORS[level] ?? "#999";
+export function riskScoreToKey(score: number): keyof typeof RISK {
+  if (score > 0.7) return "critical";
+  if (score > 0.4) return "high";
+  if (score > 0.2) return "medium";
+  return "low";
 }
 
 export function riskScoreToColor(score: number): string {
-  if (score > 0.7) return RISK_COLORS.critical;
-  if (score > 0.4) return RISK_COLORS.high;
-  if (score > 0.2) return RISK_COLORS.medium;
-  return RISK_COLORS.low;
+  return RISK[riskScoreToKey(score)].hex;
 }
+
+export function riskScoreToGradient(score: number): string {
+  return RISK[riskScoreToKey(score)].gradient;
+}
+
+export function riskScoreToGlow(score: number): string {
+  return RISK[riskScoreToKey(score)].glow;
+}
+
+export function riskLevelToColor(level: string): string {
+  const map: Record<string, string> = { critical: "#ef4444", high: "#f97316", medium: "#eab308", low: "#22c55e" };
+  return map[level.toLowerCase()] ?? "#8b949e";
+}
+
+export const NODE_COLORS: Record<string, string> = {
+  Project: "#60a5fa", Service: "#f97316", File: "#22c55e",
+  MergeRequest: "#a78bfa", Pipeline: "#eab308", Deployment: "#ec4899",
+  Incident: "#ef4444", User: "#06b6d4", Team: "#f59e0b",
+  Issue: "#8b5cf6", Commit: "#ec4899",
+};
