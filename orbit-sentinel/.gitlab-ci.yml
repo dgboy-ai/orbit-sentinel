@@ -1,36 +1,45 @@
 image: node:22
 
 stages:
+  - test
+  - lint
   - build
   - deploy
 
 variables:
   PAGES_BRANCH: main
 
-build_visualizer:
-  stage: build
+test_engine:
+  stage: test
   script:
-    - cd visualizer
+    - cd engine
     - npm ci
-    - npm run build
-  artifacts:
-    paths:
-      - visualizer/dist/
-    expire_in: 1 day
+    - npm run test
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
+  coverage: /^\s*Tests\s*:\s*\d+\s+passed/
+
+lint_engine:
+  stage: lint
+  script:
+    - cd engine
+    - npm ci
+    - npx tsc --noEmit
+    - npx eslint src/
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
-pages:
-  stage: deploy
+lint_visualizer:
+  stage: lint
   script:
-    - cp -r visualizer/dist/ public/
-  artifacts:
-    paths:
-      - public/
+    - cd visualizer
+    - npm ci
+    - npx tsc --noEmit
   rules:
+    - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
-      when: always
 
 build_engine:
   stage: build
@@ -42,26 +51,34 @@ build_engine:
     paths:
       - engine/dist/
     expire_in: 1 day
+  needs: [test_engine, lint_engine]
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
-lint_visualizer:
+build_visualizer:
   stage: build
   script:
     - cd visualizer
     - npm ci
-    - npx tsc --noEmit
-  allow_failure: true
+    - npm run build
+  artifacts:
+    paths:
+      - visualizer/dist/
+    expire_in: 1 day
+  needs: [lint_visualizer]
   rules:
     - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
-lint_engine:
-  stage: build
+pages:
+  stage: deploy
   script:
-    - cd engine
-    - npm ci
-    - npx tsc --noEmit
-  allow_failure: true
+    - cp -r visualizer/dist/ public/
+  artifacts:
+    paths:
+      - public/
+  needs: [build_visualizer]
   rules:
-    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
+      when: always
