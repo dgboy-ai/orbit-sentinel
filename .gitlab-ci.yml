@@ -11,7 +11,7 @@ variables:
   NODE_OPTIONS: "--max-old-space-size=4096"
 
 cache:
-  key: "\"
+  key: "${CI_COMMIT_REF_SLUG}"
   paths:
     - orbit-sentinel/engine/node_modules/
     - orbit-sentinel/visualizer/node_modules/
@@ -23,8 +23,8 @@ test_engine:
     - npm ci
     - npm run test
   rules:
-    - if: \
-    - if: \ == \
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
 lint_engine:
   stage: lint
@@ -34,8 +34,8 @@ lint_engine:
     - npx tsc --noEmit
     - npx eslint src/ --ext .ts || true
   rules:
-    - if: \
-    - if: \ == \
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
 lint_visualizer:
   stage: lint
@@ -44,8 +44,8 @@ lint_visualizer:
     - npm ci
     - npx tsc --noEmit
   rules:
-    - if: \
-    - if: \ == \
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
 build_engine:
   stage: build
@@ -59,8 +59,8 @@ build_engine:
     expire_in: 1 day
   needs: [test_engine, lint_engine]
   rules:
-    - if: \
-    - if: \ == \
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
 build_visualizer:
   stage: build
@@ -74,8 +74,8 @@ build_visualizer:
     expire_in: 1 day
   needs: [lint_visualizer]
   rules:
-    - if: \
-    - if: \ == \
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
 pages:
   stage: deploy
@@ -87,5 +87,5 @@ pages:
       - public/
   needs: [build_visualizer]
   rules:
-    - if: \ == \
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
       when: always
