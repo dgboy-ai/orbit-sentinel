@@ -29,52 +29,69 @@ export default function CounterfactualSimulation({ scenarios, currentRisk }: { s
   }
 
   return (
-    <div className="card" style={{ padding: "10px 14px", animation: "fadeSlideUp 0.5s 0.15s ease both" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-        <div style={{ width: 22, height: 22, borderRadius: 6, background: "rgba(167,139,250,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, flexShrink: 0 }}>🧪</div>
+    <div className="card" style={{ padding: "14px 18px", animation: "fadeSlideUp 0.5s 0.15s ease both" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <div style={{ width: 28, height: 28, borderRadius: 6, background: "rgba(167,139,250,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>🧪</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>What-If Simulation</div>
-          <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>Click to simulate mitigation</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>What-If Simulation</div>
+          <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Click any scenario to simulate</div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>Risk</div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: curCol, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${riskScoreToGlow(displayedRisk)}`, lineHeight: 1.2 }}>
+          <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>Risk Level</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: curCol, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${riskScoreToGlow(displayedRisk)}`, lineHeight: 1.2, transition: "color 0.3s ease" }}>
             {(displayedRisk * 100).toFixed(0)}%
           </div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 4 }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 6 }}>
         {scenarios.map((s, i) => {
           const isActive = active === i;
           const barPct = s.riskAfter * 100;
           return (
             <div key={s.label} onClick={() => applySimulation(i)}
               style={{
-                padding: "5px 6px", borderRadius: 5, cursor: "pointer",
-                background: isActive ? `${s.color}12` : "rgba(255,255,255,0.02)",
-                border: `1px solid ${isActive ? s.color + "33" : "rgba(255,255,255,0.04)"}`,
-                transition: "all 0.2s ease",
+                padding: "8px 10px", borderRadius: 6, cursor: "pointer",
+                background: isActive ? `${s.color}15` : "rgba(255,255,255,0.02)",
+                border: `1px solid ${isActive ? s.color + "44" : "rgba(255,255,255,0.06)"}`,
+                transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)",
                 position: "relative", overflow: "hidden",
+                userSelect: "none",
               }}
-              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; } }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; } }}
+              onMouseEnter={e => {
+                if (!isActive) {
+                  e.currentTarget.style.background = `${s.color}08`;
+                  e.currentTarget.style.borderColor = `${s.color}33`;
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = `0 4px 12px ${s.color}15`;
+                }
+              }}
+              onMouseLeave={e => {
+                if (!isActive) {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                  e.currentTarget.style.transform = "none";
+                  e.currentTarget.style.boxShadow = "none";
+                }
+              }}
+              onMouseDown={e => { e.currentTarget.style.transform = "scale(0.97)"; }}
+              onMouseUp={e => { e.currentTarget.style.transform = isActive ? "none" : "translateY(-2px)"; }}
             >
-              <div style={{ fontSize: 7, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.label}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 3 }}>{barPct.toFixed(0)}%</div>
-              <div style={{ height: 3, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.label}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>{barPct.toFixed(0)}%</div>
+              <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
                 <div style={{
                   height: "100%", borderRadius: 2,
                   width: `${barPct}%`,
                   background: `linear-gradient(90deg, ${s.color}, ${s.color}66)`,
-                  transition: "width 0.6s ease",
-                  boxShadow: isActive ? `0 0 6px ${s.color}44` : "none",
+                  transition: "width 0.6s cubic-bezier(0.16,1,0.3,1)",
+                  boxShadow: isActive ? `0 0 8px ${s.color}44` : "none",
                 }} />
               </div>
               {isActive && (
                 <div style={{
-                  position: "absolute", inset: 0, borderRadius: 5,
-                  background: `linear-gradient(135deg, ${s.color}11, transparent 50%)`,
+                  position: "absolute", inset: 0, borderRadius: 6,
+                  background: `linear-gradient(135deg, ${s.color}15, transparent 60%)`,
                   pointerEvents: "none",
                 }} />
               )}

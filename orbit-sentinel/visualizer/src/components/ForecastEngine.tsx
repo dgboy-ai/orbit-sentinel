@@ -246,7 +246,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               { type: "PATH_FINDING", finding: "MR cannot reach deployment", pct: 95, color: "#60a5fa", icon: "🛣" },
               { type: "TRAVERSAL", finding: "9 similar abandoned MRs", pct: 90, color: "#a78bfa", icon: "📚" },
               { type: "NEIGHBORS", finding: "No reviewer ownership path", pct: 91, color: "#22c55e", icon: "🌐" },
-              { type: "AGGREGATION", finding: `${pipelinesTotal.toLocaleString()} pipelines analyzed`, pct: 75, color: "#f97316", icon: "📊" },
+              { type: "AGGREGATION", finding: `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`, pct: 75, color: "#f97316", icon: "📊" },
             ].map((q, i) => (
               <div key={q.type} style={{
                 display: "flex", alignItems: "center", gap: 8,
@@ -363,7 +363,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 { type: "PATH_FINDING", finding: "MR → Pipeline relationship missing", result: "No deployment path discovered" },
                 { type: "NEIGHBORS", finding: "No reviewer ownership connected", result: "Review process blocked" },
                 { type: "TRAVERSAL", finding: "9 similar historical MRs", result: "90% were closed" },
-                { type: "AGGREGATION", finding: `${pipelinesTotal.toLocaleString()} pipelines analyzed`, result: `${((pipelinesTotal > 0 ? 23547 : 0) / Math.max(pipelinesTotal, 1) * 100).toFixed(1)}% historical failure rate — used for calibration` },
+                { type: "AGGREGATION", finding: `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`, result: `${((pipelinesTotal > 0 ? 23547 : 0) / Math.max(pipelinesTotal, 1) * 100).toFixed(1)}% historical failure rate — used for calibration` },
               ].map((r, i) => {
                 const q = qEvidence(r.type);
                 return (
@@ -556,7 +556,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         animation: `fadeSlideUp 0.5s 0.3s cubic-bezier(0.16,1,0.3,1) both`,
         letterSpacing: "0.2px",
       }}>
-        <span style={{ opacity: 0.5 }}>⏎</span> Aggregation Evidence: {pipelinesTotal.toLocaleString()} pipelines analyzed · 17.8% historical failure rate · Used for confidence calibration
+        <span style={{ opacity: 0.5 }}>⏎</span> Aggregation Evidence: {pipelinesTotal.toLocaleString("en-US")} pipelines analyzed · 17.8% historical failure rate · Used for confidence calibration
       </div>
     </div>
   );

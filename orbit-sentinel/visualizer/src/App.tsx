@@ -286,13 +286,13 @@ export default function App() {
               <PathBrokenAnimation />
             </div>
             {/* Tier 3: Evidence + Incidents + Graph + Simulation */}
-            <div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <OrbitEvidencePanel evidence={data.evidence} />
                 <IncidentIntelligence incidents={data.incidents} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ minHeight: 480, flex: 1 }}><DigitalTwinGraph graph={data.graph} /></div>
+                <div style={{ minHeight: 380, flex: 1 }}><DigitalTwinGraph graph={data.graph} /></div>
                 <CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} />
               </div>
             </div>
@@ -301,7 +301,7 @@ export default function App() {
       case "blast-radius": return <BlastRadiusExplorer graph={data.graph} />;
       case "risk": return <RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} />;
       case "simulation": return <ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} />;
-      case "historical": return <HistoricalContext incidents={data.incidents} />;
+      case "historical": return <HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} />;
       case "report": return <ImpactReport data={data} />;
     }
   }, [view, data]);

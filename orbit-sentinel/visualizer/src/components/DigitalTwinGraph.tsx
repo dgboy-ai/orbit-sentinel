@@ -54,7 +54,6 @@ function Stat({ icon, label, value, color }: { icon: string; label: string; valu
 export default function DigitalTwinGraph({ graph }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [selected, setSelected] = useState<GraphNode | null>(null);
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const rafRef = useRef<number>(0);
   const settledRef = useRef(false);
 
@@ -97,12 +96,12 @@ export default function DigitalTwinGraph({ graph }: Props) {
     const nd = graph.nodes.map(n=>({...n})) as unknown as DN[];
 
     const sim = d3.forceSimulation<DN>(nd)
-      .force("link", d3.forceLink<DN,DL>(ln).id(d=>d.id).distance(d=>200/(d.value??1)))
-      .force("charge", d3.forceManyBody().strength(-500))
+      .force("link", d3.forceLink<DN,DL>(ln).id(d=>d.id).distance(d=>250/(d.value??1)).strength(0.3))
+      .force("charge", d3.forceManyBody().strength(d=>-(NODE_SIZES[(d as DN).type]??6) * 40))
       .force("center", d3.forceCenter(w/2,h/2))
-      .force("collision", d3.forceCollide().radius(d=>NODE_SIZES[(d as DN).type]??6 + 20))
-      .alphaDecay(0.02)
-      .velocityDecay(0.3);
+      .force("collision", d3.forceCollide().radius(d=>(NODE_SIZES[(d as DN).type]??6) + 40))
+      .alphaDecay(0.05)
+      .velocityDecay(0.5);
 
     const lg = g.append("g");
     const linkSel = lg.selectAll<SVGLineElement,DL>("line")
@@ -110,9 +109,18 @@ export default function DigitalTwinGraph({ graph }: Props) {
       .attr("stroke","rgba(255,255,255,0.06)").attr("stroke-width",(d:DL)=>Math.max(0.5,(d.value??1)*1.2)).attr("marker-end","url(#a)");
 
     const ng = g.append("g");
+
+    let clickPos: {x:number;y:number}|null = null;
     const node = ng.selectAll<SVGGElement,DN>("g").data(nd).join("g")
-      .call(d3.drag<SVGGElement,DN>().on("start",(e,d)=>{if(!e.active)sim.alphaTarget(0.3).restart();d.fx=d.x;d.fy=d.y;})
-        .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;}).on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=undefined;d.fy=undefined;}) as any);
+      .call(d3.drag<SVGGElement,DN>().on("start",(e,d)=>{clickPos={x:e.x,y:e.y};if(!e.active)sim.alphaTarget(0.1).restart();d.fx=d.x;d.fy=d.y;})
+        .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;}).on("end",(e,d)=>{
+          if(!e.active)sim.alphaTarget(0);
+          if(clickPos && Math.abs(e.x-clickPos.x)<5 && Math.abs(e.y-clickPos.y)<5) {
+            setSelected({id:d.id,label:d.label,type:d.type,riskLevel:d.riskLevel});
+          }
+          clickPos=null;
+          d.fx=undefined;d.fy=undefined;
+        }) as any);
 
     const riskColors = allColors.filter(c => graph.nodes.some(n => n.riskLevel && riskLevelToColor(n.riskLevel) === c));
     riskColors.forEach(c => {
@@ -146,18 +154,24 @@ export default function DigitalTwinGraph({ graph }: Props) {
         const c = d.riskLevel ? riskLevelToColor(d.riskLevel) : NODE_COLORS[d.type]??"#666";
         return `url(#g-${c.replace("#","")})`;
       })
-      .attr("stroke",d=>d.id===hoveredNode?"rgba(255,255,255,0.6)":"rgba(0,0,0,0.5)")
-      .attr("stroke-width",d=>d.id===hoveredNode?3:1.5)
+      .attr("stroke","rgba(0,0,0,0.5)")
+      .attr("stroke-width",1.5)
       .style("cursor","pointer")
-      .style("transition","stroke 0.15s ease")
-      .on("mouseenter",(_e:any,d:DN)=>{setHoveredNode(d.id);linkSel.attr("stroke",(ld:DL)=>{const src=(ld.source as DN).id;const tgt=(ld.target as DN).id;return (src===d.id||tgt===d.id)?"rgba(96,165,250,0.25)":"rgba(255,255,255,0.06)";});})
-      .on("mouseleave",()=>{setHoveredNode(null);linkSel.attr("stroke","rgba(255,255,255,0.06)");})
-      .on("click",(_e:any,d:DN)=>setSelected({id:d.id,label:d.label,type:d.type,riskLevel:d.riskLevel}));
+      .on("mouseenter",function(_e:any,d:DN){
+        d3.select(this).attr("stroke","rgba(255,255,255,0.6)").attr("stroke-width",3);
+        d3.select(this.parentNode!.querySelector("text")!).attr("font-size",11).attr("fill","var(--text-primary)");
+        linkSel.attr("stroke",(ld:DL)=>{const src=(ld.source as DN).id;const tgt=(ld.target as DN).id;return (src===d.id||tgt===d.id)?"rgba(96,165,250,0.25)":"rgba(255,255,255,0.06)";});
+      })
+      .on("mouseleave",function(){
+        d3.select(this).attr("stroke","rgba(0,0,0,0.5)").attr("stroke-width",1.5);
+        d3.select(this.parentNode!.querySelector("text")!).attr("font-size",9).attr("fill","var(--text-secondary)");
+        linkSel.attr("stroke","rgba(255,255,255,0.06)");
+      });
 
     node.append("text").text(d=>d.label)
       .attr("x",d=>{return (NODE_SIZES[d.type]??6)+6;}).attr("y",3)
-      .attr("font-size",d=>d.id===hoveredNode?11:9)
-      .attr("fill",d=>d.id===hoveredNode?"var(--text-primary)":"var(--text-secondary)")
+      .attr("font-size",9)
+      .attr("fill","var(--text-secondary)")
       .attr("font-family","'Inter',sans-serif").attr("font-weight",500)
       .style("pointer-events","none")
       .style("transition","all 0.1s ease");
@@ -195,7 +209,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
     }
 
     return ()=>{sim.stop();cancelAnimationFrame(rafRef.current);};
-  }, [graph, hoveredNode]);
+  }, [graph]);
 
   const nodeColor = (n: GraphNode) => {
     if (!n.riskLevel) return NODE_COLORS[n.type] ?? "#666";
