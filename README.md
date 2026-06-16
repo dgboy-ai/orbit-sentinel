@@ -152,7 +152,7 @@ The TypeScript engine at `engine/` provides:
 ```bash
 cd engine
 npm install
-npm test    # 28+ tests across 6 test files
+npm test    # 52 tests across 11 test files (Vitest)
 ```
 
 ---
