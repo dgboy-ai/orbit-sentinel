@@ -9,7 +9,8 @@ export default function SimulationPanel({ timelines, riskScore, expanded }: Prop
   const color = riskScoreToColor(riskScore);
 
   return (
-    <div className="card" style={{ padding: p, animation: "fadeSlideUp 0.4s ease", display: "flex", flexDirection: "column", height: expanded ? "100%" : undefined }}>
+    <div className="card" style={{ padding: p, animation: "fadeSlideUp 0.4s ease", display: "flex", flexDirection: "column", height: expanded ? "100%" : undefined, position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, width: 200, height: 200, borderRadius: "50%", background: `${color}06`, filter: "blur(60px)", pointerEvents: "none", transform: "translate(-30%, -30%)" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <div className="card-header-icon" style={{ background: "rgba(167,139,250,0.12)" }}>🔄</div>
         <div>

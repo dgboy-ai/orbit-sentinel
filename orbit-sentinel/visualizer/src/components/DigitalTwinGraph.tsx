@@ -19,6 +19,7 @@ const rlk = (l?: string) => l === "critical" ? 0.9 : l === "high" ? 0.6 : l === 
 export default function DigitalTwinGraph({ graph }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [selected, setSelected] = useState<GraphNode | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -76,12 +77,17 @@ export default function DigitalTwinGraph({ graph }: Props) {
         const c = d.riskLevel ? RISK[riskScoreToKey(rlk(d.riskLevel))].hex : NODE_COLORS[d.type]??"#666";
         return `url(#g-${c.replace("#","")})`;
       })
-      .attr("stroke","rgba(0,0,0,0.5)").attr("stroke-width",2).style("cursor","pointer")
+      .attr("stroke", d => d.id === hoveredNode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.5)")
+      .attr("stroke-width", d => d.id === hoveredNode ? 3 : 2)
+      .style("cursor","pointer").style("transition","stroke 0.15s ease")
+      .on("mouseenter", (_e: any, d: DN) => setHoveredNode(d.id))
+      .on("mouseleave", () => setHoveredNode(null))
       .on("click",(_e: any, d: DN) => setSelected({ id: d.id, label: d.label, type: d.type, riskLevel: d.riskLevel }));
 
     // Label
     node.append("text").text(d=>d.label).attr("x",d=>{const s:{[k:string]:number}={Project:10,Service:9,File:5,MergeRequest:7,Pipeline:7,Deployment:8,Incident:6,User:6,Team:8,Issue:6,Commit:5};return(s[d.type]??5)+6})
-      .attr("y",3).attr("font-size",10).attr("fill","var(--text-secondary)").attr("font-family","'Inter',sans-serif").attr("font-weight",500).style("pointer-events","none");
+      .attr("y",3).attr("font-size", d => d.id === hoveredNode ? 11 : 10).attr("fill", d => d.id === hoveredNode ? "var(--text-primary)" : "var(--text-secondary)").attr("font-family","'Inter',sans-serif").attr("font-weight",500).style("pointer-events","none")
+      .style("transition","all 0.1s ease");
 
     node.append("title").text(d=>`${d.type}: ${d.label}${d.riskLevel?` [${d.riskLevel.toUpperCase()}]`:""}`);
 

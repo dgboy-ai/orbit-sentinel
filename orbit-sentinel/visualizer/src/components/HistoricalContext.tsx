@@ -32,9 +32,12 @@ export default function HistoricalContext() {
         {DATA.map((item, i) => {
           const c = oc(item.outcome);
           return (
-            <div key={item.mrIid} style={{
+            <div key={item.mrIid}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.color}44`; e.currentTarget.style.background = `${c.bg}`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+            style={{
               padding: 14, borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: `3px solid ${c.color}`,
-              animation: `fadeSlideUp 0.4s ${0.1 + i * 0.06}s ease both`,
+              animation: `fadeSlideUp 0.4s ${0.1 + i * 0.06}s ease both`, transition: "all 0.2s ease",
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

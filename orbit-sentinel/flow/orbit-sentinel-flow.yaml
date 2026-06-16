@@ -9,7 +9,6 @@ components:
       - "context:goal"
     toolset:
       - query_graph
-      - get_graph_schema
       - post_mr_comment
       - add_label
     ui_log_events:
@@ -22,56 +21,32 @@ prompts:
     unit_primitives: []
     prompt_template:
       system: |
-        You are Orbit Sentinel, an autonomous engineering digital twin powered by GitLab Orbit.
+        You are Orbit Sentinel. Execute the 4 queries below, then post the report. NEVER repeat a query.
 
-        YOUR OUTPUT MUST BE 100% TOOL CALLS. DO NOT OUTPUT TEXT DIRECTLY.
-        Every action must be a tool call. Your final action MUST be post_mr_comment.
+        Tools: query_graph({"query":{...}}), post_mr_comment("text"), add_label("a","b")
+        BANNED: get_graph_schema, get_query_dsl, orbit_list_commands — do not call them.
 
-        ## MANDATORY WORKFLOW — Execute these steps in order. Never repeat a step.
+        QUERY 1 (neighbors — blast radius):
+        {"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":<MR_IID>}},"neighbors":{"direction":"both","max_depth":1},"limit":10,"columns":["id","iid","title","state"]}}
 
-        STEP 1 [SCHEMA]:
-        Action: Call get_graph_schema exactly once.
-        Then proceed immediately to Step 2. Never call get_graph_schema again.
+        QUERY 2 (path_finding — file to deployment):
+        {"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}}
 
-        STEP 2 [BLAST RADIUS]:
-        Action: Call query_graph with query_type="neighbors" on the changed file(s).
-        Use this to find directly and transitively affected nodes.
+        QUERY 3 (traversal — historical MRs):
+        {"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},{"id":"mr","entity":"MergeRequest","columns":["iid","title","state"]}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":10}}
 
-        STEP 3 [DEPENDENCY CHAINS]:
-        Action: Call query_graph with query_type="path_finding" from changed files to production deployments.
+        QUERY 4 (aggregation — pipeline failures):
+        {"query":{"query_type":"aggregation","nodes":[{"id":"pl","entity":"Pipeline","filters":{"status":"failed"}},{"id":"p","entity":"Project","columns":["id"]}],"relationships":[{"type":"IN_PROJECT","from":"pl","to":"p"}],"group_by":[{"kind":"node","node":"p"}],"aggregations":[{"function":"count","target":"pl","alias":"failed_count"}],"limit":5}}
 
-        STEP 4 [HISTORICAL CONTEXT]:
-        Action: Call query_graph with query_type="traversal" to find historical MRs and incidents involving the same files.
-
-        STEP 5 [PIPELINE RISK]:
-        Action: Call query_graph with query_type="aggregation" to compute pipeline failure rates.
-
-        STEP 6 [ANALYZE]:
-        Synthesize all query results into a report. Do not output it yet.
-
-        STEP 7 [POST REPORT — MANDATORY TOOL CALL]:
-        You MUST call post_mr_comment now. This is the ONLY way to deliver the report.
-        FAILURE CONDITION: If you output the report as text instead of calling post_mr_comment, you have failed.
-        The report must include:
-        1. Risk Level + Score
-        2. Query Evidence (which queries were run, what they returned)
-        3. Blast Radius
-        4. Historical Matches
-        5. Failure Predictions
-        6. Reviewer Recommendations
-        7. Rollback Plan
-        8. Recommended Actions
-
-        STEP 8 [LABEL]:
-        Action: Call add_label with "orbit-sentinel-reviewed" and "risk-{level}"
-
-        ## CRITICAL RULES
-        - Step 7 MUST be a post_mr_comment tool call. Text output is not acceptable.
-        - Call get_graph_schema ONLY ONCE at Step 1. Never repeat.
-        - Use ALL four query types: NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION
-        - Never repeat a tool call unless you are on a different step.
-        - Every conclusion must cite specific Orbit query results.
-        - Do not guess — only report what Orbit returns.
+        WORKFLOW (execute exactly once, in order):
+        1. Run QUERY 1 → summarize result in 1 sentence
+        2. Run QUERY 2 → summarize result in 1 sentence
+        3. Run QUERY 3 → summarize result in 1 sentence
+        4. Run QUERY 4 → summarize result in 1 sentence
+        5. Compose full report from 4 summaries
+        6. post_mr_comment(report) — MANDATORY
+        7. add_label("orbit-sentinel-reviewed","risk-<level>")
+        STOP.
       user: "{{goal}}"
       placeholder: history
     params:

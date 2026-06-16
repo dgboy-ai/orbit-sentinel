@@ -31,9 +31,21 @@ export default function HeroSection({
   const offset = circ - riskScore * circ;
 
   return (
-    <div className="card" style={{ padding: 0, overflow: "hidden", animation: "fadeSlideDown 0.5s ease" }}>
+    <div className="card" style={{ padding: 0, overflow: "hidden", position: "relative", animation: "fadeSlideDown 0.5s ease" }}>
+      {/* Scan line effect */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", overflow: "hidden", opacity: 0.04,
+      }}>
+        <div style={{
+          position: "absolute", left: 0, right: 0, height: 2,
+          background: "linear-gradient(90deg, transparent, var(--accent-blue), transparent)",
+          animation: "scanLine 4s linear infinite",
+        }} />
+      </div>
+
+      {/* Glow border */}
       <div style={{ height: 4, background: r.gradient, backgroundSize: "200% 200%", animation: "gradientShift 3s ease infinite" }} />
-      <div style={{ padding: "20px 28px", display: "flex", alignItems: "center", gap: 32 }}>
+      <div style={{ padding: "20px 28px", display: "flex", alignItems: "center", gap: 32, position: "relative", zIndex: 2 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", background: "rgba(255,255,255,0.04)", borderRadius: 6, border: "1px solid rgba(255,255,255,0.06)" }}>
@@ -65,20 +77,38 @@ export default function HeroSection({
           <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontStyle: "italic", marginTop: 10 }}>{generatedUsing}</div>
         </div>
 
-        {/* Gauge */}
+        {/* Animated Gauge */}
         <div style={{ position: "relative", width: 130, height: 130, flexShrink: 0 }}>
+          {/* Outer glow ring */}
+          <div style={{
+            position: "absolute", inset: -8, borderRadius: "50%",
+            background: `conic-gradient(from 0deg, transparent 0%, ${r.hex}22 50%, transparent 100%)`,
+            animation: "spin 6s linear infinite",
+            filter: `blur(8px)`,
+          }} />
           <svg width="130" height="130" viewBox="0 0 130 130">
+            {/* Ripple effect */}
+            <circle cx="65" cy="65" r="60" fill="none" stroke={r.hex} strokeWidth="1" opacity="0.08"
+              style={{ animation: "ripple 3s ease-out infinite" }} />
+            <circle cx="65" cy="65" r="60" fill="none" stroke={r.hex} strokeWidth="1" opacity="0.05"
+              style={{ animation: "ripple 3s ease-out 0.5s infinite" }} />
+
+            {/* Background ring */}
             <circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+            {/* Value arc */}
             <circle cx="65" cy="65" r="54" fill="none" stroke={r.hex} strokeWidth="6" strokeLinecap="round"
               strokeDasharray={`${circ} ${circ}`} strokeDashoffset={offset} transform="rotate(-90 65 65)"
               style={{ transition: "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)", filter: `drop-shadow(0 0 8px ${r.glow})` }} />
-            <circle cx="65" cy="65" r="54" fill="none" stroke={r.glow} strokeWidth="14" opacity="0.1"
+            {/* Glow underlay */}
+            <circle cx="65" cy="65" r="54" fill="none" stroke={r.glow} strokeWidth="14" opacity="0.12"
               strokeDasharray={`${circ} ${circ}`} strokeDashoffset={offset} transform="rotate(-90 65 65)"
               style={{ transition: "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)" }} />
+            {/* Center value */}
             <text x="65" y="58" textAnchor="middle" fill={r.hex} fontSize="26" fontWeight="800" fontFamily="'JetBrains Mono', monospace" style={{ textShadow: `0 0 20px ${r.glow}` }}>
               <AnimatedValue value={riskScore * 100} />
             </text>
             <text x="65" y="74" textAnchor="middle" fill="var(--text-secondary)" fontSize="10" fontWeight="600">{riskLevel}</text>
+            {/* Pulsing dot */}
             <circle cx="65" cy="17" r="2.5" fill={r.hex} opacity="0.5" style={{ animation: "pulseDot 2s ease-in-out infinite" }} />
           </svg>
         </div>

@@ -10,7 +10,8 @@ const META: Record<string, { icon: string; label: string; color: string; bg: str
 
 export default function OrbitEvidencePanel({ evidence }: { evidence: OrbitQueryEvidence[] }) {
   return (
-    <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.05s ease both", height: "100%", overflow: "auto" }}>
+    <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.05s ease both", height: "100%", overflow: "auto", position: "relative" }}>
+      <div style={{ position: "absolute", top: 0, right: 0, width: 180, height: 180, borderRadius: "50%", background: "rgba(96,165,250,0.06)", filter: "blur(60px)", pointerEvents: "none", transform: "translate(20%, -20%)" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>🛰️</div>
         <div>

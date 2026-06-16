@@ -44,7 +44,7 @@ export default function ImpactReport({ summary }: Props) {
       </div>
 
       {SECTIONS.map((sec, i) => (
-        <div key={sec.title} className="card" style={{ padding: 16, animation: `fadeSlideUp 0.4s ${0.05 + i * 0.03}s ease both` }}>
+        <div key={sec.title} className="card" style={{ padding: 16, animation: `fadeSlideUp 0.4s ${0.05 + i * 0.03}s ease both`, transition: "all 0.2s ease" }}>
           <h3 style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", marginBottom: 6 }}>{sec.title}</h3>
           <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6, whiteSpace: "pre-line" }}>{sec.content}</div>
         </div>

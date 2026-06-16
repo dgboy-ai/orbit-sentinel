@@ -52,7 +52,10 @@ export default function CounterfactualSimulation({ scenarios, currentRisk }: { s
 
       <div style={{ display: "flex", flexDirection: "column", gap: 5, flex: 1 }}>
         {scenarios.map((s, i) => (
-          <div key={s.label} onClick={() => applySimulation(i)} style={{
+          <div key={s.label} onClick={() => applySimulation(i)}
+            onMouseEnter={e => { if (active !== i) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; } }}
+            onMouseLeave={e => { if (active !== i) { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; } }}
+            style={{
             padding: "8px 10px", borderRadius: 8, cursor: "pointer",
             background: active === i ? "rgba(99,102,241,0.12)" : "rgba(255,255,255,0.03)",
             border: active === i ? "1px solid rgba(99,102,241,0.25)" : "1px solid rgba(255,255,255,0.06)",

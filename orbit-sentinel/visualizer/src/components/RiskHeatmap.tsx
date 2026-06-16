@@ -14,7 +14,8 @@ export default function RiskHeatmap({ riskData, expanded }: Props) {
   const p = expanded ? 24 : 20;
 
   return (
-    <div className="card" style={{ padding: p, height: expanded ? "100%" : undefined, animation: "fadeSlideUp 0.4s ease", display: "flex", flexDirection: "column" }}>
+    <div className="card" style={{ padding: p, height: expanded ? "100%" : undefined, animation: "fadeSlideUp 0.4s ease", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, right: 0, width: 200, height: 200, borderRadius: "50%", background: `${color}08`, filter: "blur(60px)", pointerEvents: "none", transform: "translate(30%, -30%)" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <div className="card-header-icon" style={{ background: `${color}18` }}>🔥</div>
         <div style={{ flex: 1 }}>

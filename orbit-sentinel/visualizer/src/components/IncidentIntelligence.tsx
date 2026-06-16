@@ -18,7 +18,8 @@ export default function IncidentIntelligence({ incidents }: { incidents: Histori
   );
 
   return (
-    <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.2s ease both", height: "100%", overflow: "auto" }}>
+    <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.2s ease both", height: "100%", overflow: "auto", position: "relative" }}>
+      <div style={{ position: "absolute", bottom: 0, right: 0, width: 200, height: 200, borderRadius: "50%", background: "rgba(239,68,68,0.05)", filter: "blur(60px)", pointerEvents: "none", transform: "translate(20%, 20%)" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
         <div className="card-header-icon" style={{ background: "rgba(239,68,68,0.12)" }}>📜</div>
         <div>
@@ -30,9 +31,12 @@ export default function IncidentIntelligence({ incidents }: { incidents: Histori
         {incidents.map((inc, i) => {
           const c = oc(inc.outcome);
           return (
-            <div key={inc.mrIid} style={{
+            <div key={inc.mrIid}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.color}44`; e.currentTarget.style.background = `${c.bg}`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+            style={{
               padding: 12, borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: `3px solid ${c.color}`,
-              animation: `fadeSlideUp 0.4s ${0.35 + i * 0.08}s ease both`,
+              animation: `fadeSlideUp 0.4s ${0.35 + i * 0.08}s ease both`, transition: "all 0.2s ease",
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

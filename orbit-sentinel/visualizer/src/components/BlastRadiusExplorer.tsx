@@ -29,6 +29,8 @@ export default function BlastRadiusExplorer({ graph }: Props) {
             const isActive = selectedNode === n.id;
             return (
               <button key={n.id} onClick={() => setSelectedNode(n.id)}
+                onMouseEnter={e => { if (!isActive) { e.currentTarget.style.transform = "translateX(3px)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; } }}
+                onMouseLeave={e => { if (!isActive) { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; } }}
                 style={{
                   padding: "7px 10px", borderRadius: 8, cursor: "pointer", textAlign: "left", fontSize: 12,
                   background: isActive ? "rgba(59,130,246,0.12)" : "rgba(255,255,255,0.03)",

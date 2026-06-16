@@ -117,6 +117,30 @@ const DEMO_STEPS: DemoStep[] = [
   { view: "report", label: "Impact Report", sublabel: "Full MR impact summary — deploy decisions, rollback strategy, and evidence chain", icon: "📋" },
 ];
 
+function FloatingOrbs() {
+  const orbs = [
+    { size: 300, blur: 120, color: "rgba(59,130,246,0.08)", anim: "orb-drift-1", delay: "0s", top: "10%", left: "5%" },
+    { size: 400, blur: 150, color: "rgba(139,92,246,0.06)", anim: "orb-drift-2", delay: "-5s", top: "40%", left: "70%" },
+    { size: 250, blur: 100, color: "rgba(34,197,94,0.05)", anim: "orb-drift-3", delay: "-10s", top: "60%", left: "20%" },
+    { size: 350, blur: 140, color: "rgba(249,115,22,0.04)", anim: "orb-drift-1", delay: "-15s", top: "20%", left: "80%" },
+    { size: 200, blur: 80, color: "rgba(236,72,153,0.05)", anim: "orb-drift-2", delay: "-8s", top: "70%", left: "50%" },
+  ];
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+      {orbs.map((o, i) => (
+        <div key={i} style={{
+          position: "absolute", top: o.top, left: o.left,
+          width: o.size, height: o.size, borderRadius: "50%",
+          background: o.color, filter: `blur(${o.blur}px)`,
+          animation: `${o.anim} 20s ease-in-out infinite`,
+          animationDelay: o.delay,
+          willChange: "transform",
+        }} />
+      ))}
+    </div>
+  );
+}
+
 function getInitialView(): View {
   if (typeof window === "undefined") return "overview";
   const p = new URLSearchParams(window.location.search);
@@ -132,11 +156,13 @@ function getInitialDemo(): boolean {
 
 export default function App() {
   const [view, setView] = useState<View>(getInitialView);
+  const [prevView, setPrevView] = useState<View>(getInitialView);
   const [demo, setDemo] = useState(getInitialDemo);
   const [stepIndex, setStepIndex] = useState(0);
   const [data] = useState(DATA);
   const demoRef = useRef<number | null>(null);
   const demoLabelRef = useRef<HTMLDivElement>(null);
+  const [transitioning, setTransitioning] = useState(false);
 
   const startDemo = useCallback(() => {
     setDemo(true);
@@ -169,10 +195,28 @@ export default function App() {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.code === "Space") { e.preventDefault(); demo ? stopDemo() : startDemo(); }
+      if (e.code === "ArrowRight" || e.code === "ArrowLeft") {
+        e.preventDefault();
+        const idx = tabs.findIndex(([k]) => k === view);
+        const dir = e.code === "ArrowRight" ? 1 : -1;
+        const next = (idx + dir + tabs.length) % tabs.length;
+        if (demo) stopDemo();
+        setView(tabs[next][0]);
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [demo, startDemo, stopDemo]);
+  }, [view, demo, startDemo, stopDemo]);
+
+  const navigate = useCallback((v: View) => {
+    if (v === view) return;
+    setTransitioning(true);
+    setTimeout(() => {
+      setPrevView(view);
+      setView(v);
+      setTransitioning(false);
+    }, 80);
+  }, [view]);
 
   const body = useCallback(() => {
     switch (view) {
@@ -201,10 +245,11 @@ export default function App() {
 
   const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Blast Radius"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
 
-const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Label MR"];
+  const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Label MR"];
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-primary)" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-primary)", position: "relative" }}>
+      <FloatingOrbs />
       <div className="bg-grid" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />
       <header style={{ position: "relative", zIndex: 10, borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "8px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -214,7 +259,6 @@ const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Hi
             <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px", marginTop: -1 }}>Engineering Decision Intelligence</div>
           </div>
           <div style={{ width: 1, height: 24, background: "var(--border)", margin: "0 4px" }} />
-          {/* Workflow steps mini-timeline */}
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <span style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 500, marginRight: 4, letterSpacing: "0.3px" }}>FLOW</span>
             {FLOW_STEPS.map((s, i) => (
@@ -228,14 +272,17 @@ const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Hi
         </div>
         <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
           {tabs.map(([k, lbl]) => (
-            <button key={k} onClick={() => { if (demo) stopDemo(); setView(k); }} style={{
+            <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }} style={{
               padding: "4px 11px", fontSize: 11, fontWeight: view === k ? 600 : 400,
               border: view === k ? "1px solid rgba(59,130,246,0.3)" : "1px solid transparent",
               borderRadius: 6, cursor: "pointer",
               background: view === k ? "rgba(59,130,246,0.12)" : "transparent",
               color: view === k ? "var(--accent-blue)" : "var(--text-secondary)",
               transition: "all 0.15s ease", letterSpacing: "0.2px",
-            }}>{lbl}</button>
+            }}
+              onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
+              onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+            >{lbl}</button>
           ))}
           <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 8px" }} />
           <button onClick={demo ? stopDemo : startDemo} style={{
@@ -274,7 +321,6 @@ const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Hi
           }}>
             {demo && DEMO_STEPS[stepIndex].sublabel}
           </div>
-          {/* Progress dots */}
           <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
             {DEMO_STEPS.map((_, i) => (
               <div key={i} style={{
@@ -287,9 +333,25 @@ const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Hi
         </div>
       )}
 
-      <main style={{ position: "relative", zIndex: 1, flex: 1, padding: 16, overflow: "auto", minHeight: 0 }}>
+      <main key={view} style={{
+        position: "relative", zIndex: 1, flex: 1, padding: 16, overflow: "auto", minHeight: 0,
+        animation: transitioning ? "none" : "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
+      }}>
         {body()}
       </main>
+
+      <div style={{
+        position: "fixed", bottom: 12, left: "50%", transform: "translateX(-50%)", zIndex: 100,
+        display: "flex", alignItems: "center", gap: 8,
+        padding: "5px 14px", borderRadius: 8,
+        background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
+        border: "1px solid rgba(255,255,255,0.06)",
+        fontSize: 9, color: "var(--text-tertiary)",
+      }}>
+        <span>Space</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Demo</span>
+        <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
+        <span>← →</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Navigate</span>
+      </div>
     </div>
   );
 }

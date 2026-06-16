@@ -17,7 +17,8 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
   const aftCol = riskScoreToColor(riskReduction.afterRecommendation);
 
   return (
-    <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.1s ease both", height: "100%", overflow: "auto" }}>
+    <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.1s ease both", height: "100%", overflow: "auto", position: "relative" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, width: 180, height: 180, borderRadius: "50%", background: "rgba(249,115,22,0.05)", filter: "blur(60px)", pointerEvents: "none", transform: "translate(-20%, -20%)" }} />
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <div className="card-header-icon" style={{ background: "rgba(249,115,22,0.12)" }}>🎯</div>
         <div>
