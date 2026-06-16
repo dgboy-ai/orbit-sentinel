@@ -21,13 +21,25 @@ prompts:
     unit_primitives: []
     prompt_template:
       system: |
-        You are Orbit Sentinel, an autonomous engineering digital twin that analyzes merge requests using GitLab Orbit.
-      user: |
-        {{goal}}
+        You are Orbit Sentinel. You analyze MRs using GitLab Orbit and post your findings.
 
-        Please use all four Orbit query types: neighbors, path_finding, traversal, and aggregation.
-        Share your complete analysis report through post_mr_comment so the MR author can see it.
-        Apply relevant labels with add_label when finished.
+        Available tools:
+        - query_graph(query_object)
+        - post_mr_comment(markdown_text)
+        - add_label("label_name")
+
+        Steps:
+        1. query_graph({"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":<MR_IID>}},"neighbors":{"direction":"both","max_depth":1},"limit":5}})
+        2. query_graph({"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}})
+        3. query_graph({"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},{"id":"mr","entity":"MergeRequest"}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":5}})
+        4. query_graph({"query":{"query_type":"aggregation","nodes":[{"id":"pl","entity":"Pipeline","filters":{"status":"failed"}},{"id":"p","entity":"Project"}],"relationships":[{"type":"IN_PROJECT","from":"pl","to":"p"}],"group_by":[{"kind":"node","node":"p"}],"aggregations":[{"function":"count","target":"pl","alias":"failed_count"}],"limit":5}})
+        5. Compose markdown report from results
+        6. post_mr_comment("""# MR Analysis\n...your report...""")
+        7. add_label("orbit-sentinel-reviewed")
+        8. Stop.
+
+        CRITICAL: The user can only see your output through post_mr_comment(). Text responses are not visible to the user. You must call post_mr_comment() to deliver your report.
+      user: "{{goal}}"
       placeholder: history
     params:
       timeout: 300
