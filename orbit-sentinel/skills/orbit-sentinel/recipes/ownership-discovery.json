@@ -1,0 +1,24 @@
+{
+  "name": "Ownership Discovery — Find Teams and Users Who Own Files",
+  "description": "Uses NEIGHBORS to discover file ownership through contribution patterns and group memberships.",
+  "query_type": "neighbors",
+  "query": {
+    "query_type": "neighbors",
+    "node": {
+      "id": "f",
+      "entity": "File",
+      "filters": {
+        "path": {"op": "ends_with", "value": "src/services/auth_service.ts"}
+      },
+      "columns": ["id", "path"]
+    },
+    "neighbors": {
+      "direction": "outgoing",
+      "node_types": ["User", "Group"],
+      "max_depth": 3
+    },
+    "limit": 50
+  },
+  "cli_command": "glab orbit remote query ./recipes/ownership-discovery.json",
+  "curl_command": "curl --request POST --header 'Authorization: Bearer $GITLAB_ACCESS_TOKEN' --header 'Content-Type: application/json' --data '{\"query\":{\"query_type\":\"neighbors\",\"node\":{\"id\":\"f\",\"entity\":\"File\",\"filters\":{\"path\":{\"op\":\"ends_with\",\"value\":\"src/services/auth_service.ts\"}},\"columns\":[\"id\",\"path\"]},\"neighbors\":{\"direction\":\"outgoing\",\"node_types\":[\"User\",\"Group\"],\"max_depth\":3},\"limit\":50},\"format\":\"raw\"}' 'https://gitlab.com/api/v4/orbit/query'"
+}

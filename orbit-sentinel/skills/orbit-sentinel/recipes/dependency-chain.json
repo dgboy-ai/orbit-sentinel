@@ -1,0 +1,36 @@
+{
+  "name": "Dependency Chain — Trace Dependency Paths Between Files",
+  "description": "Uses PATH_FINDING to find all dependency paths between two files. Essential for understanding transitive impact.",
+  "query_type": "path_finding",
+  "query": {
+    "query_type": "path_finding",
+    "nodes": [
+      {
+        "id": "f1",
+        "entity": "File",
+        "filters": {
+          "path": {"op": "ends_with", "value": "src/services/auth_service.ts"}
+        }
+      },
+      {
+        "id": "f2",
+        "entity": "File",
+        "filters": {
+          "path": {"op": "ends_with", "value": "src/controllers/user_controller.ts"}
+        }
+      }
+    ],
+    "path": {
+      "type": "all",
+      "from": "f1",
+      "to": "f2",
+      "max_depth": 5
+    },
+    "relationships": [
+      {"type": "IMPORTS", "from": "f1", "to": "f2"}
+    ],
+    "limit": 50
+  },
+  "cli_command": "glab orbit remote query ./recipes/dependency-chain.json",
+  "curl_command": "curl --request POST --header 'Authorization: Bearer $GITLAB_ACCESS_TOKEN' --header 'Content-Type: application/json' --data '{\"query\":{\"query_type\":\"path_finding\",\"nodes\":[{\"id\":\"f1\",\"entity\":\"File\",\"filters\":{\"path\":{\"op\":\"ends_with\",\"value\":\"src/services/auth_service.ts\"}}},{\"id\":\"f2\",\"entity\":\"File\",\"filters\":{\"path\":{\"op\":\"ends_with\",\"value\":\"src/controllers/user_controller.ts\"}}}],\"path\":{\"type\":\"all\",\"from\":\"f1\",\"to\":\"f2\",\"max_depth\":5},\"limit\":50},\"format\":\"raw\"}' 'https://gitlab.com/api/v4/orbit/query'"
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Blast Radius — Find Everything Connected to a Changed File",
+  "description": "Uses NEIGHBORS query to find all nodes connected to a changed file within 3 hops. This is the primary blast radius computation for the digital twin.",
+  "query_type": "neighbors",
+  "query": {
+    "query_type": "neighbors",
+    "node": {
+      "id": "f",
+      "entity": "File",
+      "filters": {
+        "path": {"op": "ends_with", "value": "src/services/auth_service.ts"}
+      },
+      "columns": ["id", "path", "name", "language"]
+    },
+    "neighbors": {
+      "direction": "both",
+      "max_depth": 3
+    },
+    "limit": 200
+  },
+  "example_response": {
+    "nodes": [
+      {"id": "file:123", "type": "File", "properties": {"path": "src/services/auth_service.ts"}},
+      {"id": "def:456", "type": "Definition", "properties": {"fqn": "AuthService.authenticate"}},
+      {"id": "mr:789", "type": "MergeRequest", "properties": {"iid": 184, "title": "Update auth token validation"}}
+    ],
+    "edges": [
+      {"source": "file:123", "target": "def:456", "type": "DEFINED_IN"},
+      {"source": "file:123", "target": "mr:789", "type": "MODIFIED_IN"}
+    ]
+  },
+  "cli_command": "glab orbit remote query ./recipes/blast-radius.json",
+  "curl_command": "curl --request POST --header 'Authorization: Bearer $GITLAB_ACCESS_TOKEN' --header 'Content-Type: application/json' --data '{\"query\":{\"query_type\":\"neighbors\",\"node\":{\"id\":\"f\",\"entity\":\"File\",\"filters\":{\"path\":{\"op\":\"ends_with\",\"value\":\"src/services/auth_service.ts\"}}},\"neighbors\":{\"direction\":\"both\",\"max_depth\":3},\"limit\":200},\"format\":\"raw\"}' 'https://gitlab.com/api/v4/orbit/query'"
+}

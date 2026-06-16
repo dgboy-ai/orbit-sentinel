@@ -1,0 +1,59 @@
+# Orbit Sentinel — Example Trigger Configurations
+# These can be applied in the GitLab UI at AI -> Flows -> New flow
+# or added to .gitlab/duo/ for automatic discovery.
+
+# --- Trigger: Automatic on MR creation ---
+trigger:
+  types:
+    - merge_request
+  events:
+    - mr_created
+  filters:
+    - condition: $event.merge_request.state == "opened"
+    - condition: $event.merge_request.draft == false
+  description: >
+    Automatically analyzes every non-draft MR when it is opened.
+    Ideal for teams that want Sentinel on every change.
+
+# --- Trigger: On MR label match ---
+trigger:
+  types:
+    - merge_request
+  events:
+    - mr_updated
+  filters:
+    - condition: $event.merge_request.state == "opened"
+    - condition: $event.merge_request.labels contains "needs-impact-analysis"
+  description: >
+    Only runs when an MR is tagged with 'needs-impact-analysis'.
+    Useful for teams that want selective analysis on high-risk changes.
+
+# --- Trigger: On specific path patterns ---
+trigger:
+  types:
+    - merge_request
+  events:
+    - mr_created
+    - mr_updated
+  filters:
+    - condition: $event.merge_request.state == "opened"
+    - condition: any(
+        $event.merge_request.changed_files contains "src/core/",
+        $event.merge_request.changed_files contains "services/",
+        $event.merge_request.changed_files contains "api/"
+      )
+  description: >
+    Only triggers when changes touch core, services, or API directories.
+    Reduces noise for documentation or config-only MRs.
+
+# --- Trigger: Manual via slash command ---
+trigger:
+  types:
+    - mention
+  events:
+    - slash_command
+  filters:
+    - condition: $event.slash_command == "/sentinel"
+  description: >
+    Triggered by typing /sentinel in any MR comment.
+    Gives developers on-demand access to Sentinel analysis.

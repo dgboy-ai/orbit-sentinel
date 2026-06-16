@@ -1,0 +1,35 @@
+{
+  "name": "Historical Similarity — Find Past MRs That Modified the Same Files",
+  "description": "Uses TRAVERSAL to find all historical merge requests that modified the same files. Builds the institutional memory layer.",
+  "query_type": "traversal",
+  "query": {
+    "query_type": "traversal",
+    "nodes": [
+      {
+        "id": "f",
+        "entity": "File",
+        "filters": {
+          "path": {"op": "ends_with", "value": "src/services/auth_service.ts"}
+        },
+        "columns": ["id", "path"]
+      },
+      {
+        "id": "mr",
+        "entity": "MergeRequest",
+        "columns": ["iid", "title", "state", "created_at", "description"]
+      },
+      {
+        "id": "p",
+        "entity": "Project",
+        "columns": ["full_path"]
+      }
+    ],
+    "relationships": [
+      {"type": "MODIFIED_IN", "from": "f", "to": "mr"},
+      {"type": "IN_PROJECT", "from": "mr", "to": "p"}
+    ],
+    "limit": 50
+  },
+  "cli_command": "glab orbit remote query ./recipes/historical-similarity.json",
+  "curl_command": "curl --request POST --header 'Authorization: Bearer $GITLAB_ACCESS_TOKEN' --header 'Content-Type: application/json' --data '{\"query\":{\"query_type\":\"traversal\",\"nodes\":[{\"id\":\"f\",\"entity\":\"File\",\"filters\":{\"path\":{\"op\":\"ends_with\",\"value\":\"src/services/auth_service.ts\"}}},{\"id\":\"mr\",\"entity\":\"MergeRequest\",\"columns\":[\"iid\",\"title\",\"state\",\"created_at\",\"description\"]},{\"id\":\"p\",\"entity\":\"Project\",\"columns\":[\"full_path\"]}],\"relationships\":[{\"type\":\"MODIFIED_IN\",\"from\":\"f\",\"to\":\"mr\"},{\"type\":\"IN_PROJECT\",\"from\":\"mr\",\"to\":\"p\"}],\"limit\":50},\"format\":\"raw\"}' 'https://gitlab.com/api/v4/orbit/query'"
+}

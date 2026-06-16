@@ -1,0 +1,29 @@
+{
+  "mcp_servers": {
+    "gitlab-orbit": {
+      "type": "http",
+      "url": "https://gitlab.com/api/v4/orbit/mcp",
+      "auth": {
+        "type": "oauth2",
+        "client_id": "gitlab-duo-agent-platform"
+      },
+      "tools": [
+        "query_graph",
+        "get_graph_schema"
+      ],
+      "description": "GitLab Orbit knowledge graph — query code, SDLC, and relationships as a property graph"
+    },
+    "orbit-sentinel-engine": {
+      "type": "stdio",
+      "command": "glab orbit remote query",
+      "args": ["-"],
+      "description": "Orbit Sentinel engineering digital twin engine"
+    }
+  },
+  "skills": {
+    "orbit-sentinel": {
+      "path": "../../skills/orbit-sentinel",
+      "description": "Orbit Sentinel skill with query recipes for digital twin construction"
+    }
+  }
+}

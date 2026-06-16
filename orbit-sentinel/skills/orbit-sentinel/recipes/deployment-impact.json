@@ -1,0 +1,41 @@
+{
+  "name": "Deployment Impact — Map Files to Their Deployment Targets",
+  "description": "Uses TRAVERSAL to find deployment targets connected to changed files through MRs, pipelines, and environments.",
+  "query_type": "traversal",
+  "query": {
+    "query_type": "traversal",
+    "nodes": [
+      {
+        "id": "f",
+        "entity": "File",
+        "filters": {
+          "path": {"op": "ends_with", "value": "src/services/auth_service.ts"}
+        },
+        "columns": ["id", "path"]
+      },
+      {
+        "id": "mr",
+        "entity": "MergeRequest",
+        "columns": ["iid", "title", "state"]
+      },
+      {
+        "id": "pl",
+        "entity": "Pipeline",
+        "columns": ["id", "status", "ref"]
+      },
+      {
+        "id": "dep",
+        "entity": "Deployment",
+        "columns": ["iid", "status", "environment_id"]
+      }
+    ],
+    "relationships": [
+      {"type": "MODIFIED_IN", "from": "f", "to": "mr"},
+      {"type": "TRIGGERED", "from": "mr", "to": "pl"},
+      {"type": "DEPLOYED_BY", "from": "dep", "to": "pl"}
+    ],
+    "limit": 50
+  },
+  "cli_command": "glab orbit remote query ./recipes/deployment-impact.json",
+  "curl_command": "curl --request POST --header 'Authorization: Bearer $GITLAB_ACCESS_TOKEN' --header 'Content-Type: application/json' --data '{\"query\":{\"query_type\":\"traversal\",\"nodes\":[{\"id\":\"f\",\"entity\":\"File\",\"filters\":{\"path\":{\"op\":\"ends_with\",\"value\":\"src/services/auth_service.ts\"}}},{\"id\":\"mr\",\"entity\":\"MergeRequest\",\"columns\":[\"iid\",\"title\",\"state\"]},{\"id\":\"pl\",\"entity\":\"Pipeline\",\"columns\":[\"id\",\"status\",\"ref\"]},{\"id\":\"dep\",\"entity\":\"Deployment\",\"columns\":[\"iid\",\"status\",\"environment_id\"]}],\"relationships\":[{\"type\":\"MODIFIED_IN\",\"from\":\"f\",\"to\":\"mr\"},{\"type\":\"TRIGGERED\",\"from\":\"mr\",\"to\":\"pl\"},{\"type\":\"DEPLOYED_BY\",\"from\":\"dep\",\"to\":\"pl\"}],\"limit\":50},\"format\":\"raw\"}' 'https://gitlab.com/api/v4/orbit/query'"
+}

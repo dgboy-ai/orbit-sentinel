@@ -1,0 +1,40 @@
+{
+  "name": "Pipeline Risk — Count Pipeline Failures by Project",
+  "description": "Uses AGGREGATION to count failed pipelines grouped by project. Essential for risk scoring in the digital twin.",
+  "query_type": "aggregation",
+  "query": {
+    "query_type": "aggregation",
+    "nodes": [
+      {
+        "id": "pl",
+        "entity": "Pipeline",
+        "filters": {"status": "failed"}
+      },
+      {
+        "id": "p",
+        "entity": "Project",
+        "columns": ["id", "name", "full_path"]
+      }
+    ],
+    "relationships": [
+      {"type": "IN_PROJECT", "from": "pl", "to": "p"}
+    ],
+    "group_by": [
+      {"kind": "node", "node": "p"}
+    ],
+    "aggregations": [
+      {
+        "function": "count",
+        "target": "pl",
+        "alias": "failed_pipelines"
+      }
+    ],
+    "aggregation_sort": {
+      "column": "failed_pipelines",
+      "direction": "DESC"
+    },
+    "limit": 20
+  },
+  "cli_command": "glab orbit remote query ./recipes/pipeline-risk.json",
+  "curl_command": "curl --request POST --header 'Authorization: Bearer $GITLAB_ACCESS_TOKEN' --header 'Content-Type: application/json' --data '{\"query\":{\"query_type\":\"aggregation\",\"nodes\":[{\"id\":\"pl\",\"entity\":\"Pipeline\",\"filters\":{\"status\":\"failed\"}},{\"id\":\"p\",\"entity\":\"Project\",\"columns\":[\"id\",\"name\",\"full_path\"]}],\"relationships\":[{\"type\":\"IN_PROJECT\",\"from\":\"pl\",\"to\":\"p\"}],\"group_by\":[{\"kind\":\"node\",\"node\":\"p\"}],\"aggregations\":[{\"function\":\"count\",\"target\":\"pl\",\"alias\":\"failed_pipelines\"}],\"aggregation_sort\":{\"column\":\"failed_pipelines\",\"direction\":\"DESC\"},\"limit\":20},\"format\":\"raw\"}' 'https://gitlab.com/api/v4/orbit/query'"
+}
