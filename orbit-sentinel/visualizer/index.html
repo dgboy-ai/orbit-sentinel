@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Orbit Sentinel — Engineering Decision Intelligence</title>
+    <meta name="description" content="Autonomous engineering digital twin built on GitLab Orbit. Real-time MR risk analysis, blast radius visualization, and what-if simulation." />
+    <meta property="og:title" content="Orbit Sentinel — Engineering Decision Intelligence" />
+    <meta property="og:description" content="Autonomous engineering digital twin powered by GitLab Orbit. Predict deployment risks before they happen." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://gitlab-ai-hackathon.gitlab.io/transcend/39251857/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -114,6 +120,10 @@
       @keyframes spin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
+      }
+      @keyframes floatUp {
+        0% { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-100px) scale(0); opacity: 0; }
       }
 
       /* Orb drift animations */
