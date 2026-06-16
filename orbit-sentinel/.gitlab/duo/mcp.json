@@ -12,12 +12,6 @@
         "get_graph_schema"
       ],
       "description": "GitLab Orbit knowledge graph — query code, SDLC, and relationships as a property graph"
-    },
-    "orbit-sentinel-engine": {
-      "type": "stdio",
-      "command": "glab orbit remote query",
-      "args": ["-"],
-      "description": "Orbit Sentinel engineering digital twin engine"
     }
   },
   "skills": {
