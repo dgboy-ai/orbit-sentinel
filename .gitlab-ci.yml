@@ -8,10 +8,10 @@ stages:
 
 variables:
   PAGES_BRANCH: main
-  NODE_OPTIONS: \"--max-old-space-size=4096\"
+  NODE_OPTIONS: "--max-old-space-size=4096"
 
 cache:
-  key: \
+  key: "\"
   paths:
     - orbit-sentinel/engine/node_modules/
     - orbit-sentinel/visualizer/node_modules/
