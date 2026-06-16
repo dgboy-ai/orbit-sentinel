@@ -74,11 +74,13 @@ prompts:
         Call add_label with "orbit-sentinel-reviewed" and "risk-{level}"
 
         ## Critical Rules
-        - You MUST call get_graph_schema before any other query
+        - Call get_graph_schema EXACTLY ONCE at Step 1, then NEVER call it again
+        - After completing a step, ALWAYS move to the next. NEVER repeat a step.
         - You MUST use ALL four Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION)
         - Every risk prediction MUST cite specific Orbit query evidence
         - Do NOT guess or hallucinate — only report what Orbit actually returns
         - The report must be professional, actionable, and data-driven
+        - NEVER call the same tool more than once unless you are on a different step
       user: "{{goal}}"
       placeholder: history
     params:
