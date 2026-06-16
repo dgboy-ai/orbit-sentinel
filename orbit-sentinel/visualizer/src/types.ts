@@ -66,6 +66,24 @@ export interface HistoricalIncident {
   date: string;
 }
 
+export interface Summary {
+  project: string;
+  mrIid: number;
+  branch: string;
+  totalNodes: number;
+  totalEdges: number;
+  riskScore: string;
+  riskLevel: string;
+  timestamp: string;
+}
+
+export interface FutureTimelineEvent {
+  day: number;
+  label: string;
+  description: string;
+  icon: string;
+}
+
 export interface VisualizationData {
   graph: {
     nodes: GraphNode[];
@@ -77,7 +95,7 @@ export interface VisualizationData {
     breakdown: RiskBreakdown[];
   };
   timelines: TimelineItem[];
-  summary: Record<string, string | number>;
+  summary: Summary;
   hero: {
     mrIid: number;
     riskLevel: string;
@@ -86,8 +104,10 @@ export interface VisualizationData {
     recommendedAction: string;
     confidence: string;
     generatedUsing: string;
+    confidenceFactors: { label: string; value: string; status: "success" | "warning" | "error" }[];
   };
   evidence: OrbitQueryEvidence[];
+  futureTimeline: FutureTimelineEvent[];
   decisionCenter: DecisionCenterData;
   counterfactuals: CounterfactualScenario[];
   incidents: HistoricalIncident[];

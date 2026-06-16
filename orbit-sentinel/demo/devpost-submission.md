@@ -4,7 +4,7 @@
 
 ## What We Built
 
-Orbit Sentinel is an **autonomous engineering digital twin** that uses **GitLab Orbit** to predict merge request impact before deployment. When a developer mentions `@ai-orbit-sentinel` on an MR, it builds a digital twin of the software system — discovering blast radius, historical incidents, reviewer ownership, and rollback strategies — then posts a complete impact analysis on the MR.
+Orbit Sentinel is an **autonomous engineering digital twin** that uses **GitLab Orbit** to predict merge request impact before deployment. When a developer creates a merge request or pushes a new commit, the flow automatically activates, builds a digital twin of the software system — discovering blast radius, historical incidents, reviewer ownership, and rollback strategies — then posts a complete impact analysis on the MR.
 
 ### The Problem
 
@@ -18,28 +18,29 @@ Every merge request asks: *Who else will this break? Has this failed before? Who
 4. **Historical Context** — `TRAVERSAL` query with similarity scoring (50+ MRs matched)
 5. **Pipeline Risk** — `AGGREGATION` query for failure rates (23,547 failed pipelines across 132k total)
 6. **Analysis & Prediction** — Probability × severity scoring
-7. **Post Report** — Complete impact analysis via `post_mr_comment`
-8. **Label MR** — Risk tag via `add_label`
+7. **Post Report** — Complete impact analysis via `create_merge_request_note`
+8. **Complete** — Return execution result; flow stops
 
 All four Orbit query types are used. Every conclusion cites specific query evidence.
 
 ### Live Test Results
 
-The agent was tested in GitLab Duo Chat and successfully ran **live Orbit queries** against the actual project. Results:
+The agent was tested via GitLab Duo Flow and successfully ran **live Orbit queries** against the actual project. On the 10th session (June 16), the flow ran all 4 query types and **posted a complete analysis report as an MR comment** via `create_merge_request_note`. Results:
 
 | Query Type | Entities Discovered |
-|---|---|
+|---|---|---|
 | NEIGHBORS | 100 MR nodes, 100 Pipeline edges |
 | PATH_FINDING | MR-to-pipeline deployment trace |
-| TRAVERSAL | 50+ historical MRs with identical diffs |
+| TRAVERSAL | 50+ historical MRs (90% abandonment rate detected) |
 | AGGREGATION | 132,059 total pipelines — 17.8% failure rate |
 
-Risk Score: **6.2/10 (MEDIUM)** — Top risks: merge conflict, YAML schema validation (65% historical failure rate), pipeline failures (17.8% ecosystem-wide)
+Risk Score: **5.5/10 (MEDIUM)** — Top risks: empty diff (no changes), no head pipeline, 9/10 prior MRs from same branch closed
 
 ### Interactive Visualizer
 
 The React/D3 dashboard (6 views, auto-play demo):
 - **Space bar** to start/stop auto-play, or `?demo=true` for auto-load
+- **Future Timeline**: day-by-day engineering forecast (D+0 to D+7) from digital twin predictions
 - **Interactive counterfactual**: click any mitigation bar to see risk animate down
 - **Clickable graph**: click any node for detail (type, risk level, connections)
 - **Evidence panel**: every claim links to the specific Orbit query that produced it
@@ -49,15 +50,14 @@ The React/D3 dashboard (6 views, auto-play demo):
 ### Architecture
 
 ```
-Merge Request → @mention @ai-orbit-sentinel
+Merge Request opened / new commit
     │
     ▼
-GitLab Duo Agent Flow (8-step AgentComponent)
+GitLab Duo Agent Flow (8 steps)
     │
     ├── get_graph_schema  ──→ Orbit Schema
     ├── query_graph       ──→ NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION
-    ├── post_mr_comment   ──→ Full report on MR
-    └── add_label         ──→ Risk label
+    └── create_merge_request_note ──→ Full report on MR
     │
     ▼
 Visualizer Dashboard (React 18 + D3.js + Vite)
@@ -68,7 +68,7 @@ The engine is a TypeScript library with: Orbit API client, digital twin builder,
 
 ## How We Built It
 
-- **Flow:** v1 AgentComponent flow on GitLab Duo Agent Platform with 4 MCP tools (`query_graph`, `get_graph_schema`, `post_mr_comment`, `add_label`)
+- **Flow:** v1 AgentComponent flow on GitLab Duo Agent Platform with platform tools (`get_graph_schema`, `query_graph`, `create_merge_request_note`)
 - **Visualizer:** React 18 + D3.js + Vite + TypeScript. Premium dark UI with glassmorphism, gradient accents, glow effects, custom scrollbars, 9 CSS animations
 - **Engine:** TypeScript library — 13 Orbit query methods, digital twin builder, risk engine with configurable thresholds, change simulator, Jaccard similarity engine
 - **Skill:** 6 pre-built query recipes covering all 4 query types in `skills/orbit-sentinel/recipes/`
@@ -90,7 +90,7 @@ The engine is a TypeScript library with: Orbit API client, digital twin builder,
 - **Visualizer (Auto-Demo):** https://gitlab-ai-hackathon.gitlab.io/transcend/39251857/?demo=true
 - **Visualizer (local):** `cd visualizer && npm run dev`
 - **Auto-Demo (local):** http://localhost:5173/?demo=true
-- **AI Catalog Agent:** [Published as "Orbit Sentinel" — Settings > AI Catalog]
+- **AI Catalog Agent:** [Publishing as "Orbit Sentinel" — Settings > AI Catalog > Publish]
 - **Demo Video:** [YouTube link — see demo/demo-script.md]
 
 ## Screenshots

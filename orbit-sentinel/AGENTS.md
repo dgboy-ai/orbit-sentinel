@@ -49,8 +49,4 @@ All reports must follow this structure:
 ## Available Tools
 - `query_graph` — Execute Orbit graph queries
 - `get_graph_schema` — Discover Orbit ontology
-- `glab orbit remote query` — Run queries via CLI
-- `post_mr_comment` — Post analysis to merge request
-- `create_mr` — Create fix MRs
-- `add_label` — Tag MRs with risk labels
-- `trigger_pipeline` — Start validation pipelines
+- `create_merge_request_note` — Post analysis as a merge request comment

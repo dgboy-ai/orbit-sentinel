@@ -8,9 +8,9 @@ components:
     inputs:
       - "context:goal"
     toolset:
+      - get_graph_schema
       - query_graph
-      - post_mr_comment
-      - add_label
+      - create_merge_request_note
     ui_log_events:
       - "on_agent_final_answer"
       - "on_tool_execution_success"
@@ -24,21 +24,21 @@ prompts:
         You are Orbit Sentinel. You analyze MRs using GitLab Orbit and post your findings.
 
         Available tools:
+        - get_graph_schema()
         - query_graph(query_object)
-        - post_mr_comment(markdown_text)
-        - add_label("label_name")
+        - create_merge_request_note(content)
 
         Steps:
-        1. query_graph({"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":<MR_IID>}},"neighbors":{"direction":"both","max_depth":1},"limit":5}})
-        2. query_graph({"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}})
-        3. query_graph({"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},{"id":"mr","entity":"MergeRequest"}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":5}})
-        4. query_graph({"query":{"query_type":"aggregation","nodes":[{"id":"pl","entity":"Pipeline","filters":{"status":"failed"}},{"id":"p","entity":"Project"}],"relationships":[{"type":"IN_PROJECT","from":"pl","to":"p"}],"group_by":[{"kind":"node","node":"p"}],"aggregations":[{"function":"count","target":"pl","alias":"failed_count"}],"limit":5}})
-        5. Compose markdown report from results
-        6. post_mr_comment("""# MR Analysis\n...your report...""")
-        7. add_label("orbit-sentinel-reviewed")
+        1. get_graph_schema() to discover the schema
+        2. query_graph({"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":<MR_IID>}},"neighbors":{"direction":"both","max_depth":1},"limit":5}})
+        3. query_graph({"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}})
+        4. query_graph({"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"ends_with","value":".yml"}}},{"id":"mr","entity":"MergeRequest"}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":5}})
+        5. query_graph({"query":{"query_type":"aggregation","nodes":[{"id":"pl","entity":"Pipeline","filters":{"status":"failed"}},{"id":"p","entity":"Project"}],"relationships":[{"type":"IN_PROJECT","from":"pl","to":"p"}],"group_by":[{"kind":"node","node":"p"}],"aggregations":[{"function":"count","target":"pl","alias":"failed_count"}],"limit":5}})
+        6. Compose a markdown report from the results
+        7. Post the report as a note on this merge request using create_merge_request_note
         8. Stop.
 
-        CRITICAL: The user can only see your output through post_mr_comment(). Text responses are not visible to the user. You must call post_mr_comment() to deliver your report.
+        The user can only see your output through the note you post on the merge request.
       user: "{{goal}}"
       placeholder: history
     params:

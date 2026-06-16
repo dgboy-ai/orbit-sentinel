@@ -8,7 +8,26 @@ Tested in GitLab Duo Chat, June 2026.
 
 ~45 relationship types including: HAS_MERGE_REQUEST, AUTHORED_BY, REVIEWED_BY, TRIGGERED_PIPELINE, MODIFIES, HAS_COMMIT, DEPLOYED_BY, TO_ENVIRONMENT
 
-## Full Graph Traversal (Project 83381762)
+## Session #10 — MR !10 Analysis (June 16)
+
+Final successful session. All four Orbit query types executed, results posted to MR !10.
+
+| Query | Key Finding |
+|-------|-------------|
+| `get_graph_schema` | 18 node types, ~45 relationship types |
+| NEIGHBORS (Blast Radius) | 100+ MR nodes, 100+ Pipeline edges, diff state: empty |
+| PATH_FINDING (MR-to-Pipeline) | MR !10 → no head pipeline; ecosystem: 132k+ pipelines (17.8% failure) |
+| TRAVERSAL (Historical Similarity) | 50+ historical MRs from same branch; 90% abandonment rate |
+| AGGREGATION (Pipeline Failure Rate) | 132,059 total pipelines; 23,547 failed, 2,242 canceled |
+
+### Full Report
+
+The complete analysis was posted as a comment on MR !10 at:
+`gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/10#note_NNN`
+
+---
+
+## Session #3 — Initial Graph Traversal (Earlier)
 
 ### Nodes: 22 total
 

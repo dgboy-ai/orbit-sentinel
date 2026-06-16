@@ -13,8 +13,7 @@ keywords: [orbit, digital twin, risk, dependency, blast radius, sentinel]
 capabilities:
   - query_graph
   - get_graph_schema
-  - post_mr_comment
-  - add_label
+  - create_merge_request_note
 
 workflow:
   triggers:
@@ -34,7 +33,7 @@ workflow:
       tools: [query_graph]
     - name: post_report
       description: Post impact analysis as MR comment
-      tools: [post_mr_comment, add_label]
+      tools: [create_merge_request_note]
 
 orchestration:
   type: agent

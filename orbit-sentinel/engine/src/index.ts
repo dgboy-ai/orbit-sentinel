@@ -1,12 +1,10 @@
 export { OrbitClient, orbitClient } from "./orbit/client.js";
-export { OrbitQueryEngine, queryEngine } from "./orbit/queries.js";
 export { DigitalTwinBuilder, twinBuilder } from "./twin/builder.js";
 export { ChangeSimulator, simulator } from "./twin/simulator.js";
 export { MemoryStore, memoryStore } from "./memory/store.js";
 export { SimilarityEngine, similarityEngine } from "./memory/similarity.js";
 export { RiskEngine } from "./risk/engine.js";
 export { RemediationPlanner, remediationPlanner } from "./remediation/planner.js";
-export { RollbackStrategist, rollbackStrategist } from "./remediation/rollback.js";
 export { TestGenerator, testGenerator } from "./remediation/test-generator.js";
 export { MarkdownReporter, markdownReporter } from "./reporter/markdown.js";
 export { DataVisualizer, dataVisualizer } from "./reporter/visualizer.js";
@@ -14,12 +12,10 @@ export { DataVisualizer, dataVisualizer } from "./reporter/visualizer.js";
 import { twinBuilder } from "./twin/builder.js";
 import { simulator } from "./twin/simulator.js";
 import { memoryStore } from "./memory/store.js";
-import { queryEngine } from "./orbit/queries.js";
 import { RiskEngine } from "./risk/engine.js";
 import { markdownReporter } from "./reporter/markdown.js";
 import { dataVisualizer } from "./reporter/visualizer.js";
 import { remediationPlanner } from "./remediation/planner.js";
-import { rollbackStrategist } from "./remediation/rollback.js";
 import { testGenerator } from "./remediation/test-generator.js";
 
 import type { SentinelReport, ReviewerRecommendation } from "./types.js";

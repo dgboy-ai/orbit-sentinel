@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import type { GraphNode, GraphLink } from "../types";
 import { findConnectedComponents, filterNodesByType } from "../utils/graph";
-import { NODE_COLORS, riskScoreToColor, riskScoreToGlow } from "../utils/colors";
-import { RISK } from "../utils/colors";
+import { NODE_COLORS, riskLevelToColor, riskScoreToColor, riskScoreToGlow } from "../utils/colors";
 
 interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
 
@@ -25,7 +24,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1, overflow: "auto" }}>
           {services.map(n => {
-            const riskColor = n.riskLevel ? riskScoreToColor(n.riskLevel === "critical" ? 0.9 : n.riskLevel === "high" ? 0.6 : n.riskLevel === "medium" ? 0.3 : 0.1) : NODE_COLORS[n.type] ?? "#666";
+            const riskColor = n.riskLevel ? riskLevelToColor(n.riskLevel) : NODE_COLORS[n.type] ?? "#666";
             const isActive = selectedNode === n.id;
             return (
               <button key={n.id} onClick={() => setSelectedNode(n.id)}
@@ -62,7 +61,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                 <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 6 }}>Affected Nodes</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                   {br.nodes.map(n => {
-                    const rc = n.riskLevel ? riskScoreToColor(n.riskLevel === "critical" ? 0.9 : n.riskLevel === "high" ? 0.6 : 0.3) : NODE_COLORS[n.type] ?? "#666";
+                    const rc = n.riskLevel ? riskLevelToColor(n.riskLevel) : NODE_COLORS[n.type] ?? "#666";
                     return (
                       <div key={n.id} style={{ padding: "5px 8px", borderRadius: 6, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", fontSize: 11, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ width: 5, height: 5, borderRadius: "50%", background: NODE_COLORS[n.type] ?? "#666", display: "inline-block" }} />

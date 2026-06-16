@@ -22,18 +22,18 @@ Every merge request asks the same questions:
 
 Most teams answer these manually, if at all. Orbit Sentinel answers them automatically — by building a **digital twin of your software system** using GitLab Orbit.
 
-When a developer mentions `@ai-orbit-sentinel` on an MR, the flow activates: it queries the Orbit knowledge graph using all four query types, simulates the change impact, and posts a complete analysis report back on the MR — with evidence, historical context, and actionable remediation.
+When a developer opens a merge request or pushes a new commit, the flow activates automatically: it queries the Orbit knowledge graph using all four query types, simulates the change impact, and posts a complete analysis report back on the MR — with evidence, historical context, and actionable remediation.
 
 ---
 
 ## Architecture
 
 ```
-Merge Request → @mention
+Merge Request opened / new commit
     │
     ▼
 ┌───────────────────────────────────────────┐
-│          GitLab Duo Agent Flow             │
+│          GitLab Duo Agent Flow (8 steps)   │
 │                                           │
 │  Step 1  Schema Discovery  (get_graph_schema)       │
 │  Step 2  Blast Radius     (NEIGHBORS query)        │
@@ -41,8 +41,8 @@ Merge Request → @mention
 │  Step 4  Historical Match (TRAVERSAL query)        │
 │  Step 5  Pipeline Risk    (AGGREGATION query)      │
 │  Step 6  Analysis & Prediction                     │
-│  Step 7  Post Report      (post_mr_comment)        │
-│  Step 8  Label MR         (add_label)              │
+│  Step 7  Post Report      (create_merge_request_note)  │
+│  Step 8  Complete                                   │
 │                                           │
 └──────────────────────┬────────────────────┘
                        │
@@ -75,7 +75,7 @@ All four Orbit query types are used. Every conclusion cites specific query evide
 
 ### 1. Install the flow
 
-Go to **Settings → AI → Flows** in your GitLab project, create a new flow, and paste the contents of `flow/orbit-sentinel-flow.yaml`. Enable the **Mention** trigger.
+Go to **Settings → AI → Flows** in your GitLab project, create a new flow, and paste the contents of `flow/orbit-sentinel-flow.yaml`. The flow triggers on merge request open and new commit events.
 
 ### 2. Install the skill (optional, for Duo Chat)
 
@@ -94,13 +94,7 @@ npm run dev
 
 ### 4. Test the flow
 
-On any merge request, comment:
-
-```
-@ai-orbit-sentinel analyze this MR
-```
-
-The flow builds a digital twin, runs all 4 Orbit query types, and posts a full impact report.
+Open any merge request — the flow triggers automatically, builds a digital twin, runs all 4 Orbit query types, and posts a full impact report.
 
 ---
 
@@ -162,7 +156,7 @@ npm test    # 52 tests across 11 test files (Vitest)
 [![Orbit Sentinel Demo](https://img.shields.io/badge/Watch%20Demo-YouTube-ff0000?logo=youtube)](https://youtube.com)
 
 3-minute walkthrough:
-- **0:00** — Developer opens an MR and mentions `@ai-orbit-sentinel`
+- **0:00** — Developer opens an MR — flow triggers automatically
 - **0:15** — Visualizer auto-play cycles through all 6 analysis views
 - **0:30** — Orbit Evidence panel shows all 4 query types with real results
 - **0:50** — Interactive counterfactual — click mitigations to see risk drop

@@ -6,6 +6,8 @@ function oc(outcome: string): { icon: string; color: string; bg: string } {
     "Production Outage": { icon: "🚨", color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
     Rollback: { icon: "🔙", color: "#f97316", bg: "rgba(249,115,22,0.1)" },
     Incident: { icon: "⚠️", color: "#eab308", bg: "rgba(234,179,8,0.1)" },
+    Closed: { icon: "🔒", color: "#8b949e", bg: "rgba(139,148,158,0.1)" },
+    Merged: { icon: "✅", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
   };
   return m[outcome] ?? { icon: "❓", color: "#8b949e", bg: "rgba(255,255,255,0.04)" };
 }

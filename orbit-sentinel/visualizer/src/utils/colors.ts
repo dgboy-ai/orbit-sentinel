@@ -6,8 +6,8 @@ export const RISK = {
 } as const;
 
 export function riskScoreToKey(score: number): keyof typeof RISK {
-  if (score > 0.7) return "critical";
-  if (score > 0.4) return "high";
+  if (score > 0.85) return "critical";
+  if (score > 0.6) return "high";
   if (score > 0.2) return "medium";
   return "low";
 }
@@ -20,6 +20,21 @@ export function riskScoreToBg(score: number): string { return RISK[riskScoreToKe
 export function riskLevelToColor(level: string): string {
   const map: Record<string, string> = { critical: "#ef4444", high: "#f97316", medium: "#eab308", low: "#22c55e" };
   return map[level.toLowerCase()] ?? "#8b949e";
+}
+
+export function riskLevelToGlow(level: string): string {
+  const map: Record<string, string> = { critical: "rgba(239,68,68,0.5)", high: "rgba(249,115,22,0.4)", medium: "rgba(234,179,8,0.35)", low: "rgba(34,197,94,0.35)" };
+  return map[level.toLowerCase()] ?? "rgba(139,148,158,0.3)";
+}
+
+export function riskLevelToGradient(level: string): string {
+  const map: Record<string, string> = { critical: "linear-gradient(135deg, #ef4444, #dc2626, #b91c1c)", high: "linear-gradient(135deg, #fb923c, #f97316, #ea580c)", medium: "linear-gradient(135deg, #facc15, #eab308, #ca8a04)", low: "linear-gradient(135deg, #4ade80, #22c55e, #16a34a)" };
+  return map[level.toLowerCase()] ?? "linear-gradient(135deg, #8b949e, #6b7280)";
+}
+
+export function riskLevelToBg(level: string): string {
+  const map: Record<string, string> = { critical: "rgba(239,68,68,0.08)", high: "rgba(249,115,22,0.08)", medium: "rgba(234,179,8,0.08)", low: "rgba(34,197,94,0.08)" };
+  return map[level.toLowerCase()] ?? "rgba(255,255,255,0.04)";
 }
 
 export const NODE_COLORS: Record<string, string> = {

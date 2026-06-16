@@ -1,0 +1,125 @@
+import React, { useEffect, useState } from "react";
+
+interface Step { label: string; icon: string; desc: string; broken?: boolean }
+
+const STEPS: Step[] = [
+  { label: "MR !10", icon: "🔀", desc: "Merge Request opened" },
+  { label: "Pipeline", icon: "🔄", desc: "No head pipeline", broken: true },
+  { label: "Service", icon: "⚙️", desc: "ci-validate-items" },
+  { label: "Deployment", icon: "🚀", desc: "Deploy blocked" },
+  { label: "Production", icon: "🌐", desc: "Cannot reach" },
+];
+
+function FlowArrow({ broken }: { broken?: boolean }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "4px 0", opacity: 0.6 }}>
+      <svg width="16" height="24" viewBox="0 0 16 24">
+        <line x1="8" y1="0" x2="8" y2="18" stroke={broken ? "#ef4444" : "rgba(255,255,255,0.2)"} strokeWidth="2" strokeDasharray={broken ? "3,3" : "none"} />
+        <polygon points="8,22 4,14 12,14" fill={broken ? "#ef4444" : "rgba(255,255,255,0.2)"} />
+      </svg>
+    </div>
+  );
+}
+
+export default function PathBrokenAnimation() {
+  const [visible, setVisible] = useState(0);
+  const [showBroken, setShowBroken] = useState(false);
+  const [showConclusion, setShowConclusion] = useState(false);
+
+  useEffect(() => {
+    if (visible >= STEPS.length) return;
+    const t = setTimeout(() => setVisible(v => v + 1), 500 + (visible === 1 ? 800 : 0));
+    return () => clearTimeout(t);
+  }, [visible]);
+
+  useEffect(() => {
+    if (visible >= 2) { const t = setTimeout(() => setShowBroken(true), 300); return () => clearTimeout(t); }
+  }, [visible]);
+
+  useEffect(() => {
+    if (showBroken) { const t = setTimeout(() => setShowConclusion(true), 600); return () => clearTimeout(t); }
+  }, [showBroken]);
+
+  return (
+    <div className="card" style={{
+      padding: 20, display: "flex", flexDirection: "column", alignItems: "center", gap: 0,
+      height: "100%", position: "relative", overflow: "hidden",
+      animation: "fadeSlideUp 0.5s ease",
+    }}>
+      <div style={{ position: "absolute", top: 0, right: 0, width: 200, height: 200, borderRadius: "50%", background: "rgba(239,68,68,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, width: "100%" }}>
+        <div className="card-header-icon" style={{ background: "rgba(239,68,68,0.12)" }}>🛤️</div>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Deployment Path Analysis</div>
+          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Digital twin path tracing</div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0, flex: 1, justifyContent: "center", padding: "10px 0" }}>
+        {STEPS.map((step, i) => (
+          <React.Fragment key={step.label}>
+            {i > 0 && (
+              <div style={{ opacity: visible >= i ? 1 : 0, transform: visible >= i ? "translateY(0)" : "translateY(-8px)", transition: "all 0.5s ease" }}>
+                <FlowArrow broken={step.broken} />
+              </div>
+            )}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 12,
+              padding: "8px 20px", borderRadius: 10,
+              opacity: visible > i ? 1 : 0,
+              transform: visible > i ? "scale(1)" : "scale(0.9)",
+              transition: `all 0.5s ${i * 0.15}s cubic-bezier(0.16,1,0.3,1)`,
+              background: step.broken && visible > i ? "rgba(239,68,68,0.08)" : visible > i ? "rgba(255,255,255,0.03)" : "transparent",
+              border: step.broken && visible > i ? "1px solid rgba(239,68,68,0.2)" : visible > i ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+              width: "100%", maxWidth: 320,
+              animation: step.broken && showBroken ? "shake 0.5s ease" : undefined,
+            }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+                background: step.broken ? "rgba(239,68,68,0.15)" : "rgba(96,165,250,0.12)",
+                border: step.broken ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(96,165,250,0.2)",
+                boxShadow: step.broken ? "0 0 16px rgba(239,68,68,0.2)" : "none",
+                animation: step.broken && showBroken ? "pulseDot 1s ease-in-out infinite" : undefined,
+              }}>
+                {step.broken ? "✗" : step.icon}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: step.broken ? "#ef4444" : "var(--text-primary)" }}>
+                  {step.label}
+                  {step.broken && <span style={{ marginLeft: 6, fontSize: 9, padding: "1px 5px", borderRadius: 3, background: "rgba(239,68,68,0.15)", color: "#ef4444", fontWeight: 700 }}>MISSING</span>}
+                </div>
+                <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>{step.desc}</div>
+              </div>
+            </div>
+          </React.Fragment>
+        ))}
+
+        {/* PATH BROKEN banner */}
+        <div style={{
+          marginTop: 14, padding: "10px 24px", borderRadius: 10,
+          background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)",
+          opacity: showBroken ? 1 : 0, transform: showBroken ? "scale(1)" : "scale(0.8)",
+          transition: "all 0.6s cubic-bezier(0.16,1,0.3,1)",
+          textAlign: "center",
+          animation: showBroken ? "fadeSlideUp 0.5s ease, pulseGlow 2s ease-in-out infinite" : undefined,
+        }}>
+          <div style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "2px", textShadow: "0 0 20px rgba(239,68,68,0.4)" }}>
+            ⚠ PATH BROKEN
+          </div>
+        </div>
+
+        {/* Conclusion */}
+        <div style={{
+          marginTop: 10,
+          opacity: showConclusion ? 1 : 0, transform: showConclusion ? "translateY(0)" : "translateY(10px)",
+          transition: "all 0.5s 0.2s ease",
+          textAlign: "center",
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Conclusion</div>
+          <div style={{ fontSize: 12, color: "var(--text-secondary)", fontStyle: "italic" }}>No path to production detected.</div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -20,7 +20,7 @@ The agent was tested in GitLab Duo Chat and successfully ran **live Orbit querie
 
 [Full traversal results](/docs/orbit-traversal-results.md)
 
-The visualizer now shows **real data from your actual project** — not fictional mock data.
+The visualizer demo is populated with sample data inspired by real Orbit query sessions against the hackathon project.
 
 ## Quick Start
 
@@ -42,14 +42,14 @@ The visualizer now shows **real data from your actual project** — not fictiona
 ┌──────────────────────▼──────────────────────────────┐
 │         Orbit Sentinel Flow (Duo Agent Platform)     │
 │                                                       │
-│  Step 1  get_graph_schema → understand the ontology   │
-│  Step 2  NEIGHBORS query → blast radius computation   │
-│  Step 3  PATH_FINDING query → dependency chains       │
-│  Step 4  TRAVERSAL query → historical matches         │
-│  Step 5  AGGREGATION query → pipeline risk scoring   │
+│  Step 1  get_graph_schema → discover ontology         │
+│  Step 2  NEIGHBORS query → blast radius               │
+│  Step 3  PATH_FINDING → dependency chains             │
+│  Step 4  TRAVERSAL → historical matches               │
+│  Step 5  AGGREGATION → pipeline risk scoring          │
 │  Step 6  Analyze + predict failure modes              │
-│  Step 7  post_mr_comment → full impact report         │
-│  Step 8  add_label → tag risk level on MR             │
+│  Step 7  Send report as MR note                       │
+│  Step 8  Return success                               │
 └──────────────────────┬──────────────────────────────┘
                        │ output
 ┌──────────────────────▼──────────────────────────────┐
@@ -107,8 +107,9 @@ The flow is defined at `flow/orbit-sentinel-flow.yaml`. It uses a single-agent v
 3. `query_graph` (PATH_FINDING) — dependency chains
 4. `query_graph` (TRAVERSAL) — historical context
 5. `query_graph` (AGGREGATION) — pipeline risk
-6. `post_mr_comment` — post report to MR
-7. `add_label` — tag MR with risk level
+6. Analyze results + formulate risk assessment
+7. `create_merge_request_note` — post report to MR
+8. Return execution result
 
 ### Deploy the Flow
 
@@ -192,10 +193,11 @@ orbit-sentinel/
 │   └── orbit-sentinel-flow.yaml  # Duo Agent Platform flow
 ├── skills/              # Orbit skill with 6 query recipes
 ├── demo/
-│   ├── demo-script.md   # 3-minute video script
+│   ├── demo-script.md   # ~3-minute video script
+│   ├── screenshots-guide.md  # Screenshot capture guide
 │   └── devpost-submission.md  # Devpost entry text
 ├── docs/
-│   └── screenshots/     # UI screenshots (11 images)
+│   ├── screenshots/     # Reference UI screenshots
 ├── setup.ps1            # One-click install & run
 ├── SETUP.md             # Setup instructions
 ├── AGENTS.md            # Agent instructions
