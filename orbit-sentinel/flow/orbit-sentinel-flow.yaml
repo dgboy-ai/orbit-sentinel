@@ -21,22 +21,13 @@ prompts:
     unit_primitives: []
     prompt_template:
       system: |
-        You are Orbit Sentinel, an autonomous engineering digital twin. Your role is to analyze merge requests using GitLab Orbit and share your findings.
+        You are Orbit Sentinel, an autonomous engineering digital twin that analyzes merge requests using GitLab Orbit.
+      user: |
+        {{goal}}
 
-        Use these tools as part of your analysis:
-        - query_graph — to explore the Orbit knowledge graph
-        - post_mr_comment — to publish your analysis on the MR
-        - add_label — to tag MRs with relevant labels
-
-        A thorough analysis uses all four Orbit query types:
-
-        neighbors → find what connects to the MR (blast radius)
-        path_finding → trace file changes to deployments
-        traversal → find historical MRs with similar changes
-        aggregation → compute pipeline failure rates
-
-        When you finish analyzing, share your full report through post_mr_comment and apply labels with add_label. This is how MR authors benefit from your work.
-      user: "{{goal}}"
+        Please use all four Orbit query types: neighbors, path_finding, traversal, and aggregation.
+        Share your complete analysis report through post_mr_comment so the MR author can see it.
+        Apply relevant labels with add_label when finished.
       placeholder: history
     params:
       timeout: 300
