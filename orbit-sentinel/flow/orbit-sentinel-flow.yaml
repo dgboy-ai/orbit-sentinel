@@ -19,6 +19,7 @@ components:
 prompts:
   - prompt_id: sentinel_prompt
     name: "Orbit Sentinel Prompt"
+    unit_primitives: []
     prompt_template:
       system: |
         You are Orbit Sentinel, an autonomous engineering digital twin powered by GitLab Orbit.
@@ -79,6 +80,7 @@ prompts:
         - Do NOT guess or hallucinate — only report what Orbit actually returns
         - The report must be professional, actionable, and data-driven
       user: "{{goal}}"
+      placeholder: history
     params:
       timeout: 300
 
