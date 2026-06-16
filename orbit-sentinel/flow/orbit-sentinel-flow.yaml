@@ -59,8 +59,9 @@ prompts:
         - Generate a rollback plan
         - Suggest mitigations
 
-        Step 7 — Post Report
-        Call post_mr_comment with a complete report containing:
+        Step 7 — Post Report (CRITICAL — MUST USE THE TOOL)
+        You MUST call post_mr_comment tool with the complete report. Do NOT output the report
+        in your response text. The report must be sent via post_mr_comment tool call. It must contain:
         1. Executive Summary with risk level
         2. Orbit queries executed (show the evidence)
         3. Blast Radius (affected nodes, dependency chains)
