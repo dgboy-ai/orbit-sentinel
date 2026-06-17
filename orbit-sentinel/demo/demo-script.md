@@ -120,7 +120,7 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 
 **Visual**: GitLab Duo skill installation
 
-**Narrator**: "Install the GitLab Duo Chat skill with `glab skills install --global orbit-sentinel`. Build the GitLab Duo Agent Flow with `flow/orbit-sentinel-flow.yaml`. Deploy to GitLab Pages for live demo.
+**Narrator**: "Install the GitLab Duo Chat skill with `glab skills install --global orbit-sentinel`. Build the GitLab Duo Agent Flow with `flow/orbit-sentinel-flow.yaml`. Live demo at orbit-sentinel.vercel.app.
 
 **Visual**: Project statistics
 
@@ -161,7 +161,7 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 **Before recording**:
 - [ ] GitLab Duo Agent Flow installed and working
 - [ ] GitLab Duo Chat skill installed
-- [ ] Visualizer deployed to GitLab Pages
+- [x] Visualizer deployed to Vercel (orbit-sentinel.vercel.app)
 - [ ] Demo script rehearsed
 - [ ] Equipment tested
 
@@ -215,4 +215,4 @@ If video recording isn't possible, create a comprehensive static demo:
 
 Orbit Sentinel represents the future of AI-native software development. By leveraging GitLab Orbit's knowledge graph, it provides developers with actionable insights before code reaches production. The combination of autonomous analysis, comprehensive visualization, and evidence-based recommendations makes it an essential tool for modern development teams.
 
-**Ready to deploy?** Visit the GitLab Pages demo or run `.\setup.ps1` to get started!
+**Ready to deploy?** Visit the live demo at orbit-sentinel.vercel.app or run `.\setup.ps1` to get started!

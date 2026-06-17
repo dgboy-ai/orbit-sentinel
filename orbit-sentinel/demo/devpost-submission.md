@@ -143,7 +143,7 @@ The GitLab Duo Agent Platform executes an 8-step workflow:
 
 ## Live Demo
 
-[Link to GitLab Pages deployment]
+[https://orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app)
 
 ## Contributing
 
@@ -321,7 +321,7 @@ const report = await sentinel.analyzeChange({
 
 **Repository URL**: [GitLab repository link]
 
-**Live Demo**: [GitLab Pages link]
+**Live Demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app)
 
 ### Submission Details
 

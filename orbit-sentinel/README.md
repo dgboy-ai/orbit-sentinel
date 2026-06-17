@@ -206,7 +206,8 @@ All four Orbit query types are used: **Traversal**, **Aggregation**, **Path Find
 | Visualizer (React/D3 dashboard) | ✅ Built, tested, interactive |
 | Engine (TypeScript Orbit client) | ✅ Built, compiles clean |
 | Orbit skill + 6 query recipes | ✅ Built, 4 query types covered |
-| GitLab Pages CI/CD | ✅ Configured |
+| Visualizer (Vercel) | ✅ Deployed at orbit-sentinel.vercel.app |
+| GitLab Pages CI/CD | ✅ Configured (access requires Maintainer) |
 | Duo Chat skill definition | ✅ Built |
 | One-click setup script | ✅ Built |
 | AI Catalog publication | ⏳ Needs user action on GitLab |
