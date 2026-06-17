@@ -65,5 +65,13 @@ export function findConnectedComponents(
   }
 
   traverse(nodeId, 0);
-  return { nodes: resultNodes, links: resultLinks };
+  const nodeIds = new Set(resultNodes.map(n => n.id));
+  return {
+    nodes: resultNodes,
+    links: resultLinks.filter(l => {
+      const src = typeof l.source === "string" ? l.source : l.source.id;
+      const tgt = typeof l.target === "string" ? l.target : l.target.id;
+      return nodeIds.has(src) && nodeIds.has(tgt);
+    }),
+  };
 }
