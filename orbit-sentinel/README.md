@@ -50,30 +50,34 @@ The visualizer demo is populated with sample data inspired by real Orbit query s
 ## How It Works
 
 ```mermaid
-flowchart LR
-    subgraph INPUT[" "]
-        direction LR
-        MR["📝 MR Opened"]
+flowchart TD
+    MR["📝 MR Opened"] --> FLOW
+
+    subgraph FLOW["GitLab Duo Agent Flow (8 steps)"]
+        direction TB
+        S1["1. get_graph_schema<br/>Discover system schema"] --> S2
+        S2["2. NEIGHBORS query<br/>Blast radius"] --> S3
+        S3["3. PATH_FINDING query<br/>Dependency chain"] --> S4
+        S4["4. TRAVERSAL query<br/>Historical matches"] --> S5
+        S5["5. AGGREGATION query<br/>Pipeline risk"] --> S6
+        S6["6. Compose analysis<br/>report"] --> S7
+        S7["7. Post note on MR"] --> S8
+        S8["8. Complete"]
     end
 
-    subgraph FLOW["Orbit Sentinel Flow (Duo Agent Platform)"]
-        direction LR
-        S1["1️⃣ get_graph_schema"] --> S2["2️⃣ NEIGHBORS"] --> S3["3️⃣ PATH_FINDING"] --> S4["4️⃣ TRAVERSAL"] --> S5["5️⃣ AGGREGATION"]
-        S5 --> S6["6️⃣ Compose Report"] --> S7["7️⃣ Post MR Note"] --> S8["8️⃣ Done"]
-    end
-
-    subgraph ENGINE["Engine API (Express)"]
-        direction LR
-        E1["/api/analyze"] --> E2["Twin Builder"] --> E3["Simulator"] --> E4["Risk Engine"] --> E5["Remediation"] --> E6["Visualizer"]
-    end
-
-    subgraph VIZ["Visualizer (React + D3)"]
-        direction LR
-        V1["Overview"] --> V2["Blast Radius"] --> V3["Risk"] --> V4["Forecast"] --> V5["History"] --> V6["Report"]
-    end
-
-    MR --> FLOW
+    FLOW --> NOTE["📋 MR Note Posted"]
     FLOW --> ENGINE
+
+    subgraph ENGINE["Engine API (TypeScript · Express)"]
+        direction TB
+        E1["Risk Scoring"] --> E2["Remediation Planning"] --> E3["Visualization Data"]
+    end
+
+    subgraph VIZ["Visualizer (React · D3 · Vite)"]
+        direction TB
+        V1["6 Interactive Views"] --> V2["Auto-Play Demo"] --> V3["What-If Simulation"]
+    end
+
     ENGINE --> VIZ
     VIZ --> DEPLOY["🚀 Vercel"]
     FLOW -.-> SKILL["📦 AI Catalog"]
