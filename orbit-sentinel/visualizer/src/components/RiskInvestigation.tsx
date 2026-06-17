@@ -344,7 +344,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       }}>
         <span style={{ fontSize: 16 }}>🎯</span>
         <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>
-          <strong style={{ color: "var(--accent-blue)" }}>Orbit Conclusion:</strong> All four query types independently support the same outcome.
+          <strong style={{ color: "var(--accent-blue)" }}>Orbit Conclusion:</strong> All {evidence.length} query types independently support the same outcome.
         </span>
       </div>
 
@@ -364,13 +364,13 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 10,
-            padding: "12px 28px", borderRadius: 10, marginBottom: 14,
+            padding: "12px 28px", borderRadius: 10, marginBottom: 14, maxWidth: "100%", boxSizing: "border-box",
             background: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))",
             border: "1px solid rgba(239,68,68,0.25)",
             animation: mounted ? "pulseGlow 2s ease-in-out infinite" : "none",
           }}>
-            <span style={{ fontSize: 24 }}>🚫</span>
-            <span style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", letterSpacing: "1px", textShadow: "0 0 20px rgba(239,68,68,0.3)" }}>DO NOT DEPLOY</span>
+            <span style={{ fontSize: 24, flexShrink: 0 }}>🚫</span>
+            <span style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", letterSpacing: "1px", textShadow: "0 0 20px rgba(239,68,68,0.3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>DO NOT DEPLOY</span>
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
