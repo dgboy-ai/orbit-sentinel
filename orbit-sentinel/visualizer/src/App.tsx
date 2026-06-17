@@ -408,7 +408,7 @@ export default function App() {
             <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
           </div>
           {/* Placeholder matching loaded header height to prevent CLS */}
-          <div style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="header-nav resp-hide-subtitle" style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
             {["Overview","Blast Radius","Risk","Simulation","History","Report"].map(l => (
               <div key={l} style={{ width: Math.max(l.length * 7.5 + 22, 50), height: 24, borderRadius: 6, background: "rgba(255,255,255,0.02)" }} />
             ))}
@@ -565,7 +565,9 @@ export default function App() {
               <HelpTooltip text={help} />
             </span>
           );})}
-          <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
+        </div>
+        <div style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0 }}>
+          <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 4px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
               padding: isMobile ? "3px 7px" : "4px 8px", fontSize: isMobile ? 10 : 12, cursor: "pointer",
