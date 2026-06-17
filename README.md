@@ -65,7 +65,7 @@ flowchart TD
 
     subgraph VIZ["Visualizer (React · D3 · Vite)"]
         direction TB
-        V1["6 Views"] --> V2["Auto-Play Demo"] --> V3["What-If Simulation"]
+        V1["7 Views"] --> V2["Auto-Play Demo"] --> V3["What-If Simulation"]
     end
 
     ENGINE --> VIZ
@@ -82,7 +82,7 @@ Every conclusion cites specific Orbit query evidence. No black box.
 .\setup.ps1        # One command — install, build, start → http://localhost:5173
 ```
 
-**Live demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app) — interactive dashboard with 6 views, auto-play, and what-if simulation.
+**Live demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app) — interactive dashboard with 7 views, auto-play, and what-if simulation.
 
 ---
 
