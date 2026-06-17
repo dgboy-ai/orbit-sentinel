@@ -49,6 +49,19 @@ const DEMO_STEPS: DemoStep[] = [
 ];
 
 // API service functions
+const FETCH_TIMEOUT = 15000;
+
+async function fetchWithTimeout(url: string, options: RequestInit = {}): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const apiService = {
   async analyzeChange(params: {
     projectId: number;
@@ -59,7 +72,7 @@ const apiService = {
     changeDescription: string;
     branch?: string;
   }): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/api/analyze`, {
+    const response = await fetchWithTimeout(`${API_BASE_URL}/api/analyze`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -76,7 +89,7 @@ const apiService = {
   },
 
   async getDemoData(): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/api/demo`);
+    const response = await fetchWithTimeout(`${API_BASE_URL}/api/demo`);
     if (!response.ok) {
       throw new Error('Engine demo endpoint unreachable');
     }
@@ -202,7 +215,13 @@ export default function App() {
     loadData();
   }, [loadData]);
 
-  // Show "Use Demo Data" hint after 10s of loading
+  const [showFooter, setShowFooter] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setShowFooter(false), 6000);
+    const h = () => setShowFooter(true);
+    window.addEventListener("keydown", h);
+    return () => { clearTimeout(t); window.removeEventListener("keydown", h); };
+  }, []);
   useEffect(() => {
     if (!loading) { setLoadingSlow(false); return; }
     const t = setTimeout(() => setLoadingSlow(true), 10000);
@@ -269,7 +288,12 @@ export default function App() {
 
   const dismissTour = useCallback(() => {
     setShowTour(false);
-  }, []);
+    // Auto-start demo after tour ends so judges see live auto-rotation
+    const p = new URLSearchParams(window.location.search);
+    if (p.get("judge") === "true" || p.get("tour") === "true") {
+      setTimeout(startDemo, 800);
+    }
+  }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
     const tourViews: View[] = ["overview", "overview", "overview", "overview", "overview", "overview", "historical", "simulation", "overview", "overview"];
@@ -597,6 +621,8 @@ export default function App() {
         background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
         border: "1px solid rgba(255,255,255,0.06)",
         fontSize: 9, color: "var(--text-tertiary)",
+        opacity: showFooter ? 1 : 0, pointerEvents: showFooter ? "auto" : "none",
+        transition: "opacity 0.6s ease",
       }}>
         <span>Space</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Demo</span>
         <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
