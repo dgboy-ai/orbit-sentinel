@@ -62,12 +62,14 @@ function RiskGauge({ score, size = 80 }: { score: number; size?: number }) {
 }
 
 /* ─── Sparkline ─── */
-function RiskSparkline({ points, width = 200, height = 40 }: { points: { label: string; value: number }[]; width?: number; height?: number }) {
+function RiskSparkline({ points }: { points: { label: string; value: number }[] }) {
   if (points.length < 2) return null;
   const min = Math.min(...points.map(p => p.value)) * 0.7;
   const max = Math.max(...points.map(p => p.value)) * 1.1;
   const range = max - min || 1;
-  const padX = 20;
+  const width = 180;
+  const height = 40;
+  const padX = 16;
   const padY = 4;
   const chartW = width - padX * 2;
   const chartH = height - padY * 2;
@@ -78,7 +80,7 @@ function RiskSparkline({ points, width = 200, height = 40 }: { points: { label: 
     return `${i === 0 ? "M" : "L"}${x},${y}`;
   }).join(" ");
   return (
-    <svg width={width} height={height} style={{ display: "block" }}>
+    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: "100%" }}>
       <defs>
         <linearGradient id="spark-fill" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#ef4444" stopOpacity={0.3} />
@@ -196,45 +198,40 @@ function EvidenceMiniCard({ e, delay }: { e: OrbitQueryEvidence; delay: number }
 function RemediationFlow({ current, scenarios }: { current: number; scenarios: { label: string; riskAfter: number; color: string }[] }) {
   const steps = [
     { label: "Current", value: current, color: riskScoreToColor(current) },
-    ...scenarios.map(s => ({ label: s.label.replace(/^(Add|Trigger|Assign|All)\s*/g, ""), value: s.riskAfter, color: s.color })),
+    ...scenarios.map(s => ({ label: s.label.replace(/^(Add|Trigger|Assign|All)\s*/g, "").slice(0, 6), value: s.riskAfter, color: s.color })),
   ];
-  const barW = 600;
-  const dotR = 7;
   const totalDots = steps.length;
-  const spacing = totalDots > 1 ? (barW - 40) / (totalDots - 1) : 0;
+  const vbW = Math.max(300, totalDots * 70);
+  const spacing = totalDots > 1 ? (vbW - 40) / (totalDots - 1) : 0;
   return (
-    <div style={{ overflowX: "auto", padding: "8px 0" }}>
-      <svg width={Math.max(barW, totalDots * 100)} height={70} style={{ display: "block", margin: "0 auto" }}>
-        <defs>
-          <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={riskScoreToColor(current)} />
-            <stop offset="100%" stopColor={riskScoreToColor(scenarios[scenarios.length - 1].riskAfter)} />
-          </linearGradient>
-        </defs>
-        {/* Connecting line */}
-        {totalDots > 1 && (
-          <line x1={20} y1={35} x2={20 + (totalDots - 1) * spacing} y2={35}
-            stroke="url(#flow-grad)" strokeWidth={2} strokeOpacity={0.4}
-            strokeDasharray="4 3" />
-        )}
-        {steps.map((s, i) => {
-          const x = 20 + i * spacing;
-          const y = 35;
-          return (
-            <g key={s.label}>
-              <circle cx={x} cy={y} r={dotR + 3} fill={`${s.color}15`} />
-              <circle cx={x} cy={y} r={dotR} fill={s.color}
-                style={{ filter: `drop-shadow(0 0 4px ${s.color}88)`, transition: "all 0.3s ease" }} />
-              <text x={x} y={y + dotR + 14} textAnchor="middle" fill="var(--text-tertiary)"
-                fontSize={8} fontFamily="'Inter', sans-serif">{s.label}</text>
-              <text x={x} y={y - dotR - 6} textAnchor="middle" fill={s.color}
-                fontSize={10} fontWeight={700} fontFamily="'JetBrains Mono', monospace"
-              >{(s.value * 100).toFixed(0)}%</text>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
+    <svg width="100%" height={60} viewBox={`0 0 ${vbW} 60`} style={{ display: "block", maxWidth: "100%" }}>
+      <defs>
+        <linearGradient id="flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={riskScoreToColor(current)} />
+          <stop offset="100%" stopColor={riskScoreToColor(scenarios[scenarios.length - 1].riskAfter)} />
+        </linearGradient>
+      </defs>
+      {totalDots > 1 && (
+        <line x1={20} y1={30} x2={20 + (totalDots - 1) * spacing} y2={30}
+          stroke="url(#flow-grad)" strokeWidth={2} strokeOpacity={0.4}
+          strokeDasharray="4 3" />
+      )}
+      {steps.map((s, i) => {
+        const x = 20 + i * spacing;
+        return (
+          <g key={s.label}>
+            <circle cx={x} cy={30} r={8} fill={`${s.color}15`} />
+            <circle cx={x} cy={30} r={5} fill={s.color}
+              style={{ filter: `drop-shadow(0 0 3px ${s.color}88)` }} />
+            <text x={x} y={19} textAnchor="middle" fill={s.color}
+              fontSize={9} fontWeight={700} fontFamily="'JetBrains Mono', monospace"
+            >{(s.value * 100).toFixed(0)}%</text>
+            <text x={x} y={44} textAnchor="middle" fill="var(--text-tertiary)"
+              fontSize={7} fontFamily="'Inter', sans-serif">{s.label}</text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 
@@ -345,7 +342,7 @@ export default function ImpactReport({ data }: Props) {
   ];
 
   return (
-    <div style={{ maxWidth: 820, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12, position: "relative" }}>
+    <div style={{ maxWidth: 820, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12, position: "relative", wordBreak: "break-word", overflowWrap: "break-word" }}>
       {/* ── Scroll Progress Bar ── */}
       <div style={{
         position: "fixed", top: 0, left: 0, right: 0, height: 2, zIndex: 200,
@@ -464,27 +461,27 @@ export default function ImpactReport({ data }: Props) {
                   <div style={{ fontSize: 19, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.3px" }}>
                     Engineering Impact Report
                   </div>
-                  <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1 }}>
+                  <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {summary.project} · MR !{summary.mrIid} · {summary.branch}
                   </div>
                 </div>
               </div>
               {/* Verdict */}
               <div style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
+                display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
                 padding: "5px 14px", borderRadius: 6, marginTop: 4,
                 background: `${col}18`, border: `1px solid ${col}30`,
               }}>
                 <span style={{
                   width: 8, height: 8, borderRadius: "50%",
                   background: col, boxShadow: `0 0 8px ${glow}`,
-                  animation: "pulseDot 1.5s ease-in-out infinite",
+                  animation: "pulseDot 1.5s ease-in-out infinite", flexShrink: 0,
                 }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: col, letterSpacing: "0.3px", textTransform: "uppercase" }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: col, letterSpacing: "0.3px", textTransform: "uppercase", flexShrink: 0 }}>
                   DO NOT DEPLOY
                 </span>
-                <span style={{ width: 1, height: 12, background: `${col}33`, margin: "0 4px" }} />
-                <span style={{ fontSize: 10, color: "var(--text-secondary)" }}>
+                <span style={{ width: 1, height: 12, background: `${col}33`, margin: "0 4px", flexShrink: 0 }} />
+                <span style={{ fontSize: 10, color: "var(--text-secondary)", wordBreak: "break-word", minWidth: 0 }}>
                   {hero.predictedOutcome.split("—")[0]?.trim() || hero.predictedOutcome}
                 </span>
               </div>
@@ -521,7 +518,7 @@ export default function ImpactReport({ data }: Props) {
       {/* ── 2-Column Body Grid ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
         {/* Left Column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
           {/* ── Executive Summary ── */}
           <SectionCard id="sec-summary" icon="📋" title="Executive Summary & Confidence" col={col}>
             <div style={{
@@ -588,7 +585,7 @@ export default function ImpactReport({ data }: Props) {
                 { label: "Pipeline", value: counterfactuals[1]?.riskAfter ?? 0 },
                 { label: "Review", value: counterfactuals[2]?.riskAfter ?? 0 },
                 { label: "All", value: decisionCenter.riskReduction.afterRecommendation },
-              ]} width={180} height={45} />
+              ]} />
             </SectionCard>
             <SectionCard id="sec-timeline" icon="📅" title="Timeline" col={col}>
               <div style={{ position: "relative", paddingLeft: 18 }}>
@@ -614,7 +611,7 @@ export default function ImpactReport({ data }: Props) {
         </div>
 
         {/* Right Column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
           {/* ── Orbit Evidence Chain ── */}
           <SectionCard id="sec-evidence" icon="🔗" title="Orbit Evidence Chain" col={col}>
             <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -663,18 +660,16 @@ export default function ImpactReport({ data }: Props) {
 
           {/* ── Report Metadata ── */}
           <SectionCard id="sec-info" icon="ℹ️" title="Metadata" col={col}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {[
                 { label: "Generated", value: new Date(summary.timestamp).toLocaleString() },
                 { label: "Confidence", value: hero.confidence },
                 { label: "Score", value: summary.riskScore },
                 { label: "Level", value: summary.riskLevel },
-                { label: "Twin Size", value: `${summary.totalNodes}N / ${summary.totalEdges}E` },
-                { label: "MR IID", value: `!${summary.mrIid}` },
               ].map(item => (
-                <div key={item.label} style={{ padding: "6px 8px", borderRadius: 4, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+                <div key={item.label} style={{ padding: "5px 8px", borderRadius: 4, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)", wordBreak: "break-word" }}>
                   <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.2px", textTransform: "uppercase", marginBottom: 1 }}>{item.label}</div>
-                  <div style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.2 }}>{item.value}</div>
+                  <div style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.3 }}>{item.value}</div>
                 </div>
               ))}
             </div>
