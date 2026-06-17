@@ -17,7 +17,6 @@ import FutureTimeline from "./components/FutureTimeline";
 import TaglineBanner from "./components/TaglineBanner";
 import PathBrokenAnimation from "./components/PathBrokenAnimation";
 import BackgroundParticles from "./components/BackgroundParticles";
-import ImpactMetrics from "./components/ImpactMetrics";
 import OnboardingOverlay from "./components/OnboardingOverlay";
 import HelpTooltip from "./components/HelpTooltip";
 import RealityCheck from "./components/RealityCheck";
@@ -29,6 +28,7 @@ import type { DataMode } from "./components/DataModeBanner";
 import ProblemSection from "./components/ProblemSection";
 import JudgesTour from "./components/JudgesTour";
 import SetupWizard from "./components/SetupWizard";
+import ImpactCalculator from "./components/ImpactCalculator";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
@@ -340,8 +340,8 @@ export default function App() {
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
             {/* Tier 0: Problem → Solution → Impact */}
             <ProblemSection />
-            {/* Tier 1: Impact Metrics */}
-            <ImpactMetrics isMobile={isMobile} />
+            {/* Tier 1: Impact Calculator */}
+            <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} incidentsCount={data.incidents.length} />
             {/* Tier 1: Hero Outcome + Tagline */}
             <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
               <HeroSection {...data.hero} />
