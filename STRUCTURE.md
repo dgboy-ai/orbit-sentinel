@@ -2,6 +2,9 @@
 
 ```
 orbit-sentinel/
+├── .gitlab/duo/                   # GitLab Duo integration
+│   ├── skill.yml                  # Duo Chat skill definition
+│   └── mcp.json                   # MCP server config
 ├── visualizer/                    # React/D3 interactive dashboard
 │   ├── src/
 │   │   ├── components/           # React components
@@ -22,6 +25,9 @@ orbit-sentinel/
 │   └── dist/                     # Built output
 ├── flow/                          # GitLab Duo Agent Platform
 │   └── orbit-sentinel-flow.yaml
+├── skills/                        # Orbit skill with 6 query recipes
+│   └── orbit-sentinel/
+│       └── recipes/              # 6 query recipes (blast-radius, dependency-chain, etc.)
 ├── demo/                          # Demo materials
 │   ├── demo-script.md             # ~3-minute video script
 │   ├── screenshots-guide.md       # Screenshot capture guide

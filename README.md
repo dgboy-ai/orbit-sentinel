@@ -101,9 +101,9 @@ Every conclusion cites specific Orbit query evidence. No black box.
 
 **Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Triggered on MR open and new commits. Posts results directly to the MR thread.
 
-**Engine** — Express server at `orbit-sentinel/engine/` (TypeScript, 52 tests). Orbit API client, digital twin builder, risk scorer, remediation planner, markdown reporter.
+**Engine** — Express server at `orbit-sentinel/engine/` (TypeScript, 75 tests). Orbit API client, digital twin builder, risk scorer, remediation planner, markdown reporter.
 
-**Duo Integration** — Flow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) for Duo Agent Platform, skill recipe examples at orbit-sentinel skill directory.
+**Duo Integration** — [Skill definition](orbit-sentinel/.gitlab/duo/skill.yml) for Duo Chat, [MCP config](orbit-sentinel/.gitlab/duo/mcp.json) for agent platform, [query recipes](orbit-sentinel/skills/orbit-sentinel/recipes/) with 6 ready-to-use JSON examples.
 
 **Stack** — Node 22, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Zod, Vitest.
 

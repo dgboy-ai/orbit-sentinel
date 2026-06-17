@@ -129,4 +129,4 @@ Alert thresholds:
 | `query_graph` | `query_graph(query_object)` | Execute any Orbit query type |
 | `create_merge_request_note` | `create_merge_request_note(content)` | Post the analysis report on the MR |
 
-For detailed query recipe examples, use `glab orbit remote query` with the [flow YAML](flow/orbit-sentinel-flow.yaml) query structures as a reference.
+For detailed query recipe examples, see [`skills/orbit-sentinel/recipes/`](skills/orbit-sentinel/recipes/) (6 ready-to-use JSON files for blast radius, dependency chains, deployment impact, historical similarity, ownership discovery, and pipeline risk).
