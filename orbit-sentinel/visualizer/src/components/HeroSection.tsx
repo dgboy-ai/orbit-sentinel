@@ -27,8 +27,14 @@ export default function HeroSection({
   const circ = 2 * Math.PI * 44;
   const offset = circ - riskScore * circ;
 
+  const isHigh = rk === "critical" || rk === "high" || rk === "medium";
+
   return (
-    <div className="card" style={{ padding: 0, overflow: "hidden", position: "relative", animation: "fadeSlideDown 0.5s ease", height: "100%" }}>
+    <div className="card" style={{
+      padding: 0, overflow: "hidden", position: "relative", animation: "fadeSlideDown 0.5s ease", height: "100%",
+      boxShadow: isHigh ? `0 0 40px ${r.glow}` : undefined,
+      transition: "box-shadow 1s ease",
+    }}>
       <div style={{ height: 4, background: r.gradient, backgroundSize: "200% 200%", animation: "gradientShift 3s ease infinite" }} />
       <div style={{ padding: "20px 24px", position: "relative", zIndex: 2, display: "flex", gap: 20 }}>
         {/* LEFT: Narrative */}
@@ -38,7 +44,7 @@ export default function HeroSection({
               <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>MR</span>
               <span style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>!{mrIid}</span>
             </div>
-            <div style={{ padding: "3px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", background: `${r.rgba}0.15)`, color: r.hex, border: `1px solid ${r.rgba}0.25)` }}>
+            <div style={{ padding: "3px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", background: `${r.rgba}0.15)`, color: r.hex, border: `1px solid ${r.rgba}0.25)`, boxShadow: `0 0 12px ${r.glow}` }}>
               {riskLevel}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 6, fontSize: 11, color: "var(--text-secondary)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
@@ -48,7 +54,7 @@ export default function HeroSection({
           </div>
 
           <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.5px", marginBottom: 4, textTransform: "uppercase" }}>Predicted Outcome</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.3, marginBottom: 10 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: r.hex, lineHeight: 1.3, marginBottom: 10, textShadow: `0 0 20px ${r.glow}` }}>
             {predictedOutcome}
           </div>
 
@@ -78,6 +84,7 @@ export default function HeroSection({
           padding: "12px 14px", borderRadius: 10,
           background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
           animation: "fadeSlideDown 0.5s 0.15s ease both",
+          boxShadow: `0 0 20px ${r.glow}`,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
             <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(96,165,250,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>🛡️</div>

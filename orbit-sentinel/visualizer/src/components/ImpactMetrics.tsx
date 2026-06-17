@@ -9,11 +9,11 @@ interface Metric {
 }
 
 const METRICS: Metric[] = [
-  { icon: "⏱️", value: "45 min", label: "Saved per MR", detail: "Detects deployment blockers faster than manual review", color: "#60a5fa" },
-  { icon: "🎯", value: "90%", label: "Pattern Accuracy", detail: "Historical branch abandonment pattern detection", color: "#22c55e" },
-  { icon: "📊", value: "4×", label: "Cross-Reference", detail: "All 4 Orbit query types independently validate findings", color: "#a78bfa" },
-  { icon: "🛡️", value: "89%", label: "False Positive Reduction", detail: "Over CI-only pipeline failure alerts", color: "#f97316" },
-  { icon: "🔮", value: "88%", label: "Mitigation Success", detail: "When all recommendations are followed", color: "#22d3ee" },
+  { icon: "⏱️", value: "45 min", label: "Saved per MR", detail: "Faster than manual review", color: "#60a5fa" },
+  { icon: "🎯", value: "90%", label: "Pattern Accuracy", detail: "Historical pattern detection", color: "#22c55e" },
+  { icon: "📊", value: "4×", label: "Cross-Reference", detail: "All 4 Orbit queries validate", color: "#a78bfa" },
+  { icon: "🛡️", value: "89%", label: "False Positive Reduction", detail: "Over CI-only alerts", color: "#f97316" },
+  { icon: "🔮", value: "88%", label: "Mitigation Success", detail: "When recommendations followed", color: "#22d3ee" },
 ];
 
 function Counter({ value, suffix, delay }: { value: string; suffix?: string; delay: number }) {
@@ -80,12 +80,12 @@ export default function ImpactMetrics({ isMobile }: { isMobile?: boolean }) {
         </div>
 
         <div style={{
-          marginTop: 10, padding: "6px 12px", borderRadius: 6,
+          marginTop: 10, padding: "4px 10px", borderRadius: 6,
           background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)",
-          display: "flex", alignItems: "center", gap: 6, fontSize: 9, color: "var(--text-secondary)",
+          display: "flex", alignItems: "center", gap: 5, fontSize: 9, color: "var(--text-secondary)",
         }}>
-          <span style={{ fontSize: 12 }}>🛰️</span>
-          <span><strong style={{ color: "#22c55e" }}>Orbit Advantage:</strong> Traditional CI/CD only checks if code builds. Orbit Sentinel checks if code <em>should</em> deploy — catching abandoned branches, missing pipelines, and deployment path errors before time is wasted.</span>
+          <span style={{ fontSize: 11 }}>🛰️</span>
+          <span><strong style={{ color: "#22c55e" }}>Orbit Advantage:</strong> CI checks if code builds — Orbit checks if it <em>should</em> deploy</span>
         </div>
       </div>
     </div>

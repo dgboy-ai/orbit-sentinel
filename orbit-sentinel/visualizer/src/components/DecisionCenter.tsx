@@ -18,11 +18,16 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
           <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering recommendation</div>
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 8, background: verdict.bg, border: `1px solid ${verdict.border}`, marginBottom: 10 }}>
+      <div style={{
+        display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 8,
+        background: verdict.bg, border: `1px solid ${verdict.border}`, marginBottom: 10,
+        animation: verdict.color === "#ef4444" ? "pulseGlow 2s ease-in-out infinite" : undefined,
+        boxShadow: verdict.color === "#ef4444" ? "0 0 24px rgba(239,68,68,0.15)" : "none",
+      }}>
         <span style={{ fontSize: 18 }}>{verdict.icon}</span>
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: verdict.color }}>Recommendation</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: verdict.color }}>{verdict.label}</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: verdict.color }}>{verdict.label}</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>

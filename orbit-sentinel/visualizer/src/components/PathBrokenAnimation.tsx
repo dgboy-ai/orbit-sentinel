@@ -82,7 +82,7 @@ export default function PathBrokenAnimation({ mrIid = 10 }: { mrIid?: number }) 
                 display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
                 background: step.broken ? "rgba(239,68,68,0.15)" : "rgba(96,165,250,0.12)",
                 border: step.broken ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(96,165,250,0.2)",
-                boxShadow: step.broken ? "0 0 16px rgba(239,68,68,0.2)" : "none",
+                            boxShadow: step.broken ? "0 0 20px rgba(239,68,68,0.3)" : "none",
                 animation: step.broken && showBroken ? "pulseDot 1s ease-in-out infinite" : undefined,
               }}>
                 {step.broken ? "✗" : step.icon}
@@ -100,14 +100,15 @@ export default function PathBrokenAnimation({ mrIid = 10 }: { mrIid?: number }) 
 
         {/* PATH BROKEN banner */}
         <div style={{
-          marginTop: 14, padding: "10px 24px", borderRadius: 10,
-          background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)",
+          marginTop: 14, padding: "12px 28px", borderRadius: 10,
+          background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)",
+          boxShadow: "0 0 40px rgba(239,68,68,0.2), 0 0 80px rgba(239,68,68,0.08)",
           opacity: showBroken ? 1 : 0, transform: showBroken ? "scale(1)" : "scale(0.8)",
           transition: "all 0.6s cubic-bezier(0.16,1,0.3,1)",
           textAlign: "center",
           animation: showBroken ? "fadeSlideUp 0.5s ease, pulseGlow 2s ease-in-out infinite" : undefined,
         }}>
-          <div style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "2px", textShadow: "0 0 20px rgba(239,68,68,0.4)" }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "3px", textShadow: "0 0 30px rgba(239,68,68,0.6)" }}>
             ⚠ PATH BROKEN
           </div>
         </div>

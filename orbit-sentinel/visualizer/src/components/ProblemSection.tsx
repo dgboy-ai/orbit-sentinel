@@ -5,9 +5,9 @@ const PROBLEM_SOLUTION = [
     icon: "🤔",
     title: "The Problem",
     items: [
-      "Developers spend ~45 min manually reviewing each MR's blast radius, deployment path, and risk",
-      "Traditional CI/CD only checks if code builds — never asks if it should deploy",
-      "Historical patterns of failure (abandoned branches, broken pipelines) are invisible at merge time",
+      "~45 min manual blast radius review per MR — still misses blockers",
+      "CI checks if code builds — never asks if it <em>should</em> deploy",
+      "Historical failures invisible at merge time",
     ],
     color: "#ef4444",
   },
@@ -15,9 +15,9 @@ const PROBLEM_SOLUTION = [
     icon: "🛰️",
     title: "Orbit Sentinel Solution",
     items: [
-      "Queries all 4 GitLab Orbit query types to build a digital twin of every MR in seconds",
-      "Predicts deployment outcomes using repository memory — not just pipeline status",
-      "Posts actionable remediation steps before developers waste time on dead-end changes",
+      "4 Orbit queries build a digital twin of every MR in seconds",
+      "Predicts outcomes using repository memory, not just pipeline status",
+      "Posts remediation before time is wasted on dead-end changes",
     ],
     color: "#22c55e",
   },
@@ -25,9 +25,9 @@ const PROBLEM_SOLUTION = [
     icon: "📊",
     title: "Quantified Impact",
     items: [
-      "Cross-references all 4 Orbit query types to reduce false positives vs. CI-only alerts",
-      "Historical pattern matching surfaces likely outcomes before time is spent on dead-end changes",
-      "Detects deployment blockers in seconds vs. ~45 min of manual cross-referencing",
+      "4 query cross-reference reduces false positives vs. CI-only alerts",
+      "Historical pattern matching surfaces likely outcomes instantly",
+      "Deployment blocked detected in seconds vs. ~45 min manual review",
     ],
     color: "#60a5fa",
   },
@@ -81,13 +81,13 @@ export default function ProblemSection() {
         </div>
 
         <div style={{
-          marginTop: 10, padding: "6px 14px", borderRadius: 6,
+          marginTop: 10, padding: "5px 12px", borderRadius: 6,
           background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.1)",
-          fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4,
+          fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
           display: "flex", alignItems: "center", gap: 6,
         }}>
-          <span style={{ fontSize: 14 }}>🏆</span>
-          <span><strong style={{ color: "var(--accent-purple)" }}>For judges:</strong> This submission was built for the <strong style={{ color: "var(--text-primary)" }}>GitLab Transcend Hackathon — Showcase Track</strong>. It demonstrates all 4 Orbit query types, publishes a GitLab Duo skill, and solves a real developer pain point: <em>"Will this MR break production?"</em></span>
+          <span style={{ fontSize: 12 }}>🏆</span>
+          <span>Built for <strong style={{ color: "var(--text-primary)" }}>GitLab Transcend Hackathon</strong> — demonstrates all 4 Orbit query types + publishes a GitLab Duo skill</span>
         </div>
       </div>
     </div>
