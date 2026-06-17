@@ -18,7 +18,7 @@ The agent ran **real Orbit queries** against project `transcend/39251857` inside
 | Query | Findings |
 |-------|----------|
 | `get_graph_schema` | 18 node types, ~45 relationship types discovered |
-| Full Graph Traversal | **22 nodes, 40 relationships** across 6 node types |
+| Full Graph Traversal | **22 nodes, 40 relationships** across 7 node types |
 | Risk Signals | 3 High (bus factor, no coverage, no reviewers), 2 Medium |
 
 [Full traversal results →](orbit-sentinel/docs/orbit-traversal-results.md)
