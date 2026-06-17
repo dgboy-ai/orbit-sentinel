@@ -37,6 +37,8 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
     return () => timers.forEach(clearTimeout);
   }, [onDone]);
 
+  const progress = stepStates.filter(s => s.status === "done").length / QUERY_STEPS.length;
+
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center",
@@ -45,13 +47,25 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
       fontFamily: "'Inter', sans-serif",
     }}>
       <div style={{ maxWidth: 440, width: "92%", textAlign: "center" }}>
-        <div style={{
-          width: 48, height: 48, borderRadius: 12, margin: "0 auto 16px",
-          background: "linear-gradient(135deg, rgba(96,165,250,0.2), rgba(139,92,246,0.1))",
-          border: "1px solid rgba(96,165,250,0.2)",
-          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
-          animation: "float 6s ease-in-out infinite",
-        }}>🛰️</div>
+        <div style={{ position: "relative", width: 48, margin: "0 auto 16px" }}>
+          <div style={{
+            position: "absolute", inset: -12, borderRadius: "50%",
+            border: "1px solid rgba(96,165,250,0.1)",
+            animation: "spin 6s linear infinite",
+          }} />
+          <div style={{
+            position: "absolute", inset: -8, borderRadius: "50%",
+            border: "1px dashed rgba(139,92,246,0.08)",
+            animation: "spin 8s linear infinite reverse",
+          }} />
+          <div style={{
+            width: 48, height: 48, borderRadius: 12, position: "relative",
+            background: "linear-gradient(135deg, rgba(96,165,250,0.2), rgba(139,92,246,0.1))",
+            border: "1px solid rgba(96,165,250,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
+            animation: "float 6s ease-in-out infinite",
+          }}>🛰️</div>
+        </div>
 
         <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 2 }}>
           Building Digital Twin
@@ -95,7 +109,17 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
           })}
         </div>
 
-        <div style={{ marginTop: 16, fontSize: 9, color: "var(--text-tertiary)" }}>
+        <div style={{ marginTop: 14, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+          <div style={{
+            width: `${(progress / QUERY_STEPS.length) * 100}%`, height: "100%", borderRadius: 2,
+            background: "linear-gradient(90deg, #60a5fa, #a78bfa, #22c55e, #60a5fa)",
+            backgroundSize: "300% 100%",
+            transition: "width 0.6s cubic-bezier(0.16,1,0.3,1)",
+            boxShadow: "0 0 8px rgba(96,165,250,0.4)",
+            animation: "shimmer-wide 2s ease-in-out infinite",
+          }} />
+        </div>
+        <div style={{ marginTop: 10, fontSize: 9, color: "var(--text-tertiary)" }}>
           All 4 Orbit query types · No black box · Real graph data
         </div>
         <button onClick={onDone}
@@ -104,7 +128,7 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
             border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6,
             background: "transparent", color: "var(--text-tertiary)",
             transition: "all 0.15s ease",
-            animation: "fadeSlideUp 0.5s 1s ease both",
+            animation: "fadeSlideUp 0.4s 0.5s ease both",
           }}
           onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
           onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}

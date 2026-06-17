@@ -160,6 +160,7 @@ export default function App() {
   });
   const [mobileViewOpen, setMobileViewOpen] = useState(false);
   const [loadingSlow, setLoadingSlow] = useState(false);
+  const [firstLoad, setFirstLoad] = useState(true);
   const [showNarrative, setShowNarrative] = useState(
     typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : true
   );
@@ -332,10 +333,11 @@ export default function App() {
     const t = setTimeout(() => {
       setPrevView(view);
       setTransitioning(false);
-    }, 80);
+    }, 260);
     return () => clearTimeout(t);
   }, [view, prevView]);
 
+  useEffect(() => { if (data && firstLoad) { const t = setTimeout(() => setFirstLoad(false), 600); return () => clearTimeout(t); } }, [data, firstLoad]);
   const body = useCallback(() => {
     if (!data) return null;
     switch (view) {
@@ -387,6 +389,7 @@ export default function App() {
   if (!data) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "var(--bg-primary)" }}>
+        {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
         <header style={{
           position: "relative", zIndex: 10,
           borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -544,11 +547,13 @@ export default function App() {
                 borderRadius: 6, cursor: "pointer",
                 background: view === k ? `${accentColor}18` : "transparent",
                 color: view === k ? accentColor : "var(--text-secondary)",
-                transition: "all 0.15s ease", letterSpacing: "0.2px", whiteSpace: "nowrap",
+                transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)", letterSpacing: "0.2px", whiteSpace: "nowrap",
                 display: "flex", alignItems: "center", gap: 3,
+                transform: view === k ? "translateY(-1px)" : "none",
+                boxShadow: view === k ? `0 2px 8px ${accentGlow}` : "none",
               }}
-                onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
-                onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+                onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.transform = "translateY(-1px)"; } }}
+                onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.transform = "none"; } }}
               >{lbl}
                 {VIEW_QUERY_TAG[k] && (
                   <span style={{ fontSize: 8, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${VIEW_QUERY_TAG[k].color}18`, color: VIEW_QUERY_TAG[k].color, lineHeight: 1.2 }}>
@@ -634,13 +639,13 @@ export default function App() {
       <main key={view} style={{
         position: "relative", zIndex: 1, flex: 1, padding: isMobile ? 10 : 16, overflow: "auto", minHeight: 0,
         willChange: "transform", display: "flex", flexDirection: "column",
-        animation: transitioning ? "none" : "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
+        animation: transitioning ? "none" : firstLoad ? "scaleIn 0.45s cubic-bezier(0.16,1,0.3,1) both" : "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
       }}>
         <ErrorBoundary>
           <div style={{
             opacity: transitioning ? 0 : 1,
-            transform: transitioning ? "translateY(8px)" : "none",
-            transition: "opacity 0.08s ease, transform 0.08s ease",
+            transform: transitioning ? "translateY(6px) scale(0.99)" : "none",
+            transition: "opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1)",
             display: "flex", flexDirection: "column", flex: 1, minHeight: 0,
           }}>
             {body()}
