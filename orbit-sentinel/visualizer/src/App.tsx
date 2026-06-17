@@ -160,8 +160,19 @@ export default function App() {
   });
   const [mobileViewOpen, setMobileViewOpen] = useState(false);
   const [loadingSlow, setLoadingSlow] = useState(false);
-  const [showNarrative, setShowNarrative] = useState(true);
-  const onNarrativeDone = useCallback(() => setShowNarrative(false), []);
+  const [showNarrative, setShowNarrative] = useState(
+    typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : true
+  );
+  const showNarrativeRef = useRef(showNarrative);
+  showNarrativeRef.current = showNarrative;
+  const onNarrativeDone = useCallback(() => {
+    setShowNarrative(false);
+    if (!data) {
+      setData(DEMO_DATA);
+      setDataMode("demo");
+      setLoading(false);
+    }
+  }, [data]);
   const demoRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTiny = useMediaQuery("(max-width: 360px)");
@@ -169,42 +180,40 @@ export default function App() {
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setDataMode(apiService.isApiAvailable() ? "connecting" : "loading");
 
-    try {
-      if (apiService.isApiAvailable()) {
-        const result = await apiService.analyzeChange({
-          projectId: 39251857,
-          projectPath: 'gitlab-ai-hackathon/transcend/39251857',
-          mrIid: 10,
-          mrTitle: 'test sentinel',
-          changedFiles: ['flows/flow.yml'],
-          changeDescription: 'test sentinel MR',
-          branch: 'test-sentinel',
-        });
-        setData(result.report);
-        setDataMode("live");
-      } else {
-        await new Promise(r => setTimeout(r, 800));
+    if (!apiService.isApiAvailable()) {
+      // No engine — narrative will set data on completion (or immediately if skipped)
+      setDataMode("loading");
+      if (!showNarrativeRef.current) {
         setData(DEMO_DATA);
         setDataMode("demo");
+        setLoading(false);
       }
+      return;
+    }
+
+    // Engine configured: try live fetch during narrative
+    setDataMode("connecting");
+    try {
+      const result = await apiService.analyzeChange({
+        projectId: 39251857,
+        projectPath: 'gitlab-ai-hackathon/transcend/39251857',
+        mrIid: 10,
+        mrTitle: 'test sentinel',
+        changedFiles: ['flows/flow.yml'],
+        changeDescription: 'test sentinel MR',
+        branch: 'test-sentinel',
+      });
+      setData(result.report);
+      setDataMode("live");
     } catch (err) {
       console.error('Failed to load data:', err);
       setError(err instanceof Error ? err.message : 'Failed to load data');
-      // Fallback: try demo endpoint from engine, then hardcoded demo data
-      let fallbackSuccess = false;
       try {
-        if (apiService.isApiAvailable()) {
-          const result = await apiService.getDemoData();
-          setData(result.report);
-          fallbackSuccess = true;
-        }
+        const result = await apiService.getDemoData();
+        setData(result.report);
       } catch (demoErr) {
         console.error('Failed to load demo data:', demoErr);
-      }
-      if (!fallbackSuccess) {
-        setData(DEMO_DATA);
       }
       setDataMode("demo");
       setError(null);
@@ -396,7 +405,6 @@ export default function App() {
         </header>
         {loading ? <>
           <LoadingSkeleton />
-          {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
           {loadingSlow && (
             <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
               <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
@@ -438,6 +446,7 @@ export default function App() {
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-primary)", position: "relative" }}>
+      {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
       {data && showOnboarding && <OnboardingOverlay onDismiss={dismissOnboarding} />}
       {showTour && <JudgesTour onDismiss={dismissTour} onNavigate={onTourNavigate} />}
       <BackgroundParticles />
