@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 const QUERY_STEPS = [
-  { id: "NEIGHBORS", label: "Orbit Graph", icon: "🌐", desc: "Scanning connected files, services, and dependencies affected by this MR" },
-  { id: "PATH_FINDING", label: "Dependency Trace", icon: "🧭", desc: "Tracing deployment path from MR through pipeline to production" },
-  { id: "TRAVERSAL", label: "Historical Context", icon: "📜", desc: "Matching against past MRs and incidents on the same files" },
-  { id: "AGGREGATION", label: "Ecosystem Analysis", icon: "📊", desc: "Analyzing pipeline health and failure patterns across the project" },
+  { id: "NEIGHBORS", label: "Orbit Graph", icon: "🌐", desc: "Scanning connected files, services, and dependencies across the repository" },
+  { id: "PATH_FINDING", label: "Dependency Trace", icon: "🧭", desc: "Tracing deployment pathways from MR through pipeline to production" },
+  { id: "TRAVERSAL", label: "Historical Context", icon: "📜", desc: "Searching repository history for similar MRs and past outcomes" },
+  { id: "AGGREGATION", label: "Ecosystem Analysis", icon: "📊", desc: "Measuring pipeline health, failure rates, and project fragility" },
 ];
 
 interface StepState {
@@ -76,10 +76,10 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
         </div>
 
         <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 2 }}>
-          Building Digital Twin
+          Orbit Sentinel Loading
         </div>
         <div style={{ fontSize: 10, color: "var(--text-secondary)", marginBottom: 20, lineHeight: 1.4 }}>
-          Querying GitLab Orbit knowledge graph across all 4 query types
+          Digital twin loading — querying GitLab Orbit across 4 dimensions
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6, textAlign: "left" }}>
@@ -131,11 +131,11 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
         </div>
         {allDone ? (
           <div style={{ marginTop: 10, fontSize: 9, color: "#22c55e", fontWeight: 600, animation: "fadeSlideUp 0.3s ease" }}>
-            ✓ All 4 queries complete
+            ✓ All 4 queries complete — digital twin ready
           </div>
         ) : (
           <div style={{ marginTop: 10, fontSize: 9, color: "var(--text-tertiary)" }}>
-            All 4 Orbit query types · No black box · Real graph data
+            NEIGHBORS · PATH_FINDING · TRAVERSAL · AGGREGATION
           </div>
         )}
         <button onClick={onDone} aria-label="Skip loading narrative"
