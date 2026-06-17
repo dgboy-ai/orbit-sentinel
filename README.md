@@ -101,7 +101,7 @@ Every conclusion cites specific Orbit query evidence. No black box.
 
 **Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Triggered on MR open and new commits. Posts results directly to the MR thread.
 
-**Engine** — Express server at `orbit-sentinel/engine/` (TypeScript, 75 tests). Orbit API client, digital twin builder, risk scorer, remediation planner, markdown reporter.
+**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, 75 tests). Orbit API client, digital twin builder, risk scorer, remediation planner, markdown reporter. Requires `GITLAB_ACCESS_TOKEN` env var for live Orbit queries — without it, falls back to demo mode.
 
 **Duo Integration** — [Skill definition](orbit-sentinel/.gitlab/duo/skill.yml) for Duo Chat, [MCP config](orbit-sentinel/.gitlab/duo/mcp.json) for agent platform, [query recipes](orbit-sentinel/skills/orbit-sentinel/recipes/) with 6 ready-to-use JSON examples.
 
@@ -109,8 +109,9 @@ Every conclusion cites specific Orbit query evidence. No black box.
 
 | Status | |
 |--------|-|
-| Deployed | [Vercel](https://orbit-sentinel.vercel.app) + [GitLab Pages CI/CD](.gitlab-ci.yml) |
+| Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
 | Tests | 75 passing (engine) + 9 passing (visualizer) |
+| ⏳ Live data | Engine needs `GITLAB_ACCESS_TOKEN` env var with read_api scope on an Orbit-enabled group |
 | ⏳ AI Catalog | Needs Maintainer token — run `glab skills publish` |
 | ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
 | 📖 Docs | [`docs/`](orbit-sentinel/docs/) — traversal proof, deployment guide |

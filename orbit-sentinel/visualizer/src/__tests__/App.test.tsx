@@ -12,7 +12,7 @@ describe("App", () => {
 
   it("renders export button", async () => {
     render(<App />);
-    expect(await screen.findByLabelText("Export report as markdown")).toBeInTheDocument();
+    expect(await screen.findByLabelText("Export report")).toBeInTheDocument();
   });
 
   it("can dismiss onboarding overlay", async () => {

@@ -1,0 +1,36 @@
+import React from "react";
+
+interface Props {
+  message?: string;
+  onRetry?: () => void;
+  height?: string;
+}
+
+export default function InlineError({ message, onRetry, height }: Props) {
+  return (
+    <div className="card" style={{
+      padding: "16px 20px", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center", gap: 8,
+      minHeight: height ?? 120, textAlign: "center",
+      borderColor: "rgba(239,68,68,0.12)",
+      background: "rgba(239,68,68,0.03)",
+    }}>
+      <span style={{ fontSize: 20, lineHeight: 1 }}>⚠️</span>
+      <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>
+        {message || "Failed to load this panel"}
+      </div>
+      {onRetry && (
+        <button onClick={onRetry}
+          style={{
+            padding: "4px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+            border: "1px solid rgba(239,68,68,0.25)", borderRadius: 5,
+            background: "rgba(239,68,68,0.08)", color: "#ef4444",
+            transition: "all 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.15)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
+        >Retry</button>
+      )}
+    </div>
+  );
+}

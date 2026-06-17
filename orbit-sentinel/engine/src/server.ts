@@ -64,11 +64,8 @@ app.post('/api/analyze', async (req, res) => {
 });
 
 // Demo mode endpoint - returns realistic mock data transformed for visualizer
+// Always available so the visualizer can always fetch demo data from a real endpoint
 app.get('/api/demo', (req, res) => {
-  if (process.env.DEMO_MODE !== 'true') {
-    return res.status(404).json({ error: 'Demo mode not enabled' });
-  }
-
   // Build a realistic DigitalTwin + ChangeSimulation from fixed data
   const demoReport: SentinelReport = {
     mrIid: 10,

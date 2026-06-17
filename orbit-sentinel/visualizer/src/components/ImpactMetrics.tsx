@@ -38,35 +38,25 @@ function Counter({ value, suffix, delay }: { value: string; suffix?: string; del
   return <>{display}{suffixChar}</>;
 }
 
-export default function ImpactMetrics() {
+export default function ImpactMetrics({ isMobile }: { isMobile?: boolean }) {
   return (
     <div className="card" style={{
-      padding: "16px 20px", position: "relative", overflow: "hidden",
+      padding: isMobile ? "12px 14px" : "16px 20px", position: "relative", overflow: "hidden",
       borderColor: "rgba(96,165,250,0.15)",
       background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95), rgba(139,92,246,0.03))",
       animation: "fadeSlideUp 0.5s 0.05s ease both",
     }}>
       <div style={{ position: "absolute", top: "-40%", right: "-10%", width: 260, height: 260, borderRadius: "50%", background: "rgba(96,165,250,0.06)", filter: "blur(70px)", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>📈</div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Orbit Sentinel by the Numbers</div>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Quantified impact across the development lifecycle</div>
-          </div>
-          <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>
-            {["Traditional CI/CD", "Orbit Sentinel"].map((l, i) => (
-              <div key={l} style={{
-                fontSize: 8, padding: "2px 8px", borderRadius: 4,
-                background: i === 1 ? "rgba(96,165,250,0.1)" : "rgba(255,255,255,0.03)",
-                border: `1px solid ${i === 1 ? "rgba(96,165,250,0.2)" : "rgba(255,255,255,0.06)"}`,
-                color: i === 1 ? "var(--accent-blue)" : "var(--text-tertiary)",
-              }}>{l}</div>
-            ))}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: isMobile ? 8 : 12 }}>
+          <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)", flexShrink: 0 }}>📈</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: isMobile ? 12 : 13, fontWeight: 600, color: "var(--text-primary)" }}>Orbit Sentinel by the Numbers</div>
+            <div style={{ fontSize: isMobile ? 9 : 10, color: "var(--text-secondary)" }}>Quantified impact across the development lifecycle</div>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
+        <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: `repeat(${isMobile ? 2 : 5}, 1fr)`, gap: isMobile ? 6 : 10 }}>
           {METRICS.map((m, i) => (
             <div key={m.label} style={{
               padding: "10px 12px", borderRadius: 8,

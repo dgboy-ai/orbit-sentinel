@@ -40,6 +40,8 @@ Without `VITE_API_BASE_URL`, the visualizer runs in demo mode with embedded samp
 
 ## Engine (Render)
 
+The engine is deployed at [orbit-sentinel.onrender.com](https://orbit-sentinel.onrender.com). It will **not** return live Orbit data until `GITLAB_ACCESS_TOKEN` is set — without it, the engine returns demo data.
+
 ### Prerequisites
 
 - Render account

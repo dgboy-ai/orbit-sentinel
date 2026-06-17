@@ -62,6 +62,8 @@ npm run dev
 
 ## Environment Variables (for Live Orbit Queries)
 
+The engine (local or on **Render**) needs a `GITLAB_ACCESS_TOKEN` to query the real Orbit API. Without it, both local and deployed engines return demo data.
+
 Create a `.env` at the repository root (optional — demo mode works without it):
 
 ```env
@@ -73,10 +75,10 @@ GITLAB_ACCESS_TOKEN=glpat-your-token-here
 **Setup checklist:**
 1. Ensure Orbit is enabled on your GitLab group (Group → Settings → Permissions)
 2. Create a project access token with `read_api` scope (Settings → Access Tokens)
-3. Set the token as `GITLAB_ACCESS_TOKEN` in `.env`
+3. Set the token as `GITLAB_ACCESS_TOKEN` in `.env` (or as a Render env var)
 4. Verify: `curl http://localhost:3001/health` returns `{"status":"ok"}`
 
-Without these, the engine runs in **demo mode** with sample data (the visualizer's default experience on Vercel).
+Without these, the engine runs in **demo mode** with sample data (the default experience on Vercel and Render).
 
 ---
 
@@ -94,7 +96,7 @@ To enable the autonomous agent on merge requests:
 
 | Check | Expected |
 |---|---|
-| `npm test` in `engine/` | 52 tests passed |
+| `npm test` in `engine/` | 75 tests passed |
 | `npm run dev` in `visualizer/` | Server starts on port 5173 |
 | Browser at `http://localhost:5173` | Interactive dashboard loads |
 | `http://localhost:5173/?demo=true` | Auto-play demo cycles through all 6 views |

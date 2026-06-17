@@ -56,7 +56,9 @@ export default function OnboardingOverlay({ onDismiss }: { onDismiss: () => void
       background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)",
       animation: show ? "fadeSlideUp 0.3s ease" : "fadeSlideUp 0.3s ease reverse",
       fontFamily: "'Inter', sans-serif",
-    }}>
+    }}
+      role="dialog" aria-modal="true" aria-label="Onboarding: Welcome to Orbit Sentinel"
+    >
       <div className="card" style={{
         width: 460, maxWidth: "90vw", padding: 0, overflow: "hidden",
         boxShadow: "0 0 60px rgba(59,130,246,0.15), 0 20px 60px rgba(0,0,0,0.5)",

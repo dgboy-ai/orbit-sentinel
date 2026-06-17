@@ -23,7 +23,7 @@ This installs the engine, visualizer, and starts the dev server at `http://local
 cd engine
 npm install
 npm run build    # compiles TypeScript → dist/
-npm test         # runs 52 tests
+npm test         # runs 75 tests
 ```
 
 ### Visualizer
@@ -41,7 +41,7 @@ Open `http://localhost:5173/?demo=true` for auto-play mode.
 | Check | Command (PowerShell) | Expected |
 |-------|----------------------|----------|
 | Engine compiles | `cd engine; if ($?) { npx tsc --noEmit }` | No errors |
-| Tests pass | `cd engine; if ($?) { npm test }` | 52 tests passed |
+| Tests pass | `cd engine; if ($?) { npm test }` | 75 tests passed |
 | Visualizer builds | `cd visualizer; if ($?) { npm run build }` | `dist/` created |
 | Dev server | `cd visualizer; if ($?) { npm run dev }` | Opens at :5173 |
 
@@ -54,6 +54,8 @@ Open `http://localhost:5173/?demo=true` for auto-play mode.
 5. The flow runs and posts analysis to the MR
 
 ## Enable Live Orbit Queries
+
+The engine (local or on **Render** at [orbit-sentinel.onrender.com](https://orbit-sentinel.onrender.com)) needs a `GITLAB_ACCESS_TOKEN` to query the real Orbit API.
 
 For the engine to query a real GitLab Orbit knowledge graph (vs. demo mode), you need:
 
