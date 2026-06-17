@@ -394,7 +394,7 @@ export default function App() {
           position: "relative", zIndex: 10,
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
-          flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
+          flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)", overflowX: "hidden",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
             <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#60a5fa,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🛰️</div>
@@ -469,7 +469,7 @@ export default function App() {
         padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
         flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
         boxShadow: `0 1px 0 ${accentColor}11`,
-        transition: "border-color 0.5s ease, box-shadow 0.5s ease",
+        transition: "border-color 0.5s ease, box-shadow 0.5s ease", overflowX: "hidden",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, boxShadow: `0 2px 8px ${accentGlow}` }}>🛰️</div>
@@ -532,7 +532,7 @@ export default function App() {
             )}
           </div>
         )}
-        <div className={`header-nav${isTiny ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }} role="tablist" aria-label="Dashboard views">
+        <div className={`header-nav${isTiny ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0, flexWrap: "wrap", overflow: "auto" }} role="tablist" aria-label="Dashboard views">
           {tabs.map(([k, lbl]) => {
             const help = DEMO_STEPS.find(d => d.view === k)?.sublabel ?? "";
             return (
