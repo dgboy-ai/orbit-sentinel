@@ -1,6 +1,6 @@
-# Orbit Sentinel — Enhancement Summary
+# Changelog
 
-What started as a functional prototype is now a production-ready system. Every component has been hardened, documented, and tested. Here is exactly what changed and why.
+All notable changes to Orbit Sentinel are documented here.
 
 ---
 

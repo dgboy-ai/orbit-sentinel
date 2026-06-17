@@ -115,7 +115,7 @@ For detailed setup instructions, see [SETUP.md](orbit-sentinel/SETUP.md). For th
 | [flow/orbit-sentinel-flow.yaml](orbit-sentinel/flow/orbit-sentinel-flow.yaml) | GitLab Duo Agent Platform workflow definition |
 | [demo/devpost-submission.md](orbit-sentinel/demo/devpost-submission.md) | Hackathon submission details |
 | [demo/demo-script.md](orbit-sentinel/demo/demo-script.md) | 3-minute walkthrough script for the demo video |
-| [ENHANCEMENT_SUMMARY.md](orbit-sentinel/ENHANCEMENT_SUMMARY.md) | Full list of improvements and fixes |
+| [CHANGELOG.md](orbit-sentinel/CHANGELOG.md) | Full list of improvements and fixes |
 | [LICENSE](orbit-sentinel/LICENSE) | MIT license |
 
 ---
