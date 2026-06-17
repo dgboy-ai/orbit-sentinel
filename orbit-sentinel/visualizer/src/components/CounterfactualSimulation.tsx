@@ -2,11 +2,26 @@ import React, { useState } from "react";
 import type { CounterfactualScenario } from "../types";
 import { riskScoreToColor, riskScoreToGlow } from "../utils/colors";
 
-export default function CounterfactualSimulation({ scenarios, currentRisk }: { scenarios: CounterfactualScenario[]; currentRisk: number }) {
+const SIM_RESULTS: Record<string, { outcome: string; detail: string }> = {
+  "Add File Changes": { outcome: "Risk drops to moderate — still needs pipeline & reviewers", detail: "Adding changes removes the empty-diff blocker but CI and review gaps remain." },
+  "Trigger Pipeline": { outcome: "Risk drops to moderate — CI validation provides safety", detail: "Pipeline run validates the diff but empty-diff still blocks deployment." },
+  "Assign Reviewers": { outcome: "Risk drops to moderate — human oversight reduces abandonment", detail: "Review assignment forces completion but code still has no pipeline coverage." },
+  "All Mitigations": { outcome: "Risk near-eliminated — ready for safe deployment", detail: "Full remediation: changes + CI + review. Standard safe-merge protocol." },
+};
+
+export default function CounterfactualSimulation({
+  scenarios, currentRisk, onViewDetail,
+}: {
+  scenarios: CounterfactualScenario[];
+  currentRisk: number;
+  onViewDetail?: () => void;
+}) {
   const [active, setActive] = useState<number | null>(null);
   const [simRisk, setSimRisk] = useState(currentRisk);
   const displayedRisk = active !== null ? scenarios[active].riskAfter : simRisk;
   const curCol = riskScoreToColor(displayedRisk);
+  const activeScenario = active !== null ? scenarios[active] : null;
+  const simResult = activeScenario ? SIM_RESULTS[activeScenario.label] : null;
 
   function applySimulation(idx: number) {
     if (active === idx) {
@@ -29,34 +44,91 @@ export default function CounterfactualSimulation({ scenarios, currentRisk }: { s
   }
 
   return (
-    <div className="card" style={{ padding: "14px 18px", animation: "fadeSlideUp 0.5s 0.15s ease both" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-        <div style={{ width: 28, height: 28, borderRadius: 6, background: "rgba(167,139,250,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>🧪</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>What-If Simulation</div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Click any scenario to simulate</div>
+    <div className="card" style={{
+      padding: "16px 20px",
+      animation: "fadeSlideUp 0.5s 0.15s ease both",
+    }}>
+      {/* Header */}
+      <div style={{
+        display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 14,
+      }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: 8,
+          background: "rgba(167,139,250,0.15)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 16, flexShrink: 0,
+        }}>🧪</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
+            What-If Simulation
+          </div>
+          <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 1 }}>
+            {active !== null
+              ? `Simulating: ${scenarios[active].label}`
+              : "Click a scenario to simulate the outcome"}
+          </div>
+          {onViewDetail && (
+            <button onClick={(e) => { e.stopPropagation(); onViewDetail(); }}
+              style={{
+                marginTop: 6, padding: "2px 10px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                border: "1px solid rgba(167,139,250,0.25)", borderRadius: 5,
+                background: "rgba(167,139,250,0.08)", color: "#a78bfa",
+                transition: "all 0.15s ease",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.15)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.08)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.25)"; }}
+            >
+              Open in Forecast Engine →
+            </button>
+          )}
         </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>Risk Level</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: curCol, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${riskScoreToGlow(displayedRisk)}`, lineHeight: 1.2, transition: "color 0.3s ease" }}>
+        <div style={{ textAlign: "right", flexShrink: 0 }}>
+          <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px", marginBottom: 1 }}>
+            Risk Level
+          </div>
+          <div style={{
+            fontSize: 22, fontWeight: 800, color: curCol,
+            fontFamily: "'JetBrains Mono', monospace",
+            textShadow: `0 0 16px ${riskScoreToGlow(displayedRisk)}`,
+            lineHeight: 1.2, transition: "color 0.3s ease",
+          }}>
             {(displayedRisk * 100).toFixed(0)}%
           </div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 6 }}>
+      {/* Result description */}
+      {simResult && (
+        <div style={{
+          padding: "10px 12px", marginBottom: 12, borderRadius: 8,
+          background: "rgba(167,139,250,0.06)",
+          border: "1px solid rgba(167,139,250,0.15)",
+          animation: "fadeSlideUp 0.25s ease",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#a78bfa", marginBottom: 2 }}>
+            {simResult.outcome}
+          </div>
+          <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+            {simResult.detail}
+          </div>
+        </div>
+      )}
+
+      {/* Scenario grid */}
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 8 }}>
         {scenarios.map((s, i) => {
           const isActive = active === i;
           const barPct = s.riskAfter * 100;
           return (
             <div key={s.label} onClick={() => applySimulation(i)}
               style={{
-                padding: "8px 10px", borderRadius: 6, cursor: "pointer",
-                background: isActive ? `${s.color}15` : "rgba(255,255,255,0.02)",
-                border: `1px solid ${isActive ? s.color + "44" : "rgba(255,255,255,0.06)"}`,
+                padding: "10px 12px", borderRadius: 7, cursor: "pointer",
+                background: isActive ? `${s.color}18` : "rgba(255,255,255,0.02)",
+                border: `1px solid ${isActive ? s.color + "55" : "rgba(255,255,255,0.06)"}`,
                 transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)",
                 position: "relative", overflow: "hidden",
                 userSelect: "none",
+                boxShadow: isActive ? `0 0 0 1px ${s.color}22, 0 4px 16px ${s.color}11` : "none",
               }}
               onMouseEnter={e => {
                 if (!isActive) {
@@ -77,11 +149,18 @@ export default function CounterfactualSimulation({ scenarios, currentRisk }: { s
               onMouseDown={e => { e.currentTarget.style.transform = "scale(0.97)"; }}
               onMouseUp={e => { e.currentTarget.style.transform = isActive ? "none" : "translateY(-2px)"; }}
             >
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.label}</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>{barPct.toFixed(0)}%</div>
-              <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+              <div style={{
+                fontSize: 9, fontWeight: 600, color: "var(--text-tertiary)",
+                letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 3,
+                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              }}>{s.label}</div>
+              <div style={{
+                fontSize: 18, fontWeight: 700, color: s.color,
+                fontFamily: "'JetBrains Mono', monospace", marginBottom: 8,
+              }}>{barPct.toFixed(0)}%</div>
+              <div style={{ height: 5, borderRadius: 3, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
                 <div style={{
-                  height: "100%", borderRadius: 2,
+                  height: "100%", borderRadius: 3,
                   width: `${barPct}%`,
                   background: `linear-gradient(90deg, ${s.color}, ${s.color}66)`,
                   transition: "width 0.6s cubic-bezier(0.16,1,0.3,1)",
@@ -90,7 +169,7 @@ export default function CounterfactualSimulation({ scenarios, currentRisk }: { s
               </div>
               {isActive && (
                 <div style={{
-                  position: "absolute", inset: 0, borderRadius: 6,
+                  position: "absolute", inset: 0, borderRadius: 7,
                   background: `linear-gradient(135deg, ${s.color}15, transparent 60%)`,
                   pointerEvents: "none",
                 }} />

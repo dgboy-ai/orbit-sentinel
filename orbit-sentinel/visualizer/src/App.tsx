@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import type { VisualizationData } from "./types";
 import ErrorBoundary from "./components/ErrorBoundary";
 import DigitalTwinGraph from "./components/DigitalTwinGraph";
@@ -400,7 +400,7 @@ export default function App() {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ minHeight: 380, flex: 1 }}><DigitalTwinGraph graph={data.graph} /></div>
-                <CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} />
+                <CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} />
               </div>
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function App() {
       case "historical": return <HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} />;
       case "report": return <ImpactReport data={data} />;
     }
-  }, [view, data]);
+  }, [view, data, navigate]);
 
   if (!data) {
     return (
