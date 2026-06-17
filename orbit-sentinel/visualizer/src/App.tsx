@@ -317,13 +317,12 @@ export default function App() {
     }
   }, []);
 
-  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Orbit Graph"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
+  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"]];
   const VIEW_QUERY_TAG: Partial<Record<View, {tag: string; color: string}>> = {
     "blast-radius": { tag: "NEIGHBORS", color: "#a78bfa" },
     "historical": { tag: "TRAVERSAL", color: "#22d3ee" },
     "risk": { tag: "AGGREGATION", color: "#f97316" },
   };
-  const FLOW_STEPS = ["Schema Discovery", "Orbit Graph", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
   const [prevView, setPrevView] = useState<View>(view);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -396,20 +395,16 @@ export default function App() {
           padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
           flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)", overflowX: "hidden",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#60a5fa,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🛰️</div>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Sentinel</div>
-              <span className="resp-hide-subtitle" style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Engineering Decision Intelligence</span>
-            </div>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Sentinel</span>
           </div>
         <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6, overflow: "hidden" }}>
-            <DataModeBanner mode={dataMode} errorMessage={error ?? undefined} onRetry={loadData} />
-          <span className="resp-hide-4queries" style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
-          </div>
+          <DataModeBanner mode={dataMode} onRetry={loadData} />
+        </div>
           {/* Placeholder matching loaded header height to prevent CLS */}
           <div className="header-nav resp-hide-subtitle" style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
-            {["Overview","Orbit Graph","Risk","Simulation","History","Report"].map(l => (
+            {["Overview","Graph","Risk","Forecast","History","Report"].map(l => (
               <div key={l} style={{ width: Math.max(l.length * 7.5 + 22, 50), height: 24, borderRadius: 6, background: "rgba(255,255,255,0.02)" }} />
             ))}
           </div>
@@ -471,25 +466,9 @@ export default function App() {
         boxShadow: `0 1px 0 ${accentColor}11`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease", overflowX: "hidden",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, boxShadow: `0 2px 8px ${accentGlow}` }}>🛰️</div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
-            </div>
-            <span className="resp-hide-subtitle" style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px", marginTop: -1, whiteSpace: "nowrap" }}>Engineering Decision Intelligence</span>
-          </div>
-          <div className="resp-hide-dots" style={{ width: 1, height: 24, background: "var(--border)", margin: "0 4px" }} />
-          <div className="resp-hide-dots" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 500, marginRight: 4, letterSpacing: "0.3px" }}>FLOW</span>
-            {FLOW_STEPS.map((s, i) => (
-              <div key={s} title={s} style={{
-                width: 6, height: 6, borderRadius: "50%",
-                background: i < 5 ? `${accentColor}66` : i < 7 ? "rgba(167,139,250,0.5)" : "rgba(34,197,94,0.5)",
-                transition: "all 0.2s",
-              }} />
-            ))}
-          </div>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
         <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
           <DataModeBanner mode={dataMode} onRetry={loadData} />
@@ -577,7 +556,7 @@ export default function App() {
             }}
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.16)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.08)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.25)"; }}
-          >👑 Tour</button>
+          >{isMobile ? "👑" : "👑 Tour"}</button>
           <button onClick={() => exportAsHtml(data)} title="Export as HTML" aria-label="Export report as HTML"
             style={{
               padding: isMobile ? "3px 7px" : "5px 10px", fontSize: isMobile ? 10 : 13, cursor: "pointer",
@@ -599,7 +578,7 @@ export default function App() {
             transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap", flexShrink: 0,
           }}>
             <span style={{ fontSize: 11 }}>{demo ? "■" : "▶"}</span>
-            {demo ? "Stop" : "Play"}
+            {isMobile ? "" : (demo ? "Stop" : "Play")}
           </button>
         </div>
       </header>
