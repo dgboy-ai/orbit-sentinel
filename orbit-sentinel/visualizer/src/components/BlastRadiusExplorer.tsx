@@ -329,9 +329,9 @@ export default function BlastRadiusExplorer({ graph }: Props) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr 260px", gap: 8, flex: 1, minHeight: 0 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr 260px", gridTemplateRows: "1fr", gap: 8, flex: 1, minHeight: 0 }}>
         {/* LEFT: Component Picker */}
-        <div className="card" style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6, position: "relative", overflow: "hidden" }}>
+        <div className="card" style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6, position: "relative", overflow: "hidden", height: "100%" }}>
           <GlowOrb color="rgba(96,165,250,0.1)" top="-20%" left="-30%" size={120} />
           <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 6, height: "100%" }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Components</div>
@@ -408,7 +408,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
         </div>
 
         {/* RIGHT: Details Panel */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, overflow: "auto" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, overflow: "auto", height: "100%" }}>
           {br && sel ? (
             <>
               {/* Selected Node Info */}
