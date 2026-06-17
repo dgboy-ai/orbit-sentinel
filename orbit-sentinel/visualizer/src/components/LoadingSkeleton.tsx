@@ -35,6 +35,29 @@ function SkeletonCard({ height, children }: { height?: string; children?: React.
 export default function LoadingSkeleton() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 16, height: "100%", background: "var(--bg-primary)" }}>
+      {/* ProblemSection slot (matches ProblemSection height to prevent CLS) */}
+      <SkeletonCard>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+          <SkeletonBlock width="28px" height="28px" borderRadius={6} />
+          <div style={{ flex: 1 }}>
+            <SkeletonBlock height="13px" width="160px" />
+            <div style={{ height: 4 }} />
+            <SkeletonBlock height="10px" width="260px" />
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 10 }}>
+          {Array.from({ length: 3 }, (_, i) => (
+            <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <SkeletonBlock height="11px" width="90px" />
+              <SkeletonBlock height="8px" />
+              <SkeletonBlock height="8px" />
+              <SkeletonBlock height="8px" width="80%" />
+            </div>
+          ))}
+        </div>
+        <SkeletonBlock height="10px" borderRadius={6} />
+      </SkeletonCard>
+
       {/* Metrics row */}
       <div className="card" style={{
         padding: "16px 20px", borderColor: "rgba(96,165,250,0.08)",
