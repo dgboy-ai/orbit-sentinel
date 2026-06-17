@@ -31,7 +31,7 @@ export default function HeroSection({
 
   return (
     <div className="card" style={{
-      padding: 0, overflow: "hidden", position: "relative", animation: "fadeSlideDown 0.5s ease", height: "100%",
+      padding: 0, overflow: "hidden", position: "relative", animation: "fadeSlideDown 0.5s ease", height: "auto", minHeight: "100%",
       boxShadow: isHigh ? `0 0 40px ${r.glow}` : undefined,
       transition: "box-shadow 1s ease",
     }}>

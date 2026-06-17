@@ -400,7 +400,7 @@ export default function App() {
             <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#60a5fa,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🛰️</div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Sentinel</div>
-              <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Engineering Decision Intelligence</span>
+              <span className="resp-hide-subtitle" style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Engineering Decision Intelligence</span>
             </div>
           </div>
           <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
@@ -477,7 +477,7 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
             </div>
-            <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px", marginTop: -1, whiteSpace: "nowrap" }}>Engineering Decision Intelligence</span>
+            <span className="resp-hide-subtitle" style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px", marginTop: -1, whiteSpace: "nowrap" }}>Engineering Decision Intelligence</span>
           </div>
           <div className="resp-hide-dots" style={{ width: 1, height: 24, background: "var(--border)", margin: "0 4px" }} />
           <div className="resp-hide-dots" style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -532,7 +532,7 @@ export default function App() {
             )}
           </div>
         )}
-        <div className={`header-nav${isTiny ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0 }} role="tablist" aria-label="Dashboard views">
+        <div className={`header-nav${isTiny ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }} role="tablist" aria-label="Dashboard views">
           {tabs.map(([k, lbl]) => {
             const help = DEMO_STEPS.find(d => d.view === k)?.sublabel ?? "";
             return (
@@ -541,8 +541,9 @@ export default function App() {
                 role="tab"
                 aria-selected={view === k}
                 aria-label={`${lbl} view: ${help}`}
+                className={VIEW_QUERY_TAG[k] ? "resp-hide-query-tag" : undefined}
                 style={{
-                padding: "4px 11px", fontSize: 11, fontWeight: view === k ? 600 : 400,
+                padding: isMobile ? "3px 8px" : "4px 11px", fontSize: isMobile ? 10 : 11, fontWeight: view === k ? 600 : 400,
                 border: view === k ? `1px solid ${accentColor}44` : "1px solid transparent",
                 borderRadius: 6, cursor: "pointer",
                 background: view === k ? `${accentColor}18` : "transparent",
@@ -564,23 +565,23 @@ export default function App() {
               <HelpTooltip text={help} />
             </span>
           );})}
-          <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 6px" }} />
+          <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
-              padding: "4px 8px", fontSize: 12, cursor: "pointer",
+              padding: isMobile ? "3px 7px" : "4px 8px", fontSize: isMobile ? 10 : 12, cursor: "pointer",
               border: "1px solid rgba(167,139,250,0.25)", borderRadius: 6,
               background: "rgba(167,139,250,0.08)", color: "#a78bfa",
-              transition: "all 0.15s ease",
+              transition: "all 0.15s ease", flexShrink: 0,
             }}
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.16)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.08)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.25)"; }}
           >👑 Tour</button>
           <button onClick={() => exportAsHtml(data)} title="Export as HTML" aria-label="Export report as HTML"
             style={{
-              padding: "5px 10px", fontSize: 13, cursor: "pointer",
+              padding: isMobile ? "3px 7px" : "5px 10px", fontSize: isMobile ? 10 : 13, cursor: "pointer",
               border: "1px solid var(--border)", borderRadius: 6,
               background: "transparent", color: "var(--text-secondary)",
-              transition: "all 0.15s ease",
+              transition: "all 0.15s ease", flexShrink: 0,
             }}
             onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border)"; }}
@@ -588,22 +589,22 @@ export default function App() {
           <button onClick={demo ? stopDemo : startDemo}
             aria-label={demo ? "Stop demo" : "Play demo"}
             style={{
-            padding: "5px 14px", fontSize: 11, fontWeight: 600, cursor: "pointer",
+            padding: isMobile ? "3px 10px" : "5px 14px", fontSize: isMobile ? 10 : 11, fontWeight: 600, cursor: "pointer",
             border: demo ? "1px solid rgba(239,68,68,0.4)" : `1px solid ${accentColor}44`,
             borderRadius: 6,
             background: demo ? "rgba(239,68,68,0.12)" : `${accentColor}18`,
             color: demo ? "var(--accent-red)" : accentColor,
-            transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap",
+            transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap", flexShrink: 0,
           }}>
-            <span style={{ fontSize: 13 }}>{demo ? "■" : "▶"}</span>
-            {demo ? "Stop Demo" : "Play Demo"}
+            <span style={{ fontSize: 11 }}>{demo ? "■" : "▶"}</span>
+            {demo ? "Stop" : "Play"}
           </button>
         </div>
       </header>
 
       {demo && (
         <div style={{
-          position: "absolute", top: isMobile ? 90 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
+          position: "absolute", top: isMobile ? 120 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
           display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
           animation: "fadeSlideDown 0.3s ease, pulseGlow 2s ease-in-out infinite",
           pointerEvents: "none",
