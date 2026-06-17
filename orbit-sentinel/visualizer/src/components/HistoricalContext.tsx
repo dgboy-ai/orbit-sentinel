@@ -350,149 +350,118 @@ export default function HistoricalContext({ incidents, totalAnalyzed }: Props) {
 
       {/* ORBIT MEMORY VERDICT - CLIMAX */}
       <div style={{
-        padding: "32px 40px", position: "relative", overflow: "hidden",
+        padding: "28px 32px", position: "relative", overflow: "hidden",
         borderRadius: 12,
         border: `3px solid rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.5)`,
         background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.15), rgba(15,18,26,0.98), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.08))`,
         boxShadow: `0 0 40px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.25), inset 0 0 20px rgba(255,255,255,0.02)`,
         animation: "fadeSlideUp 0.6s 0.7s ease both",
       }}>
-        <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
+        <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ 
             fontSize: 14, fontWeight: 900, letterSpacing: "3px", textTransform: "uppercase", 
-            color: "#fff", marginBottom: 20, 
+            color: "#fff", marginBottom: 20, textAlign: "center",
             textShadow: `0 0 20px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.5), 0 4px 8px rgba(0,0,0,0.5)`
           }}>
             ORBIT MEMORY VERDICT
           </div>
           
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 16, color: "var(--text-secondary)", marginBottom: 8, fontWeight: 500 }}>
-              Orbit identified a recurring branch failure pattern.
+          {/* TOP STATS ROW */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 20 }}>
+            {[
+              { label: "MRs Analyzed", value: String(totalAnalyzed), color: "#60a5fa" },
+              { label: "Pattern Matches", value: "9", color: "#ef4444" },
+              { label: "Pattern Match Score", value: "92%", color: "#eab308" },
+              { label: "Forecast Confidence", value: "HIGH", color: "#22c55e" },
+            ].map(s => (
+              <div key={s.label} style={{ textAlign: "center", padding: "8px 6px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: `1px solid ${s.color}22` }}>
+                <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${s.color}40` }}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+          
+          {/* SIGNAL BADGES + PATTERN NOTE ROW */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12, alignItems: "center", marginBottom: 20 }}>
+            <div>
+              <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 6 }}>Current MR exhibits the same signals:</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                <div style={{ padding: "3px 8px", borderRadius: 5, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", fontSize: 10, color: "#ef4444" }}>No deployment path</div>
+                <div style={{ padding: "3px 8px", borderRadius: 5, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", fontSize: 10, color: "#ef4444" }}>No CI validation</div>
+                <div style={{ padding: "3px 8px", borderRadius: 5, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", fontSize: 10, color: "#ef4444" }}>No ownership assignment</div>
+              </div>
             </div>
-            <div style={{ fontSize: 18, color: "var(--text-primary)", fontWeight: 600 }}>
-              {totalAnalyzed} historical MRs analyzed
-            </div>
-            <div style={{ fontSize: 18, color: "var(--text-primary)", fontWeight: 600 }}>
-              9 previous MRs followed the same trajectory
+            <div style={{ padding: "6px 14px", borderRadius: 6, background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)", textAlign: "center", whiteSpace: "nowrap" }}>
+              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 500 }}>Pattern Occurred</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#eab308" }}>9× before</div>
             </div>
           </div>
           
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 16, color: "var(--text-secondary)", marginBottom: 8, fontWeight: 500 }}>
-              Current MR exhibits the same signals:
-            </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
-              <div style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", fontSize: 12, color: "#ef4444" }}>No deployment path</div>
-              <div style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", fontSize: 12, color: "#ef4444" }}>No CI validation</div>
-              <div style={{ padding: "4px 10px", borderRadius: 6, background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", fontSize: 12, color: "#ef4444" }}>No ownership assignment</div>
-            </div>
-          </div>
-          
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 17, color: "var(--text-primary)", fontWeight: 700 }}>
-              Pattern Match Score
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#eab308", textShadow: "0 0 16px rgba(234,179,8,0.4)" }}>
-              92%
-            </div>
-          </div>
-          
+          {/* PATTERN VISUALIZATION */}
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 15, color: "var(--text-secondary)", fontStyle: "italic" }}>
-              This failure pattern has already occurred 9 times.
+            <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 6, textAlign: "center" }}>Pattern Visualization</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 4 }}>
+              {[
+                { label: "MR #2", color: "#ef4444", status: "CLOSED" },
+                { label: "MR #5", color: "#ef4444", status: "CLOSED" },
+                { label: "MR #9", color: "#ef4444", status: "CLOSED" },
+                { label: "MR #10", color: "#22c55e", status: "CURRENT" },
+              ].map((m, i) => (
+                <React.Fragment key={m.label}>
+                  <div style={{ textAlign: "center", minWidth: 60 }}>
+                    <div style={{ fontSize: 9, color: "var(--text-tertiary)" }}>{m.label}</div>
+                    <div style={{ fontSize: 16, color: m.color, fontWeight: 800, lineHeight: 1.2 }}>●</div>
+                    <div style={{ fontSize: 8, color: m.color, fontWeight: 600 }}>{m.status}</div>
+                  </div>
+                  {i < 3 && <div style={{ fontSize: 14, color: "var(--text-tertiary)", marginTop: -8 }}>→</div>}
+                </React.Fragment>
+              ))}
+            </div>
+            <div style={{ textAlign: "center", fontSize: 10, color: "var(--text-secondary)" }}>
+              Pattern Strength: <strong style={{ color: "#eab308" }}>90%</strong>
             </div>
           </div>
           
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 20, color: "#22c55e", fontWeight: 800, textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>
-              Forecast Confidence: HIGH
+          {/* PREDICTION COMPARISON ROW */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+            <div style={{
+              padding: "14px 16px", borderRadius: 8, textAlign: "center",
+              background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)",
+              boxShadow: "0 0 16px rgba(239,68,68,0.1)",
+            }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>If No Action</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.4)" }}>Closed</div>
+              <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 4 }}>within 7 days</div>
+            </div>
+            <div style={{
+              padding: "14px 16px", borderRadius: 8, textAlign: "center",
+              background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)",
+              boxShadow: "0 0 16px rgba(34,197,94,0.12)",
+            }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>With Mitigations</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>88% Merged</div>
+              <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 4 }}>with CI + reviewer + changes</div>
             </div>
           </div>
           
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 16, color: "var(--text-secondary)", marginBottom: 8, fontWeight: 500 }}>
-              Pattern Visualization
-            </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8 }}>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>MR #2</div>
-                <div style={{ fontSize: 20, color: "#ef4444", fontWeight: 800 }}>●</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>CLOSED</div>
+          {/* EVIDENCE + FOOTER ROW */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12, alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Evidence Sources</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                <div style={{ padding: "3px 8px", borderRadius: 4, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", fontSize: 9, color: "#22c55e" }}>✓ Traversal</div>
+                <div style={{ padding: "3px 8px", borderRadius: 4, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", fontSize: 9, color: "#22c55e" }}>✓ Historical Similarity</div>
+                <div style={{ padding: "3px 8px", borderRadius: 4, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", fontSize: 9, color: "#22c55e" }}>✓ Neighbors</div>
+                <div style={{ padding: "3px 8px", borderRadius: 4, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", fontSize: 9, color: "#22c55e" }}>✓ Path Finding</div>
               </div>
-              <div style={{ fontSize: 20, color: "var(--text-tertiary)" }}>↓</div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>MR #5</div>
-                <div style={{ fontSize: 20, color: "#ef4444", fontWeight: 800 }}>●</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>CLOSED</div>
-              </div>
-              <div style={{ fontSize: 20, color: "var(--text-tertiary)" }}>↓</div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>MR #9</div>
-                <div style={{ fontSize: 20, color: "#ef4444", fontWeight: 800 }}>●</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>CLOSED</div>
-              </div>
-              <div style={{ fontSize: 20, color: "var(--text-tertiary)" }}>↓</div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 12, color: "var(--accent-blue)" }}>MR #10</div>
-                <div style={{ fontSize: 20, color: "#22c55e", fontWeight: 800 }}>●</div>
-                <div style={{ fontSize: 10, color: "var(--accent-blue)" }}>CURRENT</div>
-              </div>
             </div>
-            <div style={{ textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
-              Pattern Strength: 90%
+            <div style={{
+              padding: "6px 14px", borderRadius: 6,
+              background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)",
+              fontSize: 9, color: "var(--text-tertiary)", maxWidth: 260,
+            }}>
+              <strong style={{ color: "var(--accent-blue)" }}>Query Types Used:</strong> All 4 Orbit query types to build the digital twin and predict MR outcomes.
             </div>
-          </div>
-          
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 16, color: "var(--text-secondary)", marginBottom: 8, fontWeight: 500 }}>
-              Evidence Sources
-            </div>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-              <div style={{ padding: "6px 12px", borderRadius: 6, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", fontSize: 12, color: "#22c55e" }}>✓ Traversal</div>
-              <div style={{ padding: "6px 12px", borderRadius: 6, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", fontSize: 12, color: "#22c55e" }}>✓ Historical Similarity</div>
-              <div style={{ padding: "6px 12px", borderRadius: 6, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", fontSize: 12, color: "#22c55e" }}>✓ Neighbors</div>
-              <div style={{ padding: "6px 12px", borderRadius: 6, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", fontSize: 12, color: "#22c55e" }}>✓ Path Finding</div>
-            </div>
-          </div>
-          
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 16, color: "var(--text-secondary)", marginBottom: 8, fontWeight: 500 }}>
-              Orbit Prediction
-            </div>
-            <div style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6 }}>
-              If no action is taken:
-              <br />
-              MR likely closes within 7 days
-              <br /><br />
-              If recommended actions are applied:
-              <br />
-              <strong style={{ color: "#22c55e" }}>88% probability of successful merge</strong>
-            </div>
-          </div>
-          
-          <div style={{
-            padding: "16px 32px", display: "inline-block",
-            borderRadius: 10,
-            background: "rgba(239,68,68,0.12)", border: "2px solid rgba(239,68,68,0.4)",
-            boxShadow: "0 0 24px rgba(239,68,68,0.2), inset 0 0 10px rgba(239,68,68,0.05)",
-            fontSize: 15, color: "#ef4444", fontWeight: 700,
-          }}>
-            Prediction:
-            <br />
-            MR unlikely to reach production
-            <br />
-            unless mitigation actions are taken.
-          </div>
-          
-          <div style={{
-            padding: "12px 20px", borderRadius: 8,
-            background: "rgba(96,165,250,0.06)",
-            border: "1px solid rgba(96,165,250,0.12)",
-            fontSize: 13, color: "var(--text-tertiary)",
-            marginTop: 16
-          }}>
-            <strong>Query Types Used:</strong> All 4 Orbit query types (Traversal, Aggregation, Path Finding, Neighbors) to build the engineering digital twin and predict MR outcomes.
           </div>
         </div>
       </div>

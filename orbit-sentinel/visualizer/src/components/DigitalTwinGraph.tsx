@@ -195,19 +195,6 @@ export default function DigitalTwinGraph({ graph }: Props) {
       }
     });
 
-    for (let i = 0; i < 30; i++) {
-      const particle = defs.append("circle")
-        .attr("r",0.5+Math.random()*1)
-        .attr("fill","rgba(96,165,250,0.15)")
-        .attr("cx",Math.random()*w)
-        .attr("cy",Math.random()*h);
-      particle.transition()
-        .duration(3000+Math.random()*4000)
-        .ease(d3.easeLinear)
-        .attr("cy",-10)
-        .on("end",function repeat(){const p=d3.select(this);p.attr("cy",h+10).attr("cx",Math.random()*w);p.transition().duration(3000+Math.random()*4000).ease(d3.easeLinear).attr("cy",-10).on("end",repeat);});
-    }
-
     return ()=>{sim.stop();cancelAnimationFrame(rafRef.current);};
   }, [graph]);
 

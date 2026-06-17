@@ -541,6 +541,7 @@ export default function App() {
 
       <main key={view} style={{
         position: "relative", zIndex: 1, flex: 1, padding: 16, overflow: "auto", minHeight: 0,
+        willChange: "transform",
         animation: transitioning ? "none" : "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
       }}>
         <ErrorBoundary>

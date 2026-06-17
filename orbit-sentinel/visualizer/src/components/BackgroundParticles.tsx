@@ -8,16 +8,7 @@ interface Particle {
 export default function BackgroundParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight };
-    };
-    window.addEventListener("mousemove", handler);
-    return () => window.removeEventListener("mousemove", handler);
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,19 +24,18 @@ export default function BackgroundParticles() {
     resize();
     window.addEventListener("resize", resize);
 
-    const MAX = 60;
+    const MAX = 20;
     particlesRef.current = [];
 
     function spawnParticle() {
-      const maxLife = 120 + Math.random() * 180;
       return {
         x: Math.random() * (canvas?.width ?? 1920),
         y: (canvas?.height ?? 1080) + 20,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: -(0.15 + Math.random() * 0.25),
-        size: 0.5 + Math.random() * 1.5,
-        alpha: 0.2 + Math.random() * 0.4,
-        life: 0, maxLife,
+        vx: (Math.random() - 0.5) * 0.1,
+        vy: -(0.1 + Math.random() * 0.15),
+        size: 0.5 + Math.random() * 1,
+        alpha: 0.15 + Math.random() * 0.25,
+        life: 0, maxLife: 120 + Math.random() * 180,
       };
     }
 
@@ -60,31 +50,15 @@ export default function BackgroundParticles() {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const mx = mouseRef.current.x;
-      const my = mouseRef.current.y;
-
       const particles = particlesRef.current;
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
 
-        const dx = (mx * canvas.width) - p.x;
-        const dy = (my * canvas.height) - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200) {
-          p.vx += (dx / dist) * 0.002;
-          p.vy += (dy / dist) * 0.002;
-        }
-
-        p.vx += (Math.random() - 0.5) * 0.008;
-        p.vy += (Math.random() - 0.5) * 0.008;
-        p.vx *= 0.98;
-        p.vy *= 0.98;
-
         p.life++;
         const lifeRatio = p.life / p.maxLife;
-        const fadeAlpha = p.alpha * (1 - lifeRatio) * 0.6;
+        const fadeAlpha = p.alpha * (1 - lifeRatio) * 0.5;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
