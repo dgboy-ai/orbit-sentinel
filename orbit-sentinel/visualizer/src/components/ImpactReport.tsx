@@ -518,385 +518,243 @@ export default function ImpactReport({ data }: Props) {
         </div>
       </div>
 
-      {/* ── Section: Executive Summary ── */}
-      <SectionCard id="sec-summary" icon="📋" title="Executive Summary & Confidence" col={col}>
-        <div style={{
-          padding: "14px 18px", borderRadius: 8,
-          background: `linear-gradient(135deg, ${col}08, transparent)`,
-          border: `1px solid ${col}15`,
-          position: "relative", overflow: "hidden",
-          marginBottom: 12,
-        }}>
-          <div style={{
-            position: "absolute", left: 0, top: 0, bottom: 0, width: 3,
-            background: grad, borderRadius: "0 2px 2px 0",
-          }} />
-          <div style={{ fontSize: 22, color: col, marginBottom: 6, lineHeight: 1, opacity: 0.35 }}>"</div>
-          <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.7, fontStyle: "italic", paddingLeft: 4 }}>
-            {hero.predictedOutcome}
-          </div>
-        </div>
-        <div style={{ fontSize: 11, color: "var(--text-secondary)", marginBottom: 10, lineHeight: 1.5 }}>
-          <strong style={{ color: "var(--text-primary)" }}>Recommended action:</strong> {hero.recommendedAction}
-        </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {hero.confidenceFactors.map(f => {
-            const dotColor = f.status === "success" ? "#22c55e" : f.status === "warning" ? "#eab308" : "#ef4444";
-            return (
-              <div key={f.label} style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "5px 12px", borderRadius: 6,
-                background: `${dotColor}08`, border: `1px solid ${dotColor}18`,
-                fontSize: 10, color: "var(--text-secondary)",
-                transition: "all 0.15s ease",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.background = `${dotColor}12`; e.currentTarget.style.borderColor = `${dotColor}30`; }}
-                onMouseLeave={e => { e.currentTarget.style.background = `${dotColor}08`; e.currentTarget.style.borderColor = `${dotColor}18`; }}
-              >
-                <span style={{
-                  width: 6, height: 6, borderRadius: "50%", background: dotColor,
-                  boxShadow: `0 0 5px ${dotColor}66`, flexShrink: 0,
-                }} />
-                <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>{f.label}:</span> {f.value}
-              </div>
-            );
-          })}
-        </div>
-      </SectionCard>
-
-      {/* ── Section: Risk Breakdown ── */}
-      <SectionCard id="sec-breakdown" icon="📊" title="Risk Factor Breakdown" col={col}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-          {riskData.breakdown.map((b, i) => {
-            const pct = (b.value / b.maxValue) * 100;
-            const bc = pct > 75 ? "#ef4444" : pct > 50 ? "#f97316" : pct > 25 ? "#eab308" : "#22c55e";
-            return (
-              <div key={b.category} style={{
-                padding: "10px 14px", borderRadius: 7,
-                background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-                animation: `fadeSlideUp 0.3s ${0.1 + i * 0.04}s ease both`,
-              }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                  <div style={{ fontSize: 10, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.3 }}>{b.category}</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: bc, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 8 }}>
-                    {b.value}/{b.maxValue}
-                  </div>
-                </div>
-                <div style={{ height: 5, borderRadius: 3, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
-                  <div style={{
-                    height: "100%", borderRadius: 3,
-                    width: `${pct}%`,
-                    background: `linear-gradient(90deg, ${bc}, ${bc}77)`,
-                    transition: "width 0.8s cubic-bezier(0.16,1,0.3,1)",
-                    boxShadow: `0 0 6px ${bc}33`,
-                  }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </SectionCard>
-
-      {/* ── Section: Orbit Evidence Chain ── */}
-      <SectionCard id="sec-evidence" icon="🔗" title="Orbit Evidence Chain" col={col}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {evidence.map((e, i) => (
-            <EvidenceMiniCard key={e.queryType} e={e} delay={0.1 + i * 0.04} />
-          ))}
-        </div>
-      </SectionCard>
-
-      {/* ── Section: Risk Trajectory + Timeline ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "stretch" }}>
-        <SectionCard id="sec-remediation" icon="📉" title="Risk Trajectory" col={col}>
-          <RiskSparkline
-            points={[
-              { label: "Current", value: decisionCenter.riskReduction.current },
-              { label: "Changes", value: counterfactuals[0]?.riskAfter ?? 0 },
-              { label: "Pipeline", value: counterfactuals[1]?.riskAfter ?? 0 },
-              { label: "Review", value: counterfactuals[2]?.riskAfter ?? 0 },
-              { label: "All", value: decisionCenter.riskReduction.afterRecommendation },
-            ]}
-            width={280} height={55}
-          />
-          <div style={{
-            textAlign: "center", fontSize: 9, color: "var(--text-tertiary)", marginTop: 6,
-            letterSpacing: "0.3px",
-          }}>
-            Risk level across remediation steps
-          </div>
-        </SectionCard>
-
-        <SectionCard id="sec-timeline" icon="📅" title="Predicted Timeline" col={col}>
-          <div style={{ position: "relative", paddingLeft: 24 }}>
+      {/* ── 2-Column Body Grid ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
+        {/* Left Column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* ── Executive Summary ── */}
+          <SectionCard id="sec-summary" icon="📋" title="Executive Summary & Confidence" col={col}>
             <div style={{
-              position: "absolute", left: 8, top: 4, bottom: 4, width: 2,
-              background: `linear-gradient(180deg, ${col}44, ${col}08)`,
-              borderRadius: 1,
-            }} />
-            {futureTimeline.slice(0, 4).map((evt, i) => (
-              <div key={evt.day} style={{
-                position: "relative", paddingBottom: i < 3 ? 10 : 0,
-                animation: `fadeSlideUp 0.25s ${0.1 + i * 0.06}s ease both`,
-              }}>
-                <div style={{
-                  position: "absolute", left: -18, top: 3,
-                  width: 12, height: 12, borderRadius: "50%",
-                  background: `${col}15`, border: `2px solid ${col}`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: `0 0 0 3px ${col}08`,
-                }}>
-                  <div style={{ width: 3, height: 3, borderRadius: "50%", background: col }} />
-                </div>
-                <div style={{
-                  padding: "8px 12px", borderRadius: 6,
-                  background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                    <span style={{ fontSize: 11 }}>{evt.icon}</span>
-                    <span style={{
-                      fontSize: 8, fontWeight: 700, color: col,
-                      letterSpacing: "0.3px", fontFamily: "'JetBrains Mono', monospace",
-                    }}>D+{evt.day}</span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>{evt.label}</span>
-                  </div>
-                  <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4, marginLeft: 17 }}>
-                    {evt.description}
-                  </div>
-                </div>
+              padding: "12px 16px", borderRadius: 8,
+              background: `linear-gradient(135deg, ${col}08, transparent)`,
+              border: `1px solid ${col}15`,
+              position: "relative", overflow: "hidden",
+              marginBottom: 10,
+            }}>
+              <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: grad, borderRadius: "0 2px 2px 0" }} />
+              <div style={{ fontSize: 18, color: col, marginBottom: 4, lineHeight: 1, opacity: 0.35 }}>"</div>
+              <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, fontStyle: "italic" }}>
+                {hero.predictedOutcome}
               </div>
-            ))}
-          </div>
-        </SectionCard>
-      </div>
-
-      {/* ── Section: Historical Incidents ── */}
-      <SectionCard id="sec-incidents" icon="⚠️" title="Historical Incident Analysis" col={col}>
-        {incidents.length === 0 ? (
-          <div style={{ padding: 16, textAlign: "center", color: "var(--text-secondary)", fontSize: 12 }}>
-            No similar historical incidents found.
-          </div>
-        ) : (
-          <>
-            <IncidentBar incidents={incidents} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {incidents.map((inc, i) => {
-                const simColor = inc.similarity > 80 ? "#ef4444" : inc.similarity > 50 ? "#f97316" : "#eab308";
+            </div>
+            <div style={{ fontSize: 10, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4 }}>
+              <strong style={{ color: "var(--text-primary)" }}>Action:</strong> {hero.recommendedAction}
+            </div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {hero.confidenceFactors.map(f => {
+                const dotColor = f.status === "success" ? "#22c55e" : f.status === "warning" ? "#eab308" : "#ef4444";
                 return (
-                  <div key={`${inc.mrIid}`} style={{
-                    padding: "10px 14px", borderRadius: 7,
-                    background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-                    display: "flex", gap: 10,
-                    animation: `fadeSlideUp 0.25s ${0.1 + i * 0.05}s ease both`,
-                    transition: "all 0.15s ease",
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = `${simColor}33`; e.currentTarget.style.background = `${simColor}06`; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "rgba(255,255,255,0.015)"; }}
-                  >
-                    <div style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>⚠️</div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 3 }}>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>
-                          !{inc.mrIid} {inc.title}
-                        </span>
-                        <span style={{
-                          fontSize: 8, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
-                          background: `${simColor}15`, color: simColor,
-                          border: `1px solid ${simColor}25`,
-                        }}>
-                          {inc.similarity}%
-                        </span>
-                        <span style={{
-                          fontSize: 8, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
-                          background: inc.outcome === "Merged" ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
-                          color: inc.outcome === "Merged" ? "#22c55e" : "#ef4444",
-                          border: `1px solid ${inc.outcome === "Merged" ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}`,
-                        }}>{inc.outcome.toUpperCase()}</span>
+                  <div key={f.label} style={{
+                    display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 5,
+                    background: `${dotColor}08`, border: `1px solid ${dotColor}18`, fontSize: 9, color: "var(--text-secondary)",
+                  }}>
+                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: dotColor, boxShadow: `0 0 4px ${dotColor}66`, flexShrink: 0 }} />
+                    <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>{f.label}:</span> {f.value}
+                  </div>
+                );
+              })}
+            </div>
+          </SectionCard>
+
+          {/* ── Risk Breakdown ── */}
+          <SectionCard id="sec-breakdown" icon="📊" title="Risk Factor Breakdown" col={col}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {riskData.breakdown.map((b, i) => {
+                const pct = (b.value / b.maxValue) * 100;
+                const bc = pct > 75 ? "#ef4444" : pct > 50 ? "#f97316" : pct > 25 ? "#eab308" : "#22c55e";
+                return (
+                  <div key={b.category} style={{ animation: `fadeSlideUp 0.25s ${0.1 + i * 0.03}s ease both` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                      <div style={{ fontSize: 9, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.2 }}>{b.category}</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: bc, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 6 }}>
+                        {b.value}/{b.maxValue}
                       </div>
-                      <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4, marginBottom: 2 }}>
-                        <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Root cause:</span> {inc.rootCause}
-                      </div>
-                      <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4 }}>
-                        <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Mitigation:</span> {inc.mitigation}
-                      </div>
+                    </div>
+                    <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                      <div style={{ height: "100%", borderRadius: 2, width: `${pct}%`, background: `linear-gradient(90deg, ${bc}, ${bc}77)`, boxShadow: `0 0 4px ${bc}33`, transition: "width 0.6s ease" }} />
                     </div>
                   </div>
                 );
               })}
             </div>
-          </>
-        )}
-      </SectionCard>
+          </SectionCard>
 
-      {/* ── Section: Decision Center + Remediation ── */}
+          {/* ── Risk Trajectory + Timeline side by side ── */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <SectionCard id="sec-remediation" icon="📉" title="Trajectory" col={col}>
+              <RiskSparkline points={[
+                { label: "Current", value: decisionCenter.riskReduction.current },
+                { label: "Changes", value: counterfactuals[0]?.riskAfter ?? 0 },
+                { label: "Pipeline", value: counterfactuals[1]?.riskAfter ?? 0 },
+                { label: "Review", value: counterfactuals[2]?.riskAfter ?? 0 },
+                { label: "All", value: decisionCenter.riskReduction.afterRecommendation },
+              ]} width={180} height={45} />
+            </SectionCard>
+            <SectionCard id="sec-timeline" icon="📅" title="Timeline" col={col}>
+              <div style={{ position: "relative", paddingLeft: 18 }}>
+                <div style={{ position: "absolute", left: 6, top: 4, bottom: 4, width: 1.5, background: `linear-gradient(180deg, ${col}44, ${col}08)`, borderRadius: 1 }} />
+                {futureTimeline.slice(0, 4).map((evt, i) => (
+                  <div key={evt.day} style={{ position: "relative", paddingBottom: i < 3 ? 6 : 0 }}>
+                    <div style={{ position: "absolute", left: -13, top: 2, width: 10, height: 10, borderRadius: "50%", background: `${col}15`, border: `1.5px solid ${col}`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 0 2px ${col}06` }}>
+                      <div style={{ width: 2.5, height: 2.5, borderRadius: "50%", background: col }} />
+                    </div>
+                    <div style={{ padding: "6px 10px", borderRadius: 5, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
+                        <span style={{ fontSize: 10 }}>{evt.icon}</span>
+                        <span style={{ fontSize: 7, fontWeight: 700, color: col, letterSpacing: "0.2px", fontFamily: "'JetBrains Mono', monospace" }}>D+{evt.day}</span>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>{evt.label}</span>
+                      </div>
+                      <div style={{ fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3, marginLeft: 14 }}>{evt.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* ── Orbit Evidence Chain ── */}
+          <SectionCard id="sec-evidence" icon="🔗" title="Orbit Evidence Chain" col={col}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+              {evidence.map((e, i) => (
+                <EvidenceMiniCard key={e.queryType} e={e} delay={0.1 + i * 0.03} />
+              ))}
+            </div>
+          </SectionCard>
+
+          {/* ── Historical Incidents ── */}
+          <SectionCard id="sec-incidents" icon="⚠️" title="Incident Analysis" col={col}>
+            {incidents.length === 0 ? (
+              <div style={{ padding: 12, textAlign: "center", color: "var(--text-secondary)", fontSize: 11 }}>No similar historical incidents found.</div>
+            ) : (
+              <>
+                <IncidentBar incidents={incidents} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                  {incidents.map((inc, i) => {
+                    const simColor = inc.similarity > 80 ? "#ef4444" : inc.similarity > 50 ? "#f97316" : "#eab308";
+                    return (
+                      <div key={`${inc.mrIid}`} style={{
+                        padding: "8px 12px", borderRadius: 6,
+                        background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
+                        display: "flex", gap: 8,
+                        animation: `fadeSlideUp 0.2s ${0.1 + i * 0.04}s ease both`,
+                      }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = `${simColor}33`; e.currentTarget.style.background = `${simColor}06`; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "rgba(255,255,255,0.015)"; }}
+                      >
+                        <div style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>⚠️</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap", marginBottom: 2 }}>
+                            <span style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>!{inc.mrIid}</span>
+                            <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${simColor}15`, color: simColor, border: `1px solid ${simColor}25` }}>{inc.similarity}%</span>
+                            <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: inc.outcome === "Merged" ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)", color: inc.outcome === "Merged" ? "#22c55e" : "#ef4444", border: `1px solid ${inc.outcome === "Merged" ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}` }}>{inc.outcome.toUpperCase()}</span>
+                          </div>
+                          <div style={{ fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3 }}>{inc.rootCause}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </SectionCard>
+
+          {/* ── Report Metadata ── */}
+          <SectionCard id="sec-info" icon="ℹ️" title="Metadata" col={col}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+              {[
+                { label: "Generated", value: new Date(summary.timestamp).toLocaleString() },
+                { label: "Confidence", value: hero.confidence },
+                { label: "Score", value: summary.riskScore },
+                { label: "Level", value: summary.riskLevel },
+                { label: "Twin Size", value: `${summary.totalNodes}N / ${summary.totalEdges}E` },
+                { label: "MR IID", value: `!${summary.mrIid}` },
+              ].map(item => (
+                <div key={item.label} style={{ padding: "6px 8px", borderRadius: 4, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.2px", textTransform: "uppercase", marginBottom: 1 }}>{item.label}</div>
+                  <div style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.2 }}>{item.value}</div>
+                </div>
+              ))}
+            </div>
+          </SectionCard>
+        </div>
+      </div>
+
+      {/* ── Section: Decision Center + Remediation (full-width) ── */}
       <SectionCard id="sec-decision" icon="🎯" title="Decision Center & Remediation Plan" col={col}>
         {/* Verdict banner */}
         <div style={{
-          padding: "12px 16px", borderRadius: 8, marginBottom: 12,
+          padding: "12px 16px", borderRadius: 8, marginBottom: 10,
           background: `linear-gradient(135deg, ${col}15, ${col}05)`,
           border: `1px solid ${col}28`,
           display: "flex", alignItems: "center", gap: 12,
         }}>
-          <div style={{
-            width: 38, height: 38, borderRadius: 10,
-            background: `${col}20`, display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 18, flexShrink: 0,
-          }}>🚫</div>
+          <div style={{ width: 36, height: 36, borderRadius: 9, background: `${col}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>🚫</div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: col, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 1 }}>
-              DO NOT DEPLOY — Remediation Required
-            </div>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>
-              {decisionCenter.deploymentStrategy}
-            </div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: col, letterSpacing: "0.4px", textTransform: "uppercase", marginBottom: 1 }}>DO NOT DEPLOY — Remediation Required</div>
+            <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.3 }}>{decisionCenter.deploymentStrategy}</div>
           </div>
         </div>
 
-        {/* Current vs After risk */}
-        <div style={{ marginBottom: 12 }}>
-          <div style={{
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "9px 14px", borderRadius: 6, marginBottom: 4,
-            background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)",
-          }}>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Current Risk</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 100, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
-                <div style={{
-                  height: "100%", borderRadius: 3,
-                  width: `${decisionCenter.riskReduction.current * 100}%`,
-                  background: grad, boxShadow: `0 0 6px ${glow}`,
-                  transition: "width 0.6s ease",
-                }} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          {/* Left half: Risk bars + remediation flow */}
+          <div>
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, marginBottom: 3, background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>Current Risk</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 70, height: 5, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                    <div style={{ height: "100%", borderRadius: 2, width: `${decisionCenter.riskReduction.current * 100}%`, background: grad, boxShadow: `0 0 4px ${glow}` }} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: col, fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.current * 100).toFixed(0)}%</span>
+                </div>
               </div>
-              <span style={{
-                fontSize: 14, fontWeight: 800, color: col,
-                fontFamily: "'JetBrains Mono', monospace",
-              }}>{(decisionCenter.riskReduction.current * 100).toFixed(0)}%</span>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)" }}>
+                <div style={{ fontSize: 9, color: "#22c55e", fontWeight: 600 }}>After Full Remediation</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 70, height: 5, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                    <div style={{ height: "100%", borderRadius: 2, width: `${decisionCenter.riskReduction.afterRecommendation * 100}%`, background: "linear-gradient(90deg, #22c55e, #4ade80)", boxShadow: "0 0 4px rgba(34,197,94,0.3)" }} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.afterRecommendation * 100).toFixed(0)}%</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Remediation Pathway</div>
+              <RemediationFlow current={decisionCenter.riskReduction.current} scenarios={counterfactuals} />
             </div>
           </div>
-          <div style={{
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "9px 14px", borderRadius: 6,
-            background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)",
-          }}>
-            <div style={{ fontSize: 10, color: "#22c55e", fontWeight: 600 }}>After Full Remediation</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 100, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
-                <div style={{
-                  height: "100%", borderRadius: 3,
-                  width: `${decisionCenter.riskReduction.afterRecommendation * 100}%`,
-                  background: "linear-gradient(90deg, #22c55e, #4ade80)",
-                  boxShadow: "0 0 6px rgba(34,197,94,0.35)",
-                }} />
-              </div>
-              <span style={{
-                fontSize: 14, fontWeight: 800, color: "#22c55e",
-                fontFamily: "'JetBrains Mono', monospace",
-              }}>{(decisionCenter.riskReduction.afterRecommendation * 100).toFixed(0)}%</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Connected remediation flow */}
-        <div style={{
-          padding: "10px 14px", borderRadius: 8, marginBottom: 12,
-          background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-        }}>
-          <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 6 }}>
-            Remediation Pathway
-          </div>
-          <RemediationFlow current={decisionCenter.riskReduction.current} scenarios={counterfactuals} />
-        </div>
-
-        {/* Reviewers + Tests grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 10 }}>
-          <div style={{
-            padding: "10px 14px", borderRadius: 7,
-            background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-          }}>
-            <div style={{ fontSize: 9, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 6 }}>
-              👤 Reviewers
-            </div>
-            {decisionCenter.reviewers.map(r => (
-              <div key={r.name} style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "3px 0", fontSize: 10,
-              }}>
-                <span style={{
-                  width: 5, height: 5, borderRadius: "50%",
-                  background: r.role.includes("Needed") ? "#eab308" : "#22c55e",
-                  flexShrink: 0, boxShadow: `0 0 4px ${r.role.includes("Needed") ? "rgba(234,179,8,0.5)" : "rgba(34,197,94,0.5)"}`,
-                }} />
-                <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{r.name}</span>
-                <span style={{ color: "var(--text-tertiary)", marginLeft: "auto", fontSize: 8 }}>{r.role}</span>
+          {/* Right half: Reviewers + Tests + Rollback */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>👤 Reviewers</div>
+                {decisionCenter.reviewers.map(r => (
+                  <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", fontSize: 9 }}>
+                    <span style={{ width: 4, height: 4, borderRadius: "50%", background: r.role.includes("Needed") ? "#eab308" : "#22c55e", flexShrink: 0 }} />
+                    <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{r.name}</span>
+                    <span style={{ color: "var(--text-tertiary)", marginLeft: "auto", fontSize: 7 }}>{r.role}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div style={{
-            padding: "10px 14px", borderRadius: 7,
-            background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-          }}>
-            <div style={{ fontSize: 9, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 6 }}>
-              ✅ Required Actions
-            </div>
-            {decisionCenter.requiredTests.map((t, i) => (
-              <div key={t} style={{
-                display: "flex", alignItems: "flex-start", gap: 5,
-                padding: "2px 0", fontSize: 9, color: "var(--text-secondary)",
-                lineHeight: 1.4,
-              }}>
-                <span style={{
-                  fontSize: 7, fontWeight: 700, color: col,
-                  fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginTop: 2,
-                }}>{i + 1}.</span>
-                {t}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ marginTop: 10 }}>
-          <div style={{
-            padding: "9px 14px", borderRadius: 7,
-            background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-          }}>
-            <div style={{ fontSize: 9, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>
-              🔄 Rollback Strategy
-            </div>
-            <div style={{ fontSize: 10, color: "var(--text-primary)", lineHeight: 1.5 }}>
-              {decisionCenter.rollbackStrategy}
-            </div>
-          </div>
-        </div>
-      </SectionCard>
-
-      {/* ── Section: Report Metadata ── */}
-      <SectionCard id="sec-info" icon="ℹ️" title="Report Metadata & Generation Info" col={col}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
-          {[
-            { label: "Generated", value: new Date(summary.timestamp).toLocaleString() },
-            { label: "Confidence", value: hero.confidence },
-            { label: "Risk Score", value: summary.riskScore },
-            { label: "Risk Level", value: summary.riskLevel },
-            { label: "Project", value: summary.project },
-            { label: "Branch", value: summary.branch },
-            { label: "Digital Twin Size", value: `${summary.totalNodes} nodes, ${summary.totalEdges} edges` },
-            { label: "Analysis Method", value: hero.generatedUsing },
-            { label: "MR IID", value: `!${summary.mrIid}` },
-          ].map(item => (
-            <div key={item.label} style={{
-              padding: "7px 10px", borderRadius: 5,
-              background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
-            }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>
-                {item.label}
-              </div>
-              <div style={{ fontSize: 10, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.3 }}>
-                {item.value}
+              <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>✅ Actions</div>
+                {decisionCenter.requiredTests.map((t, i) => (
+                  <div key={t} style={{ display: "flex", alignItems: "flex-start", gap: 4, padding: "1.5px 0", fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3 }}>
+                    <span style={{ fontSize: 6, fontWeight: 700, color: col, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginTop: 1 }}>{i + 1}.</span>
+                    {t}
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+            <div style={{ padding: "7px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 3 }}>🔄 Rollback Strategy</div>
+              <div style={{ fontSize: 9, color: "var(--text-primary)", lineHeight: 1.4 }}>{decisionCenter.rollbackStrategy}</div>
+            </div>
+          </div>
         </div>
       </SectionCard>
 
