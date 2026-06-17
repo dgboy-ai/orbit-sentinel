@@ -405,7 +405,7 @@ export default function App() {
           </div>
         <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6, overflow: "hidden" }}>
             <DataModeBanner mode={dataMode} errorMessage={error ?? undefined} onRetry={loadData} />
-            <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
+          <span className="resp-hide-4queries" style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
           </div>
           {/* Placeholder matching loaded header height to prevent CLS */}
           <div className="header-nav resp-hide-subtitle" style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
