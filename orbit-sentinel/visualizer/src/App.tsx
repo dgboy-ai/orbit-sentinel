@@ -18,10 +18,8 @@ import PathBrokenAnimation from "./components/PathBrokenAnimation";
 import BackgroundParticles from "./components/BackgroundParticles";
 import { riskScoreToKey, RISK } from "./utils/colors";
 
-// API configuration
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-engine-domain.com' 
-  : 'http://localhost:3001';
+// API configuration — set VITE_API_BASE_URL as Vercel env var to enable live engine
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string || '';
 
 const DATA: VisualizationData = {
   graph: {
@@ -172,7 +170,7 @@ const apiService = {
   },
 
   isApiAvailable(): boolean {
-    return !!API_BASE_URL && API_BASE_URL !== 'http://localhost:3001';
+    return !!API_BASE_URL && API_BASE_URL !== 'http://localhost:3001' && API_BASE_URL !== 'https://your-engine-domain.com';
   },
 };
 
@@ -283,19 +281,23 @@ export default function App() {
           });
           setData(result.report);
         } else {
-          // Fallback to demo mode
-          const result = await apiService.getDemoData();
-          setData(result.report);
+          // No engine server — use hardcoded demo data
+          setData(DATA);
         }
       } catch (err) {
         console.error('Failed to load data:', err);
         setError(err instanceof Error ? err.message : 'Failed to load data');
-        // Fallback to demo data on error
+        // Fallback: try demo endpoint, then hardcoded data
         try {
-          const result = await apiService.getDemoData();
-          setData(result.report);
+          if (apiService.isApiAvailable()) {
+            const result = await apiService.getDemoData();
+            setData(result.report);
+          } else {
+            setData(DATA);
+          }
         } catch (demoErr) {
           console.error('Failed to load demo data:', demoErr);
+          setData(DATA);
         }
       } finally {
         setLoading(false);
@@ -304,6 +306,14 @@ export default function App() {
 
     loadData();
   }, []);
+
+  if (!data) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', color: '#8b8fa3', fontFamily: "'Inter', sans-serif", fontSize: 14 }}>
+        {loading ? 'Loading...' : error || 'No data available'}
+      </div>
+    );
+  }
 
   const rk = riskScoreToKey(data.hero.riskScore);
   const accentColor = RISK[rk].hex;
