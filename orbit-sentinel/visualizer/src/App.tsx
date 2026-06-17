@@ -481,24 +481,13 @@ export default function App() {
       <BackgroundParticles />
       <ScanLine />
       <div className="bg-grid" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />
-      {screenshotMode && (
-        <div style={{
-          position: "fixed", top: 12, right: 12, zIndex: 9999, display: "flex", gap: 4,
-          padding: "4px 10px", borderRadius: 6, fontSize: 9, fontWeight: 600,
-          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          color: "var(--text-tertiary)",
-          pointerEvents: "none",
-        }}>
-          📸 Screenshot mode · Chrome hidden for clean captures
-        </div>
-      )}
-      {!screenshotMode ? <header style={{
+      <header style={{
+        display: screenshotMode ? "none" : "flex",
         position: "relative", zIndex: 10,
         borderBottom: `1px solid ${accentColor}22`,
-        padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
+        padding: "8px 20px", alignItems: "center", justifyContent: "space-between", gap: 8,
         flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
-        boxShadow: `1px 0 0 ${accentColor}11`,
+        boxShadow: `0 1px 0 ${accentColor}11`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease", overflowX: "hidden",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
@@ -617,12 +606,13 @@ export default function App() {
             {isMobile ? "" : (demo ? "Stop" : "Play")}
           </button>
         </div>
-      </header> : null}
+      </header>
 
-      {demo && !screenshotMode && (
+      {demo && (
         <div style={{
+          display: screenshotMode ? "none" : "flex",
           position: "absolute", top: isMobile ? 120 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
-          display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+          flexDirection: "column", alignItems: "center", gap: 2,
           animation: "fadeSlideDown 0.3s ease, pulseGlow 2s ease-in-out infinite",
           pointerEvents: "none",
         }}>
