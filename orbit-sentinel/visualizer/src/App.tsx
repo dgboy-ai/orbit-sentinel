@@ -29,6 +29,7 @@ import ProblemSection from "./components/ProblemSection";
 import JudgesTour from "./components/JudgesTour";
 import SetupWizard from "./components/SetupWizard";
 import ImpactCalculator from "./components/ImpactCalculator";
+import ArchitectureDiagram from "./components/ArchitectureDiagram";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
@@ -42,7 +43,7 @@ type View = "overview" | "blast-radius" | "risk" | "simulation" | "historical" |
 type DemoStep = { view: View; label: string; sublabel: string; icon: string };
 
 const DEMO_STEPS: DemoStep[] = [
-  { view: "overview", label: "Orbit Sentinel Dashboard", sublabel: "Real-time engineering digital twin showing MR risk, Orbit evidence, and incident intelligence", icon: "🛰️" },
+  { view: "overview", label: "Orbit Sentinel Dashboard", sublabel: "Impact Calculator, architecture diagram, MR risk, Orbit evidence, and incident intelligence — all 4 query types", icon: "🛰️" },
   { view: "blast-radius", label: "Orbit Graph", sublabel: "Visualize affected files, services, and downstream dependencies from Orbit NEIGHBORS query", icon: "💥" },
   { view: "risk", label: "Risk Investigation", sublabel: "Orbit evidence cards showing why this MR cannot deploy — signals, findings, and verdict", icon: "🔍" },
   { view: "simulation", label: "Forecast Engine", sublabel: "Digital twin forecast with interactive what-if scenarios — predicts outcomes before deployment", icon: "🧪" },
@@ -306,7 +307,7 @@ export default function App() {
   }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
-    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "overview"];
+    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "setup", "overview"];
     if (stepIndex < tourViews.length) {
       setView(tourViews[stepIndex]);
     }
@@ -342,6 +343,8 @@ export default function App() {
             <ProblemSection />
             {/* Tier 1: Impact Calculator */}
             <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
+            {/* Tier 1: Architecture Diagram */}
+            <ArchitectureDiagram />
             {/* Tier 1: Hero Outcome + Tagline */}
             <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
               <HeroSection {...data.hero} />

@@ -2,10 +2,11 @@
 
 > GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
 
-[![Tests](https://img.shields.io/badge/tests-75%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-84%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
 
 **Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. When a developer opens a merge request, it builds a living model of the software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — then posts a complete impact analysis on the MR.
 
@@ -29,7 +30,8 @@ The agent ran **real Orbit queries** against project `transcend/39251857` inside
 
 | Document | What It Shows |
 |----------|---------------|
-| [Live Demo](https://orbit-sentinel.vercel.app) | Interactive 6-view dashboard — blast radius, risk, simulation, history, report |
+| [Live Demo](https://orbit-sentinel.vercel.app) | Interactive 7-view dashboard — setup wizard, blast radius, risk, simulation, history, report |
+| [Judge's Tour](https://orbit-sentinel.vercel.app/?judge=true) | Guided walkthrough — press Space for auto-demo, ← → to navigate |
 | [Demo Script](orbit-sentinel/demo/demo-script.md) | 3-minute walkthrough — follow along with the live site |
 | [Devpost Submission](orbit-sentinel/demo/devpost-submission.md) | Full entry: problem, solution, architecture, quantified impact |
 | [Sample MR Note](orbit-sentinel/demo/output/sample-impact-report.md) | What the agent posts on a real merge request |
@@ -84,16 +86,17 @@ Every conclusion cites specific Orbit query evidence. No black box.
 
 ---
 
-## Visualizer Views
+## Visualizer Views (All 4 Orbit Query Types)
 
 | View | What It Shows |
 |------|---------------|
-| **Overview** | Hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph |
-| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect |
-| **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down |
+| **Overview** | Impact Calculator (interactive ROI sliders), hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph |
+| **Setup** | 4-step guided journey — Mission → Architecture → Setup → Launch. Copy commands, Devpost checklist |
+| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect (NEIGHBORS) |
+| **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down (AGGREGATION) |
 | **Simulation** | Counterfactual analysis with timeline — what if we roll back? add tests? notify owners? |
-| **History** | Repository memory with Jaccard similarity scoring — has this failed before? |
-| **Report** | Full formatted MR comment output |
+| **History** | Repository memory with Jaccard similarity scoring — has this failed before? (TRAVERSAL) |
+| **Report** | Full formatted MR comment output — ready to copy into the MR thread |
 
 ---
 
@@ -110,7 +113,9 @@ Every conclusion cites specific Orbit query evidence. No black box.
 | Status | |
 |--------|-|
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| Tests | 75 passing (engine) + 9 passing (visualizer) |
+| Tests | **84 passing** (75 engine + 9 visualizer) |
+| 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
+| ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
 | ⏳ Live data | Engine needs `GITLAB_ACCESS_TOKEN` env var with read_api scope on an Orbit-enabled group |
 | ⏳ AI Catalog | Needs Maintainer token — run `glab skills publish` |
 | ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
