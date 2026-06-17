@@ -37,6 +37,7 @@ The agent ran **real Orbit queries** against project `transcend/39251857` inside
 | [Flow YAML](orbit-sentinel/flow/orbit-sentinel-flow.yaml) | The 8-step Duo Agent Platform workflow |
 | [Changelog](orbit-sentinel/CHANGELOG.md) | Full history of features, fixes, polish |
 | [Agent Instructions](orbit-sentinel/AGENTS.md) | How the digital twin behaves, error handling, output format |
+| [Project Structure](STRUCTURE.md) | Full directory tree with descriptions of every component |
 
 ---
 
