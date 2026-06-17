@@ -1,5 +1,14 @@
 import type { DigitalTwin, ChangeSimulation, SentinelReport, HistoricalMatch, ReviewerRecommendation, FailurePrediction } from "../types.js";
 
+export interface QueryTimingInfo {
+  queryType: string;
+  queryName: string;
+  durationMs: number;
+  nodeCount: number;
+  edgeCount: number;
+  status: "success" | "error";
+}
+
 export interface VisualizationData {
   graph: {
     nodes: Array<{
@@ -63,6 +72,7 @@ export interface VisualizationData {
     recommendedAction: string;
     date: string;
   }>;
+  queryTimings?: QueryTimingInfo[];
 }
 
 const COLORS = {
@@ -224,6 +234,14 @@ export class DataVisualizer {
             { label: "Assign Reviewers", riskAfter: Math.max(0.05, currentRisk - 0.25), color: "#a78bfa" },
             { label: "All Mitigations", riskAfter: Math.max(0.05, currentRisk - 0.45), color: "#f97316" },
           ],
+      queryTimings: twin.metadata.queryTimings?.map(t => ({
+        queryType: t.queryType,
+        queryName: t.queryName,
+        durationMs: t.durationMs,
+        nodeCount: t.nodeCount,
+        edgeCount: t.edgeCount,
+        status: t.status,
+      })),
       incidents: matches.map((m, i) => ({
         similarity: m.similarity,
         mrIid: m.mrIid,

@@ -29,6 +29,7 @@ import type { DataMode } from "./components/DataModeBanner";
 import ProblemSection from "./components/ProblemSection";
 import JudgesTour from "./components/JudgesTour";
 import SetupWizard from "./components/SetupWizard";
+import OrbitQueryLog from "./components/OrbitQueryLog";
 import ImpactCalculator from "./components/ImpactCalculator";
 import ArchitectureDiagram from "./components/ArchitectureDiagram";
 import MrAnalyzer from "./components/MrAnalyzer";
@@ -173,6 +174,7 @@ export default function App() {
     typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : !noEngine
   );
   const [currentScenario, setCurrentScenario] = useState<string | null>(null);
+  const [showQueryLog, setShowQueryLog] = useState(true);
   const showNarrativeRef = useRef(showNarrative);
   showNarrativeRef.current = showNarrative;
   const onNarrativeDone = useCallback(() => {
@@ -360,6 +362,10 @@ export default function App() {
               apiAvailable={apiService.isApiAvailable()}
               currentScenario={currentScenario}
             />
+            {/* Tier 0: Orbit Query Execution Log — animated query timeline */}
+            {showQueryLog && (
+              <OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} />
+            )}
             {/* Tier 0: Problem → Solution → Impact */}
             <ProblemSection />
             {/* Tier 1: Impact Calculator */}

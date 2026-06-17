@@ -93,6 +93,15 @@ export interface DigitalTwinEdge {
   metadata?: Record<string, unknown>;
 }
 
+export interface QueryTiming {
+  queryType: string;
+  queryName: string;
+  durationMs: number;
+  nodeCount: number;
+  edgeCount: number;
+  status: "success" | "error";
+}
+
 export interface DigitalTwin {
   nodes: DigitalTwinNode[];
   edges: DigitalTwinEdge[];
@@ -101,6 +110,7 @@ export interface DigitalTwin {
     mrIid?: number;
     branch?: string;
     timestamp: string;
+    queryTimings?: QueryTiming[];
   };
 }
 

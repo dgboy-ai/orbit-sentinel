@@ -23,8 +23,15 @@ app.use((req, _res, next) => {
 });
 
 // Middleware
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,https://orbit-sentinel.vercel.app').split(',').map(s => s.trim());
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://orbit-sentinel.vercel.app'],
+  origin: (origin, cb) => {
+    if (!origin || CORS_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) {
+      cb(null, true);
+    } else {
+      cb(null, true); // permissive for hackathon
+    }
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '100kb' }));
@@ -74,6 +81,65 @@ app.post('/api/analyze', async (req, res) => {
       error: 'Analysis failed',
       message: error instanceof Error ? error.message : 'Unknown error',
       demoMode: process.env.DEMO_MODE === 'true',
+    });
+  }
+});
+
+// Live analysis with user-provided GitLab token
+app.post('/api/analyze-with-creds', async (req, res) => {
+  try {
+    const { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch, gitlabToken } = req.body;
+
+    if (!projectId || !projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['projectId', 'projectPath', 'mrIid', 'mrTitle', 'changedFiles', 'changeDescription']
+      });
+    }
+
+    if (!gitlabToken) {
+      return res.status(400).json({
+        error: 'GitLab token is required for live analysis',
+        hint: 'Generate at https://gitlab.com/-/user_settings/personal_access_tokens'
+      });
+    }
+
+    // Temporarily override GITLAB_ACCESS_TOKEN with user-provided token
+    const originalToken = process.env.GITLAB_ACCESS_TOKEN;
+    process.env.GITLAB_ACCESS_TOKEN = gitlabToken;
+
+    try {
+      const report = await sentinel.analyzeChange({
+        projectId: Number(projectId),
+        projectPath,
+        mrIid: Number(mrIid),
+        mrTitle,
+        changedFiles,
+        changeDescription,
+        branch,
+      });
+
+      const vizData = dataVisualizer.toVisualizationData(
+        report.digitalTwin,
+        report.simulation,
+        report,
+      );
+
+      return res.json({
+        success: true,
+        report: vizData,
+        realTime: true,
+        queryTimings: report.digitalTwin.metadata.queryTimings || [],
+      });
+    } finally {
+      // Restore original token (don't persist user tokens)
+      process.env.GITLAB_ACCESS_TOKEN = originalToken;
+    }
+  } catch (error) {
+    console.error('Live analysis error:', error);
+    return res.status(500).json({
+      error: 'Live analysis failed',
+      message: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });

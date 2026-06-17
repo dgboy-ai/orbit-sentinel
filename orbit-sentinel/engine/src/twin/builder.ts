@@ -13,13 +13,67 @@ interface BuildTwinParams {
   branch?: string;
 }
 
+export interface QueryTiming {
+  queryType: string;
+  queryName: string;
+  durationMs: number;
+  nodeCount: number;
+  edgeCount: number;
+  status: "success" | "error";
+}
+
 export class DigitalTwinBuilder {
+  private timings: QueryTiming[] = [];
+
+  getQueryTimings(): QueryTiming[] {
+    return [...this.timings];
+  }
+
+  clearTimings(): void {
+    this.timings = [];
+  }
+
+  private async timedQuery<T>(
+    queryType: string,
+    queryName: string,
+    fn: () => Promise<T>,
+  ): Promise<T> {
+    const start = performance.now();
+    try {
+      const result = await fn();
+      const durationMs = Math.round(performance.now() - start);
+      this.timings.push({
+        queryType,
+        queryName,
+        durationMs,
+        nodeCount: 0,
+        edgeCount: 0,
+        status: "success",
+      });
+      return result;
+    } catch (err) {
+      const durationMs = Math.round(performance.now() - start);
+      this.timings.push({
+        queryType,
+        queryName,
+        durationMs,
+        nodeCount: 0,
+        edgeCount: 0,
+        status: "error",
+      });
+      throw err;
+    }
+  }
+
   async build(params: BuildTwinParams): Promise<DigitalTwin> {
+    this.clearTimings();
     const nodes: Map<string, DigitalTwinNode> = new Map();
     const edges: Map<string, DigitalTwinEdge> = new Map();
     const edgeKey = (s: string, t: string, type: string) => `${s}|${t}|${type}`;
 
-    const projectSummary = await queryEngine.getProjectSummary(params.projectId);
+    const projectSummary = await this.timedQuery("NEIGHBORS", "Project Summary", () =>
+      queryEngine.getProjectSummary(params.projectId)
+    );
     if (projectSummary.result.rows) {
       for (const row of projectSummary.result.rows as Array<{
         p: { type: string; id: string; properties: Record<string, unknown> };
@@ -50,7 +104,9 @@ export class DigitalTwinBuilder {
     }
 
     for (const filePath of params.changedFiles) {
-      const blastRadiusResult = await queryEngine.findBlastRadius(filePath);
+      const blastRadiusResult = await this.timedQuery("NEIGHBORS", "Blast Radius", () =>
+        queryEngine.findBlastRadius(filePath)
+      );
       if (blastRadiusResult.result.rows) {
         for (const row of blastRadiusResult.result.rows as Array<Record<string, unknown>>) {
           const centerNode = this.extractNodesFromRow(row, "center");
@@ -67,7 +123,9 @@ export class DigitalTwinBuilder {
         }
       }
 
-      const depResult = await queryEngine.findDependentProjects(filePath);
+      const depResult = await this.timedQuery("PATH_FINDING", "Dependency Chain", () =>
+        queryEngine.findDependentProjects(filePath)
+      );
       if (depResult.result.rows) {
         for (const row of depResult.result.rows as Array<Record<string, unknown>>) {
           const fileNode = this.extractNodesFromRow(row, "f");
@@ -90,7 +148,9 @@ export class DigitalTwinBuilder {
         }
       }
 
-      const historicalResult = await queryEngine.findHistoricalMRs(params.projectPath, filePath);
+      const historicalResult = await this.timedQuery("TRAVERSAL", "Historical MRs", () =>
+        queryEngine.findHistoricalMRs(params.projectPath, filePath)
+      );
       if (historicalResult.result.rows) {
         for (const row of historicalResult.result.rows as Array<Record<string, unknown>>) {
           const fileNode2 = this.extractNodesFromRow(row, "f");
@@ -113,7 +173,9 @@ export class DigitalTwinBuilder {
         }
       }
 
-      const incidentResult = await queryEngine.findIncidentsConnectedToFile(filePath);
+      const incidentResult = await this.timedQuery("TRAVERSAL", "File Incidents", () =>
+        queryEngine.findIncidentsConnectedToFile(filePath)
+      );
       if (incidentResult.result.rows) {
         for (const row of incidentResult.result.rows as Array<Record<string, unknown>>) {
           const incNode = this.extractNodesFromRow(row, "inc");
@@ -128,7 +190,14 @@ export class DigitalTwinBuilder {
       }
     }
 
-    const pipelineResult = await queryEngine.findPipelineFailures([params.projectId]);
+    // PATH_FINDING: deployment path tracing — the 4th required Orbit query type
+    const deployPathResult = await this.timedQuery("PATH_FINDING", "Deployment Path", () =>
+      queryEngine.findDeploymentPath(params.projectId)
+    );
+
+    const pipelineResult = await this.timedQuery("AGGREGATION", "Pipeline Failures", () =>
+      queryEngine.findPipelineFailures([params.projectId])
+    );
     if (pipelineResult.result.rows) {
       for (const row of pipelineResult.result.rows as Array<Record<string, unknown>>) {
         const pipelineInfo = row as { failed_pipelines?: number; p?: { id: string; type: string; properties: Record<string, unknown> } };
@@ -143,14 +212,23 @@ export class DigitalTwinBuilder {
       }
     }
 
+    const allNodes = Array.from(nodes.values());
+    const allEdges = Array.from(edges.values());
+    const nodeCount = allNodes.length;
+    const edgeCount = allEdges.length;
+
+    // Update timings with actual node/edge counts
+    this.timings = this.timings.map(t => ({ ...t, nodeCount, edgeCount }));
+
     return {
-      nodes: Array.from(nodes.values()),
-      edges: Array.from(edges.values()),
+      nodes: allNodes,
+      edges: allEdges,
       metadata: {
         projectPath: params.projectPath,
         mrIid: params.mrIid,
         branch: params.branch,
         timestamp: new Date().toISOString(),
+        queryTimings: this.getQueryTimings(),
       },
     };
   }

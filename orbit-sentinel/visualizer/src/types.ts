@@ -84,6 +84,15 @@ export interface FutureTimelineEvent {
   icon: string;
 }
 
+export interface QueryTimingInfo {
+  queryType: string;
+  queryName: string;
+  durationMs: number;
+  nodeCount: number;
+  edgeCount: number;
+  status: "success" | "error";
+}
+
 export interface VisualizationData {
   graph: {
     nodes: GraphNode[];
@@ -111,4 +120,5 @@ export interface VisualizationData {
   decisionCenter: DecisionCenterData;
   counterfactuals: CounterfactualScenario[];
   incidents: HistoricalIncident[];
+  queryTimings?: QueryTimingInfo[];
 }
