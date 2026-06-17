@@ -25,9 +25,9 @@ const PROBLEM_SOLUTION = [
     icon: "📊",
     title: "Quantified Impact",
     items: [
-      "89% false-positive reduction over CI-only alerts by cross-referencing all 4 Orbit query types",
-      "88% mitigation success when recommendations are followed — proven across historical data",
-      "45 min saved per MR — detects deployment blockers in seconds vs. manual cross-referencing",
+      "Cross-references all 4 Orbit query types to reduce false positives vs. CI-only alerts",
+      "Historical pattern matching surfaces likely outcomes before time is spent on dead-end changes",
+      "Detects deployment blockers in seconds vs. ~45 min of manual cross-referencing",
     ],
     color: "#60a5fa",
   },
