@@ -29,7 +29,7 @@ function DigitalTwinStatus({ graph }: { graph: { nodes: GraphNode[]; links: Grap
   const animServices = useAnimatedValue(serviceCount, 1200, 300);
   const animFailures = useAnimatedValue(highRiskCount, 1200, 400);
   return (
-    <div style={{ display: "flex", gap: 6, padding: "6px 12px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <div className="resp-graph-status" style={{ display: "flex", gap: 6, padding: "6px 12px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
       <Stat icon="🔗" label="Nodes" value={Math.round(animNodes)} />
       <div style={{ width: 1, background: "rgba(255,255,255,0.06)" }} />
       <Stat icon="🔀" label="Relationships" value={Math.round(animLinks)} />
@@ -43,7 +43,7 @@ function DigitalTwinStatus({ graph }: { graph: { nodes: GraphNode[]; links: Grap
 
 function Stat({ icon, label, value, color }: { icon: string; label: string; value: number; color?: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10 }}>
+    <div className="resp-stat" style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10 }}>
       <span style={{ fontSize: 9 }}>{icon}</span>
       <span style={{ color: "var(--text-tertiary)", fontWeight: 500 }}>{label}</span>
       <span style={{ fontWeight: 700, color: color ?? "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>{value}</span>
@@ -202,13 +202,13 @@ export default function DigitalTwinGraph({ graph }: Props) {
   return (
     <div className="card" style={{ overflow:"hidden", position:"relative", height:"100%", minHeight:0, animation:"fadeSlideUp 0.5s 0.25s ease both", display:"flex", flexDirection:"column" }}>
       <DigitalTwinStatus graph={graph} />
-      <div style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid rgba(255,255,255,0.06)", backdropFilter:"blur(4px)", fontSize:9, color:"var(--text-secondary)" }}>
+      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid rgba(255,255,255,0.06)", backdropFilter:"blur(4px)", fontSize:9, color:"var(--text-secondary)" }}>
         {[{c:"#22c55e",l:"Safe"},{c:"#eab308",l:"Medium"},{c:"#f97316",l:"High"},{c:"#ef4444",l:"Critical"}].map(x=>(
           <span key={x.l} style={{display:"flex",alignItems:"center",gap:3}}><span style={{width:4,height:4,borderRadius:"50%",background:x.c,display:"inline-block",boxShadow:`0 0 4px ${x.c}`}}/>{x.l}</span>
         ))}
       </div>
 
-      <div style={{
+      <div className="resp-graph-info" style={{
         position:"absolute", top:8, right:8, zIndex:20, width: 210,
         padding: "8px 12px", borderRadius: 8,
         background: "rgba(8,9,13,0.92)", backdropFilter: "blur(16px)",
