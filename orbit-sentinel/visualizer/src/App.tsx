@@ -537,7 +537,7 @@ export default function App() {
                   </span>
                 )}
               </button>
-              <HelpTooltip text={help} />
+              {help && <HelpTooltip text={help} />}
             </span>
           );})}
         </div>

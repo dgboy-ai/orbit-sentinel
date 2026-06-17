@@ -342,7 +342,7 @@ function SetupStep() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <CodeBlock code='git clone https://gitlab.com/your-project/orbit-sentinel.git' label="Step 0: Clone the repo" />
-          <CodeBlock code='cd orbit-sentinel; .\setup.ps1  # or: npm run setup' label="Step 1: Install dependencies" />
+          <CodeBlock code='cd orbit-sentinel; .\setup.ps1  # PowerShell quick-start' label="Step 1: Install dependencies" />
           <CodeBlock code='export GITLAB_ACCESS_TOKEN=your_token_here' label="Step 2: Set your token" />
           <CodeBlock code='glab skills install orbit-sentinel --global' label="Step 3: Install Duo Chat skill" />
           <CodeBlock code='# Open http://localhost:5173 to explore the dashboard' label="Step 4: Start developing" />
