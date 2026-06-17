@@ -98,6 +98,17 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
         <div style={{ marginTop: 16, fontSize: 9, color: "var(--text-tertiary)" }}>
           All 4 Orbit query types · No black box · Real graph data
         </div>
+        <button onClick={onDone}
+          style={{
+            marginTop: 14, padding: "4px 16px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+            border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6,
+            background: "transparent", color: "var(--text-tertiary)",
+            transition: "all 0.15s ease",
+            animation: "fadeSlideUp 0.5s 1s ease both",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+        >Skip →</button>
       </div>
     </div>
   );

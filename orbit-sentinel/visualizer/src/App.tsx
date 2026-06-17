@@ -310,7 +310,7 @@ export default function App() {
   }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
-    const tourViews: View[] = ["overview", "overview", "overview", "overview", "overview", "overview", "historical", "simulation", "overview", "overview"];
+    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "overview"];
     if (stepIndex < tourViews.length) {
       setView(tourViews[stepIndex]);
     }
