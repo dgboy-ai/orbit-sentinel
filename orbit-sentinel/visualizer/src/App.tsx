@@ -362,7 +362,7 @@ export default function App() {
             {/* Tier 3: Evidence + Incidents + Graph + Simulation */}
             <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <OrbitEvidencePanel evidence={data.evidence} />
+                <OrbitEvidencePanel evidence={data.evidence} graph={data.graph} />
                 <IncidentIntelligence incidents={data.incidents} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>

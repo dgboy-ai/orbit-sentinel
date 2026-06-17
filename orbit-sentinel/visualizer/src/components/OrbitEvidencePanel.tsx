@@ -1,5 +1,5 @@
 import React from "react";
-import type { OrbitQueryEvidence } from "../types";
+import type { GraphNode, GraphLink, OrbitQueryEvidence } from "../types";
 
 const META: Record<string, { icon: string; label: string; color: string; bg: string }> = {
   TRAVERSAL:    { icon: "📚", label: "Historical Intelligence", color: "#60a5fa", bg: "rgba(96,165,250,0.1)" },
@@ -8,10 +8,10 @@ const META: Record<string, { icon: string; label: string; color: string; bg: str
   NEIGHBORS:    { icon: "🌐", label: "Orbit Graph Discovery", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
 };
 
-export default function OrbitEvidencePanel({ evidence }: { evidence: OrbitQueryEvidence[] }) {
+export default function OrbitEvidencePanel({ evidence, graph }: { evidence: OrbitQueryEvidence[]; graph?: { nodes: GraphNode[]; links: GraphLink[] } }) {
   const pf = evidence.find(e => e.queryType === "PATH_FINDING");
   const conclusion = pf?.result.includes("no path") || pf?.result.includes("cannot deploy")
-    ? "This MR currently has no path to production."
+    ? `This MR has no path to production. Graph: ${graph?.nodes.length ?? "?"} nodes, ${graph?.links.length ?? "?"} relationships.`
     : "Orbit analysis complete — see per-query results below.";
 
   return (
