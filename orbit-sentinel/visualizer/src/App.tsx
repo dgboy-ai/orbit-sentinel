@@ -307,15 +307,7 @@ export default function App() {
     loadData();
   }, []);
 
-  if (!data) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', color: '#8b8fa3', fontFamily: "'Inter', sans-serif", fontSize: 14 }}>
-        {loading ? 'Loading...' : error || 'No data available'}
-      </div>
-    );
-  }
-
-  const rk = riskScoreToKey(data.hero.riskScore);
+  const rk = data ? riskScoreToKey(data.hero.riskScore) : riskScoreToKey(0.5);
   const accentColor = RISK[rk].hex;
   const accentGlow = RISK[rk].glow;
 
@@ -367,6 +359,14 @@ export default function App() {
     if (v === view) return;
     setView(v);
   }, [view]);
+
+  if (!data) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', color: '#8b8fa3', fontFamily: "'Inter', sans-serif", fontSize: 14 }}>
+        {loading ? 'Loading...' : error || 'No data available'}
+      </div>
+    );
+  }
 
   const body = useCallback(() => {
     switch (view) {
