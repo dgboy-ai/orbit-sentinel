@@ -187,6 +187,12 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      console.log("[Orbit Sentinel] HTML loaded, JS bundle starting...");
+      window.addEventListener("error", function(e) {
+        console.log("[Orbit Sentinel ERROR]", e.message, e.filename, e.lineno);
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
