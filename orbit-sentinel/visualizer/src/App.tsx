@@ -360,15 +360,23 @@ export default function App() {
     setView(v);
   }, [view]);
 
-  if (!data) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', color: '#8b8fa3', fontFamily: "'Inter', sans-serif", fontSize: 14 }}>
-        {loading ? 'Loading...' : error || 'No data available'}
-      </div>
-    );
-  }
+  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Blast Radius"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
+  const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
+  const [prevView, setPrevView] = useState<View>(view);
+  const [transitioning, setTransitioning] = useState(false);
+
+  useEffect(() => {
+    if (view === prevView) return;
+    setTransitioning(true);
+    const t = setTimeout(() => {
+      setPrevView(view);
+      setTransitioning(false);
+    }, 80);
+    return () => clearTimeout(t);
+  }, [view, prevView]);
 
   const body = useCallback(() => {
+    if (!data) return null;
     switch (view) {
       case "overview":
         return (
@@ -405,21 +413,13 @@ export default function App() {
     }
   }, [view, data]);
 
-  const [prevView, setPrevView] = useState<View>(view);
-  const [transitioning, setTransitioning] = useState(false);
-
-  useEffect(() => {
-    if (view === prevView) return;
-    setTransitioning(true);
-    const t = setTimeout(() => {
-      setPrevView(view);
-      setTransitioning(false);
-    }, 80);
-    return () => clearTimeout(t);
-  }, [view, prevView]);
-
-  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Blast Radius"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
-  const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
+  if (!data) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', color: '#8b8fa3', fontFamily: "'Inter', sans-serif", fontSize: 14 }}>
+        {loading ? 'Loading...' : error || 'No data available'}
+      </div>
+    );
+  }
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-primary)", position: "relative" }}>
