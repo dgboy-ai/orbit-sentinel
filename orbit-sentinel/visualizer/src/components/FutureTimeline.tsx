@@ -29,6 +29,9 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
           <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering digital twin forecast · {confidence ?? "78%"} confidence</div>
         </div>
       </div>
+      {events.length === 0 ? (
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", fontSize: 11 }}>No predictions available — insufficient data</div>
+      ) : (
       <div style={{ display: "flex", flexDirection: "column", gap: 0, flex: 1, position: "relative", paddingLeft: 6 }}>
         {events.map((ev, i) => (
           <div key={ev.day} style={{
@@ -63,6 +66,7 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }

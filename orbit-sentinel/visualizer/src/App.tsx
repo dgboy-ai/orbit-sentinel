@@ -27,7 +27,6 @@ import DataModeBanner from "./components/DataModeBanner";
 import type { DataMode } from "./components/DataModeBanner";
 import ProblemSection from "./components/ProblemSection";
 import JudgesTour from "./components/JudgesTour";
-import InlineError from "./components/InlineError";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
