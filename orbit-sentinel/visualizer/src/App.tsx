@@ -23,8 +23,9 @@ import RealityCheck from "./components/RealityCheck";
 import SimulateWebhook from "./components/SimulateWebhook";
 import { riskScoreToKey, RISK } from "./utils/colors";
 
-// API configuration — set VITE_API_BASE_URL as Vercel env var to enable live engine
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string || '';
+// API configuration — set VITE_API_BASE_URL as Vercel env var to point to live engine.
+// Falls back to same-origin (Vite dev server proxy) or demo mode if unreachable.
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
 
 const DATA: VisualizationData = {
   graph: {

@@ -54,8 +54,8 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 4. **Historical Match** - TRAVERSAL query for similar changes
 5. **Pipeline Risk** - AGGREGATION query for failure counts
 6. **Analysis & Prediction** - Synthesize all evidence
-7. **Post Report** - Create comprehensive analysis
-8. **Label MR** - Mark for review"
+7. **Post Report** - Create comprehensive analysis note on MR
+8. **Complete** - Analysis ready for review"
 
 **Visual**: Animated flow showing each step
 

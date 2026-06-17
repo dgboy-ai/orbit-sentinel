@@ -53,6 +53,52 @@ Open `http://localhost:5173/?demo=true` for auto-play mode.
 4. Open a merge request or push a new commit — the flow triggers automatically
 5. The flow runs and posts analysis to the MR
 
+## Enable Live Orbit Queries
+
+For the engine to query a real GitLab Orbit knowledge graph (vs. demo mode), you need:
+
+### 1. Enable Orbit on Your GitLab Group
+
+```bash
+# Orbit must be enabled on your GitLab group by an admin or owner.
+# Navigate to: Group → Settings → General → Permissions → Enable Orbit Knowledge Graph
+```
+
+Orbit is available on GitLab.com groups. If you don't see the option, ask your group owner or check [GitLab Orbit docs](https://docs.gitlab.com/ee/user/orbit/).
+
+### 2. Create a Project Access Token
+
+1. Go to your project → **Settings** → **Access Tokens**
+2. Create a token with the `read_api` scope (minimum) or `api` scope (full access)
+3. Copy the token value
+
+### 3. Configure Environment
+
+Create a `.env` file at the repository root (not inside `engine/` or `visualizer/`):
+
+```env
+GITLAB_HOST=gitlab.com
+ORBIT_API_ENDPOINT=https://gitlab.com/api/v4/orbit
+GITLAB_ACCESS_TOKEN=glpat-your-token-here
+```
+
+### 4. Verify Connectivity
+
+```powershell
+cd engine
+npm run build
+# Start the API server:
+node dist/server.js
+# In another terminal:
+curl http://localhost:3001/health
+# Expected: {"status":"ok","timestamp":"..."}
+
+# To verify Orbit API access, set DEMO_MODE=false and call the analyze endpoint
+# with a real MR IID and project path from your GitLab group.
+```
+
+Without these environment variables, the engine runs in demo mode with sample data.
+
 ## Troubleshooting
 
 | Problem | Solution |

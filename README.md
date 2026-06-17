@@ -2,7 +2,7 @@
 
 > GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
 
-[![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-75%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -103,16 +103,17 @@ Every conclusion cites specific Orbit query evidence. No black box.
 
 **Engine** — Express server at `orbit-sentinel/engine/` (TypeScript, 52 tests). Orbit API client, digital twin builder, risk scorer, remediation planner, markdown reporter.
 
-**Duo Integration** — Skill definition at `.gitlab/duo/skill.yml` for Duo Chat, MCP config at `.gitlab/duo/mcp.json`.
+**Duo Integration** — Flow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) for Duo Agent Platform, skill recipe examples at orbit-sentinel skill directory.
 
 **Stack** — Node 22, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Zod, Vitest.
 
 | Status | |
 |--------|-|
-| Deployed | [Vercel](https://orbit-sentinel.vercel.app) + [GitLab Pages CI/CD](orbit-sentinel/.gitlab-ci.yml) |
-| Tests | 52 passing (engine) + 3 passing (visualizer) |
-| ⏳ AI Catalog | Needs Maintainer token |
-| ⏳ Demo video | Needs recording (≤3 min) |
+| Deployed | [Vercel](https://orbit-sentinel.vercel.app) + [GitLab Pages CI/CD](.gitlab-ci.yml) |
+| Tests | 75 passing (engine) + 9 passing (visualizer) |
+| ⏳ AI Catalog | Needs Maintainer token — run `glab skills publish` |
+| ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
+| 📖 Docs | [`docs/`](orbit-sentinel/docs/) — traversal proof, deployment guide |
 
 ---
 

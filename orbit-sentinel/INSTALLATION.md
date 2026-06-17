@@ -60,17 +60,23 @@ npm run dev
 
 ---
 
-## Environment Variables
+## Environment Variables (for Live Orbit Queries)
 
-Create a `.env` at the project root (optional — demo mode works without it):
+Create a `.env` at the repository root (optional — demo mode works without it):
 
 ```env
 GITLAB_HOST=gitlab.com
 ORBIT_API_ENDPOINT=https://gitlab.com/api/v4/orbit
-GITLAB_ACCESS_TOKEN=your-token
+GITLAB_ACCESS_TOKEN=glpat-your-token-here
 ```
 
-Without these, the visualizer runs in **demo mode** with sample data.
+**Setup checklist:**
+1. Ensure Orbit is enabled on your GitLab group (Group → Settings → Permissions)
+2. Create a project access token with `read_api` scope (Settings → Access Tokens)
+3. Set the token as `GITLAB_ACCESS_TOKEN` in `.env`
+4. Verify: `curl http://localhost:3001/health` returns `{"status":"ok"}`
+
+Without these, the engine runs in **demo mode** with sample data (the visualizer's default experience on Vercel).
 
 ---
 
