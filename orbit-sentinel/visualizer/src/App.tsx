@@ -23,6 +23,7 @@ import HelpTooltip from "./components/HelpTooltip";
 import RealityCheck from "./components/RealityCheck";
 import SimulateWebhook from "./components/SimulateWebhook";
 import LoadingSkeleton from "./components/LoadingSkeleton";
+import LoadingNarrative from "./components/LoadingNarrative";
 import DataModeBanner from "./components/DataModeBanner";
 import type { DataMode } from "./components/DataModeBanner";
 import ProblemSection from "./components/ProblemSection";
@@ -117,7 +118,7 @@ function ScanLine() {
     }}>
       <div style={{
         position: "absolute", left: 0, right: 0, height: "40%",
-        background: "linear-gradient(180deg, rgba(59,130,246,0.03) 0%, rgba(59,130,246,0.01) 40%, transparent 100%)",
+        background: "linear-gradient(180deg, rgba(59,130,246,0.06) 0%, rgba(59,130,246,0.02) 40%, transparent 100%)",
         animation: active ? "scanLine 1.2s ease-in-out forwards" : "none",
       }} />
     </div>
@@ -159,6 +160,8 @@ export default function App() {
   });
   const [mobileViewOpen, setMobileViewOpen] = useState(false);
   const [loadingSlow, setLoadingSlow] = useState(false);
+  const [showNarrative, setShowNarrative] = useState(true);
+  const onNarrativeDone = useCallback(() => setShowNarrative(false), []);
   const demoRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTiny = useMediaQuery("(max-width: 360px)");
@@ -393,6 +396,7 @@ export default function App() {
         </header>
         {loading ? <>
           <LoadingSkeleton />
+          {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
           {loadingSlow && (
             <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
               <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
