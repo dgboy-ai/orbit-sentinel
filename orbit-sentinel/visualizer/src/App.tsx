@@ -229,10 +229,11 @@ export default function App() {
 
   const [showFooter, setShowFooter] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setShowFooter(false), 6000);
-    const h = () => setShowFooter(true);
+    const t = setTimeout(() => setShowFooter(false), 12000);
+    const h = () => { setShowFooter(true); clearTimeout(t); };
     window.addEventListener("keydown", h);
-    return () => { clearTimeout(t); window.removeEventListener("keydown", h); };
+    window.addEventListener("click", h);
+    return () => { clearTimeout(t); window.removeEventListener("keydown", h); window.removeEventListener("click", h); };
   }, []);
   useEffect(() => {
     if (!loading) { setLoadingSlow(false); return; }
@@ -316,6 +317,11 @@ export default function App() {
   }, []);
 
   const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Blast Radius"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
+  const VIEW_QUERY_TAG: Partial<Record<View, {tag: string; color: string}>> = {
+    "blast-radius": { tag: "NEIGHBORS", color: "#a78bfa" },
+    "historical": { tag: "TRAVERSAL", color: "#22d3ee" },
+    "risk": { tag: "AGGREGATION", color: "#f97316" },
+  };
   const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
   const [prevView, setPrevView] = useState<View>(view);
   const [transitioning, setTransitioning] = useState(false);
@@ -394,8 +400,9 @@ export default function App() {
               <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Engineering Decision Intelligence</span>
             </div>
           </div>
-          <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px" }}>
+          <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
             <DataModeBanner mode={dataMode} errorMessage={error ?? undefined} onRetry={loadData} />
+            <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
           </div>
           {/* Placeholder matching loaded header height to prevent CLS */}
           <div style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
@@ -481,8 +488,9 @@ export default function App() {
             ))}
           </div>
         </div>
-        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px" }}>
+        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
           <DataModeBanner mode={dataMode} onRetry={loadData} />
+          <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
         </div>
         {isTiny && (
           <div style={{ position: "relative" }}>
@@ -501,18 +509,22 @@ export default function App() {
                 border: "1px solid var(--border)", borderRadius: 6, overflow: "hidden",
                 minWidth: 140, boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
               }}>
-                {tabs.map(([k, lbl]) => (
+                {tabs.map(([k, lbl]) => {
+                  const qt = VIEW_QUERY_TAG[k];
+                  return (
                   <button key={k} onClick={() => { setView(k); setMobileViewOpen(false); if (demo) stopDemo(); }}
                     style={{
-                      display: "block", width: "100%", padding: "7px 14px", fontSize: 11, cursor: "pointer",
+                      display: "flex", width: "100%", padding: "7px 14px", fontSize: 11, cursor: "pointer",
                       border: "none", borderBottom: "1px solid var(--border)",
                       background: view === k ? `${accentColor}18` : "transparent",
                       color: view === k ? accentColor : "var(--text-secondary)", textAlign: "left",
+                      alignItems: "center", gap: 6,
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                     onMouseLeave={e => { e.currentTarget.style.background = view === k ? `${accentColor}18` : "transparent"; }}
-                  >{lbl}</button>
-                ))}
+                  >{lbl}{qt && <span style={{ fontSize: 8, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}</button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -533,10 +545,17 @@ export default function App() {
                 background: view === k ? `${accentColor}18` : "transparent",
                 color: view === k ? accentColor : "var(--text-secondary)",
                 transition: "all 0.15s ease", letterSpacing: "0.2px", whiteSpace: "nowrap",
+                display: "flex", alignItems: "center", gap: 3,
               }}
                 onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
                 onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
-              >{lbl}</button>
+              >{lbl}
+                {VIEW_QUERY_TAG[k] && (
+                  <span style={{ fontSize: 8, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${VIEW_QUERY_TAG[k].color}18`, color: VIEW_QUERY_TAG[k].color, lineHeight: 1.2 }}>
+                    {VIEW_QUERY_TAG[k].tag}
+                  </span>
+                )}
+              </button>
               <HelpTooltip text={help} />
             </span>
           );})}
