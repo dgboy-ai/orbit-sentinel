@@ -498,9 +498,13 @@ export default function App() {
             ))}
           </div>
         </div>
-        <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 2, alignItems: "center" }} role="tablist" aria-label="Dashboard views">
           {tabs.map(([k, lbl]) => (
-            <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }} style={{
+            <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }}
+              role="tab"
+              aria-selected={view === k}
+              aria-label={`${lbl} view`}
+              style={{
               padding: "4px 11px", fontSize: 11, fontWeight: view === k ? 600 : 400,
               border: view === k ? `1px solid ${accentColor}44` : "1px solid transparent",
               borderRadius: 6, cursor: "pointer",
@@ -513,7 +517,7 @@ export default function App() {
             >{lbl}</button>
           ))}
           <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 8px" }} />
-          <button onClick={() => exportReport(data)} title="Export report" style={{
+          <button onClick={() => exportReport(data)} title="Export report" aria-label="Export report as markdown" style={{
             padding: "5px 10px", fontSize: 13, cursor: "pointer",
             border: "1px solid var(--border)", borderRadius: 6,
             background: "transparent", color: "var(--text-secondary)",
@@ -522,7 +526,9 @@ export default function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border)"; }}
           >⬇</button>
-          <button onClick={demo ? stopDemo : startDemo} style={{
+          <button onClick={demo ? stopDemo : startDemo}
+            aria-label={demo ? "Stop demo" : "Play demo"}
+            style={{
             padding: "5px 14px", fontSize: 11, fontWeight: 600, cursor: "pointer",
             border: demo ? "1px solid rgba(239,68,68,0.4)" : `1px solid ${accentColor}44`,
             borderRadius: 6,

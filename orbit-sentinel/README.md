@@ -2,6 +2,14 @@
 
 > GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
 
+[![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?logo=typescript)](https://www.typescriptlang.org)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-5.3-646CFF?logo=vite)](https://vitejs.dev)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Vercel](https://img.shields.io/badge/deployed%20on-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
+[![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon)
+
 Orbit Sentinel is an autonomous engineering digital twin powered by **GitLab Orbit**. When a developer opens a merge request, it builds a living model of the software system — discovering blast radius, historical incidents, reviewer ownership, deployment dependencies, and rollback strategies — then posts a complete impact analysis on the MR.
 
 ## 🏆 Breakthrough: Real Orbit Queries Executed
