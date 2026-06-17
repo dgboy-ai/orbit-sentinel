@@ -11,7 +11,7 @@ const META: Record<string, { icon: string; label: string; color: string; bg: str
 export default function OrbitEvidencePanel({ evidence, graph }: { evidence: OrbitQueryEvidence[]; graph?: { nodes: GraphNode[]; links: GraphLink[] } }) {
   const pf = evidence.find(e => e.queryType === "PATH_FINDING");
   const r = pf?.result.toLowerCase() ?? "";
-  const conclusion = r.includes("no path") || r.includes("cannot deploy")
+  const conclusion = r.includes("no deployment path") || r.includes("cannot deploy")
     ? `This MR has no path to production. Graph: ${graph?.nodes.length ?? "?"} nodes, ${graph?.links.length ?? "?"} relationships.`
     : "Orbit analysis complete — see per-query results below.";
 
