@@ -33,6 +33,7 @@ function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top
 
 function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryEvidence[] }) {
   const q = evidence.find(e => e.queryType === card.queryType);
+  const [touched, setTouched] = useState(false);
   const severityColors = {
     critical: { dot: "#ef4444", bg: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))", border: "rgba(239,68,68,0.2)", label: "CRITICAL SIGNAL", glow: "rgba(239,68,68,0.15)" },
     high: { dot: "#f97316", bg: "linear-gradient(135deg, rgba(249,115,22,0.08), rgba(249,115,22,0.02))", border: "rgba(249,115,22,0.2)", label: "HIGH SIGNAL", glow: "rgba(249,115,22,0.15)" },
@@ -42,13 +43,15 @@ function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryE
   return (
     <div style={{
       padding: "16px 18px", borderRadius: 12, position: "relative", overflow: "hidden",
-      background: c.bg, border: `1px solid ${c.border}`,
+      background: touched ? `${c.dot}12` : c.bg, border: `1px solid ${touched ? c.dot : c.border}`,
       animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both",
       display: "flex", flexDirection: "column", gap: 8,
       transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+      WebkitTapHighlightColor: "transparent",
     }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = c.dot; e.currentTarget.style.boxShadow = `0 0 24px ${c.glow}`; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = "none"; }}
+      onTouchStart={() => setTouched(true)} onTouchEnd={() => setTouched(false)}
     >
       <GlowOrb color={c.glow} top="-30%" left="-20%" size={140} />
       <div style={{ position: "relative", zIndex: 1 }}>
@@ -187,10 +190,10 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
             <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)" }}>
               <div style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#ef4444", textShadow: "0 0 12px rgba(239,68,68,0.2)" }}>Will Not Reach Production</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#ef4444", textShadow: "0 0 12px rgba(239,68,68,0.2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Will Not Reach Production</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
                 <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>91%</span></div>
                 <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Horizon </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>7 Days</span></div>
@@ -203,8 +206,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 border: "1px solid rgba(239,68,68,0.15)", fontSize: 11, color: "#ef4444",
                 display: "flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ fontSize: 12 }}>⚠</span>
-                <span><strong>Primary:</strong> No deployment path exists.</span>
+                <span style={{ fontSize: 12, flexShrink: 0 }}>⚠</span>
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><strong>Primary:</strong> No deployment path exists.</span>
               </div>
               <div style={{
                 padding: "6px 10px", borderRadius: 6,
@@ -212,21 +215,21 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 border: "1px solid rgba(249,115,22,0.15)", fontSize: 11, color: "#f97316",
                 display: "flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ fontSize: 12 }}>⚠</span>
-                <span><strong>Secondary:</strong> 9 prior MRs from this branch were abandoned.</span>
+                <span style={{ fontSize: 12, flexShrink: 0 }}>⚠</span>
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><strong>Secondary:</strong> 9 prior MRs from this branch were abandoned.</span>
               </div>
             </div>
           </div>
 
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {["PATH_FINDING", "TRAVERSAL", "NEIGHBORS", "AGGREGATION"].map((t, i) => (
-              <span key={t} style={{
+            {evidence.map((e, i) => (
+              <span key={e.queryType} style={{
                 fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
                 padding: "3px 10px", borderRadius: 5, letterSpacing: "0.3px",
                 background: "rgba(96,165,250,0.1)", color: "var(--accent-blue)", border: "1px solid rgba(96,165,250,0.2)",
                 animation: `fadeSlideUp 0.3s ${0.05 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
               }}>
-                {t}
+                {e.queryType}
               </span>
             ))}
           </div>
@@ -241,7 +244,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         background: "linear-gradient(135deg, rgba(255,255,255,0.02), rgba(15,18,26,0.95))",
         ...fadeIn(0.04),
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4 }}>
           {[
             { label: "MR OPEN", color: "#22c55e", icon: "📝" },
             { label: "PIPELINE MISSING", color: "#ef4444", icon: "✗" },
@@ -251,26 +254,26 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           ].map((step, i) => (
             <React.Fragment key={step.label}>
               <div style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1,
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, minWidth: 0,
                 animation: `fadeSlideUp 0.3s ${0.06 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
               }}>
                 <div style={{
-                  width: 28, height: 28, borderRadius: "50%",
+                  width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
                   display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11,
                   background: `${step.color}12`, border: `1px solid ${step.color}33`,
                 }}>{step.icon}</div>
-                <span style={{ fontSize: 7, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2 }}>{step.label}</span>
+                <span style={{ fontSize: 7, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
               </div>
-              {i < 4 && <div style={{ flex: "0 0 16px", height: 1.5, background: `linear-gradient(90deg, ${step.color}66, transparent)`, marginTop: -14 }} />}
+              {i < 4 && <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${step.color}66, transparent)`, marginTop: -14 }} />}
             </React.Fragment>
           ))}
           <div style={{
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 0.6,
-            padding: "4px 8px", borderRadius: 5,
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: "0 0 auto",
+            padding: "4px 8px", borderRadius: 5, marginLeft: 4,
             background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)",
             animation: "fadeSlideUp 0.3s 0.3s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444" }}>Predicted</span>
+            <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", whiteSpace: "nowrap" }}>Predicted</span>
             <span style={{ fontSize: 10, fontWeight: 800, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>CLOSED</span>
           </div>
         </div>
@@ -289,20 +292,23 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Confidence Breakdown</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {[
-              { query: "PATH_FINDING", pct: 95, color: "#60a5fa" },
-              { query: "TRAVERSAL", pct: 90, color: "#a78bfa" },
-              { query: "NEIGHBORS", pct: 91, color: "#22c55e" },
-              { query: "AGGREGATION", pct: 75, color: "#f97316" },
-            ].map((q, i) => (
-              <div key={q.query} style={{ display: "flex", alignItems: "center", gap: 8, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                <span style={{ width: 110, fontSize: 9, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0 }}>{q.query}</span>
-                <div style={{ flex: 1, height: 5, borderRadius: 3, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
-                  <div style={{ width: `${q.pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${q.color}, ${q.color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 8px ${q.color}33` }} />
-                </div>
-                <span style={{ width: 28, fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: q.color, textAlign: "right" }}>{q.pct}%</span>
-              </div>
-            ))}
+            {(() => {
+              const CONF_COLORS: Record<string, string> = { PATH_FINDING: "#60a5fa", TRAVERSAL: "#a78bfa", NEIGHBORS: "#22c55e", AGGREGATION: "#f97316" };
+              const CONF_PCTS: Record<string, number> = { PATH_FINDING: 95, TRAVERSAL: 90, NEIGHBORS: 91, AGGREGATION: 75 };
+              return evidence.map((e, i) => {
+                const color = CONF_COLORS[e.queryType] ?? "#8b949e";
+                const pct = CONF_PCTS[e.queryType] ?? 50;
+                return (
+                  <div key={e.queryType} style={{ display: "flex", alignItems: "center", gap: 6, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
+                    <span style={{ fontSize: 9, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: 80 }}>{e.queryType}</span>
+                    <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 5, borderRadius: 3, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 8px ${color}33` }} />
+                    </div>
+                    <span style={{ width: 28, fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0 }}>{pct}%</span>
+                  </div>
+                );
+              });
+            })()}
           </div>
           <div style={{
             marginTop: 8, padding: "6px 12px", borderRadius: 6,
@@ -367,7 +373,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             <span style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", letterSpacing: "1px", textShadow: "0 0 20px rgba(239,68,68,0.3)" }}>DO NOT DEPLOY</span>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
