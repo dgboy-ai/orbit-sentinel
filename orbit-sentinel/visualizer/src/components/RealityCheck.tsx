@@ -46,43 +46,52 @@ export default function RealityCheck() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
           <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.1)" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", marginBottom: 2 }}>Traditional CI/CD Misses</div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", marginBottom: 2, whiteSpace: "nowrap" }}>Traditional CI/CD Misses</div>
             <div style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>{orbitOnly}/{CHECKS.length}</div>
-            <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>critical signals undetected</div>
+            <div style={{ fontSize: 8, color: "var(--text-tertiary)", whiteSpace: "nowrap" }}>critical signals undetected</div>
           </div>
           <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.1)" }}>
-            <div style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", marginBottom: 2 }}>Orbit Sentinel Advantage</div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", marginBottom: 2, whiteSpace: "nowrap" }}>Orbit Sentinel Advantage</div>
             <div style={{ fontSize: 22, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>{orbitOnly + bothCount}/{CHECKS.length}</div>
-            <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>signals detected via 4 query types</div>
+            <div style={{ fontSize: 8, color: "var(--text-tertiary)", whiteSpace: "nowrap" }}>signals detected via 4 query types</div>
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <div style={{
+            display: "grid", gridTemplateColumns: "1.8fr 70px 80px 1.5fr", gap: 8, alignItems: "center",
+            padding: "2px 8px", marginBottom: 2,
+          }}>
+            <span style={{ fontSize: 7, fontWeight: 600, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Signal</span>
+            <span style={{ fontSize: 7, fontWeight: 600, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px", textAlign: "center" }}>Traditional</span>
+            <span style={{ fontSize: 7, fontWeight: 600, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px", textAlign: "center" }}>Orbit</span>
+            <span style={{ fontSize: 7, fontWeight: 600, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Why It Matters</span>
+          </div>
           {CHECKS.map((c, i) => (
             <div key={c.signal} style={{
-              display: "grid", gridTemplateColumns: "1.5fr 60px 60px 1fr", gap: 8, alignItems: "center",
-              padding: "4px 8px", borderRadius: 5,
+              display: "grid", gridTemplateColumns: "1.8fr 70px 80px 1.5fr", gap: 8, alignItems: "center",
+              padding: "5px 8px", borderRadius: 5,
               background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
               animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
             }}>
-              <span style={{ fontSize: 9, fontWeight: 500, color: "var(--text-primary)" }}>{c.signal}</span>
+              <span style={{ fontSize: 10, fontWeight: 500, color: "var(--text-primary)", whiteSpace: "nowrap" }}>{c.signal}</span>
               <span style={{
-                fontSize: 8, padding: "1px 6px", borderRadius: 3, fontWeight: 700, textAlign: "center",
-                background: c.traditional ? "rgba(34,197,94,0.08)" : "rgba(239,68,68,0.08)",
+                fontSize: 9, padding: "2px 8px", borderRadius: 3, fontWeight: 700, textAlign: "center",
+                background: c.traditional ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
                 color: c.traditional ? "#22c55e" : "#ef4444",
-                border: `1px solid ${c.traditional ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)"}`,
+                border: `1px solid ${c.traditional ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
               }}>
                 {c.traditional ? "✓ Yes" : "✗ No"}
               </span>
               <span style={{
-                fontSize: 8, padding: "1px 6px", borderRadius: 3, fontWeight: 700, textAlign: "center",
-                background: c.orbit ? "rgba(96,165,250,0.08)" : "rgba(239,68,68,0.08)",
+                fontSize: 9, padding: "2px 8px", borderRadius: 3, fontWeight: 700, textAlign: "center",
+                background: c.orbit ? "rgba(96,165,250,0.1)" : "rgba(239,68,68,0.1)",
                 color: c.orbit ? "var(--accent-blue)" : "#ef4444",
-                border: `1px solid ${c.orbit ? "rgba(96,165,250,0.15)" : "rgba(239,68,68,0.15)"}`,
+                border: `1px solid ${c.orbit ? "rgba(96,165,250,0.2)" : "rgba(239,68,68,0.2)"}`,
               }}>
                 Orbit {c.orbit ? "✓" : "✗"}
               </span>
-              <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>{c.detail}</span>
+              <span style={{ fontSize: 9, color: "var(--text-tertiary)", fontStyle: "italic", lineHeight: 1.3 }}>{c.detail}</span>
             </div>
           ))}
         </div>
