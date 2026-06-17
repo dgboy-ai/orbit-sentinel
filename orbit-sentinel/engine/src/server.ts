@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://orbit-sentinel-gitlab-ai-hackathon.vercel.app'],
+  origin: ['http://localhost:5173', 'https://orbit-sentinel.vercel.app'],
   credentials: true,
 }));
 app.use(express.json());
