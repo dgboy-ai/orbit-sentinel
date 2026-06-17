@@ -341,7 +341,7 @@ export default function App() {
             {/* Tier 0: Problem → Solution → Impact */}
             <ProblemSection />
             {/* Tier 1: Impact Calculator */}
-            <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} incidentsCount={data.incidents.length} />
+            <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
             {/* Tier 1: Hero Outcome + Tagline */}
             <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
               <HeroSection {...data.hero} />

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import type { CounterfactualScenario } from "../types";
 
 interface Props {
   riskScore: number;
   evidenceCount: number;
   counterfactuals: CounterfactualScenario[];
-  incidentsCount: number;
 }
 
 function Slider({ label, value, min, max, step, unit, onChange, color }: {
@@ -57,7 +56,7 @@ function AnimatedValue({ value, suffix, color, delay = 0 }: { value: number; suf
 
 const TEAL = "#2dd4bf";
 
-export default function ImpactCalculator({ riskScore, evidenceCount, counterfactuals, incidentsCount }: Props) {
+export default function ImpactCalculator({ riskScore, evidenceCount, counterfactuals }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   const s = (d: number) => mounted ? { animation: `fadeSlideUp 0.5s ${d}s cubic-bezier(0.16,1,0.3,1) both` } : { opacity: 0 };
