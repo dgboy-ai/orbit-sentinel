@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type { OrbitQueryEvidence, FutureTimelineEvent, CounterfactualScenario, DecisionCenterData } from "../types";
 import { riskScoreToColor, riskScoreToGlow } from "../utils/colors";
 import TiltCard from "./TiltCard";
@@ -26,13 +26,6 @@ interface ScenarioDetail {
   icon: string;
 }
 
-const SCENARIOS: ScenarioDetail[] = [
-  { key: "current", label: "Current Path", outcome: "MR Closed Without Merge", riskAfter: 0.55, probability: 78, color: "#ef4444", icon: "🔴" },
-  { key: "pipeline", label: "Trigger Pipeline", outcome: "Ready For Review", riskAfter: 0.28, probability: 61, color: "#22c55e", icon: "🟢" },
-  { key: "reviewer", label: "Assign Reviewer", outcome: "Active Development", riskAfter: 0.30, probability: 72, color: "#a78bfa", icon: "🟣" },
-  { key: "all", label: "All Recommendations", outcome: "Successfully Merged", riskAfter: 0.10, probability: 88, color: "#f97316", icon: "🟠" },
-];
-
 function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top?: string; left?: string; right?: string; bottom?: string; size: number }) {
   return (
     <div style={{
@@ -57,38 +50,40 @@ function StatusBadge({ label, good }: { label: string; good?: boolean }) {
   );
 }
 
-function ScenarioCard({ s, active, onClick }: { s: ScenarioDetail; active: boolean; onClick: () => void }) {
+function ScenarioCard({ s, active, onClick, touched, onTouch }: { s: ScenarioDetail; active: boolean; onClick: () => void; touched: boolean; onTouch: (v: boolean) => void }) {
   const curCol = riskScoreToColor(s.riskAfter);
   return (
     <div onClick={onClick} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
+      onTouchStart={() => onTouch(true)} onTouchEnd={() => onTouch(false)}
       role="button" tabIndex={0} aria-label={`${s.label}: ${s.outcome}, ${s.probability}% probability`}
       style={{
         padding: "12px 14px", borderRadius: 10, cursor: "pointer", position: "relative", overflow: "hidden",
-        background: active ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)` : "rgba(255,255,255,0.02)",
-        border: active ? `1px solid ${s.color}44` : "1px solid rgba(255,255,255,0.06)",
+        background: active ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)` : touched ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.02)",
+        border: active ? `1px solid ${s.color}44` : touched ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.06)",
         transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
-        transform: active ? "scale(1.01)" : "scale(1)",
+        transform: active ? "scale(1.01)" : touched ? "translateY(-2px) scale(1.005)" : "scale(1)",
         boxShadow: active ? `0 0 24px ${s.color}15, inset 0 1px 0 ${s.color}11` : "none",
+        WebkitTapHighlightColor: "transparent",
       }}
       onMouseEnter={e => { if (!active) { e.currentTarget.style.transform = "translateY(-2px) scale(1.005)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; } }}
       onMouseLeave={e => { if (!active) { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; } }}
     >
       {active && <div style={{ position: "absolute", inset: 0, borderRadius: 10, padding: 1, background: `linear-gradient(135deg, ${s.color}33, transparent 60%)`, mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMaskComposite: "xor", maskComposite: "exclude", pointerEvents: "none" }} />}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <span style={{ fontSize: 13, opacity: active ? 1 : 0.5 }}>{s.icon}</span>
-          <span style={{ fontSize: 10, fontWeight: 600, color: active ? s.color : "var(--text-secondary)", letterSpacing: "0.2px", transition: "color 0.2s ease" }}>{s.label}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
+          <span style={{ fontSize: 13, opacity: active ? 1 : 0.5, flexShrink: 0 }}>{s.icon}</span>
+          <span style={{ fontSize: 10, fontWeight: 600, color: active ? s.color : "var(--text-secondary)", letterSpacing: "0.2px", transition: "color 0.2s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.label}</span>
         </div>
         <span style={{
-          fontSize: 9, padding: "2px 8px", borderRadius: 4,
+          fontSize: 9, padding: "2px 8px", borderRadius: 4, flexShrink: 0,
           background: `${s.color}15`, color: s.color, fontWeight: 700,
           fontFamily: "'JetBrains Mono', monospace", border: `1px solid ${s.color}22`,
           boxShadow: active ? `0 0 8px ${s.color}22` : "none", transition: "box-shadow 0.3s ease",
-        }}>{s.probability}% prob.</span>
+        }}>{s.probability}%</span>
       </div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: active ? s.color : "var(--text-primary)", marginBottom: 6, transition: "color 0.2s ease" }}>{s.outcome}</div>
+      <div style={{ fontSize: 12, fontWeight: 700, color: active ? s.color : "var(--text-primary)", marginBottom: 6, transition: "color 0.2s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.outcome}</div>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", width: 28 }}>Risk</span>
+        <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", width: 28, flexShrink: 0 }}>Risk</span>
         <div style={{ flex: 1, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
           <div style={{
             width: `${s.riskAfter * 100}%`, height: "100%", borderRadius: 2,
@@ -96,34 +91,49 @@ function ScenarioCard({ s, active, onClick }: { s: ScenarioDetail; active: boole
             transition: "width 0.6s ease", boxShadow: `0 0 6px ${riskScoreToGlow(s.riskAfter)}`,
           }} />
         </div>
-        <span style={{ fontSize: 10, fontWeight: 700, color: curCol, fontFamily: "'JetBrains Mono', monospace", width: 30, textAlign: "right", transition: "color 0.3s ease" }}>{(s.riskAfter * 100).toFixed(0)}%</span>
+        <span style={{ fontSize: 10, fontWeight: 700, color: curCol, fontFamily: "'JetBrains Mono', monospace", width: 30, textAlign: "right", flexShrink: 0, transition: "color 0.3s ease" }}>{(s.riskAfter * 100).toFixed(0)}%</span>
       </div>
     </div>
   );
 }
 
-export default function ForecastEngine({ evidence, futureTimeline, decisionCenter, confidence, riskScore, riskLevel, mrIid, pipelinesTotal, failureCount: fc }: Props) {
+export default function ForecastEngine({ evidence, futureTimeline, decisionCenter, confidence, riskScore, riskLevel, mrIid, pipelinesTotal, failureCount: fc, counterfactuals }: Props) {
   const [activeScenario, setActiveScenario] = useState<string>("current");
   const [animRisk, setAnimRisk] = useState(riskScore);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  const [touchedCard, setTouchedCard] = useState<string | null>(null);
+  useEffect(() => { setAnimRisk(riskScore); }, [riskScore]);
 
-  const sel = SCENARIOS.find(s => s.key === activeScenario) ?? SCENARIOS[0];
+  const scenarios = useMemo<ScenarioDetail[]>(() => {
+    const base: ScenarioDetail = { key: "current", label: "Current Path", outcome: "MR Closed Without Merge", riskAfter: riskScore, probability: 78, color: "#ef4444", icon: "🔴" };
+    const fromCF = counterfactuals.map((cf, i): ScenarioDetail => {
+      const outcomes: Record<string, { outcome: string; icon: string }> = {
+        "Add File Changes": { outcome: "Code Ready", icon: "🔵" },
+        "Trigger Pipeline": { outcome: "Ready For Review", icon: "🟢" },
+        "Assign Reviewers": { outcome: "Active Development", icon: "🟣" },
+        "All Mitigations": { outcome: "Successfully Merged", icon: "🟠" },
+      };
+      const mapped = outcomes[cf.label] ?? { outcome: "Improved", icon: "🔄" };
+      const prob = Math.round((1 - cf.riskAfter) * 100 - 5);
+      return { key: `cf-${i}`, label: cf.label, outcome: mapped.outcome, riskAfter: cf.riskAfter, probability: Math.min(Math.max(prob, 40), 95), color: cf.color, icon: mapped.icon };
+    });
+    return [base, ...fromCF];
+  }, [counterfactuals, riskScore]);
 
-  function selectScenario(key: string) {
+  const sel = scenarios.find(s => s.key === activeScenario) ?? scenarios[0];
+
+  const selectScenario = useCallback((key: string) => {
     setActiveScenario(key);
-    const target = SCENARIOS.find(s => s.key === key)?.riskAfter ?? riskScore;
-    const start = animRisk;
+    const target = scenarios.find(s => s.key === key)?.riskAfter ?? riskScore;
     const dur = 700;
     const t0 = performance.now();
     function tick(now: number) {
       const p = Math.min((now - t0) / dur, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setAnimRisk(start + (target - start) * eased);
+      setAnimRisk(riskScore + (target - riskScore) * eased);
       if (p < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
-  }
+  }, [scenarios, riskScore]);
 
   const failureCount = fc ?? Math.round(pipelinesTotal * 0.178);
   const failureRate = pipelinesTotal > 0 ? ((failureCount / pipelinesTotal) * 100).toFixed(1) : "17.8";
@@ -172,8 +182,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             </div>
           </div>
           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${curCol}22, transparent)`, margin: "0 0 12px 0" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr", gap: "8px 14px", fontSize: 11, alignItems: "center", marginBottom: 12 }}>
-            <div>
+          <div className="resp-stack" style={{ display: "flex", gap: "8px 14px", fontSize: 11, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 120 }}>
               <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Current</div>
               <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                 <StatusBadge label="MR Open" good />
@@ -181,13 +191,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 <StatusBadge label="No Pipeline" />
               </div>
             </div>
-            <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4 }}>→</div>
-            <div>
+            <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4, flexShrink: 0 }}>→</div>
+            <div style={{ flex: 1, minWidth: 120 }}>
               <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Predicted</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: curCol, transition: "color 0.4s ease" }}>{sel.outcome}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: curCol, transition: "color 0.4s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sel.outcome}</div>
             </div>
-            <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4 }}>→</div>
-            <div>
+            <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4, flexShrink: 0 }}>→</div>
+            <div style={{ flex: 1, minWidth: 100 }}>
               <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Horizon</div>
               <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>7 Days <span style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 400 }}>({sel.probability}% prob.)</span></div>
             </div>
@@ -222,9 +232,9 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 <div style={{ position: "absolute", right: 0, top: 0, width: 20, height: "100%", background: `linear-gradient(90deg, transparent, ${gaugeColor}44)`, borderRadius: "0 4px 4px 0" }} />
               </div>
             </div>
-            <div style={{ textAlign: "right", width: 80, flexShrink: 0 }}>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
               <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>4 query types</div>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>10 matches</div>
+              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>{evidence.length} queries</div>
             </div>
           </div>
         </div>
@@ -247,29 +257,36 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             All 4 Orbit query types independently support this prediction.
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-            {[
-              { type: "PATH_FINDING", finding: "MR cannot reach deployment", pct: 95, color: "#60a5fa", icon: "🛣" },
-              { type: "TRAVERSAL", finding: "9 similar abandoned MRs", pct: 90, color: "#a78bfa", icon: "📚" },
-              { type: "NEIGHBORS", finding: "No reviewer ownership path", pct: 91, color: "#22c55e", icon: "🌐" },
-              { type: "AGGREGATION", finding: `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`, pct: 75, color: "#f97316", icon: "📊" },
-            ].map((q, i) => (
-              <div key={q.type} style={{
-                display: "flex", alignItems: "center", gap: 8,
-                animation: `fadeSlideUp 0.3s ${0.06 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
-              }}>
-                <span style={{ fontSize: 12, width: 20, textAlign: "center" }}>{q.icon}</span>
-                <span style={{
-                  fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: q.color,
-                  padding: "1px 6px", borderRadius: 3, background: `${q.color}12`, border: `1px solid ${q.color}18`,
-                  width: 95, flexShrink: 0, textAlign: "center",
-                }}>{q.type}</span>
-                <span style={{ fontSize: 10, color: "var(--text-primary)", fontWeight: 500, flex: 1 }}>{q.finding}</span>
-                <div style={{ width: 60, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
-                  <div style={{ width: `${q.pct}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${q.color}, ${q.color}88)`, transition: "width 1s ease", boxShadow: `0 0 6px ${q.color}33` }} />
-                </div>
-                <span style={{ width: 24, fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: q.color, textAlign: "right" }}>{q.pct}%</span>
-              </div>
-            ))}
+            {(() => {
+              const FINDING_MAP: Record<string, { icon: string; color: string; finding: string; getPct: (e: OrbitQueryEvidence) => number }> = {
+                PATH_FINDING: { icon: "🛣", color: "#60a5fa", finding: "MR cannot reach deployment", getPct: () => 95 },
+                TRAVERSAL: { icon: "📚", color: "#a78bfa", finding: "9 similar abandoned MRs", getPct: () => 90 },
+                NEIGHBORS: { icon: "🌐", color: "#22c55e", finding: "No reviewer ownership path", getPct: () => 91 },
+                AGGREGATION: { icon: "📊", color: "#f97316", finding: `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`, getPct: () => 75 },
+              };
+              return evidence.map((e, i) => {
+                const info = FINDING_MAP[e.queryType as keyof typeof FINDING_MAP] ?? { icon: "🔍", color: "#8b949e", finding: e.queryName, getPct: () => 50 };
+                return (
+                  <div key={e.queryType} style={{
+                    display: "flex", alignItems: "center", gap: 6,
+                    animation: `fadeSlideUp 0.3s ${0.06 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                    flexWrap: "wrap",
+                  }}>
+                    <span style={{ fontSize: 12, width: 18, textAlign: "center", flexShrink: 0 }}>{info.icon}</span>
+                    <span style={{
+                      fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: info.color,
+                      padding: "1px 6px", borderRadius: 3, background: `${info.color}12`, border: `1px solid ${info.color}18`,
+                      flexShrink: 0,
+                    }}>{e.queryType}</span>
+                    <span style={{ fontSize: 10, color: "var(--text-primary)", fontWeight: 500, flex: 1, minWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{info.finding}</span>
+                    <div className="resp-hide-mobile-bar" style={{ flex: "0 0 48px", height: 4, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                      <div style={{ width: `${info.getPct(e)}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${info.color}, ${info.color}88)`, transition: "width 1s ease", boxShadow: `0 0 6px ${info.color}33` }} />
+                    </div>
+                    <span style={{ width: 24, fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: info.color, textAlign: "right", flexShrink: 0 }}>{info.getPct(e)}%</span>
+                  </div>
+                );
+              });
+            })()}
           </div>
           <div style={{
             marginTop: 8, padding: "6px 12px", borderRadius: 6,
@@ -287,7 +304,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       </div>
 
       {/* DIGITAL TWIN STATE TRANSITION + SCENARIOS */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {/* State Transition */}
         <div className="card" style={{
           padding: "16px 18px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column",
@@ -341,9 +358,9 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 2 }}>What-If Scenarios</div>
             <div style={{ fontSize: 9, color: "var(--text-tertiary)", marginBottom: 10, lineHeight: 1.4 }}>Click to simulate a different future.</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {SCENARIOS.map((s, i) => (
+              {scenarios.map((s, i) => (
                 <div key={s.key} style={{ animation: `fadeSlideUp 0.4s ${0.12 + i * 0.06}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                  <ScenarioCard s={s} active={activeScenario === s.key} onClick={() => selectScenario(s.key)} />
+                  <ScenarioCard s={s} active={activeScenario === s.key} onClick={() => selectScenario(s.key)} touched={touchedCard === s.key} onTouch={(v) => setTouchedCard(v ? s.key : null)} />
                 </div>
               ))}
             </div>
@@ -352,7 +369,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       </div>
 
       {/* WHY ORBIT PREDICTS THIS + REALITY CHECK */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {/* Why Orbit Predicts This */}
         <div className="card" style={{
           padding: "14px 18px", position: "relative", overflow: "hidden",
@@ -477,7 +494,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#22c55e", marginBottom: 12 }}>Engineering Futures</div>
 
           {/* Before/After Comparison */}
-          <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 14 }}>
+          <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 10, alignItems: "center", marginBottom: 14 }}>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))", border: "1px solid rgba(239,68,68,0.1)" }}>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 4 }}>If Nothing Changes</div>
               <div style={{ fontSize: 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>MR Closed</div>
