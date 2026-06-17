@@ -5,7 +5,7 @@ const PROBLEM_SOLUTION = [
     icon: "🤔",
     title: "The Problem",
     items: [
-      "~45 min manual blast radius review per MR — still misses blockers",
+      "~45 min manual blast radius review per MR — still misses critical blockers",
       "CI checks if code builds — never asks if it <em>should</em> deploy",
       "Historical failures invisible at merge time",
     ],
