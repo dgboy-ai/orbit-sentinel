@@ -145,6 +145,7 @@ export default function App() {
     return p.get("tour") === "true" || p.get("judge") === "true";
   });
   const [mobileViewOpen, setMobileViewOpen] = useState(false);
+  const [loadingSlow, setLoadingSlow] = useState(false);
   const demoRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTiny = useMediaQuery("(max-width: 360px)");
@@ -200,6 +201,13 @@ export default function App() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Show "Use Demo Data" hint after 10s of loading
+  useEffect(() => {
+    if (!loading) { setLoadingSlow(false); return; }
+    const t = setTimeout(() => setLoadingSlow(true), 10000);
+    return () => clearTimeout(t);
+  }, [loading]);
 
   const rk = data ? riskScoreToKey(data.hero.riskScore) : riskScoreToKey(0.5);
   const accentColor = RISK[rk].hex;
@@ -359,7 +367,19 @@ export default function App() {
             ))}
           </div>
         </header>
-        {loading ? <LoadingSkeleton /> : (
+        {loading ? <>
+          <LoadingSkeleton />
+          {loadingSlow && (
+            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
+              <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
+              <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
+                style={{ padding: "5px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: "#60a5fa", whiteSpace: "nowrap" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.2)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(96,165,250,0.12)"; }}
+              >Use Demo Data →</button>
+            </div>
+          )}
+        </> : (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 10, padding: 20 }}>
             <div style={{ fontSize: 36 }}>🛰️</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
@@ -521,7 +541,7 @@ export default function App() {
 
       {demo && (
         <div style={{
-          position: "absolute", top: 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
+          position: "absolute", top: isMobile ? 90 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
           display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
           animation: "fadeSlideDown 0.3s ease, pulseGlow 2s ease-in-out infinite",
           pointerEvents: "none",

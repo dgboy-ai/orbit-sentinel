@@ -64,7 +64,7 @@ export default function LoadingSkeleton() {
         display: "flex", flexDirection: "column", gap: 12,
       }}>
         <SkeletonBlock height="14px" width="240px" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
+        <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
           {Array.from({ length: 5 }, (_, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
               <SkeletonBlock width="24px" height="24px" borderRadius={6} />
@@ -76,7 +76,7 @@ export default function LoadingSkeleton() {
       </div>
 
       {/* Hero row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12 }}>
+      <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12 }}>
         <SkeletonCard height="100px">
           <SkeletonBlock height="54px" />
         </SkeletonCard>
@@ -84,14 +84,14 @@ export default function LoadingSkeleton() {
       </div>
 
       {/* Triple column */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: 12 }}>
+      <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: 12 }}>
         <SkeletonCard />
         <SkeletonCard />
         <SkeletonCard />
       </div>
 
       {/* Double column */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12 }}>
+      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <SkeletonCard />
           <SkeletonCard />
@@ -111,7 +111,7 @@ export default function LoadingSkeleton() {
       </div>
 
       {/* Bottom row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <SkeletonCard />
         <SkeletonCard />
       </div>
