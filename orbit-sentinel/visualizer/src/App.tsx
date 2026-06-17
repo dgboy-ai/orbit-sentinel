@@ -403,7 +403,7 @@ export default function App() {
               <span className="resp-hide-subtitle" style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Engineering Decision Intelligence</span>
             </div>
           </div>
-          <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
+        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 340, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6, overflow: "hidden" }}>
             <DataModeBanner mode={dataMode} errorMessage={error ?? undefined} onRetry={loadData} />
             <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
           </div>

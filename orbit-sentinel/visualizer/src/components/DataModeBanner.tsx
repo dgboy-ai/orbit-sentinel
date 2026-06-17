@@ -21,8 +21,8 @@ export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
 
   return (
     <div style={{
-      display: "flex", alignItems: "center", gap: 8,
-      padding: "5px 10px", borderRadius: 6,
+      display: "flex", alignItems: "center", gap: 6,
+      padding: "5px 10px", borderRadius: 6, overflow: "hidden",
       background: mode === "live" ? "rgba(34,197,94,0.06)" :
                  mode === "demo" ? "rgba(96,165,250,0.06)" :
                  mode === "error" ? "rgba(239,68,68,0.06)" :
@@ -44,7 +44,7 @@ export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
         {cfg.label}
       </span>
       <span style={{ color: "var(--text-tertiary)" }}>·</span>
-      <span style={{ color: "var(--text-secondary)", flex: 1 }}>
+      <span style={{ color: "var(--text-secondary)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>
         {mode === "error" && errorMessage ? errorMessage : cfg.description}
       </span>
       {(mode === "error" || mode === "demo") && onRetry && (
