@@ -170,7 +170,7 @@ const apiService = {
   },
 
   isApiAvailable(): boolean {
-    return !!API_BASE_URL && API_BASE_URL !== 'http://localhost:3001' && API_BASE_URL !== 'https://your-engine-domain.com';
+    return !!API_BASE_URL && API_BASE_URL !== 'https://your-engine-domain.com';
   },
 };
 

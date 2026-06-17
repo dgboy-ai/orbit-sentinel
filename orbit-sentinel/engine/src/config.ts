@@ -16,7 +16,7 @@ export interface SentinelConfig {
   };
 }
 
-const config: SentinelConfig = {
+export const config: SentinelConfig = {
   gitlabHost: process.env.GITLAB_HOST ?? "gitlab.com",
   groupPath: process.env.ORBIT_GROUP_PATH ?? "",
   orbitApiEndpoint: process.env.ORBIT_API_ENDPOINT ?? "https://gitlab.com/api/v4/orbit",

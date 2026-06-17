@@ -1,1 +1,2 @@
-export { default as server } from './server.js';
+// server.ts is a standalone script, not a module
+export {};
