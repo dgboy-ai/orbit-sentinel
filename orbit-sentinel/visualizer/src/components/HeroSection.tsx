@@ -100,7 +100,7 @@ export default function HeroSection({
                 style={{ filter: `drop-shadow(0 0 6px ${r.glow})`, transition: "stroke-dashoffset 1.4s ease" }} />
               <text x="50" y="52" textAnchor="middle" fontSize="11" fontWeight="800" fill={r.hex} fontFamily="'JetBrains Mono', monospace">{(riskScore * 100).toFixed(0)}%</text>
             </svg>
-            <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginTop: -2 }}>Failure Probability</div>
+            <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginTop: -2 }}>Risk Score</div>
           </div>
         </div>
       </div>
