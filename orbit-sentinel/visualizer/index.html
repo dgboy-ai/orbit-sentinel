@@ -176,6 +176,21 @@
         background-size: 200% 100%;
         animation: shimmer-wide 2s ease-in-out infinite;
       }
+
+      /* === RESPONSIVE === */
+      @media (max-width: 768px) {
+        .card { border-radius: 10px; }
+        header { flex-wrap: wrap; gap: 6px; padding: 6px 12px !important; }
+        header > div:first-child { width: 100%; }
+        header > div:last-child { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+        main { padding: 10px !important; }
+        [style*="gridTemplateColumns"] { grid-template-columns: 1fr !important; }
+        [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+      }
+      @media (max-width: 480px) {
+        .card { border-radius: 8px; }
+        main { padding: 6px !important; }
+      }
     </style>
   </head>
   <body>

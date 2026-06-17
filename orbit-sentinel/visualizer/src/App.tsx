@@ -415,8 +415,39 @@ export default function App() {
 
   if (!data) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0a0a0f', color: '#8b8fa3', fontFamily: "'Inter', sans-serif", fontSize: 14 }}>
-        {loading ? 'Loading...' : error || 'No data available'}
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a0f", fontFamily: "'Inter', sans-serif" }}>
+        {loading ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid rgba(59,130,246,0.2)", borderTopColor: "#60a5fa", animation: "spin 0.8s linear infinite" }} />
+            <div style={{ color: "#8b8fa3", fontSize: 13 }}>Loading Orbit Sentinel...</div>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, maxWidth: 440, textAlign: "center", padding: 20 }}>
+            <div style={{ fontSize: 36, marginBottom: 4 }}>🛰️</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
+              {error?.includes("Failed") || error?.includes("fetch") ? "Engine API Unreachable" : "No Data Available"}
+            </div>
+            <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+              {error?.includes("Failed") || error?.includes("fetch")
+                ? "The Orbit Sentinel engine API could not be reached. The visualizer needs a running engine server to produce live analysis data."
+                : error || "No visualization data loaded."}
+            </div>
+            <div style={{ marginTop: 8, padding: "12px 16px", borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "1px solid var(--border)", textAlign: "left", fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.6, width: "100%" }}>
+              <strong style={{ color: "var(--text-primary)" }}>To set up the engine locally:</strong>
+              <ol style={{ margin: "6px 0 0 0", paddingLeft: 18 }}>
+                <li>Set <code style={{ color: "#60a5fa" }}>VITE_API_BASE_URL</code> to your engine URL</li>
+                <li>Run <code style={{ color: "#60a5fa" }}>cd engine &amp;&amp; npm start:api</code></li>
+                <li>The visualizer will fetch live data from <code style={{ color: "#60a5fa" }}>/api/analyze</code></li>
+                <li>Set <code style={{ color: "#60a5fa" }}>DEMO_MODE=true</code> for synthetic demo data</li>
+              </ol>
+            </div>
+            <button onClick={() => window.location.reload()}
+              style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid var(--border)", borderRadius: 6, cursor: "pointer", background: "transparent", color: "var(--text-primary)" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+            >Retry</button>
+          </div>
+        )}
       </div>
     );
   }

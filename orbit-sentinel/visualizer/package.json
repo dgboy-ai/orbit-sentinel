@@ -1,7 +1,14 @@
 {
   "name": "@orbit-sentinel/visualizer",
   "version": "1.0.0",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/gitlab-ai-hackathon/transcend/39251857.git"
+  },
+  "homepage": "https://orbit-sentinel.vercel.app",
+  "bugs": {
+    "url": "https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

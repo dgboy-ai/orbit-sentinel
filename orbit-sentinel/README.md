@@ -41,28 +41,47 @@ The visualizer demo is populated with sample data inspired by real Orbit query s
 
 ## How It Works
 
-```
-┌─────────────────────────────────────────────────────┐
-│              GitLab Merge Request Opened             │
-└──────────────────────┬──────────────────────────────┘
-                       │ trigger
-┌──────────────────────▼──────────────────────────────┐
-│         Orbit Sentinel Flow (Duo Agent Platform)     │
-│                                                       │
-│  Step 1  get_graph_schema → discover ontology         │
-│  Step 2  NEIGHBORS query → blast radius               │
-│  Step 3  PATH_FINDING → dependency chains             │
-│  Step 4  TRAVERSAL → historical matches               │
-│  Step 5  AGGREGATION → pipeline risk scoring          │
-│  Step 6  Analyze + predict failure modes              │
-│  Step 7  Send report as MR note                       │
-│  Step 8  Return success                               │
-└──────────────────────┬──────────────────────────────┘
-                       │ output
-┌──────────────────────▼──────────────────────────────┐
-│   MR Comment: Risk Score | Blast Radius | History    │
-│   Reviewers | Rollback Plan | Remediations           │
-└─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    MR["📝 MR Opened"] --> FLOW["Orbit Sentinel Flow<br/>(Duo Agent Platform)"]
+
+    subgraph FLOW ["Orbit Sentinel Flow (Duo Agent Platform)"]
+        direction TB
+        S1["1️⃣ get_graph_schema()<br/>Discover ontology"] --> S2
+        S2["2️⃣ NEIGHBORS query → Blast Radius"] --> S3
+        S3["3️⃣ PATH_FINDING → Dependency chains"] --> S4
+        S4["4️⃣ TRAVERSAL → Historical matches"] --> S5
+        S5["5️⃣ AGGREGATION → Pipeline risk"] --> S6
+        S6["6️⃣ Compose report with LLM"] --> S7
+        S7["7️⃣ Post MR note via<br/>create_merge_request_note()"] --> S8
+        S8["8️⃣ Return success"]
+    end
+
+    FLOW --> ENGINE["Engine API<br/>(Express server)"]
+
+    subgraph ENGINE ["Engine API (Express server)"]
+        direction TB
+        E1["POST /api/analyze"] --> E2["DigitalTwinBuilder"]
+        E2 --> E3["ChangeSimulator"]
+        E3 --> E4["RiskEngine"]
+        E4 --> E5["RemediationPlanner"]
+        E5 --> E6["DataVisualizer →<br/>VisualizationData"]
+    end
+
+    ENGINE --> VIZ["🛰️ Orbit Sentinel Visualizer<br/>(React + Vite + D3.js)"]
+
+    subgraph VIZ ["Orbit Sentinel Visualizer (React + Vite + D3.js)"]
+        direction TB
+        V1["Overview Dashboard"] --> V2["Blast Radius Graph"]
+        V2 --> V3["Risk Investigation"]
+        V3 --> V4["Forecast Engine"]
+        V4 --> V5["Historical Context"]
+        V5 --> V6["Impact Report"]
+    end
+
+    VIZ --> DEPLOY["🚀 Deployed to Vercel<br/>orbit-sentinel.vercel.app"]
+
+    FLOW -.-> SKILL["📦 Published to AI Catalog<br/>glab skills publish"]
 ```
 
 **Key principle:** Every conclusion cites specific Orbit query evidence. No black box.

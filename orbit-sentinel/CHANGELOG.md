@@ -59,6 +59,27 @@ The visualizer previously displayed a hardcoded `DATA` object. Rewrote the data 
 - **Loading state** — Shows a spinner during data fetch
 - **Error state** — Displays error messages when both API and demo mode fail
 
+### DataVisualizer Full Shape Transform (`engine/src/reporter/visualizer.ts`)
+
+The `DataVisualizer` previously produced only a partial `VisualizationData` subset (graph + riskData + summary). Full rewrite produces **all 10 top-level fields**:
+
+- `hero` — predicted outcome, recommended action, confidence factors with color-coded status pills
+- `evidence` — 4 Orbit query results (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION)
+- `futureTimeline` — 5-day predicted timeline with icons and descriptions
+- `decisionCenter` — deployment verdict, reviewers, required tests, rollback strategy, risk reduction
+- `counterfactuals` — what-if scenarios with risk-after values and colors
+- `incidents` — historical matches with similarity scores, root cause, and mitigation
+
+The `/api/analyze` and `/api/demo` endpoints both use this transformer so the visualizer always receives the correct shape regardless of data source.
+
+### README Architecture Diagram
+
+Added Mermaid-based system architecture diagram showing the complete 8-step flow from MR creation → Orbit queries → digital twin → simulation → report → visualizer → skill publish.
+
+### Package Metadata
+
+Added `repository`, `homepage`, and `bugs` fields to `visualizer/package.json` for proper npm registry linking.
+
 ### Deployment Script (`deploy.sh`)
 
 Automated deployment to Vercel (visualizer) and Render (engine) with a single command. Checks for required environment variables (`VERCEL_TOKEN`, `RENDER_API_KEY`) and deploys each target sequentially.
@@ -117,8 +138,13 @@ Added a complete error classification and recovery system:
 | `AGENTS.md` | Rewritten as concise agent behavior specification |
 | `.gitlab-ci.yml` | Fixed syntax, added engine jobs, corrected paths |
 | `engine/package.json` | Added express, cors, zod dependencies |
-| `engine/src/index.ts` | Added `server` export |
+| `engine/src/index.ts` | Added `DataVisualizer` export, removed broken server re-export |
+| `engine/src/reporter/visualizer.ts` | Full rewrite — produces complete VisualizationData with all 10 fields |
+| `engine/src/server.ts` | Uses DataVisualizer transform; demo endpoint returns VisualizationData shape |
+| `engine/src/types.ts` | Widened DigitalTwinNode.type to string; optional impact/recommendedTests |
+| `engine/src/config.ts` | Exported config const (was private) |
 | `visualizer/src/App.tsx` | Replaced hardcoded DATA with API service + demo fallback |
+| `visualizer/package.json` | Added repository, homepage, bugs fields |
 | `flow/orbit-sentinel-flow.yaml` | Dynamic `{{mr_iid}}` and `{{changed_files}}` placeholders |
 
 ---
