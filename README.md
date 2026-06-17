@@ -173,6 +173,19 @@ https://gitlab-ai-hackathon.gitlab.io/transcend/39251857/
 
 The pipeline also runs TypeScript checks on the engine and visualizer.
 
+## Documentation for Judges
+
+| Document | What It Shows |
+|----------|---------------|
+| [Demo Script](orbit-sentinel/demo/demo-script.md) | 3-minute walkthrough of the full product — follow along with the live demo |
+| [Devpost Submission](orbit-sentinel/demo/devpost-submission.md) | Full hackathon entry: problem, solution, tech, impact |
+| [Screenshots Guide](orbit-sentinel/demo/screenshots-guide.md) | Key UI screenshots to capture for the submission |
+| [Sample Impact Report](orbit-sentinel/demo/output/sample-impact-report.md) | Example MR note output — what Orbit Sentinel posts on a merge request |
+| [Orbit Traversal Results](orbit-sentinel/docs/orbit-traversal-results.md) | **Proof of live Orbit queries** — 22 nodes, 40 relationships discovered |
+| [Changelog](orbit-sentinel/CHANGELOG.md) | Full history of fixes, features, and polish |
+| [Agent Instructions](orbit-sentinel/AGENTS.md) | How the digital twin behaves, error handling, output format |
+| [Flow YAML](orbit-sentinel/flow/orbit-sentinel-flow.yaml) | The 8-step Duo Agent Platform workflow definition |
+
 ## Duo Chat Integration
 
 The skill at `orbit-sentinel/.gitlab/duo/skill.yml` makes Orbit Sentinel available in Duo Chat with:
