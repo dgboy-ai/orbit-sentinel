@@ -268,8 +268,8 @@ export default function BlastRadiusExplorer({ graph }: Props) {
   useEffect(() => { setRenderErr(null); }, [graph]);
 
   const services = useMemo(() => filterNodesByType(graph.nodes, ["Service", "Project", "File", "Pipeline"]), [graph]);
-  const sel = selectedNode ? graph.nodes.find(n => n.id === selectedNode) : null;
-  const br = selectedNode ? useMemo(() => findConnectedComponents(graph.nodes, graph.links, selectedNode, depth), [graph, selectedNode, depth]) : null;
+  const sel = useMemo(() => selectedNode ? graph.nodes.find(n => n.id === selectedNode) ?? null : null, [graph, selectedNode]);
+  const br = useMemo(() => selectedNode ? findConnectedComponents(graph.nodes, graph.links, selectedNode, depth) : null, [graph, selectedNode, depth]);
 
   const riskCount = useMemo(() => br ? br.nodes.filter(n => n.riskLevel === "high" || n.riskLevel === "critical").length : 0, [br]);
   const serviceCount = useMemo(() => br ? br.nodes.filter(n => n.type === "Service").length : 0, [br]);
