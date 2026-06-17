@@ -209,13 +209,7 @@ export default function App() {
       setDataMode("live");
     } catch (err) {
       console.error('Failed to load data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load data');
-      try {
-        const result = await apiService.getDemoData();
-        setData(result.report);
-      } catch (demoErr) {
-        console.error('Failed to load demo data:', demoErr);
-      }
+      setData(DEMO_DATA);
       setDataMode("demo");
       setError(null);
     } finally {
