@@ -26,7 +26,7 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
         <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>🔮</div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Predicted Future</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering digital twin forecast · {confidence ?? "78%"} confidence</div>
+          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Digital twin forecast · {confidence ?? "High"}</div>
         </div>
       </div>
       {events.length === 0 ? (

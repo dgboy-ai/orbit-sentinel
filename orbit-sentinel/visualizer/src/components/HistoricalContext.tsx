@@ -247,8 +247,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             {[
               { text: "Empty diff MRs rarely merge — no code changes = no deployment path", icon: "📝" },
               { text: "Missing pipeline strongly predicts closure — CI validation is a strong signal", icon: "🔄" },
-              { text: "No reviewer assignment increases abandonment probability 3x", icon: "👤" },
-              { text: "Same branch showed repeated failure pattern — 90% closure rate across 10 MRs", icon: "🔀" },
+              { text: "No reviewer assignment increases abandonment probability significantly", icon: "👤" },
+              { text: "Same branch showed repeated failure pattern — 9 of 10 MRs from this branch were closed without merge", icon: "🔀" },
             ].map((p, i) => (
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: 4,

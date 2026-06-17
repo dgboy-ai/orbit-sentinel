@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 const WEBHOOK_STEPS = [
   { icon: "🔀", label: "MR Opened", desc: "Merge Request !10 detected on test-sentinel branch", color: "#22c55e" },
   { icon: "🛰️", label: "Orbit Queried", desc: "NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION dispatched", color: "#60a5fa" },
-  { icon: "🧠", label: "Digital Twin Built", desc: "22 nodes, 40 edges, 4 query types across ecosystem", color: "#a78bfa" },
+  { icon: "🧠", label: "Digital Twin Built", desc: "23 nodes, 43 edges, 4 query types across ecosystem", color: "#a78bfa" },
   { icon: "🔍", label: "Analysis Complete", desc: "Empty diff, no pipeline, 9/10 historical closures detected", color: "#eab308" },
   { icon: "📋", label: "Report Posted", desc: "Full impact analysis with remediation steps generated", color: "#22c55e" },
   { icon: "🎯", label: "Verdict: DO NOT DEPLOY", desc: "Risk score 55%, deployment path broken, 90% abandonment rate", color: "#ef4444" },

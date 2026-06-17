@@ -213,7 +213,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 display: "flex", alignItems: "center", gap: 6,
               }}>
                 <span style={{ fontSize: 12 }}>⚠</span>
-                <span><strong>Secondary:</strong> 9 highly similar MRs were previously abandoned.</span>
+                <span><strong>Secondary:</strong> 9 prior MRs from this branch were abandoned.</span>
               </div>
             </div>
           </div>
@@ -320,7 +320,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       </div>
 
       {/* EVIDENCE CARDS */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {cards.map((card, i) => (
           <div key={card.title} style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
             <EvidenceCard card={card} evidence={evidence} />

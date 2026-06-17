@@ -367,7 +367,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               {[
                 { type: "PATH_FINDING", finding: "MR → Pipeline relationship missing", result: "No deployment path discovered" },
                 { type: "NEIGHBORS", finding: "No reviewer ownership connected", result: "Review process blocked" },
-                { type: "TRAVERSAL", finding: "9 similar historical MRs", result: "90% were closed" },
+                { type: "TRAVERSAL", finding: "9 prior MRs from same branch", result: "All closed without merge" },
                 { type: "AGGREGATION", finding: `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`, result: `${failureRate}% historical failure rate — used for calibration` },
               ].map((r, i) => {
                 const q = qEvidence(r.type);
@@ -477,7 +477,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#22c55e", marginBottom: 12 }}>Engineering Futures</div>
 
           {/* Before/After Comparison */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 14 }}>
+          <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 14, alignItems: "center", marginBottom: 14 }}>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))", border: "1px solid rgba(239,68,68,0.1)" }}>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 4 }}>If Nothing Changes</div>
               <div style={{ fontSize: 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>MR Closed</div>
@@ -509,7 +509,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             border: "1px solid rgba(96,165,250,0.12)",
           }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 6 }}>Orbit Delta</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.1)", textAlign: "center" }}>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Path</div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#ef4444" }}>MR Closed (78%)</div>
@@ -520,7 +520,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               </div>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.04))", border: "1px solid rgba(96,165,250,0.15)", textAlign: "center" }}>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Improvement</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>+166%</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>5.5×</div>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>Risk: 55% → 10%</div>
               </div>
             </div>
@@ -536,7 +536,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             border: "1px solid rgba(239,68,68,0.1)",
           }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 6 }}>Impact of Doing Nothing</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", gap: 8 }}>
+            <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", gap: 8 }}>
               {[
                 { label: "Dev Time Lost", value: "6-8 days", color: "#ef4444" },
                 { label: "Expected Outcome", value: "MR Closed", color: "#ef4444" },

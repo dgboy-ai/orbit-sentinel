@@ -266,8 +266,8 @@ export default function DigitalTwinGraph({ graph }: Props) {
             <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
               {[
                 {l:"Risk Propagation",v:"Active",c:"#eab308"},
-                {l:"Affected Systems",v:"7",c:"var(--text-primary)"},
-                {l:"Predicted Failures",v:"6",c:"#ef4444"},
+                {l:"Affected Systems",v:String(graph.nodes.filter(n=>n.type==="Service"||n.type==="File").length),c:"var(--text-primary)"},
+                {l:"Predicted Failures",v:String(graph.nodes.filter(n=>n.riskLevel==="high"||n.riskLevel==="critical").length),c:"#ef4444"},
               ].map(x=>(
                 <div key={x.l} style={{ display:"flex", justifyContent:"space-between", fontSize:8, color:"var(--text-secondary)", padding:"1px 4px" }}>
                   <span>{x.l}</span>
