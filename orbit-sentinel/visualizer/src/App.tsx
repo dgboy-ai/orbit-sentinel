@@ -165,8 +165,9 @@ export default function App() {
   const [mobileViewOpen, setMobileViewOpen] = useState(false);
   const [loadingSlow, setLoadingSlow] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
+  const noEngine = !API_BASE_URL || API_BASE_URL === 'https://your-engine-domain.com';
   const [showNarrative, setShowNarrative] = useState(
-    typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : true
+    typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : !noEngine
   );
   const showNarrativeRef = useRef(showNarrative);
   showNarrativeRef.current = showNarrative;
@@ -183,17 +184,17 @@ export default function App() {
   const isTiny = useMediaQuery("(max-width: 360px)");
 
   const loadData = useCallback(async () => {
+    if (!apiService.isApiAvailable() && !showNarrativeRef.current) {
+      setData(DEMO_DATA);
+      setDataMode("demo");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     if (!apiService.isApiAvailable()) {
-      // No engine — narrative will set data on completion (or immediately if skipped)
       setDataMode("loading");
-      if (!showNarrativeRef.current) {
-        setData(DEMO_DATA);
-        setDataMode("demo");
-        setLoading(false);
-      }
       return;
     }
 
@@ -309,7 +310,7 @@ export default function App() {
   }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
-    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "setup", "overview"];
+    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "overview", "setup", "overview"];
     if (stepIndex < tourViews.length) {
       setView(tourViews[stepIndex]);
     }
