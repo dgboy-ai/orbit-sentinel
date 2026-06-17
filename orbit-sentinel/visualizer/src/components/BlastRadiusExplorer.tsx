@@ -386,7 +386,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
         </div>
 
         {/* CENTER: Graph */}
-        <div className="card" style={{ padding: 0, overflow: "hidden", position: "relative", minHeight: 0 }}>
+        <div className="card" style={{ padding: 0, overflow: "hidden", position: "relative", minHeight: 0, height: "100%" }}>
           {br ? (
             <BlastRadiusGraph
               nodes={br.nodes}
