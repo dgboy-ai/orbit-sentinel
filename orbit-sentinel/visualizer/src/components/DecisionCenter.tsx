@@ -6,6 +6,7 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
   const { deploymentStrategy, reviewers, requiredTests, rollbackStrategy, riskReduction } = d;
   const curCol = riskScoreToColor(riskReduction.current);
   const aftCol = riskScoreToColor(riskReduction.afterRecommendation);
+  const verdict = riskReduction.current > 0.5 ? { icon: "🚫", label: "DO NOT DEPLOY", color: "#ef4444", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.15)" } : riskReduction.current > 0.3 ? { icon: "⚠️", label: "PROCEED WITH CAUTION", color: "#eab308", bg: "rgba(234,179,8,0.08)", border: "rgba(234,179,8,0.15)" } : { icon: "✅", label: "SAFE TO DEPLOY", color: "#22c55e", bg: "rgba(34,197,94,0.08)", border: "rgba(34,197,94,0.15)" };
 
   return (
     <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.1s ease both", height: "100%", overflow: "auto", position: "relative" }}>
@@ -17,11 +18,11 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
           <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering recommendation</div>
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", marginBottom: 10 }}>
-        <span style={{ fontSize: 18 }}>🚫</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 8, background: verdict.bg, border: `1px solid ${verdict.border}`, marginBottom: 10 }}>
+        <span style={{ fontSize: 18 }}>{verdict.icon}</span>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444" }}>Recommendation</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#ef4444" }}>DO NOT DEPLOY</div>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: verdict.color }}>Recommendation</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: verdict.color }}>{verdict.label}</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>

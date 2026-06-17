@@ -9,6 +9,11 @@ const META: Record<string, { icon: string; label: string; color: string; bg: str
 };
 
 export default function OrbitEvidencePanel({ evidence }: { evidence: OrbitQueryEvidence[] }) {
+  const pf = evidence.find(e => e.queryType === "PATH_FINDING");
+  const conclusion = pf?.result.includes("no path") || pf?.result.includes("cannot deploy")
+    ? "This MR currently has no path to production."
+    : "Orbit analysis complete — see per-query results below.";
+
   return (
     <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", animation: "fadeSlideUp 0.5s 0.05s ease both", height: "100%", overflow: "auto", position: "relative" }}>
       <div style={{ position: "absolute", top: 0, right: 0, width: 180, height: 180, borderRadius: "50%", background: "rgba(96,165,250,0.06)", filter: "blur(60px)", pointerEvents: "none", transform: "translate(20%, -20%)" }} />
@@ -42,7 +47,7 @@ export default function OrbitEvidencePanel({ evidence }: { evidence: OrbitQueryE
         }}>
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 3 }}>Conclusion</div>
           <div style={{ fontSize: 12, color: "var(--text-primary)", fontWeight: 600, lineHeight: 1.4 }}>
-            This MR currently has no path to production.
+            {conclusion}
           </div>
         </div>
       </div>

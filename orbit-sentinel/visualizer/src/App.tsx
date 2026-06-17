@@ -16,6 +16,11 @@ import FutureTimeline from "./components/FutureTimeline";
 import TaglineBanner from "./components/TaglineBanner";
 import PathBrokenAnimation from "./components/PathBrokenAnimation";
 import BackgroundParticles from "./components/BackgroundParticles";
+import ImpactMetrics from "./components/ImpactMetrics";
+import OnboardingOverlay from "./components/OnboardingOverlay";
+import HelpTooltip from "./components/HelpTooltip";
+import RealityCheck from "./components/RealityCheck";
+import SimulateWebhook from "./components/SimulateWebhook";
 import { riskScoreToKey, RISK } from "./utils/colors";
 
 // API configuration — set VITE_API_BASE_URL as Vercel env var to enable live engine
@@ -259,6 +264,10 @@ export default function App() {
   const [data, setData] = useState<VisualizationData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem("orbit-sentinel-onboarded");
+  });
   const demoRef = useRef<number | null>(null);
 
   // Load data from API or fallback to demo
@@ -360,6 +369,11 @@ export default function App() {
     setView(v);
   }, [view]);
 
+  const dismissOnboarding = useCallback(() => {
+    setShowOnboarding(false);
+    try { localStorage.setItem("orbit-sentinel-onboarded", "1"); } catch {}
+  }, []);
+
   const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Blast Radius"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
   const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
   const [prevView, setPrevView] = useState<View>(view);
@@ -381,6 +395,8 @@ export default function App() {
       case "overview":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {/* Tier 0: Impact Metrics */}
+            <ImpactMetrics />
             {/* Tier 1: Hero Outcome + Tagline */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12 }}>
               <HeroSection {...data.hero} />
@@ -389,7 +405,7 @@ export default function App() {
             {/* Tier 2: Decision Center + Future Timeline + Path Analysis */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: 12 }}>
               <DecisionCenter d={data.decisionCenter} />
-              <FutureTimeline events={data.futureTimeline} />
+              <FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} />
               <PathBrokenAnimation />
             </div>
             {/* Tier 3: Evidence + Incidents + Graph + Simulation */}
@@ -403,12 +419,17 @@ export default function App() {
                 <CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} />
               </div>
             </div>
+            {/* Tier 4: Simulate Webhook + Reality Check */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <SimulateWebhook />
+              <RealityCheck />
+            </div>
           </div>
         );
       case "blast-radius": return <BlastRadiusExplorer graph={data.graph} />;
       case "risk": return <RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} />;
       case "simulation": return <ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} />;
-      case "historical": return <HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} />;
+      case "historical": return <HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} />;
       case "report": return <ImpactReport data={data} />;
     }
   }, [view, data, navigate]);
@@ -454,6 +475,7 @@ export default function App() {
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-primary)", position: "relative" }}>
+      {data && showOnboarding && <OnboardingOverlay onDismiss={dismissOnboarding} />}
       <BackgroundParticles />
       <ScanLine />
       <div className="bg-grid" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />
@@ -499,23 +521,28 @@ export default function App() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 2, alignItems: "center" }} role="tablist" aria-label="Dashboard views">
-          {tabs.map(([k, lbl]) => (
-            <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }}
-              role="tab"
-              aria-selected={view === k}
-              aria-label={`${lbl} view`}
-              style={{
-              padding: "4px 11px", fontSize: 11, fontWeight: view === k ? 600 : 400,
-              border: view === k ? `1px solid ${accentColor}44` : "1px solid transparent",
-              borderRadius: 6, cursor: "pointer",
-              background: view === k ? `${accentColor}18` : "transparent",
-              color: view === k ? accentColor : "var(--text-secondary)",
-              transition: "all 0.15s ease", letterSpacing: "0.2px",
-            }}
-              onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
-              onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
-            >{lbl}</button>
-          ))}
+          {tabs.map(([k, lbl]) => {
+            const help = DEMO_STEPS.find(d => d.view === k)?.sublabel ?? "";
+            return (
+            <span key={k} style={{ display: "inline-flex", alignItems: "center" }}>
+              <button onClick={() => { if (demo) stopDemo(); navigate(k); }}
+                role="tab"
+                aria-selected={view === k}
+                aria-label={`${lbl} view: ${help}`}
+                style={{
+                padding: "4px 11px", fontSize: 11, fontWeight: view === k ? 600 : 400,
+                border: view === k ? `1px solid ${accentColor}44` : "1px solid transparent",
+                borderRadius: 6, cursor: "pointer",
+                background: view === k ? `${accentColor}18` : "transparent",
+                color: view === k ? accentColor : "var(--text-secondary)",
+                transition: "all 0.15s ease", letterSpacing: "0.2px",
+              }}
+                onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
+                onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+              >{lbl}</button>
+              <HelpTooltip text={help} />
+            </span>
+          );})}
           <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 8px" }} />
           <button onClick={() => exportReport(data)} title="Export report" aria-label="Export report as markdown" style={{
             padding: "5px 10px", fontSize: 13, cursor: "pointer",

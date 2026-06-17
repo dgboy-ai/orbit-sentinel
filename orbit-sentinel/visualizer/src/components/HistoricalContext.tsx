@@ -4,6 +4,7 @@ import type { HistoricalIncident } from "../types";
 interface Props {
   incidents: HistoricalIncident[];
   totalAnalyzed: number;
+  mrIid?: number;
 }
 
 function OutcomeIcon({ outcome }: { outcome: string }) {
@@ -32,7 +33,7 @@ function StatCard({ label, value, sub, color }: { label: string; value: string; 
   );
 }
 
-export default function HistoricalContext({ incidents, totalAnalyzed }: Props) {
+export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10 }: Props) {
   const sorted = [...incidents].sort((a, b) => a.mrIid - b.mrIid);
   const closed = incidents.filter(i => i.outcome === "Closed");
   const closedCount = closed.length;
@@ -41,7 +42,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed }: Props) {
 
   const timeline = [
     ...sorted.map(i => ({ mrIid: i.mrIid, outcome: i.outcome, label: `MR #${i.mrIid}` })),
-    { mrIid: 10, outcome: "current", label: "MR #10" },
+    { mrIid: mrIid, outcome: "current", label: `MR #${mrIid}` },
   ];
 
   return (
@@ -405,7 +406,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed }: Props) {
                 { label: "MR #2", color: "#ef4444", status: "CLOSED" },
                 { label: "MR #5", color: "#ef4444", status: "CLOSED" },
                 { label: "MR #9", color: "#ef4444", status: "CLOSED" },
-                { label: "MR #10", color: "#22c55e", status: "CURRENT" },
+                { label: `MR #${mrIid}`, color: "#22c55e", status: "CURRENT" },
               ].map((m, i) => (
                 <React.Fragment key={m.label}>
                   <div style={{ textAlign: "center", minWidth: 60 }}>

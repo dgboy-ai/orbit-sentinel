@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { RiskBreakdown, OrbitQueryEvidence, DecisionCenterData } from "../types";
 import TiltCard from "./TiltCard";
-import { useAnimatedValue } from "../hooks/useAnimatedValue";
 
 interface Props {
   riskData: { score: number; level: string; breakdown: RiskBreakdown[] };

@@ -18,7 +18,7 @@ function TimelineDot({ active }: { active: boolean }) {
   );
 }
 
-export default function FutureTimeline({ events }: { events: FutureTimelineEvent[] }) {
+export default function FutureTimeline({ events, confidence }: { events: FutureTimelineEvent[]; confidence?: string }) {
   return (
     <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", height: "100%", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", top: 0, right: 0, width: 160, height: 160, borderRadius: "50%", background: "rgba(96,165,250,0.05)", filter: "blur(50px)", pointerEvents: "none" }} />
@@ -26,7 +26,7 @@ export default function FutureTimeline({ events }: { events: FutureTimelineEvent
         <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>🔮</div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Predicted Future</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering digital twin forecast · 78% confidence</div>
+          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering digital twin forecast · {confidence ?? "78%"} confidence</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 0, flex: 1, position: "relative", paddingLeft: 6 }}>

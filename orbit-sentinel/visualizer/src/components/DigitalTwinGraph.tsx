@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import type { GraphNode, GraphLink } from "../types";
-import { NODE_COLORS, riskLevelToColor, riskLevelToGlow } from "../utils/colors";
+import { NODE_COLORS, riskLevelToColor } from "../utils/colors";
 import { useAnimatedValue } from "../hooks/useAnimatedValue";
 
 interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
@@ -250,11 +250,11 @@ export default function DigitalTwinGraph({ graph }: Props) {
                 </div>
               </div>
             )}
-            {selected.id === "mr:10" && (
+            {selected.type === "MergeRequest" && (
               <div style={{ padding:"5px 8px", borderRadius:5, background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.15)", marginTop:4 }}>
                 <div style={{ fontSize:7, fontWeight:700, letterSpacing:"0.3px", textTransform:"uppercase", color:"#ef4444", marginBottom:2 }}>Path Status</div>
                 <div style={{ fontSize:9, color:"#ef4444", fontWeight:600 }}>⚠ No deployment path</div>
-                <div style={{ fontSize:8, color:"var(--text-secondary)", marginTop:1 }}>MR !10 → Pipeline missing</div>
+                <div style={{ fontSize:8, color:"var(--text-secondary)", marginTop:1 }}>{selected.label} → Pipeline missing</div>
               </div>
             )}
           </>

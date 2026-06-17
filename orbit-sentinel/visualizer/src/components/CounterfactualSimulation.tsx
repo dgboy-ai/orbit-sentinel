@@ -120,7 +120,8 @@ export default function CounterfactualSimulation({
           const isActive = active === i;
           const barPct = s.riskAfter * 100;
           return (
-            <div key={s.label} onClick={() => applySimulation(i)}
+            <div key={s.label} onClick={() => applySimulation(i)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); applySimulation(i); } }}
+              role="button" tabIndex={0}
               style={{
                 padding: "10px 12px", borderRadius: 7, cursor: "pointer",
                 background: isActive ? `${s.color}18` : "rgba(255,255,255,0.02)",
