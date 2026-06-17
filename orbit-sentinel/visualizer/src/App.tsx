@@ -291,6 +291,7 @@ export default function App() {
   const navigate = useCallback((v: View) => {
     if (v === view) return;
     setView(v);
+    try { window.history.replaceState(null, '', `?view=${v}`); } catch {}
   }, [view]);
 
   const dismissOnboarding = useCallback(() => {
@@ -550,7 +551,7 @@ export default function App() {
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.16)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.08)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.25)"; }}
           >👑 Tour</button>
-          <button onClick={() => exportAsHtml(data)} title="Export as HTML (print to PDF)" aria-label="Export report"
+          <button onClick={() => exportAsHtml(data)} title="Export as HTML" aria-label="Export report as HTML"
             style={{
               padding: "5px 10px", fontSize: 13, cursor: "pointer",
               border: "1px solid var(--border)", borderRadius: 6,
@@ -589,7 +590,8 @@ export default function App() {
             border: `1px solid ${accentColor}33`,
             color: accentColor, letterSpacing: "1px", textTransform: "uppercase",
           }}>
-            DEMO · {DEMO_STEPS[stepIndex].icon} {DEMO_STEPS[stepIndex].label}
+            <span style={{ opacity: 0.5, marginRight: 6 }}>{stepIndex + 1}/{DEMO_STEPS.length}</span>
+            {DEMO_STEPS[stepIndex].icon} {DEMO_STEPS[stepIndex].label}
           </div>
           <div style={{
             padding: "4px 16px", borderRadius: 12, fontSize: 10,

@@ -115,22 +115,19 @@ export default function CounterfactualSimulation({
       )}
 
       {/* Scenario grid */}
+      {!scenarios.length ? (
+        <div className="card" style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 100, borderColor: "transparent" }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 4 }}>🧪 No scenarios available</div>
+            <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>What-if simulation requires counterfactual data</div>
+          </div>
+        </div>
+      ) : (
       <div style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 8 }}>
         {scenarios.map((s, i) => {
           const isActive = active === i;
           const barPct = s.riskAfter * 100;
-  if (!scenarios.length) {
-    return (
-      <div className="card" style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 100 }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 4 }}>🧪 No scenarios available</div>
-          <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>What-if simulation requires counterfactual data</div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
+          return (
             <div key={s.label} onClick={() => applySimulation(i)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); applySimulation(i); } }}
               role="button" tabIndex={0}
               style={{
@@ -190,6 +187,7 @@ export default function CounterfactualSimulation({
           );
         })}
       </div>
+      )}
     </div>
   );
 }

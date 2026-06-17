@@ -14,7 +14,7 @@ describe("App", () => {
 
   it("renders export button", async () => {
     render(<App />);
-    expect(await screen.findByLabelText("Export report", {}, WAIT)).toBeInTheDocument();
+    expect(await screen.findByLabelText("Export report as HTML", {}, WAIT)).toBeInTheDocument();
   });
 
   it("can dismiss onboarding overlay", async () => {

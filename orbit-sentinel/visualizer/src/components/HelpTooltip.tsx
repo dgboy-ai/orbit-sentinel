@@ -9,7 +9,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
       onFocus={() => setShow(true)}
       onBlur={() => setShow(false)}
     >
-      <span tabIndex={0} role="button" aria-label={text}
+      <span tabIndex={0} role="button" aria-label={`Help: ${text}`}
         style={{
           width: 14, height: 14, borderRadius: "50%",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
