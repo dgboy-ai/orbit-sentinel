@@ -76,18 +76,14 @@ export default function RealityCheck() {
             }}>
               <span style={{ fontSize: 10, fontWeight: 500, color: "var(--text-primary)", whiteSpace: "nowrap" }}>{c.signal}</span>
               <span style={{
-                fontSize: 9, padding: "2px 8px", borderRadius: 3, fontWeight: 700, textAlign: "center",
-                background: c.traditional ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
+                fontSize: 10, fontWeight: 700, textAlign: "center",
                 color: c.traditional ? "#22c55e" : "#ef4444",
-                border: `1px solid ${c.traditional ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
               }}>
                 {c.traditional ? "✓ Yes" : "✗ No"}
               </span>
               <span style={{
-                fontSize: 9, padding: "2px 8px", borderRadius: 3, fontWeight: 700, textAlign: "center",
-                background: c.orbit ? "rgba(96,165,250,0.1)" : "rgba(239,68,68,0.1)",
+                fontSize: 10, fontWeight: 700, textAlign: "center",
                 color: c.orbit ? "var(--accent-blue)" : "#ef4444",
-                border: `1px solid ${c.orbit ? "rgba(96,165,250,0.2)" : "rgba(239,68,68,0.2)"}`,
               }}>
                 Orbit {c.orbit ? "✓" : "✗"}
               </span>
