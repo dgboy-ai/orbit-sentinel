@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 interface Step { label: string; icon: string; desc: string; broken?: boolean }
 
-const STEPS: Step[] = [
-  { label: "MR !10", icon: "🔀", desc: "Merge Request opened" },
-  { label: "Pipeline", icon: "🔄", desc: "No head pipeline", broken: true },
-  { label: "Service", icon: "⚙️", desc: "ci-validate-items" },
-  { label: "Deployment", icon: "🚀", desc: "Deploy blocked" },
-  { label: "Production", icon: "🌐", desc: "Cannot reach" },
-];
+function makeSteps(mrIid: number): Step[] {
+  return [
+    { label: `MR !${mrIid}`, icon: "🔀", desc: "Merge Request opened" },
+    { label: "Pipeline", icon: "🔄", desc: "No head pipeline", broken: true },
+    { label: "Service", icon: "⚙️", desc: "ci-validate-items" },
+    { label: "Deployment", icon: "🚀", desc: "Deploy blocked" },
+    { label: "Production", icon: "🌐", desc: "Cannot reach" },
+  ];
+}
 
 function FlowArrow({ broken }: { broken?: boolean }) {
   return (
@@ -21,7 +23,8 @@ function FlowArrow({ broken }: { broken?: boolean }) {
   );
 }
 
-export default function PathBrokenAnimation() {
+export default function PathBrokenAnimation({ mrIid = 10 }: { mrIid?: number }) {
+  const STEPS = useMemo(() => makeSteps(mrIid), [mrIid]);
   const [visible, setVisible] = useState(0);
   const [showBroken, setShowBroken] = useState(false);
   const [showConclusion, setShowConclusion] = useState(false);
@@ -30,7 +33,7 @@ export default function PathBrokenAnimation() {
     if (visible >= STEPS.length) return;
     const t = setTimeout(() => setVisible(v => v + 1), 500 + (visible === 1 ? 800 : 0));
     return () => clearTimeout(t);
-  }, [visible]);
+  }, [visible, STEPS.length]);
 
   useEffect(() => {
     if (visible >= 2) { const t = setTimeout(() => setShowBroken(true), 300); return () => clearTimeout(t); }

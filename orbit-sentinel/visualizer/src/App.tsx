@@ -358,7 +358,7 @@ export default function App() {
             <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
               <DecisionCenter d={data.decisionCenter} />
               <FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} />
-              <PathBrokenAnimation />
+              <PathBrokenAnimation mrIid={data.hero.mrIid} />
             </div>
             {/* Tier 3: Evidence + Incidents + Graph + Simulation */}
             <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
