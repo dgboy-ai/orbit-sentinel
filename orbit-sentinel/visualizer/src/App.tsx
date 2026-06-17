@@ -91,6 +91,8 @@ const DATA: VisualizationData = {
       { source: "c:2", target: "f:4", type: "MODIFIES" },
       { source: "mr:3", target: "c:1", type: "HAS_COMMIT" },
       { source: "svc:1", target: "svc:2", type: "DEPENDS_ON" },
+      { source: "mr:2", target: "iss:1", type: "RELATES_TO" },
+      { source: "f:1", target: "f:2", type: "DEPENDS_ON" },
     ],
   },
   futureTimeline: [
