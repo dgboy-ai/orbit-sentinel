@@ -122,7 +122,7 @@ function RiskSparkline({ points }: { points: { label: string; value: number }[] 
 
 /* ─── Evidence card icons ─── */
 const EVIDENCE_META: Record<string, { icon: string; color: string; label: string }> = {
-  NEIGHBORS: { icon: "🔷", color: "#60a5fa", label: "Blast Radius" },
+  NEIGHBORS: { icon: "🔷", color: "#60a5fa", label: "Orbit Graph" },
   PATH_FINDING: { icon: "🧭", color: "#a78bfa", label: "Dependency Trace" },
   TRAVERSAL: { icon: "📜", color: "#fb923c", label: "Historical Match" },
   AGGREGATION: { icon: "📊", color: "#22c55e", label: "Pipeline Stats" },

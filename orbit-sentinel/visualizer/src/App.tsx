@@ -42,7 +42,7 @@ type DemoStep = { view: View; label: string; sublabel: string; icon: string };
 
 const DEMO_STEPS: DemoStep[] = [
   { view: "overview", label: "Orbit Sentinel Dashboard", sublabel: "Real-time engineering digital twin showing MR risk, Orbit evidence, and incident intelligence", icon: "🛰️" },
-  { view: "blast-radius", label: "Blast Radius Explorer", sublabel: "Visualize affected files, services, and downstream dependencies from Orbit NEIGHBORS query", icon: "💥" },
+  { view: "blast-radius", label: "Orbit Graph", sublabel: "Visualize affected files, services, and downstream dependencies from Orbit NEIGHBORS query", icon: "💥" },
   { view: "risk", label: "Risk Investigation", sublabel: "Orbit evidence cards showing why this MR cannot deploy — signals, findings, and verdict", icon: "🔍" },
   { view: "simulation", label: "Forecast Engine", sublabel: "Digital twin forecast with interactive what-if scenarios — predicts outcomes before deployment", icon: "🧪" },
   { view: "historical", label: "Historical Context", sublabel: "Past incidents and MRs with similarity scores from Orbit TRAVERSAL query", icon: "📜" },
@@ -317,13 +317,13 @@ export default function App() {
     }
   }, []);
 
-  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Blast Radius"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
+  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Orbit Graph"],["risk","Risk"],["simulation","Simulation"],["historical","History"],["report","Report"]];
   const VIEW_QUERY_TAG: Partial<Record<View, {tag: string; color: string}>> = {
     "blast-radius": { tag: "NEIGHBORS", color: "#a78bfa" },
     "historical": { tag: "TRAVERSAL", color: "#22d3ee" },
     "risk": { tag: "AGGREGATION", color: "#f97316" },
   };
-  const FLOW_STEPS = ["Schema Discovery", "Blast Radius", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
+  const FLOW_STEPS = ["Schema Discovery", "Orbit Graph", "Dependency Chains", "Historical Context", "Pipeline Risk", "Analysis & Prediction", "Post Report", "Complete"];
   const [prevView, setPrevView] = useState<View>(view);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -409,7 +409,7 @@ export default function App() {
           </div>
           {/* Placeholder matching loaded header height to prevent CLS */}
           <div className="header-nav resp-hide-subtitle" style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
-            {["Overview","Blast Radius","Risk","Simulation","History","Report"].map(l => (
+            {["Overview","Orbit Graph","Risk","Simulation","History","Report"].map(l => (
               <div key={l} style={{ width: Math.max(l.length * 7.5 + 22, 50), height: 24, borderRadius: 6, background: "rgba(255,255,255,0.02)" }} />
             ))}
           </div>

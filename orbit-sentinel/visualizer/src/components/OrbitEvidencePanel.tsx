@@ -5,7 +5,7 @@ const META: Record<string, { icon: string; label: string; color: string; bg: str
   TRAVERSAL:    { icon: "📚", label: "Historical Intelligence", color: "#60a5fa", bg: "rgba(96,165,250,0.1)" },
   AGGREGATION:  { icon: "📊", label: "Ecosystem Analysis", color: "#a78bfa", bg: "rgba(167,139,250,0.1)" },
   PATH_FINDING: { icon: "🛣", label: "Dependency Trace", color: "#f97316", bg: "rgba(249,115,22,0.1)" },
-  NEIGHBORS:    { icon: "🌐", label: "Blast Radius Discovery", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
+  NEIGHBORS:    { icon: "🌐", label: "Orbit Graph Discovery", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
 };
 
 export default function OrbitEvidencePanel({ evidence }: { evidence: OrbitQueryEvidence[] }) {

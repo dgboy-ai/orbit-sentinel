@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const QUERY_STEPS = [
-  { id: "NEIGHBORS", label: "Blast Radius", icon: "🌐", desc: "Scanning connected files, services, and dependencies affected by this MR" },
+  { id: "NEIGHBORS", label: "Orbit Graph", icon: "🌐", desc: "Scanning connected files, services, and dependencies affected by this MR" },
   { id: "PATH_FINDING", label: "Dependency Trace", icon: "🧭", desc: "Tracing deployment path from MR through pipeline to production" },
   { id: "TRAVERSAL", label: "Historical Context", icon: "📜", desc: "Matching against past MRs and incidents on the same files" },
   { id: "AGGREGATION", label: "Ecosystem Analysis", icon: "📊", desc: "Analyzing pipeline health and failure patterns across the project" },

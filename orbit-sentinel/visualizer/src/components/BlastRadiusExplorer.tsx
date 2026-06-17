@@ -336,7 +336,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <div className="card-header-icon" style={{ background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.2)" }}>💥</div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Blast Radius Explorer</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Graph</div>
               <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>NEIGHBORS query — digital twin impact analysis</div>
             </div>
           </div>

@@ -11,7 +11,7 @@ const STEPS: Step[] = [
   { icon: "🛰️", title: "Welcome to Orbit Sentinel", desc: "Engineering Decision Intelligence", detail: "Orbit Sentinel is the first digital twin for GitLab merge requests. It queries all 4 GitLab Orbit query types to simulate your MR's future — before you deploy." },
   { icon: "🔍", title: "Intelligent MR Analysis", desc: "Powered by GitLab Orbit", detail: "Every MR is analyzed against NEIGHBORS, PATH_FINDING, TRAVERSAL, and AGGREGATION queries. No black box — every prediction traces back to specific graph evidence." },
   { icon: "🧪", title: "What-If Simulation", desc: "Predict outcomes before they happen", detail: "Click any scenario in the Forecast Engine to simulate 'what if we add a pipeline?' or 'what if we assign a reviewer?' See risk change in real-time." },
-  { icon: "📊", title: "All 4 Query Types", desc: "No gaps. No stubs.", detail: "Blast Radius (NEIGHBORS) · Dependency Trace (PATH_FINDING) · Historical Context (TRAVERSAL) · Ecosystem Analysis (AGGREGATION). Every view uses real query data." },
+  { icon: "📊", title: "All 4 Query Types", desc: "No gaps. No stubs.", detail: "Orbit Graph (NEIGHBORS) · Dependency Trace (PATH_FINDING) · Historical Context (TRAVERSAL) · Ecosystem Analysis (AGGREGATION). Every view uses real query data." },
 ];
 
 function ProgressDots({ current, total }: { current: number; total: number }) {

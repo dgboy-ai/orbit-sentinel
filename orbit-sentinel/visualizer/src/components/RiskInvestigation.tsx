@@ -139,7 +139,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     },
     {
       severity: "critical", title: "Empty Diff",
-      evidenceSource: "Blast Radius Discovery", finding: "MR contains no file changes",
+      evidenceSource: "Orbit Graph Discovery", finding: "MR contains no file changes",
       orbitEvidence: "NEIGHBORS: Diff state is empty — no code to deploy",
       impact: "Nothing deployable identified", confidence: 100, queryType: "NEIGHBORS",
     },
