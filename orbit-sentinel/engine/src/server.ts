@@ -7,12 +7,27 @@ import type { SentinelReport } from './types.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Security headers
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '0');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
+
+// Request logging
+app.use((req, _res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173', 'https://orbit-sentinel.vercel.app'],
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -188,4 +203,10 @@ app.listen(PORT, () => {
   console.log(`Orbit Sentinel Engine API running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`Analysis endpoint: http://localhost:${PORT}/api/analyze`);
+});
+
+// Global error handler — must be last
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error(`[${new Date().toISOString()}] Unhandled error:`, err);
+  res.status(500).json({ error: 'Internal server error' });
 });

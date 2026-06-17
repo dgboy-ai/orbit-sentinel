@@ -6,9 +6,9 @@ export const RISK = {
 } as const;
 
 export function riskScoreToKey(score: number): keyof typeof RISK {
-  if (score > 0.85) return "critical";
-  if (score > 0.6) return "high";
-  if (score > 0.2) return "medium";
+  if (score >= 0.85) return "critical";
+  if (score >= 0.6) return "high";
+  if (score >= 0.3) return "medium";
   return "low";
 }
 

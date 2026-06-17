@@ -2,7 +2,7 @@
 
 > GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
 
-[![Tests](https://img.shields.io/badge/tests-84%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -113,7 +113,7 @@ Every conclusion cites specific Orbit query evidence. No black box.
 | Status | |
 |--------|-|
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| Tests | **84 passing** (75 engine + 9 visualizer) |
+| Tests | **85 passing** (75 engine + 10 visualizer) |
 | 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
 | ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
 | ⏳ Live data | Engine needs `GITLAB_ACCESS_TOKEN` env var with read_api scope on an Orbit-enabled group |

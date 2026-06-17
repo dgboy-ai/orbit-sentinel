@@ -74,9 +74,9 @@ const COLORS = {
 };
 
 function riskScoreToLevel(score: number): string {
-  if (score > 0.85) return "critical";
-  if (score > 0.6) return "high";
-  if (score > 0.2) return "medium";
+  if (score >= 0.85) return "critical";
+  if (score >= 0.6) return "high";
+  if (score >= 0.3) return "medium";
   return "low";
 }
 

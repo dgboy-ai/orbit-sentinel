@@ -44,6 +44,7 @@ type DemoStep = { view: View; label: string; sublabel: string; icon: string };
 
 const DEMO_STEPS: DemoStep[] = [
   { view: "overview", label: "Orbit Sentinel Dashboard", sublabel: "Impact Calculator, architecture diagram, MR risk, Orbit evidence, and incident intelligence — all 4 query types", icon: "🛰️" },
+  { view: "setup", label: "Setup Wizard", sublabel: "4-step guided journey — Mission → Architecture → Setup → Launch. Copy commands, Devpost checklist.", icon: "⚡" },
   { view: "blast-radius", label: "Orbit Graph", sublabel: "Visualize affected files, services, and downstream dependencies from Orbit NEIGHBORS query", icon: "💥" },
   { view: "risk", label: "Risk Investigation", sublabel: "Orbit evidence cards showing why this MR cannot deploy — signals, findings, and verdict", icon: "🔍" },
   { view: "simulation", label: "Forecast Engine", sublabel: "Digital twin forecast with interactive what-if scenarios — predicts outcomes before deployment", icon: "🧪" },
