@@ -367,7 +367,7 @@ export default function App() {
                 <IncidentIntelligence incidents={data.incidents} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <div style={{ minHeight: isMobile ? 280 : 380, flex: 1 }}><DigitalTwinGraph graph={data.graph} /></div>
+                <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><DigitalTwinGraph graph={data.graph} /></div>
                 <CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} />
               </div>
             </div>
