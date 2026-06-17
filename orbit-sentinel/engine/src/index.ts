@@ -10,6 +10,7 @@ export { MarkdownReporter, markdownReporter } from "./reporter/markdown.js";
 export { DataVisualizer, dataVisualizer } from "./reporter/visualizer.js";
 export { ErrorHandler, OrbitSentinelError, ErrorType } from "./errors.js";
 export { MRValidator } from "./validators.js";
+export { default as server } from "./server.js";
 
 import { twinBuilder } from "./twin/builder.js";
 import { simulator } from "./twin/simulator.js";

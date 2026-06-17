@@ -18,6 +18,11 @@ import PathBrokenAnimation from "./components/PathBrokenAnimation";
 import BackgroundParticles from "./components/BackgroundParticles";
 import { riskScoreToKey, RISK } from "./utils/colors";
 
+// API configuration
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-engine-domain.com' 
+  : 'http://localhost:3001';
+
 const DATA: VisualizationData = {
   graph: {
     nodes: [
@@ -131,6 +136,46 @@ const DEMO_STEPS: DemoStep[] = [
   { view: "report", label: "Impact Report", sublabel: "Full MR impact summary — deploy decisions, rollback strategy, and evidence chain", icon: "📋" },
 ];
 
+// API service functions
+const apiService = {
+  async analyzeChange(params: {
+    projectId: number;
+    projectPath: string;
+    mrIid: number;
+    mrTitle: string;
+    changedFiles: string[];
+    changeDescription: string;
+    branch?: string;
+  }): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/api/analyze`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to analyze change');
+    }
+
+    return response.json();
+  },
+
+  async getDemoData(): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/api/demo`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch demo data');
+    }
+    return response.json();
+  },
+
+  isApiAvailable(): boolean {
+    return !!API_BASE_URL && API_BASE_URL !== 'http://localhost:3001';
+  },
+};
+
 function ScanLine() {
   const [active, setActive] = useState(false);
   useEffect(() => {
@@ -213,8 +258,52 @@ export default function App() {
   const [view, setView] = useState<View>(getInitialView);
   const [demo, setDemo] = useState(getInitialDemo);
   const [stepIndex, setStepIndex] = useState(0);
-  const [data] = useState(DATA);
+  const [data, setData] = useState<VisualizationData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const demoRef = useRef<number | null>(null);
+
+  // Load data from API or fallback to demo
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Try to fetch real data from engine API
+        if (apiService.isApiAvailable()) {
+          const result = await apiService.analyzeChange({
+            projectId: 39251857,
+            projectPath: 'gitlab-ai-hackathon/transcend/39251857',
+            mrIid: 10,
+            mrTitle: 'test sentinel',
+            changedFiles: ['flows/flow.yml'],
+            changeDescription: 'test sentinel MR',
+            branch: 'test-sentinel',
+          });
+          setData(result.report);
+        } else {
+          // Fallback to demo mode
+          const result = await apiService.getDemoData();
+          setData(result.report);
+        }
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load data');
+        // Fallback to demo data on error
+        try {
+          const result = await apiService.getDemoData();
+          setData(result.report);
+        } catch (demoErr) {
+          console.error('Failed to load demo data:', demoErr);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const rk = riskScoreToKey(data.hero.riskScore);
   const accentColor = RISK[rk].hex;
