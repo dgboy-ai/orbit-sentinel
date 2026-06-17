@@ -263,6 +263,9 @@ export default function BlastRadiusExplorer({ graph }: Props) {
   const [depth, setDepth] = useState(3);
   const [highlight, setHighlight] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [renderErr, setRenderErr] = useState<string | null>(null);
+
+  useEffect(() => { setRenderErr(null); }, [graph]);
 
   const services = useMemo(() => filterNodesByType(graph.nodes, ["Service", "Project", "File", "Pipeline"]), [graph]);
   const sel = selectedNode ? graph.nodes.find(n => n.id === selectedNode) : null;
@@ -287,7 +290,18 @@ export default function BlastRadiusExplorer({ graph }: Props) {
     setSelectedNode(prev => prev === id ? null : id);
   }, []);
 
-  return (
+  if (renderErr) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-secondary)", fontSize: 12, flexDirection: "column", gap: 8 }}>
+        <span style={{ fontSize: 24 }}>⚠️</span>
+        <span>Something went wrong: {renderErr}</span>
+        <button onClick={() => setRenderErr(null)} style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontSize: 11 }}>Retry</button>
+      </div>
+    );
+  }
+
+  try {
+    return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, height: "100%", animation: "fadeSlideUp 0.4s ease" }}>
       {/* HEADER STATS */}
       <div className="card" style={{
@@ -461,5 +475,16 @@ export default function BlastRadiusExplorer({ graph }: Props) {
         </div>
       </div>
     </div>
-  );
+    );
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[BlastRadiusExplorer]", e);
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-secondary)", fontSize: 12, flexDirection: "column", gap: 8 }}>
+        <span style={{ fontSize: 24, opacity: 0.5 }}>⚠️</span>
+        <span style={{ fontSize: 11, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>{msg}</span>
+        <button onClick={() => window.location.reload()} style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontSize: 11 }}>Reload</button>
+      </div>
+    );
+  }
 }
