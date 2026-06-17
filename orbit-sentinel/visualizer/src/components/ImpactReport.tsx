@@ -14,15 +14,21 @@ function scoreFromSummary(s: string): number {
 function AnimatedCounter({ value, suffix = "%", decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
   const [displayed, setDisplayed] = useState(0);
   const started = useRef(false);
+  const valueRef = useRef(value);
+  valueRef.current = value;
+  useEffect(() => {
+    started.current = false;
+  }, [value]);
   useEffect(() => {
     if (started.current) return;
     started.current = true;
     const dur = 1400;
     const t0 = performance.now();
+    const target = valueRef.current;
     function tick(now: number) {
       const p = Math.min((now - t0) / dur, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setDisplayed(value * eased);
+      setDisplayed(target * eased);
       if (p < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
@@ -100,7 +106,7 @@ function RiskSparkline({ points }: { points: { label: string; value: number }[] 
         const y = padY + chartH - ((p.value - min) / range) * chartH;
         const dotColor = riskScoreToColor(p.value);
         return (
-          <g key={i}>
+          <g key={p.label}>
             <circle cx={x} cy={y} r={3} fill={dotColor} stroke="rgba(0,0,0,0.4)" strokeWidth={1}
               style={{ filter: `drop-shadow(0 0 3px ${dotColor}88)` }} />
             {i % 2 === 0 && (
@@ -251,7 +257,7 @@ function IncidentBar({ incidents }: { incidents: { mrIid: number; similarity: nu
         {incidents.map((inc, i) => {
           const simColor = inc.similarity > 80 ? "#ef4444" : inc.similarity > 50 ? "#f97316" : "#eab308";
           return (
-            <div key={i} style={{
+            <div key={inc.mrIid} style={{
               flex: inc.similarity, height: 24, borderRadius: 4,
               background: `linear-gradient(90deg, ${simColor}, ${simColor}66)`,
               display: "flex", alignItems: "center", justifyContent: "center",
@@ -383,7 +389,7 @@ export default function ImpactReport({ data }: Props) {
         }}>
           <div style={{ display: "flex", gap: 3, flex: 1, flexWrap: "wrap" }}>
             {navSections.map(s => (
-              <button key={s.key} onClick={() => {
+              <button key={s.key} aria-label={`Scroll to ${s.label} section`} onClick={() => {
                 document.getElementById(`sec-${s.key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
                 style={{
@@ -398,7 +404,7 @@ export default function ImpactReport({ data }: Props) {
             ))}
           </div>
           <div style={{ display: "flex", gap: 4 }}>
-            <button onClick={handlePrint} title="Print report"
+            <button onClick={handlePrint} aria-label="Print report" title="Print report"
               style={{
                 padding: "3px 8px", fontSize: 10, cursor: "pointer",
                 border: "1px solid var(--border)", borderRadius: 4,
@@ -616,7 +622,7 @@ export default function ImpactReport({ data }: Props) {
           <SectionCard id="sec-evidence" icon="🔗" title="Orbit Evidence Chain" col={col}>
             <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
               {evidence.map((e, i) => (
-                <EvidenceMiniCard key={e.queryType} e={e} delay={0.1 + i * 0.03} />
+                <EvidenceMiniCard key={e.queryName} e={e} delay={0.1 + i * 0.03} />
               ))}
             </div>
           </SectionCard>

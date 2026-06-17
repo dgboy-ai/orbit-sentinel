@@ -49,7 +49,7 @@ export default function HeroSection({
 
           <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.5px", marginBottom: 4, textTransform: "uppercase" }}>Predicted Outcome</div>
           <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.3, marginBottom: 10 }}>
-            MR !{mrIid} is likely to be <span style={{ color: r.hex }}>abandoned before deployment</span>
+            {predictedOutcome}
           </div>
 
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>

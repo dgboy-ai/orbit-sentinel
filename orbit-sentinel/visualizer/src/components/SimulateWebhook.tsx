@@ -57,7 +57,7 @@ export default function SimulateWebhook() {
             {running ? "Orchestrating Orbit query pipeline..." : "Trigger a live simulation of Orbit Sentinel's analysis flow"}
           </div>
         </div>
-        <button onClick={running ? reset : start}
+        <button onClick={running ? reset : start} aria-label={running ? "Stop webhook simulation" : "Run webhook simulation"}
           style={{
             padding: "6px 18px", fontSize: 11, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
             border: running ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(34,197,94,0.3)",

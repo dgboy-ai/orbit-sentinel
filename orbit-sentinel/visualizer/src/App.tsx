@@ -417,7 +417,7 @@ export default function App() {
         {loading ? <>
           <LoadingSkeleton />
           {loadingSlow && (
-            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}>
+            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)", animation: "fadeSlideUp 0.4s ease" }}>
               <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
                 style={{ padding: "5px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: "#60a5fa", whiteSpace: "nowrap" }}
@@ -427,21 +427,21 @@ export default function App() {
             </div>
           )}
         </> : (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 10, padding: 20 }}>
-            <div style={{ fontSize: 36 }}>🛰️</div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 10, padding: 20, animation: "fadeSlideUp 0.5s ease" }}>
+            <div style={{ fontSize: 36, animation: "float 6s ease-in-out infinite" }}>🛰️</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
               {dataMode === "error" ? "Engine API Unreachable" : "No Data Available"}
             </div>
             <div style={{ fontSize: 12, color: "var(--text-secondary)", textAlign: "center", maxWidth: 400, lineHeight: 1.6 }}>
               {dataMode === "error" && apiService.isApiAvailable()
-                ? "The Orbit Sentinel engine could not be reached. Showing demo data will be used as fallback."
+                ? "The Orbit Sentinel engine could not be reached. Demo data will be shown as fallback."
                 : "No visualization data loaded."}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={loadData}
-                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid var(--border)", borderRadius: 6, cursor: "pointer", background: "transparent", color: "var(--text-primary)" }}
-                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, cursor: "pointer", background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "var(--text-primary)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
               >Retry</button>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
                 style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, cursor: "pointer", background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}
@@ -636,10 +636,10 @@ export default function App() {
         </div>
       )}
 
-      <main key={view} style={{
+      <main style={{
         position: "relative", zIndex: 1, flex: 1, padding: isMobile ? 10 : 16, overflow: "auto", minHeight: 0,
         willChange: "transform", display: "flex", flexDirection: "column",
-        animation: transitioning ? "none" : firstLoad ? "scaleIn 0.45s cubic-bezier(0.16,1,0.3,1) both" : "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
+        animation: firstLoad ? "scaleIn 0.45s cubic-bezier(0.16,1,0.3,1) both" : "none",
       }}>
         <ErrorBoundary>
           <div style={{

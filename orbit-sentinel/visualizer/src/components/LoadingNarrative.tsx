@@ -37,7 +37,9 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
     return () => timers.forEach(clearTimeout);
   }, [onDone]);
 
-  const progress = stepStates.filter(s => s.status === "done").length / QUERY_STEPS.length;
+  const doneCount = stepStates.filter(s => s.status === "done").length;
+  const progress = doneCount / QUERY_STEPS.length;
+  const allDone = doneCount === QUERY_STEPS.length;
 
   return (
     <div style={{
@@ -52,18 +54,24 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
             position: "absolute", inset: -12, borderRadius: "50%",
             border: "1px solid rgba(96,165,250,0.1)",
             animation: "spin 6s linear infinite",
+            opacity: allDone ? 0 : 1, transition: "opacity 0.4s ease",
           }} />
           <div style={{
             position: "absolute", inset: -8, borderRadius: "50%",
             border: "1px dashed rgba(139,92,246,0.08)",
             animation: "spin 8s linear infinite reverse",
+            opacity: allDone ? 0 : 1, transition: "opacity 0.4s ease",
           }} />
           <div style={{
             width: 48, height: 48, borderRadius: 12, position: "relative",
-            background: "linear-gradient(135deg, rgba(96,165,250,0.2), rgba(139,92,246,0.1))",
-            border: "1px solid rgba(96,165,250,0.2)",
+            background: allDone
+              ? "linear-gradient(135deg, rgba(34,197,94,0.25), rgba(96,165,250,0.15))"
+              : "linear-gradient(135deg, rgba(96,165,250,0.2), rgba(139,92,246,0.1))",
+            border: allDone ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(96,165,250,0.2)",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
-            animation: "float 6s ease-in-out infinite",
+            animation: allDone ? "none" : "float 6s ease-in-out infinite",
+            transform: allDone ? "scale(1.15)" : "none",
+            transition: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)",
           }}>🛰️</div>
         </div>
 
@@ -112,17 +120,25 @@ export default function LoadingNarrative({ startTime, onDone }: { startTime: num
         <div style={{ marginTop: 14, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
           <div style={{
             width: `${(progress / QUERY_STEPS.length) * 100}%`, height: "100%", borderRadius: 2,
-            background: "linear-gradient(90deg, #60a5fa, #a78bfa, #22c55e, #60a5fa)",
+            background: allDone
+              ? "linear-gradient(90deg, #22c55e, #34d399, #22c55e)"
+              : "linear-gradient(90deg, #60a5fa, #a78bfa, #22c55e, #60a5fa)",
             backgroundSize: "300% 100%",
-            transition: "width 0.6s cubic-bezier(0.16,1,0.3,1)",
-            boxShadow: "0 0 8px rgba(96,165,250,0.4)",
+            transition: "width 0.6s cubic-bezier(0.16,1,0.3,1), background 0.5s ease",
+            boxShadow: allDone ? "0 0 12px rgba(34,197,94,0.5)" : "0 0 8px rgba(96,165,250,0.4)",
             animation: "shimmer-wide 2s ease-in-out infinite",
           }} />
         </div>
-        <div style={{ marginTop: 10, fontSize: 9, color: "var(--text-tertiary)" }}>
-          All 4 Orbit query types · No black box · Real graph data
-        </div>
-        <button onClick={onDone}
+        {allDone ? (
+          <div style={{ marginTop: 10, fontSize: 9, color: "#22c55e", fontWeight: 600, animation: "fadeSlideUp 0.3s ease" }}>
+            ✓ All 4 queries complete
+          </div>
+        ) : (
+          <div style={{ marginTop: 10, fontSize: 9, color: "var(--text-tertiary)" }}>
+            All 4 Orbit query types · No black box · Real graph data
+          </div>
+        )}
+        <button onClick={onDone} aria-label="Skip loading narrative"
           style={{
             marginTop: 14, padding: "4px 16px", fontSize: 10, fontWeight: 600, cursor: "pointer",
             border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6,

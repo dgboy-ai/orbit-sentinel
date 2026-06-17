@@ -45,6 +45,8 @@ function StatPill({ label, value, color, sub }: { label: string; value: string; 
 function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: { nodes: GraphNode[]; links: GraphLink[]; selectedId: string | null; onNodeClick: (id: string) => void; highlight: string | null }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const onClickRef = useRef(onNodeClick);
+  const linkSelRef = useRef<d3.Selection<SVGLineElement, DL, SVGGElement, unknown> | null>(null);
+  const nodeSelRef = useRef<d3.Selection<SVGGElement, DN, SVGGElement, unknown> | null>(null);
   onClickRef.current = onNodeClick;
 
   useEffect(() => {
@@ -111,10 +113,12 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
         const tgtId = typeof d.target === "string" ? d.target : (d.target as DN).id;
         return highlight && (srcId === highlight || tgtId === highlight) ? "none" : "3,3";
       });
+    linkSelRef.current = linkSel;
 
     const nodeSel = g.append("g").selectAll<SVGGElement,DN>("g").data(nd).join("g")
       .call(d3.drag<SVGGElement,DN>().on("start",(e,d)=>{if(!e.active)sim.alphaTarget(0.1).restart();d.fx=d.x;d.fy=d.y;})
         .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;}).on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=undefined;d.fy=undefined;}) as any);
+    nodeSelRef.current = nodeSel;
 
     nodeSel.append("circle").attr("class","br-glow")
       .attr("r",d=>(NODE_SIZES[d.type]??6) * 2.2)
@@ -194,8 +198,24 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
     return () => { sim.stop(); };
   }, [nodes, links, selectedId]);
 
+  useEffect(() => {
+    if (!linkSelRef.current) return;
+    linkSelRef.current
+      .attr("stroke",(d:DL)=>{
+        const srcId = typeof d.source === "string" ? d.source : (d.source as DN).id;
+        const tgtId = typeof d.target === "string" ? d.target : (d.target as DN).id;
+        const isHl = highlight && (srcId === highlight || tgtId === highlight);
+        return isHl ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.06)";
+      })
+      .attr("stroke-dasharray",(d:DL)=>{
+        const srcId = typeof d.source === "string" ? d.source : (d.source as DN).id;
+        const tgtId = typeof d.target === "string" ? d.target : (d.target as DN).id;
+        return highlight && (srcId === highlight || tgtId === highlight) ? "none" : "3,3";
+      });
+  }, [highlight]);
+
   return (
-    <svg ref={svgRef} width="100%" height="100%" style={{ display:"block", borderRadius:8 }} />
+    <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Blast radius dependency graph showing connected services, files, and pipelines" style={{ display:"block", borderRadius:8 }} />
   );
 }
 
@@ -232,7 +252,7 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
         const fromNode = getNode(c.from);
         const toNode = getNode(c.to);
         return (
-          <div key={i} style={{
+          <div key={`${c.from}-${c.to}-${c.type}`} style={{
             display: "flex", alignItems: "center", gap: 4,
             padding: "4px 8px", borderRadius: 5,
             background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)",
@@ -337,6 +357,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Components</div>
             <input
               placeholder="Search..."
+              aria-label="Search components"
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{

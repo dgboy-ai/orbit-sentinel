@@ -1,4 +1,3 @@
-import React from "react";
 import type { VisualizationData } from "../types";
 
 export function exportAsHtml(data: VisualizationData) {

@@ -25,6 +25,13 @@ export default function OrbitEvidencePanel({ evidence }: { evidence: OrbitQueryE
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
+        {evidence.length === 0 && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 6, padding: 20, textAlign: "center" }}>
+            <span style={{ fontSize: 18 }}>🛰️</span>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)" }}>No evidence available</div>
+            <div style={{ fontSize: 10, color: "var(--text-tertiary)", lineHeight: 1.4 }}>Orbit query results have not been loaded yet. Select a component or trigger a demo to see evidence.</div>
+          </div>
+        )}
         {evidence.map((q, i) => {
           const m = META[q.queryType] ?? { icon: "📌", label: q.queryType, color: "#8b949e", bg: "rgba(255,255,255,0.04)" };
           return (

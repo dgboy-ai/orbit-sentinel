@@ -42,7 +42,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
   const timeline = [
     ...sorted.map(i => ({ mrIid: i.mrIid, outcome: i.outcome, label: `MR #${i.mrIid}` })),
-    { mrIid: mrIid, outcome: "current", label: `MR #${mrIid}` },
+    ...(mrIid ? [{ mrIid, outcome: "current" as const, label: `MR #${mrIid}` }] : []),
   ];
 
   return (
@@ -406,7 +406,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 { label: "MR #2", color: "#ef4444", status: "CLOSED" },
                 { label: "MR #5", color: "#ef4444", status: "CLOSED" },
                 { label: "MR #9", color: "#ef4444", status: "CLOSED" },
-                { label: `MR #${mrIid}`, color: "#22c55e", status: "CURRENT" },
+                { label: mrIid ? `MR #${mrIid}` : "CURRENT", color: "#22c55e", status: "CURRENT" },
               ].map((m, i) => (
                 <React.Fragment key={m.label}>
                   <div style={{ textAlign: "center", minWidth: 60 }}>

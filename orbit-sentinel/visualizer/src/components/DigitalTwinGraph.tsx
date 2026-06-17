@@ -84,10 +84,6 @@ export default function DigitalTwinGraph({ graph }: Props) {
     defs.append("pattern").attr("id","grid").attr("width",32).attr("height",32).attr("patternUnits","userSpaceOnUse")
       .append("path").attr("d","M 32 0 L 0 0 0 32").attr("fill","none").attr("stroke","rgba(255,255,255,0.03)").attr("stroke-width",0.5);
 
-    defs.append("filter").attr("id","glow-filter").attr("x","-50%").attr("y","-50%").attr("width","200%").attr("height","200%")
-      .append("feGaussianBlur").attr("stdDeviation","3").attr("result","blur");
-    defs.append("feMerge").attr("id","glow-merge").append("feMergeNode").attr("in","blur");
-
     const bg = svg.append("rect").attr("width","100%").attr("height","100%").attr("fill","url(#grid)");
     const g = svg.append("g");
     svg.call(d3.zoom<SVGSVGElement,unknown>().scaleExtent([0.15,6]).on("zoom",e=>g.attr("transform",e.transform)));
@@ -283,7 +279,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
         )}
       </div>
 
-      <svg ref={svgRef} width="100%" height="100%" style={{ flex:1, display:"block" }} />
+      <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Digital twin knowledge graph showing connected nodes and edges across the ecosystem" style={{ flex:1, display:"block" }} />
     </div>
   );
 }
