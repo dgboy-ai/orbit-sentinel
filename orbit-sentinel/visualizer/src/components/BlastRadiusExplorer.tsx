@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import type { GraphNode, GraphLink } from "../types";
 import { findConnectedComponents, filterNodesByType } from "../utils/graph";
@@ -44,11 +44,14 @@ function StatPill({ label, value, color, sub }: { label: string; value: string; 
 
 function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: { nodes: GraphNode[]; links: GraphLink[]; selectedId: string | null; onNodeClick: (id: string) => void; highlight: string | null }) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const onClickRef = useRef(onNodeClick);
+  onClickRef.current = onNodeClick;
 
   useEffect(() => {
     if (!svgRef.current || nodes.length === 0) return;
     const svg = d3.select(svgRef.current);
     const w = svgRef.current.clientWidth, h = svgRef.current.clientHeight;
+    if (!w || !h) return;
     svg.selectAll("*").remove();
 
     const defs = svg.append("defs");
@@ -139,7 +142,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
       })
       .attr("stroke","rgba(0,0,0,0.4)").attr("stroke-width",1.5)
       .style("cursor","pointer")
-      .on("click",(_e:any,d:DN)=>{onNodeClick(d.id);})
+      .on("click",(_e:any,d:DN)=>{onClickRef.current(d.id);})
       .on("mouseenter",function(_e:any,d:DN){
         const isRoot = d.id === selectedId;
         d3.select(this).attr("stroke","rgba(255,255,255,0.5)").attr("stroke-width",2.5);
@@ -189,7 +192,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
     });
 
     return () => { sim.stop(); };
-  }, [nodes, links, selectedId, highlight, onNodeClick]);
+  }, [nodes, links, selectedId]);
 
   return (
     <svg ref={svgRef} width="100%" height="100%" style={{ display:"block", borderRadius:8 }} />
@@ -280,13 +283,9 @@ export default function BlastRadiusExplorer({ graph }: Props) {
     return services.filter(n => n.label.toLowerCase().includes(q) || n.type.toLowerCase().includes(q));
   }, [services, search]);
 
-  function handleNodeClick(id: string) {
-    if (id === selectedNode) {
-      setSelectedNode(null);
-    } else {
-      setSelectedNode(id);
-    }
-  }
+  const handleNodeClick = useCallback((id: string) => {
+    setSelectedNode(prev => prev === id ? null : id);
+  }, []);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, height: "100%", animation: "fadeSlideUp 0.4s ease" }}>
