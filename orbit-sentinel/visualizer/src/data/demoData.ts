@@ -7,8 +7,8 @@ export const DEMO_DATA: VisualizationData = {
       { id: "u:1", label: "@trueboy1123", type: "User", riskLevel: "high" },
       { id: "mr:10", label: "MR !10: test-sentinel-analysis", type: "MergeRequest", riskLevel: "high" },
       { id: "mr:1", label: "MR !1: initial-orbit-integration", type: "MergeRequest", riskLevel: "low" },
-      { id: "mr:2", label: "MR !2: test-sentinel-setup", type: "MergeRequest", riskLevel: "medium" },
-      { id: "mr:9", label: "MR !9: test-sentinel-iteration-8", type: "MergeRequest", riskLevel: "medium" },
+      { id: "mr:2", label: "MR !2: test-sentinel-initial-attempt", type: "MergeRequest", riskLevel: "medium" },
+      { id: "mr:9", label: "MR !9: test-sentinel-abandoned-iteration", type: "MergeRequest", riskLevel: "medium" },
       { id: "pl:ecosystem", label: "Pipeline Ecosystem (132k+)", type: "Pipeline", riskLevel: "medium" },
       { id: "pl:1", label: "Pipeline #14878452199", type: "Pipeline", riskLevel: "low" },
       { id: "c:1", label: "12eaea5", type: "Commit" },
@@ -92,7 +92,7 @@ export const DEMO_DATA: VisualizationData = {
     { label: "From Same Branch", value: 10, color: "#a78bfa" },
     { label: "Previously Merged", value: 1, color: "#22c55e" },
     { label: "Previously Closed", value: 9, color: "#ef4444" },
-    { label: "Ecosystem Pipelines", value: 132059, color: "#f97316" },
+    { label: "Ecosystem Pipelines", value: 132000, color: "#f97316" },
   ],
   summary: { project: "gitlab-ai-hackathon/transcend/orbit-sentinel", mrIid: 10, branch: "test-sentinel", totalNodes: 23, totalEdges: 43, riskScore: "55.0%", riskLevel: "MEDIUM", timestamp: new Date().toISOString() },
   hero: { mrIid: 10, riskLevel: "MEDIUM", riskScore: 0.55, predictedOutcome: "Likely abandoned without merge — 9 of 10 prior MRs from this branch were closed with no pipeline ever triggered.", recommendedAction: "Add file changes, remove draft status, trigger pipeline, assign reviewers", confidence: "High (10 MR history across 4 Orbit query types)",   generatedUsing: "Orbit Sentinel · 23 nodes · 43 edges · v2.0", confidenceFactors: [
@@ -103,9 +103,9 @@ export const DEMO_DATA: VisualizationData = {
   ] },
   evidence: [
     { queryType: "NEIGHBORS", queryName: "Orbit Graph", result: "Nodes: 20, Edges: 29\nMR !10 has an empty diff — no file changes to analyze\nNo linked pipeline for head commit — CI never triggered for this branch" },
-    { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !10 → no head pipeline (CI never triggered)\nNo deployment path exists for this change set\nProject pipeline history: 132,059 total (17.8% failure rate)" },
-    { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: "50+ historical MRs from test-sentinel branch\nOnly MR !1 was merged; MRs !2–!9 all closed without merge\nAbandonment pattern: 90% closure rate across the last 10 MRs" },
-    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "132,059 total pipelines across the ecosystem\n23,507 failed (17.8%), 106,270 passed, 2,242 canceled\nMR !10 contributed zero pipeline runs — changes were never validated" },
+    { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !10 → no head pipeline (CI never triggered)\nNo deployment path exists for this change set\nProject pipeline history: 132,000 total (17.8% failure rate)" },
+    { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: "50+ historical MRs from test-sentinel branch\nOnly MR !1 was merged; MRs !2–!9 all closed without merge\nAbandonment pattern: 9 of 10 recent MRs were closed without merge" },
+    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "132,000 total pipelines across the ecosystem\n23,500 failed (17.8%), 106,300 passed, 2,200 canceled\nMR !10 contributed zero pipeline runs — changes were never validated" },
   ],
   decisionCenter: { deploymentStrategy: "Cannot deploy safely — risk score 55%. Empty diff detected with no pipeline triggered. Branch abandonment pattern: 9 of 10 prior MRs from this branch were closed without merge.", reviewers: [{ name: "@trueboy1123", role: "Author" }, { name: "Unassigned", role: "Reviewer Needed" }], requiredTests: ["Add file changes to the MR — current diff is empty", "Remove draft status before requesting review", "Ensure pipeline triggers on next push", "Assign at least one reviewer"], rollbackStrategy: "Not applicable — no changes have been deployed. Close MR to prevent confusion.", riskReduction: { current: 0.55, afterRecommendation: 0.10 } },
   counterfactuals: [

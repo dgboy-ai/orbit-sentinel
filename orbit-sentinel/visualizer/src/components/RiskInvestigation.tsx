@@ -134,7 +134,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     {
       severity: "high", title: "Branch Abandonment Pattern",
       evidenceSource: "Historical Similarity", finding: "9 prior MRs from this branch abandoned",
-      orbitEvidence: "TRAVERSAL: 90% closure rate on same branch",
+      orbitEvidence: "TRAVERSAL: 9 of 10 prior MRs from this branch were closed",
       impact: "High probability of MR being closed without merge", confidence: 90, queryType: "TRAVERSAL",
     },
     {

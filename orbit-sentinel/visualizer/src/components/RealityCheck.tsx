@@ -11,7 +11,7 @@ const CHECKS: CheckItem[] = [
   { signal: "Empty Diff Detected", traditional: true, orbit: true, detail: "Basic file diff check" },
   { signal: "No Pipeline Triggered", traditional: true, orbit: true, detail: "CI status check" },
   { signal: "Branch Abandonment Pattern", traditional: false, orbit: true, detail: "Requires historical TRAVERSAL query across 10 MRs" },
-  { signal: "Historical Merge Behavior", traditional: false, orbit: true, detail: "90% closure rate on same branch — requires repository memory" },
+  { signal: "Historical Merge Behavior", traditional: false, orbit: true, detail: "9 of 10 prior MRs from this branch were closed — requires repository memory" },
   { signal: "Deployment Path Integrity", traditional: false, orbit: true, detail: "Requires Orbit PATH_FINDING through dependency graph" },
   { signal: "Counterfactual Simulation", traditional: false, orbit: true, detail: "What-if scenarios simulate mitigation outcomes before action" },
   { signal: "Cross-Query Confidence", traditional: false, orbit: true, detail: "All 4 Orbit query types independently validate each finding" },
