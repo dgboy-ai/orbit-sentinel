@@ -541,7 +541,7 @@ export default function App() {
 
       <main key={view} style={{
         position: "relative", zIndex: 1, flex: 1, padding: 16, overflow: "auto", minHeight: 0,
-        willChange: "transform",
+        willChange: "transform", display: "flex", flexDirection: "column",
         animation: transitioning ? "none" : "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1)",
       }}>
         <ErrorBoundary>
@@ -549,6 +549,7 @@ export default function App() {
             opacity: transitioning ? 0 : 1,
             transform: transitioning ? "translateY(8px)" : "none",
             transition: "opacity 0.08s ease, transform 0.08s ease",
+            display: "flex", flexDirection: "column", flex: 1, minHeight: 0,
           }}>
             {body()}
           </div>

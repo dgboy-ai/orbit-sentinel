@@ -302,7 +302,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
 
   try {
     return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, height: "100%", animation: "fadeSlideUp 0.4s ease" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minHeight: 0, animation: "fadeSlideUp 0.4s ease" }}>
       {/* HEADER STATS */}
       <div className="card" style={{
         padding: "14px 20px", position: "relative", overflow: "hidden",
