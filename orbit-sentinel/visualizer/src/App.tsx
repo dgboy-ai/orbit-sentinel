@@ -31,6 +31,8 @@ import JudgesTour from "./components/JudgesTour";
 import SetupWizard from "./components/SetupWizard";
 import ImpactCalculator from "./components/ImpactCalculator";
 import ArchitectureDiagram from "./components/ArchitectureDiagram";
+import MrAnalyzer from "./components/MrAnalyzer";
+import OrbitQueryExplorer from "./components/OrbitQueryExplorer";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
@@ -165,10 +167,12 @@ export default function App() {
   const [mobileViewOpen, setMobileViewOpen] = useState(false);
   const [loadingSlow, setLoadingSlow] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
+  const screenshotMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("screenshot") === "true";
   const noEngine = !API_BASE_URL || API_BASE_URL === 'https://your-engine-domain.com';
   const [showNarrative, setShowNarrative] = useState(
     typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : !noEngine
   );
+  const [currentScenario, setCurrentScenario] = useState<string | null>(null);
   const showNarrativeRef = useRef(showNarrative);
   showNarrativeRef.current = showNarrative;
   const onNarrativeDone = useCallback(() => {
@@ -300,6 +304,14 @@ export default function App() {
     try { localStorage.setItem("orbit-sentinel-onboarded", "1"); } catch {}
   }, []);
 
+  const onSelectScenario = useCallback((scenarioData: VisualizationData, label: string) => {
+    setData(scenarioData);
+    setDataMode("demo");
+    setCurrentScenario(label);
+    setError(null);
+    setView("overview");
+  }, []);
+
   const dismissTour = useCallback(() => {
     setShowTour(false);
     // Auto-start demo after tour ends so judges see live auto-rotation
@@ -342,6 +354,12 @@ export default function App() {
       case "overview":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+            {/* Tier 0: MR Analyzer — paste MR or try presets */}
+            <MrAnalyzer
+              onSelectScenario={onSelectScenario}
+              apiAvailable={apiService.isApiAvailable()}
+              currentScenario={currentScenario}
+            />
             {/* Tier 0: Problem → Solution → Impact */}
             <ProblemSection />
             {/* Tier 1: Impact Calculator */}
@@ -376,6 +394,8 @@ export default function App() {
               <SimulateWebhook />
               <RealityCheck />
             </div>
+            {/* Tier 5: Orbit Query Explorer — raw query results with tabbed view */}
+            <OrbitQueryExplorer evidence={data.evidence} />
           </div>
         );
       case "blast-radius": return <BlastRadiusExplorer graph={data.graph} />;
@@ -461,12 +481,24 @@ export default function App() {
       <BackgroundParticles />
       <ScanLine />
       <div className="bg-grid" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />
-      <header style={{
+      {screenshotMode && (
+        <div style={{
+          position: "fixed", top: 12, right: 12, zIndex: 9999, display: "flex", gap: 4,
+          padding: "4px 10px", borderRadius: 6, fontSize: 9, fontWeight: 600,
+          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          color: "var(--text-tertiary)",
+          pointerEvents: "none",
+        }}>
+          📸 Screenshot mode · Chrome hidden for clean captures
+        </div>
+      )}
+      {!screenshotMode ? <header style={{
         position: "relative", zIndex: 10,
         borderBottom: `1px solid ${accentColor}22`,
         padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
         flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
-        boxShadow: `0 1px 0 ${accentColor}11`,
+        boxShadow: `1px 0 0 ${accentColor}11`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease", overflowX: "hidden",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
@@ -585,9 +617,9 @@ export default function App() {
             {isMobile ? "" : (demo ? "Stop" : "Play")}
           </button>
         </div>
-      </header>
+      </header> : null}
 
-      {demo && (
+      {demo && !screenshotMode && (
         <div style={{
           position: "absolute", top: isMobile ? 120 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
           display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
@@ -646,7 +678,7 @@ export default function App() {
         background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
         border: "1px solid rgba(255,255,255,0.06)",
         fontSize: 9, color: "var(--text-tertiary)",
-        opacity: showFooter ? 1 : 0, pointerEvents: showFooter ? "auto" : "none",
+        opacity: showFooter && !screenshotMode ? 1 : 0, pointerEvents: showFooter && !screenshotMode ? "auto" : "none",
         transition: "opacity 0.6s ease",
       }}>
         <span>Space</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Demo</span>
