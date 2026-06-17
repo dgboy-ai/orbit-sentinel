@@ -101,7 +101,7 @@ The engine exercises all four GitLab Orbit query types — no gaps, no stubs:
 # → https://orbit-sentinel.vercel.app
 ```
 
-For detailed setup instructions, see [SETUP.md](orbit-sentinel/SETUP.md). For the full installation guide, see [INSTALLATION.md](orbit-sentinel/INSTALLATION.md).
+For detailed setup instructions, see [SETUP.md](orbit-sentinel/SETUP.md). For installation, see [INSTALLATION.md](orbit-sentinel/INSTALLATION.md).
 
 ---
 
