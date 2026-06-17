@@ -20,7 +20,7 @@ The `.gitlab-ci.yml` went through several iterations before stabilizing:
 - Fixed incorrect `rules:` syntax (`when: always` placement, missing merge request conditions)
 - Corrected workspace paths so both `engine/` and `visualizer/` were scoped properly
 - Added separate jobs for engine testing, engine linting, visualizer linting, and both builds
-- All 7 jobs across 4 stages now pass consistently (pipeline #2606601215 confirmed green)
+- All 6 jobs across 4 stages now pass consistently (pipeline #2606601215 confirmed green)
 
 ### Token and Authentication
 
