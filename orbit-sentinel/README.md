@@ -50,46 +50,33 @@ The visualizer demo is populated with sample data inspired by real Orbit query s
 ## How It Works
 
 ```mermaid
-flowchart TB
-    MR["📝 MR Opened"] --> FLOW["Orbit Sentinel Flow<br/>(Duo Agent Platform)"]
-
-    subgraph FLOW ["Orbit Sentinel Flow (Duo Agent Platform)"]
-        direction TB
-        S1["1️⃣ get_graph_schema()<br/>Discover ontology"] --> S2
-        S2["2️⃣ NEIGHBORS query → Blast Radius"] --> S3
-        S3["3️⃣ PATH_FINDING → Dependency chains"] --> S4
-        S4["4️⃣ TRAVERSAL → Historical matches"] --> S5
-        S5["5️⃣ AGGREGATION → Pipeline risk"] --> S6
-        S6["6️⃣ Compose report with LLM"] --> S7
-        S7["7️⃣ Post MR note via<br/>create_merge_request_note()"] --> S8
-        S8["8️⃣ Return success"]
+flowchart LR
+    subgraph INPUT[" "]
+        direction LR
+        MR["📝 MR Opened"]
     end
 
-    FLOW --> ENGINE["Engine API<br/>(Express server)"]
-
-    subgraph ENGINE ["Engine API (Express server)"]
-        direction TB
-        E1["POST /api/analyze"] --> E2["DigitalTwinBuilder"]
-        E2 --> E3["ChangeSimulator"]
-        E3 --> E4["RiskEngine"]
-        E4 --> E5["RemediationPlanner"]
-        E5 --> E6["DataVisualizer →<br/>VisualizationData"]
+    subgraph FLOW["Orbit Sentinel Flow (Duo Agent Platform)"]
+        direction LR
+        S1["1️⃣ get_graph_schema"] --> S2["2️⃣ NEIGHBORS"] --> S3["3️⃣ PATH_FINDING"] --> S4["4️⃣ TRAVERSAL"] --> S5["5️⃣ AGGREGATION"]
+        S5 --> S6["6️⃣ Compose Report"] --> S7["7️⃣ Post MR Note"] --> S8["8️⃣ Done"]
     end
 
-    ENGINE --> VIZ["🛰️ Orbit Sentinel Visualizer<br/>(React + Vite + D3.js)"]
-
-    subgraph VIZ ["Orbit Sentinel Visualizer (React + Vite + D3.js)"]
-        direction TB
-        V1["Overview Dashboard"] --> V2["Blast Radius Graph"]
-        V2 --> V3["Risk Investigation"]
-        V3 --> V4["Forecast Engine"]
-        V4 --> V5["Historical Context"]
-        V5 --> V6["Impact Report"]
+    subgraph ENGINE["Engine API (Express)"]
+        direction LR
+        E1["/api/analyze"] --> E2["Twin Builder"] --> E3["Simulator"] --> E4["Risk Engine"] --> E5["Remediation"] --> E6["Visualizer"]
     end
 
-    VIZ --> DEPLOY["🚀 Deployed to Vercel<br/>orbit-sentinel.vercel.app"]
+    subgraph VIZ["Visualizer (React + D3)"]
+        direction LR
+        V1["Overview"] --> V2["Blast Radius"] --> V3["Risk"] --> V4["Forecast"] --> V5["History"] --> V6["Report"]
+    end
 
-    FLOW -.-> SKILL["📦 Published to AI Catalog<br/>glab skills publish"]
+    MR --> FLOW
+    FLOW --> ENGINE
+    ENGINE --> VIZ
+    VIZ --> DEPLOY["🚀 Vercel"]
+    FLOW -.-> SKILL["📦 AI Catalog"]
 ```
 
 **Key principle:** Every conclusion cites specific Orbit query evidence. No black box.
