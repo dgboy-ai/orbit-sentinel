@@ -36,7 +36,7 @@ export default function HeroSection({
       transition: "box-shadow 1s ease",
     }}>
       <div style={{ height: 4, background: r.gradient, backgroundSize: "200% 200%", animation: "gradientShift 3s ease infinite" }} />
-      <div style={{ padding: "20px 24px", position: "relative", zIndex: 2, display: "flex", gap: 20 }}>
+      <div className="resp-hero-column" style={{ padding: "20px 24px", position: "relative", zIndex: 2, display: "flex", gap: 20 }}>
         {/* LEFT: Narrative */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
