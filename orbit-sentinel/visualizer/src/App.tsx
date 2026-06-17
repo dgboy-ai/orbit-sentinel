@@ -28,6 +28,7 @@ import DataModeBanner from "./components/DataModeBanner";
 import type { DataMode } from "./components/DataModeBanner";
 import ProblemSection from "./components/ProblemSection";
 import JudgesTour from "./components/JudgesTour";
+import SetupWizard from "./components/SetupWizard";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
@@ -36,7 +37,7 @@ import { riskScoreToKey, RISK } from "./utils/colors";
 // Falls back to same-origin (Vite dev server proxy) or demo mode if unreachable.
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
 
-type View = "overview" | "blast-radius" | "risk" | "simulation" | "historical" | "report";
+type View = "overview" | "blast-radius" | "risk" | "simulation" | "historical" | "report" | "setup";
 
 type DemoStep = { view: View; label: string; sublabel: string; icon: string };
 
@@ -132,7 +133,7 @@ function getInitialView(): View {
   if (typeof window === "undefined") return "overview";
   const p = new URLSearchParams(window.location.search);
   const v = p.get("view");
-  if (v && ["overview","blast-radius","risk","simulation","historical","report"].includes(v)) return v as View;
+  if (v && ["overview","blast-radius","risk","simulation","historical","report","setup"].includes(v)) return v as View;
   return "overview";
 }
 
@@ -311,7 +312,7 @@ export default function App() {
     }
   }, []);
 
-  const tabs: [View, string][] = [["overview","Overview"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"]];
+  const tabs: [View, string][] = [["overview","Overview"],["setup","Setup"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"]];
   const VIEW_QUERY_TAG: Partial<Record<View, {tag: string; color: string}>> = {
     "blast-radius": { tag: "NEIGHBORS", color: "#a78bfa" },
     "historical": { tag: "TRAVERSAL", color: "#22d3ee" },
@@ -375,6 +376,7 @@ export default function App() {
       case "risk": return <RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} />;
       case "simulation": return <ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} />;
       case "historical": return <HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} />;
+      case "setup": return <SetupWizard />;
       case "report": return <ImpactReport data={data} />;
     }
   }, [view, data, navigate]);
