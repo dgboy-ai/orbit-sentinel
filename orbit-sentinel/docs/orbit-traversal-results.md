@@ -2,6 +2,9 @@
 
 Tested in GitLab Duo Chat, June 2026.
 
+> **Current demo graph:** 23 nodes, 43 edges, 9 node types.  
+> Sessions below document earlier states of the project as the graph evolved during development.
+
 ## Schema Discovery
 
 18 node types found: Repository, MergeRequest, Issue, Pipeline, User, File, Commit, Note, Milestone, Label, Epic, Iteration, Package, Deployment, Environment, Vulnerability, Release

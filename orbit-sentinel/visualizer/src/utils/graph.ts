@@ -40,11 +40,20 @@ export function findConnectedComponents(
   maxDepth = 3,
 ): { nodes: GraphNode[]; links: GraphLink[] } {
   const visited = new Set<string>();
+  const seenLinks = new Set<string>();
   const resultNodes: GraphNode[] = [];
   const resultLinks: GraphLink[] = [];
 
-  function traverse(currentId: string, depth: number) {
-    if (depth > maxDepth || visited.has(currentId)) return;
+  function linkKey(sourceId: string, targetId: string, type: string) {
+    const a = sourceId < targetId ? sourceId : targetId;
+    const b = sourceId < targetId ? targetId : sourceId;
+    return `${a}|${b}|${type}`;
+  }
+
+  const queue: { id: string; depth: number }[] = [{ id: nodeId, depth: 0 }];
+  while (queue.length > 0) {
+    const { id: currentId, depth } = queue.shift()!;
+    if (depth > maxDepth || visited.has(currentId)) continue;
     visited.add(currentId);
 
     const node = nodes.find((n) => n.id === currentId);
@@ -55,16 +64,25 @@ export function findConnectedComponents(
       const targetId = typeof link.target === "string" ? link.target : link.target.id;
 
       if (sourceId === currentId) {
-        resultLinks.push(link);
-        traverse(targetId, depth + 1);
+        if (!seenLinks.has(linkKey(sourceId, targetId, link.type))) {
+          seenLinks.add(linkKey(sourceId, targetId, link.type));
+          resultLinks.push(link);
+        }
+        if (!visited.has(targetId)) {
+          queue.push({ id: targetId, depth: depth + 1 });
+        }
       } else if (targetId === currentId) {
-        resultLinks.push(link);
-        traverse(sourceId, depth + 1);
+        if (!seenLinks.has(linkKey(sourceId, targetId, link.type))) {
+          seenLinks.add(linkKey(sourceId, targetId, link.type));
+          resultLinks.push(link);
+        }
+        if (!visited.has(sourceId)) {
+          queue.push({ id: sourceId, depth: depth + 1 });
+        }
       }
     }
   }
 
-  traverse(nodeId, 0);
   const nodeIds = new Set(resultNodes.map(n => n.id));
   return {
     nodes: resultNodes,

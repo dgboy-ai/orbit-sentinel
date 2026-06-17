@@ -99,22 +99,24 @@ Added a complete error classification and recovery system:
 ## Test Results
 
 ```
- ✓  52 tests passed (11 files)
+ ✓  75 tests passed (13 files)
 ```
 
-| Test File | What It Covers |
-|---|---|
-| `config.test.ts` | Configuration validation |
-| `risk-engine.test.ts` | Risk scoring logic |
-| `simulator.test.ts` | Change simulation |
-| `twin-builder.test.ts` | Digital twin construction |
-| `remediation-planner.test.ts` | Remediation planning |
-| `reporter.test.ts` | Report generation |
-| `similarity-engine.test.ts` | Historical matching |
-| `rollback.test.ts` | Rollback strategy |
-| `test-generator.test.ts` | Test planning |
-| `edge-cases.test.ts` | Risk thresholds and edge cases |
-| `simulator-edge.test.ts` | Simulation edge conditions |
+| Test File | Tests | What It Covers |
+|---|---|---|
+| `orbit-client.test.ts` | 11 | Orbit API client, error handling, retry logic |
+| `orbit-queries.test.ts` | 12 | All 4 query types, schema discovery |
+| `similarity-engine.test.ts` | 6 | Historical matching with Jaccard similarity |
+| `test-generator.test.ts` | 6 | Test plan generation |
+| `risk-engine-edge.test.ts` | 6 | Risk thresholds and edge cases |
+| `remediation-planner.test.ts` | 5 | Remediation planning |
+| `twin-builder.test.ts` | 5 | Digital twin construction |
+| `simulator-edge.test.ts` | 5 | Simulation edge conditions |
+| `rollback.test.ts` | 5 | Rollback strategy |
+| `risk-engine.test.ts` | 4 | Risk scoring logic |
+| `reporter.test.ts` | 4 | Report generation |
+| `config.test.ts` | 3 | Configuration validation |
+| `simulator.test.ts` | 3 | Change simulation |
 
 ---
 

@@ -129,7 +129,7 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 - Successfully tested in GitLab Duo Chat
 - Ran live Orbit queries against actual project (transcend/39251857)
 - Discovered 18 node types, ~45 relationship types
-- Processed 22 nodes, 40 relationships across 7 node types
+- Processed 23 nodes, 43 relationships across 9 node types
 - Generated evidence-based conclusions with specific query citations
 
 **Call to Action**: "Make AI smarter by giving it real context. Join the GitLab Transcend Hackathon and build the future of AI-native software development."

@@ -102,7 +102,7 @@ export const DEMO_DATA: VisualizationData = {
     { label: "Prediction Confidence", value: "78%", status: "success" as const },
   ] },
   evidence: [
-    { queryType: "NEIGHBORS", queryName: "Orbit Graph", result: "Nodes: 20, Edges: 29\nMR !10 has an empty diff — no file changes to analyze\nNo linked pipeline for head commit — CI never triggered for this branch" },
+    { queryType: "NEIGHBORS", queryName: "Orbit Graph", result: "Nodes: 23, Edges: 43\n9 node types discovered across the digital twin\nMR !10 has an empty diff — no file changes to analyze\nNo linked pipeline for head commit — CI never triggered for this branch" },
     { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !10 → no head pipeline (CI never triggered)\nNo deployment path exists for this change set\nProject pipeline history: 132,000 total (17.8% failure rate)" },
     { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: "50+ historical MRs from test-sentinel branch\nOnly MR !1 was merged; MRs !2–!9 all closed without merge\nAbandonment pattern: 9 of 10 recent MRs were closed without merge" },
     { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "132,000 total pipelines across the ecosystem\n23,500 failed (17.8%), 106,300 passed, 2,200 canceled\nMR !10 contributed zero pipeline runs — changes were never validated" },
