@@ -1,26 +1,32 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useCallback } from "react";
 
 export default function HelpTooltip({ text, wide }: { text: string; wide?: boolean }) {
   const [show, setShow] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const [leftAlign, setLeftAlign] = useState(false);
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
 
-  useEffect(() => {
-    if (!show || !tooltipRef.current) return;
-    const rect = tooltipRef.current.getBoundingClientRect();
-    if (rect.left < 0) setLeftAlign(true);
-    else if (rect.right > window.innerWidth) setLeftAlign(true);
-    else setLeftAlign(false);
-  }, [show]);
+  const updatePosition = useCallback(() => {
+    const el = triggerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const tipW = wide ? 260 : 180;
+    const idealLeft = rect.left + rect.width / 2 - tipW / 2;
+    const clampedLeft = Math.max(8, Math.min(idealLeft, window.innerWidth - tipW - 8));
+    setTooltipStyle({
+      position: "fixed",
+      left: clampedLeft,
+      bottom: window.innerHeight - rect.top + 10,
+    });
+  }, [wide]);
 
   return (
     <span style={{ position: "relative", display: "inline-flex", alignItems: "center" }}
-      onMouseEnter={() => setShow(true)}
+      onMouseEnter={() => { setShow(true); requestAnimationFrame(updatePosition); }}
       onMouseLeave={() => setShow(false)}
-      onFocus={() => setShow(true)}
+      onFocus={() => { setShow(true); requestAnimationFrame(updatePosition); }}
       onBlur={() => setShow(false)}
     >
-      <span tabIndex={0} role="button" aria-label={`Help: ${text}`}
+      <span ref={triggerRef} tabIndex={0} role="button" aria-label={`Help: ${text}`}
         style={{
           width: 14, height: 14, borderRadius: "50%",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
@@ -34,9 +40,8 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
         onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
       >?</span>
       {show && (
-        <div ref={tooltipRef} style={{
-          position: "fixed", bottom: "calc(100% + 24px)",
-          left: leftAlign ? 8 : "50%", transform: leftAlign ? "none" : "translateX(-50%)",
+        <div style={{
+          ...tooltipStyle,
           zIndex: 1000, width: wide ? 260 : 180,
           padding: "6px 10px", borderRadius: 6,
           background: "rgba(8,9,13,0.95)", backdropFilter: "blur(12px)",
@@ -48,7 +53,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
         }}>
           {text}
           <div style={{
-            position: "absolute", top: "100%", left: leftAlign ? 16 : "50%", transform: leftAlign ? "none" : "translateX(-50%)",
+            position: "absolute", top: "100%", left: 16,
             borderLeft: "5px solid transparent", borderRight: "5px solid transparent",
             borderTop: "5px solid rgba(255,255,255,0.1)",
           }} />
