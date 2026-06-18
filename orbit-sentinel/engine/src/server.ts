@@ -351,14 +351,15 @@ app.get('/api/diag', async (_req, res) => {
     results.traversal_no_rel = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.traversal_no_rel = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Simple path_finding: File→Branch with ON_BRANCH (1 hop)
+  // Simple path_finding: File→Branch with ON_BRANCH (1 hop, nodes/path format)
   try {
-    const r = await orbitClient.pathFindingInline(
-      { entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
-      { entity: "Branch", filters: { name: { op: "starts_with", value: "main" } } },
-      1,
-      ["ON_BRANCH"],
-      10,
+    const r = await orbitClient.pathFinding(
+      [
+        { id: "f", entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
+        { id: "b", entity: "Branch", filters: { name: { op: "starts_with", value: "main" } } },
+      ],
+      { type: "shortest", from: "f", to: "b", max_depth: 1, rel_types: ["ON_BRANCH"] },
+      undefined, 10,
     );
     results.path_finding_simple = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.path_finding_simple = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
