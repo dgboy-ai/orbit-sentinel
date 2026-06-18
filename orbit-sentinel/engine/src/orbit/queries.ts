@@ -38,12 +38,12 @@ export class OrbitQueryEngine {
     return orbitClient.traversal(
       { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
       [
-        { id: "mr", entity: "MergeRequest", columns: ["iid", "title", "state", "created_at"] },
-        { id: "p", entity: "Project", columns: ["full_path"] },
+        { id: "mr", entity: "MergeRequest" },
+        { id: "p", entity: "Project" },
       ],
       [
-        { type: "MODIFIED_IN", from: "f", to: "mr" },
-        { type: "IN_PROJECT", from: "mr", to: "p" },
+        { type: "modified_in", from: "f", to: "mr" },
+        { type: "in_project", from: "mr", to: "p" },
       ],
       50,
     );
@@ -64,9 +64,11 @@ export class OrbitQueryEngine {
 
   async findDeploymentPath(projectId: number): Promise<OrbitQueryResult> {
     return orbitClient.pathFinding(
-      { id: "mr", entity: "MergeRequest" },
-      { id: "dep", entity: "Deployment", columns: ["iid", "status", "environment_id"] },
-      4,
+      [
+        { id: "mr", entity: "MergeRequest" },
+        { id: "dep", entity: "Deployment" },
+      ],
+      { type: "shortest", from: "mr", to: "dep", max_depth: 4 },
       undefined,
       20,
     );
@@ -82,9 +84,11 @@ export class OrbitQueryEngine {
 
   async findDependencyChain(fromFile: string, toFile: string): Promise<OrbitQueryResult> {
     return orbitClient.pathFinding(
-      { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: fromFile } } },
-      { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: toFile } } },
-      4,
+      [
+        { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: fromFile } } },
+        { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: toFile } } },
+      ],
+      { type: "all", from: "f1", to: "f2", max_depth: 4 },
       [{ type: "IMPORTS", from: "f1", to: "f2" }],
       20,
     );
@@ -138,7 +142,7 @@ export class OrbitQueryEngine {
 
   async getProjectSummary(projectId: number): Promise<OrbitQueryResult> {
     return orbitClient.neighbors(
-      { id: "p", entity: "Project", node_ids: [projectId], columns: ["name", "full_path", "star_count", "visibility"] },
+      { id: "p", entity: "Project", node_ids: [projectId] },
       { direction: "outgoing" },
       100,
     );

@@ -175,18 +175,16 @@ export class OrbitClient {
   }
 
   async pathFinding(
-    from: OrbitNodeSelector,
-    to: OrbitNodeSelector,
-    maxPathLength = 3,
+    nodes: OrbitNodeSelector[],
+    path: OrbitPathConfig,
     relationships?: OrbitRelationship[],
     limit = 50,
   ): Promise<OrbitQueryResult> {
     try {
       const query: OrbitQuery = {
         query_type: "path_finding",
-        from,
-        to,
-        max_path_length: maxPathLength,
+        nodes,
+        path,
         ...(relationships ? { relationships } : {}),
         limit,
       };
