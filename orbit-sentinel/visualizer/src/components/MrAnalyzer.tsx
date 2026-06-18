@@ -11,9 +11,10 @@ interface MrAnalyzerProps {
   onSelectScenario: (data: VisualizationData, label: string) => void;
   apiAvailable: boolean;
   currentScenario: string | null;
+  onAnalyzeStart?: () => void;
 }
 
-export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScenario }: MrAnalyzerProps) {
+export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScenario, onAnalyzeStart }: MrAnalyzerProps) {
   const [url, setUrl] = useState("");
   const [parsed, setParsed] = useState<{ project: string; mrIid: number } | null>(null);
   const [token, setToken] = useState("");
@@ -46,6 +47,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     if (!parsed) return;
     setAnalyzing(true);
     setLiveError(null);
+    if (onAnalyzeStart) onAnalyzeStart();
 
     try {
       const useCreds = !!token;
@@ -112,23 +114,33 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     } finally {
       setAnalyzing(false);
     }
-  }, [parsed, token, apiAvailable, onSelectScenario]);
+  }, [parsed, token, apiAvailable, onSelectScenario, onAnalyzeStart]);
 
   const handleAnalyze = useCallback(() => {
     if (!parsed) return;
     if (apiAvailable) {
       analyzeLive();
     } else {
+      if (onAnalyzeStart) onAnalyzeStart();
       const medium = SCENARIOS.find(s => s.id === "medium")!;
-      onSelectScenario(medium.data, `MR !${parsed.mrIid} · ${parsed.project}`);
+      setTimeout(() => onSelectScenario(medium.data, `MR !${parsed.mrIid} · ${parsed.project}`), 5400);
     }
-  }, [parsed, apiAvailable, analyzeLive, onSelectScenario]);
+  }, [parsed, apiAvailable, analyzeLive, onSelectScenario, onAnalyzeStart]);
 
   const handlePreset = useCallback((s: ScenarioOption) => {
-    onSelectScenario(s.data, s.label);
-  }, [onSelectScenario]);
+    if (onAnalyzeStart) {
+      onAnalyzeStart();
+      // Let the Agent Flow animation play (~5.2s), then show data
+      setTimeout(() => {
+        onSelectScenario(s.data, s.label);
+      }, 5400);
+    } else {
+      onSelectScenario(s.data, s.label);
+    }
+  }, [onSelectScenario, onAnalyzeStart]);
 
   const canAnalyze = !!parsed;
+  const isIdle = !currentScenario && !analyzing;
 
   const runLiveDemo = useCallback(async () => {
     if (!apiAvailable) {
@@ -139,6 +151,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     setParsed({ project: "gitlab-ai-hackathon/transcend/39251857", mrIid: 10 });
     setAnalyzing(true);
     setLiveError(null);
+    if (onAnalyzeStart) onAnalyzeStart();
 
     try {
       const changedFiles = ["src/main.ts"];
@@ -183,7 +196,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     } finally {
       setAnalyzing(false);
     }
-  }, [token, apiAvailable, onSelectScenario]);
+  }, [token, apiAvailable, onSelectScenario, onAnalyzeStart]);
 
   return (
     <div className="card" style={{
@@ -206,7 +219,17 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         backgroundImage: "radial-gradient(rgba(139,92,246,0.06) 1px, transparent 1px)",
         backgroundSize: "24px 24px",
         pointerEvents: "none", opacity: 0.4,
+        animation: isIdle ? "none" : undefined,
+        transition: "opacity 0.5s",
       }} />
+      {isIdle && (
+        <div style={{
+          position: "absolute", inset: 0, pointerEvents: "none",
+          border: "1px solid rgba(139,92,246,0.08)",
+          borderRadius: 12,
+          animation: "pulseGlow 3s ease-in-out infinite",
+        }} />
+      )}
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, position: "relative", zIndex: 1 }}>
         <div style={{
