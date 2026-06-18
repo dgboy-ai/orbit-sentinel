@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config.js';
-import { sentinel, dataVisualizer } from './index.js';
+import { sentinel, dataVisualizer, queryEngine } from './index.js';
 import type { SentinelReport } from './types.js';
 
 const app = express();
@@ -304,6 +304,39 @@ app.get('/api/demo', (req, res) => {
     report: vizData,
     demoMode: true,
   });
+});
+
+// Diagnostic endpoint — tests each Orbit query type individually
+app.get('/api/diag', async (_req, res) => {
+  const results: Record<string, unknown> = {};
+  const projectId = 39251857;
+  const filePath = "flows/flow.yml";
+
+  // Test NEIGHBORS
+  try {
+    const r = await queryEngine.getProjectSummary(projectId);
+    results.neighbors = { ok: true, rows: r.result.rows?.length ?? 0 };
+  } catch (e) { results.neighbors = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+
+  // Test TRAVERSAL
+  try {
+    const r = await queryEngine.findHistoricalMRs("gitlab-ai-hackathon/transcend/39251857", filePath);
+    results.traversal = { ok: true, rows: r.result.rows?.length ?? 0 };
+  } catch (e) { results.traversal = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+
+  // Test PATH_FINDING
+  try {
+    const r = await queryEngine.findDeploymentPath(projectId);
+    results.path_finding = { ok: true, rows: r.result.rows?.length ?? 0 };
+  } catch (e) { results.path_finding = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+
+  // Test AGGREGATION
+  try {
+    const r = await queryEngine.findPipelineFailures([projectId]);
+    results.aggregation = { ok: true, rows: r.result.rows?.length ?? 0 };
+  } catch (e) { results.aggregation = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+
+  res.json(results);
 });
 
 app.listen(PORT, () => {

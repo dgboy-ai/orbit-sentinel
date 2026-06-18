@@ -10,6 +10,7 @@ export { MarkdownReporter, markdownReporter } from "./reporter/markdown.js";
 export { DataVisualizer, dataVisualizer } from "./reporter/visualizer.js";
 export { ErrorHandler, OrbitSentinelError, ErrorType } from "./errors.js";
 export { MRValidator } from "./validators.js";
+export { queryEngine } from "./orbit/queries.js";
 
 // Note: server.ts is a standalone script, not a module export
 
