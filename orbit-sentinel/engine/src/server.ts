@@ -104,7 +104,7 @@ app.get('/api/debug-orbit', async (_req, res) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: { query_type: "neighbors", neighbors: { node: { id: "test", entity: "Project" }, direction: "outgoing", max_depth: 1 } },
+        query: { query_type: "neighbors", node: { id: "test", entity: "Project" }, neighbors: { node: "test", direction: "outgoing" } },
         format: "raw",
       }),
       signal: controller.signal,

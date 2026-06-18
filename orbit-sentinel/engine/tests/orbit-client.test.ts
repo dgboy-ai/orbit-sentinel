@@ -84,16 +84,16 @@ describe("OrbitClient", () => {
       const client = await importOrbitClient();
       await client.neighbors(
         { id: "f", entity: "File" },
-        { direction: "both", max_depth: 3 },
+        { direction: "both" },
         100
       );
 
       const callArgs = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(callArgs.query.query_type).toBe("neighbors");
-      expect(callArgs.query.neighbors.node.id).toBe("f");
-      expect(callArgs.query.neighbors.node.entity).toBe("File");
+      expect(callArgs.query.node.id).toBe("f");
+      expect(callArgs.query.node.entity).toBe("File");
+      expect(callArgs.query.neighbors.node).toBe("f");
       expect(callArgs.query.neighbors.direction).toBe("both");
-      expect(callArgs.query.neighbors.max_depth).toBe(3);
     });
   });
 

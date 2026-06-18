@@ -29,7 +29,7 @@ export class OrbitQueryEngine {
   async findBlastRadius(changedFilePath: string): Promise<OrbitQueryResult> {
     return orbitClient.neighbors(
       { id: "f", entity: "File", filters: { path: { op: "ends_with", value: changedFilePath } } },
-      { direction: "both", max_depth: 3 },
+      { direction: "both" },
       100,
     );
   }
@@ -75,7 +75,7 @@ export class OrbitQueryEngine {
   async findTeamOwnership(filePath: string): Promise<OrbitQueryResult> {
     return orbitClient.neighbors(
       { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
-      { direction: "outgoing", node_types: ["User", "Group"], max_depth: 3 },
+      { direction: "outgoing", node_types: ["User", "Group"] },
       50,
     );
   }
@@ -139,7 +139,7 @@ export class OrbitQueryEngine {
   async getProjectSummary(projectId: number): Promise<OrbitQueryResult> {
     return orbitClient.neighbors(
       { id: "p", entity: "Project", node_ids: [projectId], columns: ["name", "full_path", "star_count", "visibility"] },
-      { direction: "outgoing", max_depth: 1 },
+      { direction: "outgoing" },
       100,
     );
   }

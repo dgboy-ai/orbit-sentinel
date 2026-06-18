@@ -36,11 +36,10 @@ export interface OrbitPathConfig {
 }
 
 export interface OrbitNeighborsConfig {
-  node: OrbitNodeSelector;
+  node: string;
   direction: "incoming" | "outgoing" | "both";
   rel_types?: string[];
   node_types?: string[];
-  max_depth?: number;
 }
 
 export interface OrbitQuery {
