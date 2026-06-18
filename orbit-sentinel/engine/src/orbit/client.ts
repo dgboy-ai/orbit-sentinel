@@ -96,7 +96,8 @@ export class OrbitClient {
               ErrorType.NETWORK_ERROR
             );
           }
-          throw this.errorHandler.handleError(err, 'fetchWithRetry');
+          const fe = this.errorHandler.handleError(err, 'fetchWithRetry');
+          throw new Error(fe.message);
         }
 
         const delay = BASE_DELAY_MS * Math.pow(2, attempt);
@@ -239,23 +240,27 @@ export class OrbitClient {
       try {
         return await this.executeQuery<T>(query, format);
       } catch (error) {
-        const sentinelError = this.errorHandler.handleError(error, 'safeQuery');
+        const sentinelErr = error instanceof Error ? error : this.errorHandler.handleError(error, 'safeQuery');
+        const msg = typeof sentinelErr === 'object' && 'message' in sentinelErr ? (sentinelErr as any).message : String(sentinelErr);
         
         // If it's a rate limit error, wait before retrying
-        if (sentinelError.type === ErrorType.RATE_LIMIT && sentinelError.retryAfter) {
-          await new Promise(resolve => setTimeout(resolve, sentinelError.retryAfter! * 1000));
-          continue;
+        if ('type' in sentinelErr && sentinelErr.type === ErrorType.RATE_LIMIT && 'retryAfter' in sentinelErr) {
+          const retryAfter = (sentinelErr as any).retryAfter;
+          if (retryAfter) {
+            await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+            continue;
+          }
         }
         
         // If it's a service unavailable error, wait longer
-        if (sentinelError.type === ErrorType.SERVICE_UNAVAILABLE) {
+        if (msg.toLowerCase().includes('unavailable') || msg.toLowerCase().includes('503')) {
           const delay = BASE_DELAY_MS * Math.pow(2, attempt);
           await new Promise(resolve => setTimeout(resolve, delay));
           continue;
         }
         
         // For other errors, rethrow
-        throw sentinelError;
+        throw new Error(msg);
       }
     }
     throw new OrbitSentinelError(
