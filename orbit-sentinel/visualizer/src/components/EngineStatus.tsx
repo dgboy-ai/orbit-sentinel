@@ -42,12 +42,14 @@ export default function EngineStatus() {
   }, [checkHealth]);
 
   const warmUp = useCallback(async () => {
+    if (!mountedRef.current) return;
     setWarming(true);
     try {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 30000);
       const res = await fetch(`${API_BASE_URL}/health`, { signal: controller.signal });
       clearTimeout(timer);
+      if (!mountedRef.current) return;
       if (res.ok) {
         setState("live");
         setLastCheck(new Date().toLocaleTimeString());
@@ -55,7 +57,7 @@ export default function EngineStatus() {
     } catch {
       // still cold
     } finally {
-      setWarming(false);
+      if (mountedRef.current) setWarming(false);
     }
   }, []);
 
