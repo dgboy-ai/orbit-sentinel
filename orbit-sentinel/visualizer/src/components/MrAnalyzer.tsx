@@ -23,6 +23,12 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   const [liveError, setLiveError] = useState<string | null>(null);
   const [showTokenInput, setShowTokenInput] = useState(false);
   const [analysisDone, setAnalysisDone] = useState<string | null>(null);
+  const [demosHidden, setDemosHidden] = useState(false);
+
+  // Reset demosHidden when currentScenario changes to null (page reload/reset)
+  useEffect(() => {
+    if (!currentScenario && !analyzing) setDemosHidden(false);
+  }, [currentScenario, analyzing]);
 
   // Clear PAT and errors when scenario changes (live→demo or demo→demo switch)
   useEffect(() => {
@@ -41,7 +47,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     } else {
       setParsed(null);
     }
-  }, []);
+    if (demosHidden) setDemosHidden(false);
+  }, [demosHidden]);
 
   const analyzeLive = useCallback(async () => {
     if (!parsed) return;
@@ -128,6 +135,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   }, [parsed, apiAvailable, analyzeLive, onSelectScenario, onAnalyzeStart]);
 
   const handlePreset = useCallback((s: ScenarioOption) => {
+    setDemosHidden(true);
     if (onAnalyzeStart) {
       onAnalyzeStart();
       // Let the Agent Flow animation play (~5.2s), then show data
@@ -151,6 +159,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     setParsed({ project: "gitlab-ai-hackathon/transcend/39251857", mrIid: 10 });
     setAnalyzing(true);
     setLiveError(null);
+    setDemosHidden(true);
     if (onAnalyzeStart) onAnalyzeStart();
 
     try {
@@ -422,84 +431,104 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         </div>
       )}
 
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "1px" }}>⚡ Quick Demos</span>
-          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.2), transparent)" }} />
-        </div>
-        <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
-          {SCENARIOS.map(s => {
-            const active = currentScenario === s.id || currentScenario === s.label;
-            return (
-              <button key={s.id} onClick={() => handlePreset(s)}
+      {demosHidden ? (
+        <button onClick={() => setDemosHidden(false)}
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+            padding: "8px 16px", fontSize: 11, fontWeight: 600, cursor: "pointer",
+            border: "1px dashed rgba(139,92,246,0.2)", borderRadius: 8,
+            background: "rgba(139,92,246,0.04)", color: "#a78bfa",
+            transition: "all 0.2s", width: "100%", position: "relative", zIndex: 1,
+            letterSpacing: "0.3px",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(139,92,246,0.08)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.35)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(139,92,246,0.04)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)"; }}
+        >
+          <span>🔄</span>
+          Try Another Scenario
+        </button>
+      ) : (
+        <>
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "1px" }}>⚡ Quick Demos</span>
+              <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.2), transparent)" }} />
+            </div>
+            <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
+              {SCENARIOS.map(s => {
+                const active = currentScenario === s.id || currentScenario === s.label;
+                return (
+                  <button key={s.id} onClick={() => handlePreset(s)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 10,
+                      padding: "12px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                      textAlign: "left",
+                      border: active
+                        ? `1.5px solid ${s.color}66`
+                        : "1px solid rgba(255,255,255,0.06)",
+                      borderRadius: 8,
+                      background: active
+                        ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)`
+                        : "rgba(255,255,255,0.02)",
+                      color: active ? s.color : "var(--text-primary)",
+                      transition: "all 0.2s",
+                      width: "100%",
+                      boxShadow: active ? `0 0 20px ${s.color}10` : "none",
+                    }}
+                    onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}}
+                    onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}}
+                  >
+                    <span style={{ fontSize: 22, filter: active ? "none" : "grayscale(0.3)" }}>{s.icon}</span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      <span style={{ fontSize: 12 }}>{s.label}</span>
+                      <span style={{ fontSize: 10, fontWeight: 400, color: active ? `${s.color}bb` : "var(--text-tertiary)", lineHeight: 1.3 }}>
+                        {s.description}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {apiAvailable && (
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
+                <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.2), transparent)" }} />
+              </div>
+              <button onClick={runLiveDemo} disabled={analyzing}
                 style={{
                   display: "flex", alignItems: "center", gap: 10,
-                  padding: "12px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  padding: "12px 14px", fontSize: 12, fontWeight: 600, cursor: analyzing ? "not-allowed" : "pointer",
                   textAlign: "left",
-                  border: active
-                    ? `1.5px solid ${s.color}66`
-                    : "1px solid rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(34,197,94,0.15)",
                   borderRadius: 8,
-                  background: active
-                    ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)`
-                    : "rgba(255,255,255,0.02)",
-                  color: active ? s.color : "var(--text-primary)",
+                  background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))",
+                  color: "var(--text-primary)",
                   transition: "all 0.2s",
                   width: "100%",
-                  boxShadow: active ? `0 0 20px ${s.color}10` : "none",
+                  opacity: analyzing ? 0.5 : 1,
                 }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}}
+                onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.04))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.3)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.08)"; }}}
+                onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.15)"; e.currentTarget.style.boxShadow = "none"; }}}
               >
-                <span style={{ fontSize: 22, filter: active ? "none" : "grayscale(0.3)" }}>{s.icon}</span>
+                <span style={{ fontSize: 22 }}>🌐</span>
                 <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  <span style={{ fontSize: 12 }}>{s.label}</span>
-                  <span style={{ fontSize: 10, fontWeight: 400, color: active ? `${s.color}bb` : "var(--text-tertiary)", lineHeight: 1.3 }}>
-                    {s.description}
+                  <span style={{ fontSize: 12 }}>
+                    {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
+                  </span>
+                  <span style={{ fontSize: 10, fontWeight: 400, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
+                    Queries real Orbit API against transcend/39251857 · 14 nodes, 13 edges
                   </span>
                 </div>
+                {analyzing && (
+                  <span style={{ marginLeft: "auto", display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
+                )}
               </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {apiAvailable && (
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.2), transparent)" }} />
-          </div>
-          <button onClick={runLiveDemo} disabled={analyzing}
-            style={{
-              display: "flex", alignItems: "center", gap: 10,
-              padding: "12px 14px", fontSize: 12, fontWeight: 600, cursor: analyzing ? "not-allowed" : "pointer",
-              textAlign: "left",
-              border: "1px solid rgba(34,197,94,0.15)",
-              borderRadius: 8,
-              background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))",
-              color: "var(--text-primary)",
-              transition: "all 0.2s",
-              width: "100%",
-              opacity: analyzing ? 0.5 : 1,
-            }}
-            onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.04))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.3)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.08)"; }}}
-            onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.15)"; e.currentTarget.style.boxShadow = "none"; }}}
-          >
-            <span style={{ fontSize: 22 }}>🌐</span>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              <span style={{ fontSize: 12 }}>
-                {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
-              </span>
-              <span style={{ fontSize: 10, fontWeight: 400, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
-                Queries real Orbit API against transcend/39251857 · 14 nodes, 13 edges
-              </span>
             </div>
-            {analyzing && (
-              <span style={{ marginLeft: "auto", display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
-            )}
-          </button>
-        </div>
+          )}
+        </>
       )}
     </div>
   );
