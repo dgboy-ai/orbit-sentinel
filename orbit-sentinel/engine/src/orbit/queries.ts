@@ -62,10 +62,10 @@ export class OrbitQueryEngine {
   async findDeploymentPath(projectId: number): Promise<OrbitQueryResult> {
     return orbitClient.pathFinding(
       [
-        { id: "f", entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
-        { id: "dep", entity: "Deployment", filters: { status: "success" } },
+        { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
+        { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: ".tsx" } } },
       ],
-      { type: "shortest", from: "f", to: "dep", max_depth: 3, rel_types: ["ON_BRANCH", "FROM_BRANCH", "DEPLOYED_TO"] },
+      { type: "shortest", from: "f1", to: "f2", max_depth: 2, rel_types: ["IMPORTS", "CALLS", "EXTENDS"] },
       undefined,
       20,
     );

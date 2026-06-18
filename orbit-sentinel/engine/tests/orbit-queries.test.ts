@@ -69,8 +69,8 @@ describe("OrbitQueryEngine", () => {
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("path_finding");
       expect(body.query.path.type).toBe("shortest");
-      expect(body.query.path.from).toBe("f");
-      expect(body.query.path.to).toBe("dep");
+      expect(body.query.path.from).toBe("f1");
+      expect(body.query.path.to).toBe("f2");
       expect(body.query.nodes[0].filters).toBeDefined();
       expect(body.query.nodes[1].filters).toBeDefined();
     });
