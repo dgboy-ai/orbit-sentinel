@@ -19,7 +19,7 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 | Query | Findings |
 |-------|----------|
 | `get_graph_schema` | 18 node types, ~45 relationship types discovered |
-| Digital Twin Builder (4 queries) | **14 nodes, 13 edges** across 7 node types per MR analysis |
+| Digital Twin Builder (4 query types) | **14 nodes, 13 edges** across 7 node types per MR analysis |
 | Risk Signals | 3 High (bus factor, no coverage, no reviewers), 2 Medium |
 
 [Full traversal results →](orbit-sentinel/docs/orbit-traversal-results.md)
@@ -42,6 +42,37 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 
 ---
 
+## MR Analysis — Core Capability
+
+### Paste Any GitLab MR URL
+
+The **MR Analyzer** panel accepts any GitLab merge request URL — it parses the project path and MR ID, fetches changed files via the engine's CORS proxy, then runs all 4 Orbit query types against the affected files.
+
+**Live analysis flow:**
+1. Paste MR URL → auto-extracts `project` + `MR IID`
+2. Engine fetches changed files from GitLab API (up to 5 files, no CORS issues)
+3. DigitalTwinBuilder executes NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION
+4. Results merged into unified graph (nodes + edges) → 7 dashboard views populate
+5. Success toast confirms: "✓ Analysis complete — MR !X"
+
+**No token required** for basic analysis. Optional GitLab personal access token (`glpat-xxx`, `read_api` scope) enables richer file content retrieval — sent once, discarded after.
+
+### 3 Pre-Configured Quick Demos
+
+| Scenario | What It Shows | Risk |
+|----------|---------------|------|
+| 🔴 **Critical Risk** | Pipeline failed, 7 downstream services at risk, no rollback plan | 88% |
+| 🟡 **Medium Risk** | Empty diff, no pipeline, abandoned branch pattern — needs attention | 55% |
+| 🟢 **Low Risk** | All tests pass, reviewers approved, no downstream impact | 15% |
+
+Each populates all 7 views with realistic, interconnected data — blast radius, risk breakdown, counterfactuals, historical incidents, timeline, and deployment decision.
+
+### MR URL Validation
+
+Input field validates against `gitlab.com/\<project\>/-/merge_requests/\<digits\>` with live format indicator badge.
+
+---
+
 ## Architecture
 
 ```mermaid
@@ -58,7 +89,7 @@ flowchart TD
 
     subgraph ENGINE["Engine (TypeScript · Express · Render)"]
         direction TB
-        E0["DigitalTwinBuilder"] --> E1["Orbit API Proxy"]
+        E0["DigitalTwinBuilder"] --> E1["Orbit API Proxy\n(app.orbit.dev)"]
         E1 --> E2["Risk Scoring"]
         E2 --> E3["Remediation Planner"]
         E3 --> E4["Markdown Reporter"]
@@ -67,9 +98,9 @@ flowchart TD
 
     subgraph VIZ["Visualizer (React · D3 · Vite · Vercel)"]
         direction TB
-        V1["MrAnalyzer Card\n(Gradient/Glow/Pulse)"] --> V2["6 Quick Demo\nScenarios"]
-        V2 --> V3["2-Column Query Log +\nProblem + Impact Layout"]
-        V3 --> V4["Architecture Diagram\n(D3)"]
+        V1["MrAnalyzer Card\n(Gradient/Glow/Pulse)"] --> V2["3 Quick Demo\nScenarios"]
+        V2 --> V3["2-Column Layout\n(Query Log + Problem)"]
+        V3 --> V4["7 Dashboard Views\n+ Mobile Responsive"]
     end
 
     MR -.-> GITLAB
@@ -78,6 +109,22 @@ flowchart TD
 ```
 
 Every conclusion cites specific Orbit query evidence. No black box.
+
+---
+
+## Mobile Support — Fully Responsive
+
+The visualizer adapts across 5 breakpoints for desktop, tablet, and phone:
+
+| Breakpoint | Behavior |
+|---|---|
+| >1100px | Full 5-column grid, all query type tags visible |
+| 900–1100px | Grids collapse to 2-column, scrollable nav, "4 Queries" tag hidden |
+| 768–900px | Compact cards, responsive hero column, graph info overlay shrinks, scrollable nav with hidden scrollbar for touch |
+| 480–768px | Single column grids, stacked layout, "mobile bar" elements hidden |
+| <360px (tiny) | Tab bar replaced with dropdown menu, full-width elements, ultra-compact sizing |
+
+Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, responsive button sizing.
 
 ---
 
@@ -112,7 +159,7 @@ Every conclusion cites specific Orbit query evidence. No black box.
 **Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, 75 tests). Key components:
 
 - **DigitalTwinBuilder** — orchestrates all 4 Orbit query types per MR, merges results into a unified graph (nodes + edges). Parses Orbit API 2.1.0 `result.nodes`/`result.edges` format.
-- **Orbit API Proxy** — forwards queries to `app.orbit.dev`, handles 400+ rate limiting with exponential backoff
+- **Orbit API Proxy** — forwards queries to `app.orbit.dev`, handles rate limiting with exponential backoff
 - **CORS Proxy** — `/api/probe-mr-files` fetches changed file contents from GitLab without browser CORS issues
 - **GitLab Token Passthrough** — users provide `glpat-xxx` in the UI, sent once per analysis, discarded after
 - **Rate Limiting** — `MAX_CHANGED_FILES` capped at 5 per MR, 500ms throttle between file iterations (reduces Orbit queries from 107 to 23 per analysis)
@@ -127,13 +174,27 @@ Every conclusion cites specific Orbit query evidence. No black box.
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
 | Tests | **85 passing** (75 engine + 10 visualizer) |
 | Live Orbit Data | Engine returns real graph data for project ID **83381762** (14 nodes, 13 edges per MR) |
-| Quick Demos | 6 pre-configured scenarios — single file, multiple files, big refactor, dependency change, config change, full stack |
+| Quick Demos | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
 | UI Polish | Gradient glow card, pulsing live badge, success toast, 2-column query log layout, MR ID validation, neon borders |
 | 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
 | ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
+| 📱 Mobile | 5 breakpoints to 360px, touch scrolling, dropdown nav on tiny screens, collapsible grids |
 | ⏳ AI Catalog | Needs Maintainer token — run `glab skills publish` |
 | ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
 | 📖 Docs | [`docs/`](orbit-sentinel/docs/) — traversal proof, deployment guide |
+
+---
+
+## UX Highlights
+
+| Feature | Details |
+|---------|---------|
+| **Gradient glow card** | Purple gradient background, `0 0 30px` neon glow shadow, corner radial decoration, grid dot pattern |
+| **Pulsing live badge** | Green dot with `pulseDot` animation + "Engine Live" label when engine is reachable |
+| **Success toast** | Green banner "✓ Analysis complete — MR !X" fades in for 5s |
+| **2-column layout** | Query log + architecture diagram on left, problem section + impact calculator on right |
+| **MR validation** | Input shows visual format indicator when URL matches `gitlab.com/\<project\>/-/merge_requests/\<digits\>` |
+| **Gradient button** | Purple gradient background; hover glow effect |
 
 ---
 
