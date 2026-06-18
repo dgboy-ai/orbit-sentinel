@@ -123,7 +123,8 @@ export class OrbitClient {
       });
       return response.json() as Promise<T>;
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'executeQuery');
+      const sentinelErr = this.errorHandler.handleError(error, 'executeQuery');
+      throw new Error(sentinelErr.message);
     }
   }
 

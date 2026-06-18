@@ -77,9 +77,12 @@ app.post('/api/analyze', async (req, res) => {
     });
   } catch (error) {
     console.error('Analysis error:', error);
+    const message = error instanceof Error ? error.message :
+                    error && typeof error === 'object' && 'message' in error ?
+                    (error as any).message : 'Unknown error';
     return res.status(500).json({
       error: 'Analysis failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message,
       demoMode: process.env.DEMO_MODE === 'true',
     });
   }

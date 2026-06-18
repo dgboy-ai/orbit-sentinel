@@ -104,7 +104,8 @@ export class OrbitSentinel {
       };
     } catch (error) {
       this.errorHandler.incrementErrorCount('analyzeChange');
-      throw this.errorHandler.handleError(error, 'analyzeChange');
+      const sentinelErr = this.errorHandler.handleError(error, 'analyzeChange');
+      throw new Error(sentinelErr.message);
     }
   }
 
