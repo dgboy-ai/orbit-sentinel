@@ -65,7 +65,7 @@ export class OrbitQueryEngine {
         { id: "f", entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
         { id: "dep", entity: "Deployment", filters: { status: "success" } },
       ],
-      { type: "shortest", from: "f", to: "dep", max_depth: 3, rel_types: ["ON_BRANCH", "TRIGGERED", "DEPLOYED_TO", "IN_PIPELINE"] },
+      { type: "shortest", from: "f", to: "dep", max_depth: 3, rel_types: ["ON_BRANCH", "FROM_BRANCH", "DEPLOYED_TO"] },
       undefined,
       20,
     );
