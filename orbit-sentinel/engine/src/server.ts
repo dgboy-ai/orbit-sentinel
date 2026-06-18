@@ -97,8 +97,16 @@ app.get('/api/debug-orbit', async (_req, res) => {
     // Try a simple fetch to the Orbit schema endpoint
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15000);
-    const response = await fetch(`${endpoint}/status`, {
-      headers: { Authorization: `Bearer ${process.env.GITLAB_ACCESS_TOKEN || ""}` },
+    const response = await fetch(`${endpoint}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.GITLAB_ACCESS_TOKEN || ""}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: { query_type: "neighbors", node: { id: "test", entity: "Project" }, neighbors: { direction: "outgoing", max_depth: 1 } },
+        response_format: "raw",
+      }),
       signal: controller.signal,
     });
     clearTimeout(timer);
