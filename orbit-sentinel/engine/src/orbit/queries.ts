@@ -18,8 +18,8 @@ export class OrbitQueryEngine {
         { id: "p", entity: "Project" },
       ],
       [
-        { type: "on_branch", from: "f", to: "b" },
-        { type: "contains", from: "p", to: "b" },
+        { type: "ON_BRANCH", from: "f", to: "b" },
+        { type: "CONTAINS", from: "p", to: "b" },
       ],
       100,
     );
@@ -37,12 +37,14 @@ export class OrbitQueryEngine {
     return orbitClient.traversal(
       { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
       [
-        { id: "mr", entity: "MergeRequest" },
+        { id: "b", entity: "Branch" },
         { id: "p", entity: "Project" },
+        { id: "mr", entity: "MergeRequest" },
       ],
       [
-        { type: "modified_in", from: "f", to: "mr" },
-        { type: "in_project", from: "mr", to: "p" },
+        { type: "ON_BRANCH", from: "f", to: "b" },
+        { type: "CONTAINS", from: "p", to: "b" },
+        { type: "IN_PROJECT", from: "mr", to: "p" },
       ],
       50,
     );
@@ -54,7 +56,7 @@ export class OrbitQueryEngine {
         { id: "pl", entity: "Pipeline", filters: { status: "failed" } },
         { id: "p", entity: "Project", node_ids: projectIds },
       ],
-      [{ type: "in_project", from: "pl", to: "p" }],
+      [{ type: "IN_PROJECT", from: "pl", to: "p" }],
       [{ function: "count", target: "pl", alias: "failed_pipelines" }],
       [{ kind: "node", node: "p" }],
       50,
@@ -67,7 +69,7 @@ export class OrbitQueryEngine {
         { id: "mr", entity: "MergeRequest" },
         { id: "dep", entity: "Deployment" },
       ],
-      { type: "shortest", from: "mr", to: "dep", max_depth: 3 },
+      { type: "shortest", from: "mr", to: "dep", max_depth: 3, rel_types: ["DEPLOYED_BY", "TRIGGERED", "IN_PIPELINE", "HAS_HEAD_PIPELINE"] },
       undefined,
       20,
     );
@@ -87,7 +89,7 @@ export class OrbitQueryEngine {
         { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: fromFile } } },
         { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: toFile } } },
       ],
-      { type: "all", from: "f1", to: "f2", max_depth: 3 },
+      { type: "all", from: "f1", to: "f2", max_depth: 3, rel_types: ["IMPORTS", "CALLS", "DEFINES", "EXTENDS"] },
       [{ type: "IMPORTS", from: "f1", to: "f2" }],
       20,
     );
@@ -99,7 +101,7 @@ export class OrbitQueryEngine {
         { id: "p", entity: "Project" },
         { id: "mr", entity: "MergeRequest", filters: { state: "opened" } },
       ],
-      [{ type: "in_project", from: "mr", to: "p" }],
+      [{ type: "IN_PROJECT", from: "mr", to: "p" }],
       [{ function: "count", target: "mr", alias: "open_mrs" }],
       [{ kind: "node", node: "p" }],
       20,
@@ -109,10 +111,8 @@ export class OrbitQueryEngine {
   async findIncidentsConnectedToFile(filePath: string): Promise<OrbitQueryResult> {
     return orbitClient.traversal(
       { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
-      [
-        { id: "inc", entity: "Incident" },
-      ],
-      [{ type: "caused_incident", from: "f", to: "inc" }],
+      undefined,
+      undefined,
       20,
     );
   }
@@ -123,7 +123,7 @@ export class OrbitQueryEngine {
       [
         { id: "mr", entity: "MergeRequest" },
       ],
-      [{ type: "authored_by", from: "mr", to: "u" }],
+      [{ type: "AUTHORED", from: "u", to: "mr" }],
       50,
     );
   }
@@ -134,7 +134,7 @@ export class OrbitQueryEngine {
       [
         { id: "mr", entity: "MergeRequest" },
       ],
-      [{ type: "modified_in", from: "def", to: "mr" }],
+      [{ type: "HAS_LATEST_DIFF", from: "def", to: "mr" }],
       20,
     );
   }

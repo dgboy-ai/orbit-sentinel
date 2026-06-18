@@ -44,8 +44,8 @@ describe("OrbitQueryEngine", () => {
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("traversal");
-      expect(body.query.nodes).toHaveLength(3);
-      expect(body.query.relationships[0].type).toBe("modified_in");
+      expect(body.query.nodes).toHaveLength(4);
+      expect(body.query.relationships[0].type).toBe("ON_BRANCH");
     });
   });
 
@@ -108,13 +108,13 @@ describe("OrbitQueryEngine", () => {
   });
 
   describe("findIncidentsConnectedToFile", () => {
-    it("queries traversal with CAUSED_INCIDENT relationship", async () => {
+    it("queries traversal without relationships", async () => {
       const engine = await importQueryEngine();
       await engine.findIncidentsConnectedToFile("src/crash.ts");
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("traversal");
-      expect(body.query.relationships[0].type).toBe("caused_incident");
+      expect(body.query.node.filters.path.value).toBe("src/crash.ts");
     });
   });
 

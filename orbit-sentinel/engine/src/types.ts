@@ -33,6 +33,7 @@ export interface OrbitPathConfig {
   from: string;
   to: string;
   max_depth: number;
+  rel_types?: string[];
 }
 
 export interface OrbitNeighborsConfig {
