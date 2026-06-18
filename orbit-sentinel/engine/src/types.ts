@@ -3,7 +3,7 @@ export type QueryType = "traversal" | "aggregation" | "path_finding" | "neighbor
 export type ResponseFormat = "raw" | "llm";
 
 export interface OrbitNodeSelector {
-  id: string;
+  id?: string;
   entity: string;
   columns?: string[];
   filters?: Record<string, unknown>;

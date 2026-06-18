@@ -227,7 +227,7 @@ export class OrbitClient {
       const query: OrbitQuery = {
         query_type: "neighbors",
         node,
-        neighbors: { node: node.id, ...neighborsConfig },
+        neighbors: { node: node.id!, ...neighborsConfig },
         limit,
       };
       return await this.executeQuery(query);
