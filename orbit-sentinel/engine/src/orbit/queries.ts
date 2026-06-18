@@ -63,9 +63,9 @@ export class OrbitQueryEngine {
     return orbitClient.pathFinding(
       [
         { id: "f", entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
-        { id: "dep", entity: "Deployment" },
+        { id: "dep", entity: "Deployment", filters: { status: "success" } },
       ],
-      { type: "shortest", from: "f", to: "dep", max_depth: 3, rel_types: ["DEPLOYED_BY", "TRIGGERED", "IN_PIPELINE"] },
+      { type: "shortest", from: "f", to: "dep", max_depth: 3 },
       undefined,
       20,
     );
