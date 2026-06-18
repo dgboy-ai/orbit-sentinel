@@ -362,14 +362,21 @@ export default function App() {
               apiAvailable={apiService.isApiAvailable()}
               currentScenario={currentScenario}
             />
-            {/* Tier 0: Orbit Query Execution Log — animated query timeline */}
-            {showQueryLog && (
-              <OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} />
+            {/* Tier 0: Orbit Query Log + Problem/Solution side by side when log is visible */}
+            {showQueryLog ? (
+              <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 8 : 12 }}>
+                <OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} />
+                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+                  <ProblemSection />
+                  <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
+                </div>
+              </div>
+            ) : (
+              <>
+                <ProblemSection />
+                <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
+              </>
             )}
-            {/* Tier 0: Problem → Solution → Impact */}
-            <ProblemSection />
-            {/* Tier 1: Impact Calculator */}
-            <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
             {/* Tier 1: Architecture Diagram */}
             <ArchitectureDiagram />
             {/* Tier 1: Hero Outcome + Tagline */}
