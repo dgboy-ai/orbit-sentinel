@@ -379,16 +379,24 @@ app.post('/api/probe-mr-files', async (req, res) => {
   }
 });
 
-// Raw Orbit query proxy — lets the UI test arbitrary queries (debug only)
+// Raw Orbit query proxy — accepts any { query, format } and proxies to Orbit API
 app.post('/api/raw-orbit', async (req, res) => {
   try {
-    const { query_type, entity, filters, format } = req.body;
-    const query: import("./types.js").OrbitQuery = {
-      query_type: query_type || "neighbors",
-      node: { entity: entity || "Project", ...(filters ? { filters } : {}) },
-    };
-    const result = await orbitClient.safeQuery(query, 1, format || "raw");
-    return res.json(result);
+    const { query, format } = req.body;
+    if (!query) return res.status(400).json({ error: 'query object required' });
+
+    // Build the envelope the same way executeQuery does
+    const envelope = { query, format: format || "raw" };
+    const response = await fetch("https://gitlab.com/api/v4/orbit/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GITLAB_ACCESS_TOKEN || ""}`,
+      },
+      body: JSON.stringify(envelope),
+    });
+    const body = await response.text();
+    return res.status(response.status).json({ status: response.status, body: body.slice(0, 5000) });
   } catch (error) {
     return res.status(500).json({
       error: 'Orbit query failed',
