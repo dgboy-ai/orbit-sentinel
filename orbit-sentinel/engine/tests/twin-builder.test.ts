@@ -22,28 +22,41 @@ describe("DigitalTwinBuilder", () => {
     expect((builder as any).mapEntityType("")).toBe("Service");
   });
 
-  it("extracts nodes from row data", () => {
-    const row = {
-      test: { id: "p:1", type: "Project", properties: { name: "Test Project" } },
-    };
-    const node = (builder as any).extractNodesFromRow(row, "test");
-    expect(node).not.toBeNull();
-    expect(node.id).toBe("p:1");
-    expect(node.label).toBe("Test Project");
-    expect(node.type).toBe("Project");
+  it("merges nodes and edges from query result", () => {
+    const nodes = new Map();
+    const edges = new Map();
+    (builder as any).mergeGraph(nodes, edges, {
+      nodes: [
+        { id: "p:1", type: "Project", name: "Test" },
+        { id: "mr:1", type: "MergeRequest", title: "Fix bug" },
+      ],
+      edges: [
+        { from_id: "mr:1", to_id: "p:1", type: "IN_PROJECT" },
+      ],
+    });
+    expect(nodes.size).toBe(2);
+    expect(nodes.get("p:1").label).toBe("Test");
+    expect(nodes.get("mr:1").label).toBe("Fix bug");
+    expect(edges.size).toBe(1);
+    expect(edges.get("mr:1|p:1|IN_PROJECT").type).toBe("IN_PROJECT");
   });
 
-  it("returns null for missing row key", () => {
-    const node = (builder as any).extractNodesFromRow({}, "nonexistent");
-    expect(node).toBeNull();
+  it("skips nodes without id", () => {
+    const nodes = new Map();
+    const edges = new Map();
+    (builder as any).mergeGraph(nodes, edges, {
+      nodes: [
+        { type: "Project" },
+      ],
+    });
+    expect(nodes.size).toBe(0);
   });
 
-  it("falls back to id when no label properties", () => {
-    const row = {
-      n: { id: "u:42", type: "User", properties: {} },
-    };
-    const node = (builder as any).extractNodesFromRow(row, "n");
-    expect(node).not.toBeNull();
-    expect(node.label).toBe("u:42");
+  it("handles empty result gracefully", () => {
+    const nodes = new Map();
+    const edges = new Map();
+    (builder as any).mergeGraph(nodes, edges, {});
+    expect(nodes.size).toBe(0);
+    expect(edges.size).toBe(0);
   });
 });
