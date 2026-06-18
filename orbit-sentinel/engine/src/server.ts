@@ -129,12 +129,12 @@ app.get('/api/debug-orbit', async (_req, res) => {
 // Live analysis with user-provided GitLab token
 app.post('/api/analyze-with-creds', async (req, res) => {
   try {
-    const { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch, gitlabToken } = req.body;
+    let { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch, gitlabToken } = req.body;
 
-    if (!projectId || !projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
+    if (!projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
       return res.status(400).json({
         error: 'Missing required fields',
-        required: ['projectId', 'projectPath', 'mrIid', 'mrTitle', 'changedFiles', 'changeDescription']
+        required: ['projectPath', 'mrIid', 'mrTitle', 'changedFiles', 'changeDescription']
       });
     }
 
@@ -150,8 +150,24 @@ app.post('/api/analyze-with-creds', async (req, res) => {
     process.env.GITLAB_ACCESS_TOKEN = gitlabToken;
 
     try {
+      // Look up project ID if not provided
+      if (!projectId || Number(projectId) === 0) {
+        try {
+          const encodedPath = encodeURIComponent(projectPath);
+          const projRes = await fetch(`https://gitlab.com/api/v4/projects/${encodedPath}`, {
+            headers: { Authorization: `Bearer ${gitlabToken}` },
+          });
+          if (projRes.ok) {
+            const projData = await projRes.json() as { id: number };
+            projectId = projData.id;
+          }
+        } catch {
+          // fallback: keep 0
+        }
+      }
+
       const report = await sentinel.analyzeChange({
-        projectId: Number(projectId),
+        projectId: Number(projectId || 0),
         projectPath,
         mrIid: Number(mrIid),
         mrTitle,
