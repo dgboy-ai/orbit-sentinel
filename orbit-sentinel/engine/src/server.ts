@@ -76,15 +76,45 @@ app.post('/api/analyze', async (req, res) => {
       demoMode: process.env.DEMO_MODE === 'true',
     });
   } catch (error) {
-    console.error('Analysis error:', error);
-    const message = error instanceof Error ? error.message :
-                    error && typeof error === 'object' && 'message' in error ?
-                    (error as any).message : 'Unknown error';
+    const msg = error instanceof Error ? error.message :
+                error && typeof error === 'object' && 'message' in error ?
+                String((error as any).message) : `Non-Error thrown: ${typeof error} ${String(error)}`;
+    console.error('Analysis error:', msg, error);
     return res.status(500).json({
       error: 'Analysis failed',
-      message,
+      message: msg,
       demoMode: process.env.DEMO_MODE === 'true',
     });
+  }
+});
+
+// Debug endpoint to test Orbit API connectivity
+app.get('/api/debug-orbit', async (_req, res) => {
+  try {
+    const endpoint = process.env.ORBIT_API_ENDPOINT || "https://gitlab.com/api/v4/orbit";
+    const token = (process.env.GITLAB_ACCESS_TOKEN || "").slice(0, 8) + "..." + (process.env.GITLAB_ACCESS_TOKEN || "").slice(-4);
+    
+    // Try a simple fetch to the Orbit schema endpoint
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    const response = await fetch(`${endpoint}/status`, {
+      headers: { Authorization: `Bearer ${process.env.GITLAB_ACCESS_TOKEN || ""}` },
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    
+    const body = await response.text().catch(() => "(no body)");
+    res.json({
+      endpoint,
+      tokenPrefix: token,
+      statusCode: response.status,
+      statusText: response.statusText,
+      bodyPreview: body.slice(0, 500),
+    });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    const name = error instanceof Error ? error.name : typeof error;
+    res.json({ error: msg, name, type: typeof error });
   }
 });
 

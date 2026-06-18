@@ -308,7 +308,7 @@ export default function App() {
 
   const onSelectScenario = useCallback((scenarioData: VisualizationData, label: string) => {
     setData(scenarioData);
-    setDataMode("demo");
+    setDataMode(label.startsWith("Live") ? "live" : "demo");
     setCurrentScenario(label);
     setError(null);
     setView("overview");
