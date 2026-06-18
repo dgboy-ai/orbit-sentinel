@@ -31,7 +31,7 @@ describe("OrbitQueryEngine", () => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("neighbors");
-      expect(body.query.node.filters.path.value).toBe("src/auth.ts");
+      expect(body.query.neighbors.node.filters.path.value).toBe("src/auth.ts");
       expect(body.query.neighbors.max_depth).toBe(3);
     });
   });
@@ -159,7 +159,7 @@ describe("OrbitQueryEngine", () => {
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("neighbors");
-      expect(body.query.node.node_ids).toEqual([42]);
+      expect(body.query.neighbors.node.node_ids).toEqual([42]);
     });
   });
 });

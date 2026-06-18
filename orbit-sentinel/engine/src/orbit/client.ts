@@ -197,14 +197,13 @@ export class OrbitClient {
 
   async neighbors(
     node: OrbitNodeSelector,
-    neighborsConfig: OrbitNeighborsConfig,
+    neighborsConfig: Omit<OrbitNeighborsConfig, 'node'>,
     limit = 100,
   ): Promise<OrbitQueryResult> {
     try {
       const query: OrbitQuery = {
         query_type: "neighbors",
-        node,
-        neighbors: neighborsConfig,
+        neighbors: { node, ...neighborsConfig },
         limit,
       };
       return await this.executeQuery(query);

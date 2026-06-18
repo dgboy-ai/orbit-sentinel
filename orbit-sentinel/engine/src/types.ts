@@ -36,6 +36,7 @@ export interface OrbitPathConfig {
 }
 
 export interface OrbitNeighborsConfig {
+  node: OrbitNodeSelector;
   direction: "incoming" | "outgoing" | "both";
   rel_types?: string[];
   node_types?: string[];
@@ -53,7 +54,7 @@ export interface OrbitQuery {
   aggregations?: OrbitAggregation[];
   group_by?: OrbitGroupBy[];
   path?: OrbitPathConfig;
-  neighbors?: OrbitNeighborsConfig;
+  neighbors?: OrbitNodeSelector | OrbitNeighborsConfig;
   limit?: number;
   order_by?: { column: string; direction: "ASC" | "DESC" };
   aggregation_sort?: { column: string; direction: "ASC" | "DESC" };

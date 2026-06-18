@@ -90,6 +90,8 @@ describe("OrbitClient", () => {
 
       const callArgs = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(callArgs.query.query_type).toBe("neighbors");
+      expect(callArgs.query.neighbors.node.id).toBe("f");
+      expect(callArgs.query.neighbors.node.entity).toBe("File");
       expect(callArgs.query.neighbors.direction).toBe("both");
       expect(callArgs.query.neighbors.max_depth).toBe(3);
     });
