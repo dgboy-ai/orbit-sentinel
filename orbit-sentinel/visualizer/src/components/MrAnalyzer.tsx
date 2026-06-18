@@ -5,7 +5,7 @@ import { SCENARIOS, type ScenarioOption } from "../data/scenarios";
 const MR_URL_REGEX = /gitlab\.com\/([\w.-]+\/[\w.-]+(?:\/[\w.-]+)*)\/-\/merge_requests\/(\d+)/i;
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || "";
-const FETCH_TIMEOUT = 30000;
+const FETCH_TIMEOUT = 120000;
 
 interface MrAnalyzerProps {
   onSelectScenario: (data: VisualizationData, label: string) => void;
