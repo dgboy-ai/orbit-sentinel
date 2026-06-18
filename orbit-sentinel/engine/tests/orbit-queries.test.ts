@@ -114,7 +114,7 @@ describe("OrbitQueryEngine", () => {
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("traversal");
-      expect(body.query.relationships[0].type).toBe("CAUSED_INCIDENT");
+      expect(body.query.relationships[0].type).toBe("caused_incident");
     });
   });
 
