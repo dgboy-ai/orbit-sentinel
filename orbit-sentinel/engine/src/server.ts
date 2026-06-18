@@ -44,17 +44,34 @@ app.get('/health', (req, res) => {
 // Main analysis endpoint
 app.post('/api/analyze', async (req, res) => {
   try {
-    const { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch } = req.body;
+    let { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch } = req.body;
 
-    if (!projectId || !projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
+    if (!projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
       return res.status(400).json({
         error: 'Missing required fields',
-        required: ['projectId', 'projectPath', 'mrIid', 'mrTitle', 'changedFiles', 'changeDescription']
+        required: ['projectPath', 'mrIid', 'mrTitle', 'changedFiles', 'changeDescription']
       });
     }
 
+    // Look up project ID from path if not provided
+    if (!projectId || Number(projectId) === 0) {
+      try {
+        const token = process.env.GITLAB_ACCESS_TOKEN;
+        if (token) {
+          const encodedPath = encodeURIComponent(projectPath);
+          const projRes = await fetch(`https://gitlab.com/api/v4/projects/${encodedPath}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (projRes.ok) {
+            const projData = await projRes.json() as { id: number };
+            projectId = projData.id;
+          }
+        }
+      } catch { /* keep 0 */ }
+    }
+
     const report = await sentinel.analyzeChange({
-      projectId: Number(projectId),
+      projectId: Number(projectId || 0),
       projectPath,
       mrIid: Number(mrIid),
       mrTitle,

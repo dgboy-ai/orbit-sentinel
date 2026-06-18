@@ -34,27 +34,30 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   }, []);
 
   const analyzeLive = useCallback(async () => {
-    if (!parsed || (!token && !apiAvailable)) return;
+    if (!parsed) return;
     setAnalyzing(true);
     setLiveError(null);
 
     try {
-      const endpoint = `${API_BASE_URL}/api/analyze-with-creds`;
+      const useCreds = !!token;
+      const endpoint = `${API_BASE_URL}${useCreds ? "/api/analyze-with-creds" : "/api/analyze"}`;
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+
+      const body: Record<string, unknown> = {
+        projectId: 0,
+        projectPath: parsed.project,
+        mrIid: parsed.mrIid,
+        mrTitle: `MR !${parsed.mrIid}`,
+        changedFiles: ["."],
+        changeDescription: `Analyze MR !${parsed.mrIid}`,
+      };
+      if (useCreds) body.gitlabToken = token;
 
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectId: 0,
-          projectPath: parsed.project,
-          mrIid: parsed.mrIid,
-          mrTitle: `MR !${parsed.mrIid}`,
-          changedFiles: ["."],
-          changeDescription: `Analyze MR !${parsed.mrIid}`,
-          gitlabToken: token || undefined,
-        }),
+        body: JSON.stringify(body),
         signal: controller.signal,
       });
       clearTimeout(timer);
