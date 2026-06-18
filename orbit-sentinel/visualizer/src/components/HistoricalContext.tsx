@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import type { HistoricalIncident } from "../types";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 interface Props {
   incidents: HistoricalIncident[];
@@ -111,6 +112,8 @@ function formatOrdinal(n: number): string {
 }
 
 export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10 }: Props) {
+  const isMobile = useMediaQuery("(max-width: 900px)");
+  const isSmall = useMediaQuery("(max-width: 480px)");
   const sorted = useMemo(() => [...incidents].sort((a, b) => a.mrIid - b.mrIid), [incidents]);
   const closedCount = incidents.filter(i => i.outcome === "Closed").length;
   const totalCount = incidents.length;
@@ -161,7 +164,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             <span style={{ color: "#ef4444", fontWeight: 600 }}> {closedCount} closed without merge</span>,
             <span style={{ color: "#22c55e", fontWeight: 600 }}> 1 successfully merged</span>.
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 5 }}>
             <AnimatedStatCard label="MRs Analyzed" value={String(totalAnalyzed)} target={totalAnalyzed} sub="From same branch" color="#60a5fa" />
             <AnimatedStatCard label="Closed Without Merge" value={String(closedCount)} target={closedCount} sub={`Out of ${totalAnalyzed}`} color="#ef4444" />
             <AnimatedStatCard label="Abandonment Rate" value={`${closeRate}%`} suffix="%" color="#f97316" />
@@ -377,7 +380,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
       {/* ORBIT'S UNIQUE ANGLE */}
       <div style={{
-        display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 8, alignItems: "center",
+        display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto 1fr", gap: isMobile ? 4 : 8, alignItems: "center",
         animation: "fadeSlideUp 0.4s 0.3s cubic-bezier(0.16,1,0.3,1) both",
       }}>
         <div style={{
@@ -436,7 +439,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               What if MR #9 had CI + reviewer?
             </div>
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: 8, flexDirection: isMobile ? "column" : "row" }}>
             <div style={{
               flex: 1, padding: "8px 10px", borderRadius: 6, textAlign: "center",
               background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)",
@@ -470,7 +473,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
       {/* ORBIT MEMORY VERDICT — CLIMAX */}
       <div style={{
-        padding: "24px 28px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "16px 14px" : "24px 28px", position: "relative", overflow: "hidden",
         borderRadius: 12,
         border: `2px solid rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.4)`,
         background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.12), rgba(15,18,26,0.98), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.06))`,
@@ -493,22 +496,22 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         <div style={{ position: "relative", zIndex: 1 }}>
           {/* Title */}
           <div style={{
-            fontSize: 12, fontWeight: 900, letterSpacing: "2.5px", textTransform: "uppercase",
-            color: "#fff", marginBottom: 16, textAlign: "center",
+            fontSize: isMobile ? 10 : 12, fontWeight: 900, letterSpacing: "2px", textTransform: "uppercase",
+            color: "#fff", marginBottom: 14, textAlign: "center",
             textShadow: `0 0 20px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.5), 0 4px 8px rgba(0,0,0,0.5)`,
           }}>
             Orbit Memory Verdict
           </div>
           
           {/* Stat cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 6, marginBottom: 14 }}>
             {[
               { label: "MRs Analyzed", value: String(totalAnalyzed), color: "#60a5fa", target: totalAnalyzed, suffix: "" },
               { label: "Pattern Matches", value: String(closedCount), color: "#ef4444", target: closedCount, suffix: "" },
               { label: "Pattern Match Score", value: `${highestSimilarity}%`, color: "#eab308", target: highestSimilarity, suffix: "%" },
               { label: "Forecast Confidence", value: "HIGH", color: "#22c55e" },
             ].map(s => (
-              <div key={s.label} style={{ textAlign: "center", padding: "8px 6px", borderRadius: 8, background: "rgba(0,0,0,0.25)", border: `1px solid ${s.color}22`, position: "relative" }}>
+              <div key={s.label} style={{ textAlign: "center", padding: "6px 4px", borderRadius: 6, background: "rgba(0,0,0,0.25)", border: `1px solid ${s.color}22`, position: "relative" }}>
                 <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
                 {s.target !== undefined
                   ? <AnimatedCounter target={s.target} suffix={s.suffix || ""} color={s.color} duration={1400} />
@@ -518,9 +521,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           </div>
           
           {/* Signal Badges */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12, alignItems: "center", marginBottom: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "flex-start", marginBottom: 14 }}>
             <div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 5 }}>Current MR exhibits the same signals:</div>
+              <div style={{ fontSize: 8, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 4 }}>Current MR exhibits the same signals:</div>
               <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                 {[
                   { label: "No deployment path", color: "#ef4444" },
@@ -558,8 +561,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 { label: mrIid ? `MR #${mrIid}` : "CURRENT", color: "#3b82f6", status: "CURRENT" },
               ].map((m, i) => (
                 <React.Fragment key={m.label}>
-                  <div style={{ textAlign: "center", minWidth: 52, animation: `fadeSlideUp 0.3s ${0.2 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                    <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{m.label}</div>
+                  <div style={{ textAlign: "center", minWidth: isMobile ? 40 : 52, animation: `fadeSlideUp 0.3s ${0.2 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both` }}>
+                    <div style={{ fontSize: isMobile ? 7 : 8, color: "var(--text-tertiary)" }}>{m.label}</div>
                     <div style={{
                       width: 28, height: 28, borderRadius: "50%", margin: "3px auto",
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -589,9 +592,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           </div>
           
           {/* Prediction */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8, marginBottom: 14 }}>
             <div style={{
-              padding: "12px 16px", borderRadius: 8, textAlign: "center",
+              padding: isMobile ? "10px 12px" : "12px 16px", borderRadius: 8, textAlign: "center",
               background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)",
               boxShadow: "0 0 16px rgba(239,68,68,0.1)",
               transition: "transform 0.2s ease",
@@ -621,7 +624,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           </div>
           
           {/* Evidence Sources */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12, alignItems: "center" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "center" }}>
             <div>
               <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>Evidence Sources</div>
               <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>

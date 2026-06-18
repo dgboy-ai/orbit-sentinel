@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { RiskBreakdown, OrbitQueryEvidence, DecisionCenterData } from "../types";
 import TiltCard from "./TiltCard";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 interface Props {
   riskData: { score: number; level: string; breakdown: RiskBreakdown[] };
@@ -126,6 +127,8 @@ function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryE
 export default function RiskInvestigation({ riskData, evidence, decisionCenter, confidence, mrIid }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
+  const isMobile = useMediaQuery("(max-width: 900px)");
+  const isSmall = useMediaQuery("(max-width: 480px)");
 
   const cards: CardDef[] = [
     {
@@ -166,27 +169,26 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       {/* TOP HERO BANNER */}
       <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
-        padding: "24px 28px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
         borderColor: "rgba(239,68,68,0.25)",
         background: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(239,68,68,0.02) 100%)",
         ...fadeIn(0),
       }}>
-        <GlowOrb color="rgba(239,68,68,0.12)" top="-30%" right="-5%" size={300} />
-        <GlowOrb color="rgba(249,115,22,0.06)" top="60%" left="-10%" size={200} />
+        <GlowOrb color="rgba(239,68,68,0.12)" top="-30%" right="-5%" size={isMobile ? 200 : 300} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, flexDirection: isSmall ? "column" : "row", gap: isSmall ? 6 : 0 }}>
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "2px 8px", borderRadius: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>Engineering Outcome Forecast</span>
-                <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>Orbit Forecast</span>
+                <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
               </div>
-              <div style={{ fontSize: 24, fontWeight: 900, color: "#ef4444", textShadow: "0 0 40px rgba(239,68,68,0.3)", display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 900, color: "#ef4444", textShadow: "0 0 40px rgba(239,68,68,0.3)", display: "flex", alignItems: "center", gap: 8 }}>
                 🔮 ORBIT FORECAST
               </div>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Confidence</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{confidence}</div>
+            <div style={{ textAlign: isSmall ? "left" : "right" }}>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 0 }}>Orbit Confidence</div>
+              <div style={{ fontSize: isMobile ? 16 : 22, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{confidence}</div>
             </div>
           </div>
 
@@ -351,29 +353,28 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       {/* VERDICT */}
       <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
-        padding: "20px 24px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "14px 16px" : "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(239,68,68,0.2)",
         background: "linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(15,18,26,0.95) 50%, rgba(249,115,22,0.03) 100%)",
         ...fadeIn(0.2),
       }}>
-        <GlowOrb color="rgba(239,68,68,0.08)" top="-20%" right="-10%" size={220} />
-        <GlowOrb color="rgba(249,115,22,0.05)" bottom="-20%" left="-5%" size={160} />
+        <GlowOrb color="rgba(239,68,68,0.08)" top="-20%" right="-10%" size={isMobile ? 150 : 220} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "2px 8px", borderRadius: 4, background: "rgba(255,255,255,0.04)" }}>Orbit Verdict</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)" }}>Orbit Verdict</span>
           </div>
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 10,
-            padding: "12px 28px", borderRadius: 10, marginBottom: 14, maxWidth: "100%", boxSizing: "border-box",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 6 : 10,
+            padding: isMobile ? "8px 16px" : "12px 28px", borderRadius: 10, marginBottom: 12, maxWidth: "100%", boxSizing: "border-box",
             background: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))",
             border: "1px solid rgba(239,68,68,0.25)",
             animation: mounted ? "pulseGlow 2s ease-in-out infinite" : "none",
           }}>
-            <span style={{ fontSize: 24, flexShrink: 0 }}>🚫</span>
-            <span style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", letterSpacing: "1px", textShadow: "0 0 20px rgba(239,68,68,0.3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>DO NOT DEPLOY</span>
+            <span style={{ fontSize: isMobile ? 18 : 24, flexShrink: 0 }}>🚫</span>
+            <span style={{ fontSize: isMobile ? 16 : 22, fontWeight: 900, color: "#ef4444", letterSpacing: "0.8px", textShadow: "0 0 20px rgba(239,68,68,0.3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>DO NOT DEPLOY</span>
           </div>
 
-          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 10 : 16 }}>
             <div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>

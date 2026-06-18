@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type { OrbitQueryEvidence, FutureTimelineEvent, CounterfactualScenario, DecisionCenterData } from "../types";
 import { riskScoreToColor, riskScoreToGlow } from "../utils/colors";
 import TiltCard from "./TiltCard";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 interface Props {
   evidence: OrbitQueryEvidence[];
@@ -128,6 +129,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
   const [animRisk, setAnimRisk] = useState(riskScore);
   const [touchedCard, setTouchedCard] = useState<string | null>(null);
   useEffect(() => { setAnimRisk(riskScore); }, [riskScore]);
+  const isMobile = useMediaQuery("(max-width: 900px)");
+  const isSmall = useMediaQuery("(max-width: 480px)");
 
   // Parse actual evidence data
   const evidenceSummary = useMemo(() => {
@@ -228,14 +231,14 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       {/* HERO FORECAST */}
       <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
-        padding: "24px 28px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
         borderColor: `${curCol}33`,
         background: `linear-gradient(135deg, ${curCol}08 0%, rgba(15,18,26,0.9) 50%, rgba(96,165,250,0.03) 100%)`,
         transition: "border-color 0.5s ease, background 0.5s ease",
         ...fadeIn(0),
       }}>
-        <GlowOrb color={`${curCol}22`} top="-30%" left="-5%" size={320} />
-        <GlowOrb color="rgba(96,165,250,0.1)" top="50%" right="-10%" size={200} />
+        <GlowOrb color={`${curCol}22`} top="-30%" left="-5%" size={isMobile ? 200 : 320} />
+        <GlowOrb color="rgba(96,165,250,0.1)" top="50%" right="-10%" size={isMobile ? 120 : 200} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
             <div>
@@ -341,7 +344,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         <GlowOrb color="rgba(96,165,250,0.05)" top="-30%" left="-10%" size={180} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 10 }}>Orbit Lifecycle Prediction</div>
-          <div style={{ display: "flex", gap: 0, alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", gap: 0, alignItems: "center", justifyContent: "space-between", overflowX: isMobile ? "auto" : "visible", WebkitOverflowScrolling: "touch", paddingBottom: isMobile ? 4 : 0 }}>
             {[
               { label: "MR Open", icon: "📝", status: "active", color: "#22c55e", desc: "Current" },
               { label: "Pipeline", icon: "⚡", status: mrState.hasPipeline ? "done" : "blocked", color: mrState.hasPipeline ? "#22c55e" : "#ef4444", desc: mrState.hasPipeline ? "Ready" : "Missing" },
@@ -350,7 +353,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               { label: "Production", icon: "🚀", status: "predicted", color: curCol, desc: sel.outcome },
             ].map((stage, i) => (
               <React.Fragment key={stage.label}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, minWidth: 0, position: "relative" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: isMobile ? "0 0 70px" : 1, minWidth: isMobile ? 70 : 0, position: "relative" }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
@@ -437,7 +440,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           },
         ].map((signal, i) => (
           <div key={signal.type} className="card" style={{
-            padding: "14px 16px", position: "relative", overflow: "hidden",
+            padding: isMobile ? "10px 12px" : "14px 16px", position: "relative", overflow: "hidden",
             borderColor: `${signal.color}18`,
             background: `linear-gradient(135deg, ${signal.color}06, rgba(15,18,26,0.95), ${signal.color}03)`,
             animation: `fadeSlideUp 0.35s ${0.04 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
@@ -647,13 +650,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       {/* ENGINEERING FUTURES + COST OF INACTION + ORBIT DELTA */}
       <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
-        padding: "18px 22px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "12px 14px" : "18px 22px", position: "relative", overflow: "hidden",
         borderColor: "rgba(34,197,94,0.12)",
         background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(15,18,26,0.95), rgba(59,130,246,0.02))",
         ...fadeIn(0.18),
       }}>
-        <GlowOrb color="rgba(34,197,94,0.08)" top="-30%" right="-10%" size={200} />
-        <GlowOrb color="rgba(239,68,68,0.05)" top="50%" left="-10%" size={150} />
+        <GlowOrb color="rgba(34,197,94,0.08)" top="-30%" right="-10%" size={isMobile ? 120 : 200} />
+        <GlowOrb color="rgba(239,68,68,0.05)" top="50%" left="-10%" size={isMobile ? 100 : 150} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#22c55e", marginBottom: 12 }}>Engineering Futures</div>
 
