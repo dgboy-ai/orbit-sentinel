@@ -257,7 +257,7 @@ export default function App() {
 
   const [showFooter, setShowFooter] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setShowFooter(false), 12000);
+    const t = setTimeout(() => setShowFooter(false), 30000);
     const h = () => { setShowFooter(true); clearTimeout(t); };
     window.addEventListener("keydown", h);
     window.addEventListener("click", h);
@@ -289,7 +289,7 @@ export default function App() {
     if (presentMode && !demo) startDemo();
   }, [presentMode, demo, startDemo]);
 
-  useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]} | Engineering Digital Twin`; }, [view]);
+  useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]}${presentMode ? " (Presentation)" : ""} | Engineering Digital Twin`; }, [view, presentMode]);
 
   useEffect(() => {
     if (!demo) {
@@ -318,11 +318,18 @@ export default function App() {
         if (demo) stopDemo();
         setView(tabs[next][0]);
       }
-      if (e.key === "?" || (e.key === "/" && !e.shiftKey)) {
+      if (e.key === "?") {
         e.preventDefault();
         setShowShortcuts(prev => !prev);
       }
       if (e.key === "Escape") setShowShortcuts(false);
+      if (e.key === "p" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        const u = new URL(window.location.href);
+        if (u.searchParams.get("present") === "true") u.searchParams.delete("present"); else u.searchParams.set("present", "true");
+        window.history.replaceState({}, "", u.toString());
+        window.location.reload();
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -687,7 +694,7 @@ export default function App() {
         </div>
       )}
 
-      {data && data.hero && ["Low", "low"].includes(data.hero.riskLevel) && <ConfettiCelebration />}
+      {data && data.hero && data.hero.riskLevel?.toLowerCase() === "low" && <ConfettiCelebration />}
 
       {showShortcuts && (
         <div style={{
@@ -703,8 +710,9 @@ export default function App() {
             {[
               { key: "Space", desc: "Start / Stop demo" },
               { key: "← →", desc: "Navigate between views" },
+              { key: "P", desc: "Toggle presentation mode" },
               { key: "?", desc: "Toggle this overlay" },
-              { key: "Esc", desc: "Close this overlay" },
+              { key: "Esc", desc: "Close overlays" },
               { key: "⬇ (btn)", desc: "Export report as HTML" },
               { key: "👑 (btn)", desc: "Judge's Tour" },
             ].map(s => (
@@ -726,6 +734,15 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {presentMode && (
+        <div style={{
+          position: "fixed", top: 8, left: 8, zIndex: 999,
+          padding: "3px 10px", borderRadius: 6, fontSize: 9, fontWeight: 700,
+          background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)",
+          color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase",
+        }}>● Presenting</div>
       )}
 
       <main style={{
@@ -758,6 +775,8 @@ export default function App() {
         <span>Space</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Demo</span>
         <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
         <span>← →</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Navigate</span>
+        <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
+        <span>P</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Present</span>
         <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
         <span>⬇</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Export</span>
         <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />

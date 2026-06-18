@@ -58,16 +58,43 @@ export default function HeroSection({
             {predictedOutcome}
           </div>
 
-          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
-              ✗ Empty diff
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
-              ✗ No pipeline
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.15)", fontSize: 10, color: "#eab308", fontWeight: 600 }}>
-              ⚠ 9 historical matches
-            </div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+            {(() => {
+              const rl = riskLevel?.toLowerCase() ?? "";
+              if (rl === "low") return <>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", fontSize: 10, color: "#22c55e", fontWeight: 600 }}>
+                  ✓ Pipeline passing
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", fontSize: 10, color: "#22c55e", fontWeight: 600 }}>
+                  ✓ All tests pass
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", fontSize: 10, color: "#22c55e", fontWeight: 600 }}>
+                  ✓ No downstream impact
+                </div>
+              </>;
+              if (rl === "critical") return <>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
+                  ✗ Pipeline failed
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
+                  ✗ 7 downstream services
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
+                  ✗ No rollback plan
+                </div>
+              </>;
+              return <>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
+                  ✗ Empty diff
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 10, color: "#ef4444", fontWeight: 600 }}>
+                  ✗ No pipeline
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.15)", fontSize: 10, color: "#eab308", fontWeight: 600 }}>
+                  ⚠ 9 historical matches
+                </div>
+              </>;
+            })()}
           </div>
 
           <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.5px", marginBottom: 3, textTransform: "uppercase" }}>Recommended Action</div>
