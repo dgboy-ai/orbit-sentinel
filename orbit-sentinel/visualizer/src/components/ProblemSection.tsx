@@ -10,16 +10,20 @@ const PROBLEM_SOLUTION = [
       "Historical failures invisible at merge time",
     ],
     color: "#ef4444",
+    bg: "rgba(239,68,68,0.03)",
+    border: "rgba(239,68,68,0.1)",
   },
   {
     icon: "🛰️",
-    title: "Orbit Sentinel Solution",
+    title: "Orbit Sentinel",
     items: [
       "4 Orbit queries build a digital twin of every MR in seconds",
       "Predicts outcomes using repository memory, not just pipeline status",
       "Posts remediation before time is wasted on dead-end changes",
     ],
     color: "#22c55e",
+    bg: "rgba(34,197,94,0.03)",
+    border: "rgba(34,197,94,0.1)",
   },
   {
     icon: "📊",
@@ -30,64 +34,66 @@ const PROBLEM_SOLUTION = [
       "Deployment blocked detected in seconds vs. ~45 min manual review",
     ],
     color: "#60a5fa",
+    bg: "rgba(96,165,250,0.03)",
+    border: "rgba(96,165,250,0.1)",
   },
 ];
 
 export default function ProblemSection() {
   return (
     <div className="card" style={{
-      padding: "18px 22px",
-      borderColor: "rgba(96,165,250,0.12)",
-      background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95), rgba(139,92,246,0.02))",
+      padding: "14px 16px",
+      borderColor: "rgba(139,92,246,0.08)",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.03), rgba(15,18,26,0.95))",
       animation: "fadeSlideUp 0.5s 0.1s ease both",
       position: "relative", overflow: "hidden",
     }}>
-      <div style={{ position: "absolute", top: "-50%", left: "-10%", width: 300, height: 300, borderRadius: "50%", background: "rgba(96,165,250,0.04)", filter: "blur(80px)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: -100, right: -100, width: 250, height: 250, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
 
       <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>🎯</div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>From Problem to Solution</div>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Why Orbit Sentinel exists — and what changes for developers who use it</div>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: "rgba(139,92,246,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>🎯</div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>From Problem to Solution</div>
+          <div style={{ fontSize: 9, color: "var(--text-tertiary)", marginLeft: "auto" }}>Why Orbit Sentinel exists</div>
         </div>
 
-        <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
           {PROBLEM_SOLUTION.map((col, i) => (
             <div key={col.title} style={{
-              padding: "12px 14px", borderRadius: 8,
-              background: `linear-gradient(135deg, ${col.color}06, transparent)`,
-              border: `1px solid ${col.color}12`,
-              animation: `fadeSlideUp 0.4s ${0.1 + i * 0.06}s cubic-bezier(0.16,1,0.3,1) both`,
+              padding: "10px 12px", borderRadius: 8,
+              background: col.bg,
+              border: `1px solid ${col.border}`,
+              animation: `fadeSlideUp 0.35s ${0.1 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both`,
+              display: "flex", flexDirection: "column", gap: 6,
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-                <span style={{ fontSize: 16 }}>{col.icon}</span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: col.color }}>{col.title}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontSize: 13 }}>{col.icon}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: col.color, letterSpacing: "0.2px" }}>{col.title}</span>
               </div>
-              <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 5 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {col.items.map((item, j) => (
-                  <li key={j} style={{
-                    fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4,
-                    padding: "4px 0 4px 12px",
-                    borderLeft: `2px solid ${col.color}33`,
+                  <div key={j} style={{
+                    fontSize: 9.5, color: "var(--text-secondary)", lineHeight: 1.35,
+                    padding: "3px 0 3px 8px",
+                    borderLeft: `1.5px solid ${col.color}22`,
                   }}>
                     {item}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           ))}
         </div>
 
         <div style={{
-          marginTop: 10, padding: "5px 12px", borderRadius: 6,
-          background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.1)",
-          fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
-          display: "flex", alignItems: "center", gap: 6,
+          marginTop: 8, padding: "4px 10px", borderRadius: 6,
+          background: "rgba(139,92,246,0.04)", border: "1px solid rgba(139,92,246,0.06)",
+          display: "flex", alignItems: "center", gap: 5,
         }}>
-          <span style={{ fontSize: 12 }}>🏆</span>
-          <span>Built for <strong style={{ color: "var(--text-primary)" }}>GitLab Transcend Hackathon</strong> — demonstrates all 4 Orbit query types + publishes a GitLab Duo skill</span>
+          <span style={{ fontSize: 10 }}>🏆</span>
+          <span style={{ fontSize: 8.5, color: "var(--text-tertiary)", lineHeight: 1.35 }}>
+            Built for <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>GitLab Transcend Hackathon</span> — 4 Orbit query types + Duo skill
+          </span>
         </div>
       </div>
     </div>
