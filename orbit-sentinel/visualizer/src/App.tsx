@@ -63,6 +63,14 @@ const DEMO_STEPS: DemoStep[] = [
   { view: "report", label: "Impact Report", sublabel: "Full MR impact summary — deploy decisions, rollback strategy, and evidence chain", icon: "📋" },
 ];
 
+const VIEW_LABELS: Record<View, string> = { overview: "Dashboard", "blast-radius": "Blast Radius", risk: "Risk Investigation", simulation: "Forecast Engine", historical: "Historical Context", report: "Impact Report", setup: "Setup Wizard" };
+
+const SS_KEY = "orbit-vs";
+function ssRead<T>(key: string, fallback: T): T {
+  try { const v = sessionStorage.getItem(`${SS_KEY}-${key}`); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+}
+function ssWrite(key: string, value: unknown) { try { sessionStorage.setItem(`${SS_KEY}-${key}`, JSON.stringify(value)); } catch {} }
+
 // API service functions
 const FETCH_TIMEOUT = 15000;
 
@@ -156,12 +164,6 @@ function getInitialDemo(): boolean {
 }
 
 export default function App() {
-  const ssKey = "orbit-vs";
-  function ssRead<T>(key: string, fallback: T): T {
-    try { const v = sessionStorage.getItem(`${ssKey}-${key}`); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
-  }
-  function ssWrite(key: string, value: unknown) { try { sessionStorage.setItem(`${ssKey}-${key}`, JSON.stringify(value)); } catch {} }
-
   const [view, setView] = useState<View>(() => ssRead("view", getInitialView()));
   const [demo, setDemo] = useState(() => ssRead("demo", getInitialDemo()));
   const [stepIndex, setStepIndex] = useState(() => ssRead("step", 0));
@@ -204,7 +206,6 @@ export default function App() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTiny = useMediaQuery("(max-width: 360px)");
 
-  // Persist UI state to sessionStorage
   useEffect(() => { ssWrite("view", view); }, [view]);
   useEffect(() => { ssWrite("demo", demo); }, [demo]);
   useEffect(() => { ssWrite("step", stepIndex); }, [stepIndex]);
@@ -288,7 +289,6 @@ export default function App() {
     if (presentMode && !demo) startDemo();
   }, [presentMode, demo, startDemo]);
 
-  const VIEW_LABELS: Record<View, string> = { overview: "Dashboard", "blast-radius": "Blast Radius", risk: "Risk Investigation", simulation: "Forecast Engine", historical: "Historical Context", report: "Impact Report", setup: "Setup Wizard" };
   useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]} | Engineering Digital Twin`; }, [view]);
 
   useEffect(() => {
