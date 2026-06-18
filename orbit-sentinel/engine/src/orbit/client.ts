@@ -144,7 +144,8 @@ export class OrbitClient {
       };
       return await this.executeQuery(query);
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'traversal');
+      const se = this.errorHandler.handleError(error, 'traversal');
+      throw new Error(se.message);
     }
   }
 
@@ -166,7 +167,8 @@ export class OrbitClient {
       };
       return await this.executeQuery(query);
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'aggregation');
+      const se = this.errorHandler.handleError(error, 'aggregation');
+      throw new Error(se.message);
     }
   }
 
@@ -186,7 +188,8 @@ export class OrbitClient {
       };
       return await this.executeQuery(query);
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'pathFinding');
+      const se = this.errorHandler.handleError(error, 'pathFinding');
+      throw new Error(se.message);
     }
   }
 
@@ -204,7 +207,8 @@ export class OrbitClient {
       };
       return await this.executeQuery(query);
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'neighbors');
+      const se = this.errorHandler.handleError(error, 'neighbors');
+      throw new Error(se.message);
     }
   }
 
@@ -216,7 +220,8 @@ export class OrbitClient {
       });
       return response.json();
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'getSchema');
+      const se = this.errorHandler.handleError(error, 'getSchema');
+      throw new Error(se.message);
     }
   }
 
@@ -227,7 +232,8 @@ export class OrbitClient {
       });
       return response.json();
     } catch (error) {
-      throw this.errorHandler.handleError(error, 'getStatus');
+      const se = this.errorHandler.handleError(error, 'getStatus');
+      throw new Error(se.message);
     }
   }
 

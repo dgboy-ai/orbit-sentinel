@@ -61,6 +61,12 @@ export class ErrorHandler {
       };
     } else if (error instanceof Error) {
       sentinelError = this.classifyError(error, context);
+    } else if (error && typeof error === 'object' && 'message' in error) {
+      sentinelError = {
+        message: String((error as any).message),
+        type: ErrorType.ORBIT_API_ERROR,
+        timestamp
+      };
     } else {
       sentinelError = {
         message: 'Unknown error occurred',

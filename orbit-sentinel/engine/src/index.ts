@@ -145,7 +145,8 @@ export class OrbitSentinel {
       return recommendations;
     } catch (error) {
       this.errorHandler.incrementErrorCount('analyzeReviewers');
-      throw this.errorHandler.handleError(error, 'analyzeReviewers');
+      const se = this.errorHandler.handleError(error, 'analyzeReviewers');
+      throw new Error(se.message);
     }
   }
 
