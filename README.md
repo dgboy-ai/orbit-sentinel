@@ -8,18 +8,18 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
 
-**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. When a developer opens a merge request, it builds a living model of the software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — then posts a complete impact analysis on the MR.
+**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. When a developer opens a merge request, it builds a living model of the affected software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — then posts a complete impact analysis on the MR.
 
 ---
 
 ## 🏆 Live Orbit Queries — Proven
 
-The agent ran **real Orbit queries** against project `transcend/39251857` inside GitLab Duo Chat:
+Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39251857` (GitLab ID **83381762**):
 
 | Query | Findings |
 |-------|----------|
 | `get_graph_schema` | 18 node types, ~45 relationship types discovered |
-| Full Graph Traversal | **23 nodes, 43 relationships** across 9 node types |
+| Digital Twin Builder (4 queries) | **14 nodes, 13 edges** across 7 node types per MR analysis |
 | Risk Signals | 3 High (bus factor, no coverage, no reviewers), 2 Medium |
 
 [Full traversal results →](orbit-sentinel/docs/orbit-traversal-results.md)
@@ -39,7 +39,6 @@ The agent ran **real Orbit queries** against project `transcend/39251857` inside
 | [Flow YAML](orbit-sentinel/flow/orbit-sentinel-flow.yaml) | The 8-step Duo Agent Platform workflow |
 | [Changelog](orbit-sentinel/CHANGELOG.md) | Full history of features, fixes, polish |
 | [Agent Instructions](orbit-sentinel/AGENTS.md) | How the digital twin behaves, error handling, output format |
-| [Project Structure](STRUCTURE.md) | Full directory tree with descriptions of every component |
 
 ---
 
@@ -56,20 +55,26 @@ flowchart TD
     end
 
     FLOW --> NOTE["📋 MR Note Posted"]
-    FLOW --> ENGINE
 
-    subgraph ENGINE["Engine (TypeScript · Express)"]
+    subgraph ENGINE["Engine (TypeScript · Express · Render)"]
         direction TB
-        E1["Risk Scoring"] --> E2["Remediation"] --> E3["Visualization Data"]
+        E0["DigitalTwinBuilder"] --> E1["Orbit API Proxy"]
+        E1 --> E2["Risk Scoring"]
+        E2 --> E3["Remediation Planner"]
+        E3 --> E4["Markdown Reporter"]
+        E1 -.-> GITLAB["GitLab API Proxy\n(/api/probe-mr-files)\nCORS-safe file fetching"]
     end
 
-    subgraph VIZ["Visualizer (React · D3 · Vite)"]
+    subgraph VIZ["Visualizer (React · D3 · Vite · Vercel)"]
         direction TB
-        V1["7 Views"] --> V2["Auto-Play Demo"] --> V3["What-If Simulation"]
+        V1["MrAnalyzer Card\n(Gradient/Glow/Pulse)"] --> V2["6 Quick Demo\nScenarios"]
+        V2 --> V3["2-Column Query Log +\nProblem + Impact Layout"]
+        V3 --> V4["Architecture Diagram\n(D3)"]
     end
 
+    MR -.-> GITLAB
+    VIZ --> ENGINE
     ENGINE --> VIZ
-    VIZ --> DEPLOY["🚀 Vercel"]
 ```
 
 Every conclusion cites specific Orbit query evidence. No black box.
@@ -104,19 +109,28 @@ Every conclusion cites specific Orbit query evidence. No black box.
 
 **Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Triggered on MR open and new commits. Posts results directly to the MR thread.
 
-**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, 75 tests). Orbit API client, digital twin builder, risk scorer, remediation planner, markdown reporter. Requires `GITLAB_ACCESS_TOKEN` env var for live Orbit queries — without it, falls back to demo mode.
+**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, 75 tests). Key components:
+
+- **DigitalTwinBuilder** — orchestrates all 4 Orbit query types per MR, merges results into a unified graph (nodes + edges). Parses Orbit API 2.1.0 `result.nodes`/`result.edges` format.
+- **Orbit API Proxy** — forwards queries to `app.orbit.dev`, handles 400+ rate limiting with exponential backoff
+- **CORS Proxy** — `/api/probe-mr-files` fetches changed file contents from GitLab without browser CORS issues
+- **GitLab Token Passthrough** — users provide `glpat-xxx` in the UI, sent once per analysis, discarded after
+- **Rate Limiting** — `MAX_CHANGED_FILES` capped at 5 per MR, 500ms throttle between file iterations (reduces Orbit queries from 107 to 23 per analysis)
+- **Debug Endpoint** — `/api/raw-orbit` for ad-hoc Orbit query exploration
 
 **Duo Integration** — [Skill definition](orbit-sentinel/.gitlab/duo/skill.yml) for Duo Chat, [MCP config](orbit-sentinel/.gitlab/duo/mcp.json) for agent platform, [query recipes](orbit-sentinel/skills/orbit-sentinel/recipes/) with 6 ready-to-use JSON examples.
 
 **Stack** — Node 22, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Zod, Vitest.
 
-| Status | |
-|--------|-|
+| Status |
+|--------|
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
 | Tests | **85 passing** (75 engine + 10 visualizer) |
+| Live Orbit Data | Engine returns real graph data for project ID **83381762** (14 nodes, 13 edges per MR) |
+| Quick Demos | 6 pre-configured scenarios — single file, multiple files, big refactor, dependency change, config change, full stack |
+| UI Polish | Gradient glow card, pulsing live badge, success toast, 2-column query log layout, MR ID validation, neon borders |
 | 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
 | ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
-| ⏳ Live data | Engine needs `GITLAB_ACCESS_TOKEN` env var with read_api scope on an Orbit-enabled group |
 | ⏳ AI Catalog | Needs Maintainer token — run `glab skills publish` |
 | ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
 | 📖 Docs | [`docs/`](orbit-sentinel/docs/) — traversal proof, deployment guide |

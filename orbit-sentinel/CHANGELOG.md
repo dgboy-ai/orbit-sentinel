@@ -4,6 +4,38 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
+## Latest Session (June 18)
+
+### Fixed
+
+- **Orbit API 2.1.0 format** — `DigitalTwinBuilder.mergeGraph()` now parses `result.nodes`/`result.edges` instead of empty `result.rows`. Went from 0 → 14 nodes, 13 edges per MR.
+- **CORS on GitLab file fetch** — MR file contents proxied through engine's `/api/probe-mr-files` instead of direct browser → gitlab.com fetch.
+- **Rate limit hammering** — `MAX_CHANGED_FILES` capped at 5, 500ms throttle between file iterations. Orbit queries reduced from 107 → 23 per analysis.
+
+### Added
+
+- **`/api/raw-orbit`** — debug proxy endpoint on engine for ad-hoc Orbit query exploration.
+- **Project ID discovery** — Found correct GitLab numeric ID (83381762) for indexed project. Path-based IDs don't work; `node_ids` filter requires numeric ID.
+
+### UI Polish
+
+- **MrAnalyzer card** — gradient background, neon purple glow (`0 0 30px`), pulsing "Engine Live" badge, corner decoration, grid dot pattern, gradient button with hover glow.
+- **Quick Demo buttons** — Larger (12px font, 12px 14px padding), vertical stacked layout with 22px icons and inline descriptions. Purple gradient separator.
+- **Success toast** — Green banner "✓ Analysis complete — MR !X" appears for 5s after live analysis.
+- **Two-column layout** — Query log + diagram on left, problem + impact on right (reduces scrolling).
+- **Token input restyled** — Purple accent border/glow, matching MrAnalyzer design system.
+- **MR validation badge** — Input shows validation indicator for `^[0-9]+$` format.
+
+### Changed
+
+- **README.md** — Rewritten with current architecture (CORS proxy, rate limits, Orbit API format), updated status table, engine component descriptions, correct project ID context, 6 Quick Demo scenarios, UI polish features. Removed outdated `STRUCTURE.md` references.
+
+### Known
+
+- Vercel not auto-deploying from GitHub pushes. Trigger manually from dashboard or install `vercel` CLI.
+
+---
+
 ## What We Fixed
 
 ### Black Screen on GitLab Pages
