@@ -4,6 +4,9 @@ import { SCENARIOS, type ScenarioOption } from "../data/scenarios";
 
 const MR_URL_REGEX = /gitlab\.com\/([\w.-]+\/[\w.-]+(?:\/[\w.-]+)*)\/-\/merge_requests\/(\d+)/i;
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || "";
+const FETCH_TIMEOUT = 30000;
+
 interface MrAnalyzerProps {
   onSelectScenario: (data: VisualizationData, label: string) => void;
   apiAvailable: boolean;
@@ -13,7 +16,11 @@ interface MrAnalyzerProps {
 export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScenario }: MrAnalyzerProps) {
   const [url, setUrl] = useState("");
   const [parsed, setParsed] = useState<{ project: string; mrIid: number } | null>(null);
-  const [parsing, setParsing] = useState(false);
+  const [token, setToken] = useState("");
+  const [showToken, setShowToken] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [liveError, setLiveError] = useState<string | null>(null);
+  const [showTokenInput, setShowTokenInput] = useState(false);
 
   const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -26,17 +33,66 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     }
   }, []);
 
+  const analyzeLive = useCallback(async () => {
+    if (!parsed || (!token && !apiAvailable)) return;
+    setAnalyzing(true);
+    setLiveError(null);
+
+    try {
+      const endpoint = `${API_BASE_URL}/api/analyze-with-creds`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectId: 0,
+          projectPath: parsed.project,
+          mrIid: parsed.mrIid,
+          mrTitle: `MR !${parsed.mrIid}`,
+          changedFiles: ["."],
+          changeDescription: `Analyze MR !${parsed.mrIid}`,
+          gitlabToken: token || undefined,
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Request failed" }));
+        throw new Error(err.error || err.message || "Analysis failed");
+      }
+
+      const data = await res.json();
+      if (data.success && data.report) {
+        onSelectScenario(data.report, `Live · MR !${parsed.mrIid}`);
+      } else {
+        throw new Error("Invalid response from engine");
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setLiveError(msg);
+    } finally {
+      setAnalyzing(false);
+    }
+  }, [parsed, token, apiAvailable, onSelectScenario]);
+
   const handleAnalyze = useCallback(() => {
     if (!parsed) return;
-    // In a real scenario, this would call the API.
-    // For now, load the medium scenario as default when an MR URL is pasted.
-    const medium = SCENARIOS.find(s => s.id === "medium")!;
-    onSelectScenario(medium.data, `MR !${parsed.mrIid} · ${parsed.project}`);
-  }, [parsed, onSelectScenario]);
+    if (apiAvailable) {
+      analyzeLive();
+    } else {
+      const medium = SCENARIOS.find(s => s.id === "medium")!;
+      onSelectScenario(medium.data, `MR !${parsed.mrIid} · ${parsed.project}`);
+    }
+  }, [parsed, apiAvailable, analyzeLive, onSelectScenario]);
 
   const handlePreset = useCallback((s: ScenarioOption) => {
     onSelectScenario(s.data, s.label);
   }, [onSelectScenario]);
+
+  const canAnalyze = parsed && (apiAvailable ? true : true);
 
   return (
     <div className="card" style={{
@@ -46,8 +102,20 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
         <div className="card-header-icon" style={{ background: "rgba(139,92,246,0.12)" }}>🔍</div>
         <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>MR Analyzer</span>
-        <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>Paste any GitLab MR URL or try a preset</span>
+        <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>
+          {apiAvailable ? "Engine connected — live Orbit API" : "Paste any GitLab MR URL or try a preset"}
+        </span>
       </div>
+
+      {apiAvailable && (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 4, fontSize: 9,
+          color: "var(--accent-blue)", marginBottom: 2,
+        }}>
+          <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
+          <span>Engine live · {showTokenInput ? "Token will be sent to engine for real Orbit API calls" : "Enter token below to analyze real MRs"}</span>
+        </div>
+      )}
 
       <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
         <div style={{ position: "relative", flex: 1 }}>
@@ -67,23 +135,100 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           />
         </div>
         <button onClick={handleAnalyze}
-          disabled={!parsed}
+          disabled={!canAnalyze || analyzing}
           style={{
-            padding: "7px 16px", fontSize: 11, fontWeight: 600, cursor: parsed ? "pointer" : "not-allowed",
+            padding: analyzing ? "7px 16px" : "7px 16px", fontSize: 11, fontWeight: 600,
+            cursor: canAnalyze && !analyzing ? "pointer" : "not-allowed",
             border: "1px solid rgba(139,92,246,0.3)", borderRadius: 6,
-            background: parsed ? "rgba(139,92,246,0.12)" : "rgba(255,255,255,0.03)",
-            color: parsed ? "#a78bfa" : "var(--text-tertiary)", whiteSpace: "nowrap",
-            transition: "all 0.15s",
+            background: analyzing ? "rgba(139,92,246,0.06)" :
+                       canAnalyze ? "rgba(139,92,246,0.12)" : "rgba(255,255,255,0.03)",
+            color: analyzing ? "#a78bfa88" : canAnalyze ? "#a78bfa" : "var(--text-tertiary)",
+            whiteSpace: "nowrap", transition: "all 0.15s",
+            display: "flex", alignItems: "center", gap: 4,
           }}
-          onMouseEnter={e => { if (parsed) { e.currentTarget.style.background = "rgba(139,92,246,0.2)"; }}}
-          onMouseLeave={e => { if (parsed) { e.currentTarget.style.background = "rgba(139,92,246,0.12)"; }}}
-        >Analyze</button>
+          onMouseEnter={e => { if (canAnalyze && !analyzing) { e.currentTarget.style.background = "rgba(139,92,246,0.2)"; }}}
+          onMouseLeave={e => { if (canAnalyze && !analyzing) { e.currentTarget.style.background = "rgba(139,92,246,0.12)"; }}}
+        >
+          {analyzing ? (
+            <>
+              <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: "50%", border: "2px solid #a78bfa44", borderTopColor: "#a78bfa", animation: "spin 0.6s linear infinite" }} />
+              Analyzing…
+            </>
+          ) : apiAvailable ? (
+            "🔍 Analyze Live"
+          ) : (
+            "Analyze (Demo)"
+          )}
+        </button>
       </div>
 
-      {parsed && (
+      {parsed && !apiAvailable && (
         <div style={{ fontSize: 10, color: "var(--accent-blue)", padding: "2px 0" }}>
           ✓ Parsed: <strong>{parsed.project}</strong> · MR !{parsed.mrIid}
-          {apiAvailable && <span style={{ color: "var(--text-tertiary)", marginLeft: 8 }}>• Engine connected — analysis will query live Orbit data</span>}
+          <span style={{ color: "var(--text-tertiary)", marginLeft: 8 }}>• Loading demo scenario (no engine configured)</span>
+        </div>
+      )}
+
+      {apiAvailable && !showTokenInput && (
+        <button onClick={() => setShowTokenInput(true)}
+          style={{
+            fontSize: 9, fontWeight: 600, cursor: "pointer", padding: "3px 10px",
+            border: "1px dashed rgba(255,255,255,0.1)", borderRadius: 4,
+            background: "transparent", color: "var(--text-tertiary)",
+            alignSelf: "flex-start",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+        >+ Add GitLab token for live Orbit API</button>
+      )}
+
+      {apiAvailable && showTokenInput && (
+        <div style={{
+          padding: "8px 10px", borderRadius: 6,
+          background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.1)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--accent-blue)" }}>🔑 GitLab Personal Access Token</span>
+            <a href="https://gitlab.com/-/user_settings/personal_access_tokens" target="_blank" rel="noreferrer"
+              style={{ fontSize: 8, color: "var(--text-tertiary)", marginLeft: "auto" }}
+            >Generate →</a>
+          </div>
+          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+            <input
+              type={showToken ? "text" : "password"}
+              value={token}
+              onChange={e => setToken(e.target.value)}
+              placeholder="glpat-xxxxxxxxxxxx"
+              style={{
+                flex: 1, padding: "5px 8px", fontSize: 10, borderRadius: 4,
+                border: "1px solid var(--border)", outline: "none",
+                background: "rgba(0,0,0,0.2)", color: "var(--text-primary)",
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+              onFocus={e => { e.currentTarget.style.borderColor = "#60a5fa66"; }}
+              onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
+            />
+            <button onClick={() => setShowToken(!showToken)}
+              style={{
+                padding: "3px 6px", fontSize: 9, cursor: "pointer",
+                background: "transparent", border: "1px solid var(--border)", borderRadius: 4,
+                color: "var(--text-secondary)",
+              }}
+            >{showToken ? "Hide" : "Show"}</button>
+          </div>
+          <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 3 }}>
+            Token is sent once to the engine and discarded after analysis. Requires <code>read_api</code> scope.
+          </div>
+        </div>
+      )}
+
+      {liveError && (
+        <div style={{
+          padding: "6px 10px", borderRadius: 6, fontSize: 9,
+          background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)",
+          color: "#ef4444",
+        }}>
+          ✗ {liveError}
         </div>
       )}
 
@@ -94,7 +239,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {SCENARIOS.map(s => {
-            const active = currentScenario === s.id;
+            const active = currentScenario === s.id || currentScenario === s.label;
             return (
               <button key={s.id} onClick={() => handlePreset(s)}
                 style={{
