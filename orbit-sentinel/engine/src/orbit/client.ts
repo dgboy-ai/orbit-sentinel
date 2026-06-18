@@ -113,7 +113,7 @@ export class OrbitClient {
     format: ResponseFormat = "raw",
   ): Promise<T> {
     try {
-      const envelope: OrbitQueryEnvelope = { query, response_format: format };
+      const envelope: OrbitQueryEnvelope = { query, format };
       const response = await this.fetchWithRetry(`${this.endpoint}/query`, {
         method: "POST",
         headers: {
@@ -173,16 +173,18 @@ export class OrbitClient {
   }
 
   async pathFinding(
-    nodes: OrbitNodeSelector[],
-    path: OrbitPathConfig,
+    from: OrbitNodeSelector,
+    to: OrbitNodeSelector,
+    maxPathLength = 3,
     relationships?: OrbitRelationship[],
     limit = 50,
   ): Promise<OrbitQueryResult> {
     try {
       const query: OrbitQuery = {
         query_type: "path_finding",
-        nodes,
-        path,
+        from,
+        to,
+        max_path_length: maxPathLength,
         ...(relationships ? { relationships } : {}),
         limit,
       };

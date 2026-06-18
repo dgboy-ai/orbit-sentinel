@@ -67,9 +67,11 @@ describe("OrbitQueryEngine", () => {
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("path_finding");
-      expect(body.query.path.type).toBe("shortest");
-      expect(body.query.path.from).toBe("mr");
-      expect(body.query.path.to).toBe("dep");
+      expect(body.query.from.id).toBe("mr");
+      expect(body.query.to.id).toBe("dep");
+      expect(body.query.max_path_length).toBe(4);
+      expect(body.query.from.entity).toBe("MergeRequest");
+      expect(body.query.to.entity).toBe("Deployment");
     });
   });
 

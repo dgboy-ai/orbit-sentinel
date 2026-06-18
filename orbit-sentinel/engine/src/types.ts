@@ -29,7 +29,7 @@ export interface OrbitGroupBy {
 }
 
 export interface OrbitPathConfig {
-  type: "shortest" | "all";
+  type?: "shortest" | "all";
   from: string;
   to: string;
   max_depth: number;
@@ -46,6 +46,9 @@ export interface OrbitQuery {
   query_type: QueryType;
   node?: OrbitNodeSelector;
   nodes?: OrbitNodeSelector[];
+  from?: OrbitNodeSelector;
+  to?: OrbitNodeSelector;
+  max_path_length?: number;
   relationships?: OrbitRelationship[];
   aggregations?: OrbitAggregation[];
   group_by?: OrbitGroupBy[];
@@ -59,7 +62,7 @@ export interface OrbitQuery {
 
 export interface OrbitQueryEnvelope {
   query: OrbitQuery;
-  response_format?: ResponseFormat;
+  format?: ResponseFormat;
 }
 
 export interface OrbitQueryResult {

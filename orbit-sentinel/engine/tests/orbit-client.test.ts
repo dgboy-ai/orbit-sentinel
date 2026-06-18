@@ -104,20 +104,18 @@ describe("OrbitClient", () => {
 
       const client = await importOrbitClient();
       await client.pathFinding(
-        [
-          { id: "mr", entity: "MergeRequest" },
-          { id: "dep", entity: "Deployment" },
-        ],
-        { type: "shortest", from: "mr", to: "dep", max_depth: 4 },
+        { id: "mr", entity: "MergeRequest" },
+        { id: "dep", entity: "Deployment" },
+        4,
         undefined,
         20
       );
 
       const callArgs = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(callArgs.query.query_type).toBe("path_finding");
-      expect(callArgs.query.path.type).toBe("shortest");
-      expect(callArgs.query.path.from).toBe("mr");
-      expect(callArgs.query.path.to).toBe("dep");
+      expect(callArgs.query.from.id).toBe("mr");
+      expect(callArgs.query.to.id).toBe("dep");
+      expect(callArgs.query.max_path_length).toBe(4);
     });
   });
 

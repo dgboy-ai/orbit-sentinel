@@ -64,11 +64,9 @@ export class OrbitQueryEngine {
 
   async findDeploymentPath(projectId: number): Promise<OrbitQueryResult> {
     return orbitClient.pathFinding(
-      [
-        { id: "mr", entity: "MergeRequest" },
-        { id: "dep", entity: "Deployment", columns: ["iid", "status", "environment_id"] },
-      ],
-      { type: "shortest", from: "mr", to: "dep", max_depth: 4 },
+      { id: "mr", entity: "MergeRequest" },
+      { id: "dep", entity: "Deployment", columns: ["iid", "status", "environment_id"] },
+      4,
       undefined,
       20,
     );
@@ -84,11 +82,9 @@ export class OrbitQueryEngine {
 
   async findDependencyChain(fromFile: string, toFile: string): Promise<OrbitQueryResult> {
     return orbitClient.pathFinding(
-      [
-        { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: fromFile } } },
-        { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: toFile } } },
-      ],
-      { type: "all", from: "f1", to: "f2", max_depth: 4 },
+      { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: fromFile } } },
+      { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: toFile } } },
+      4,
       [{ type: "IMPORTS", from: "f1", to: "f2" }],
       20,
     );
