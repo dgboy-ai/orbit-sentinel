@@ -120,22 +120,22 @@ function MissionStep() {
   const s = (d: number) => mounted ? { animation: `fadeSlideUp 0.5s ${d}s cubic-bezier(0.16,1,0.3,1) both` } : { opacity: 0 };
 
   const problems = [
-    { icon: "⏱️", text: "~45 min wasted per MR manually tracing blast radius", accent: "#f97316" },
+    { icon: "⏱️", text: "Hours wasted manually tracing blast radius across files", accent: "#f97316" },
     { icon: "💥", text: "Production incidents from unseen dependency chains", accent: "#ef4444" },
     { icon: "📜", text: "No institutional memory — past failures repeat on same code", accent: "#a78bfa" },
     { icon: "🤷", text: "Unknown reviewers, missing rollback plans, blind merges", accent: "#6366f1" },
   ];
   const solutions = [
-    { icon: "💥", label: "Blast Radius", desc: "NEIGHBORS query finds everything connected to the change", nodes: "14+", color: "#a78bfa" },
-    { icon: "🔗", label: "Dependency Chain", desc: "PATH_FINDING traces deployment paths end-to-end", nodes: "13+", color: "#60a5fa" },
-    { icon: "📜", label: "Historical Match", desc: "TRAVERSAL finds every similar MR and its outcome (Jaccard)", nodes: "50+", color: "#22d3ee" },
-    { icon: "📊", label: "Pipeline Risk", desc: "AGGREGATION counts 132K+ pipeline outcomes across ecosystem", nodes: "100K+", color: "#f97316" },
+    { icon: "💥", label: "Blast Radius", desc: "NEIGHBORS query finds everything connected to changed files", nodes: "14 nodes", color: "#a78bfa" },
+    { icon: "🔗", label: "Dependency Chain", desc: "PATH_FINDING traces MR-to-pipeline deployment paths", nodes: "13 edges", color: "#60a5fa" },
+    { icon: "📜", label: "Historical Match", desc: "TRAVERSAL finds similar MRs using Jaccard similarity", nodes: "3 incidents", color: "#22d3ee" },
+    { icon: "📊", label: "Pipeline Risk", desc: "AGGREGATION counts failures across the pipeline ecosystem", nodes: "132K pipelines", color: "#f97316" },
   ];
   const impacts = [
-    { value: 99, suffix: "%", label: "MR Analysis Faster", detail: "~45 min → 15 seconds with 4-query Orbit scan", sub: "Real Orbit API, not mocked" },
-    { value: 3, suffix: " High", label: "Risk Signals Per MR", detail: "Bus factor, zero coverage, no reviewers — caught before merge", sub: "From 14-node digital twin" },
-    { value: 100, suffix: "%", label: "Evidence Traceability", detail: "Every finding links to specific Orbit nodes and edges", sub: "No black box predictions" },
-    { value: 4, suffix: "/4", label: "Orbit Query Types", detail: "NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION", sub: "Full graph spectrum" },
+    { value: 78, suffix: "%", label: "Fewer Orbit Queries", detail: "Rate limiting cut queries from 107 → 23 per analysis", sub: "MAX_CHANGED_FILES=5 + 500ms throttle" },
+    { value: 3, suffix: " High", label: "Risk Signals Detected", detail: "Bus factor, zero coverage, no reviewers — real findings", sub: "From 14-node digital twin on projet 83381762" },
+    { value: 14, suffix: " Nodes", label: "Digital Twin Graph", detail: "Built from all 4 Orbit query types in a single pass", sub: "13 relationships across 7 node types" },
+    { value: 4, suffix: "/4", label: "Orbit Query Types", detail: "NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION", sub: "All executed, all real, no mocks" },
   ];
 
   return (
@@ -167,8 +167,8 @@ function MissionStep() {
               Orbit Sentinel — Engineering Digital Twin
             </div>
             <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 2, lineHeight: 1.4, maxWidth: 500 }}>
-              When an MR opens, it builds a living model of the affected system — discovering blast radius, historical incidents, ownership chains, deployment dependencies, and rollback strategies — before a human finishes reading the diff.
-            </div>
+            Orbit Sentinel builds a living model of the affected system from GitLab Orbit graph data — discovering blast radius, historical incidents, ownership chains, and deployment dependencies. Runs in under 60 seconds on a live MR.
+          </div>
           </div>
         </div>
         {/* Real data badge */}
@@ -180,7 +180,7 @@ function MissionStep() {
           fontSize: 8, fontWeight: 700, color: "#22c55e",
         }}>
           <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)" }} />
-          Live Orbit API · 14 nodes · 13 edges · 7 types
+          Live Orbit API · 14 nodes · 13 edges
         </div>
       </div>
 
