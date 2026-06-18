@@ -122,6 +122,61 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
   const canAnalyze = parsed && (apiAvailable ? true : true);
 
+  const runLiveDemo = useCallback(async () => {
+    if (!apiAvailable) {
+      setLiveError("Engine not available");
+      return;
+    }
+    setUrl("https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/10");
+    setParsed({ project: "gitlab-ai-hackathon/transcend/39251857", mrIid: 10 });
+    setAnalyzing(true);
+    setLiveError(null);
+
+    try {
+      const changedFiles = ["src/main.ts"];
+      const endpoint = `${API_BASE_URL}${token ? "/api/analyze-with-creds" : "/api/analyze"}`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+
+      const body: Record<string, unknown> = {
+        projectId: 83381762,
+        projectPath: "gitlab-ai-hackathon/transcend/39251857",
+        mrIid: 10,
+        mrTitle: "MR !10: test-sentinel-analysis",
+        changedFiles,
+        changeDescription: "Live demo analysis against indexed Orbit project",
+      };
+      if (token) body.gitlabToken = token;
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Request failed" }));
+        throw new Error(err.message || err.error || "Analysis failed");
+      }
+
+      const data = await res.json();
+      if (data.success && data.report) {
+        onSelectScenario(data.report, "Live Demo · MR !10");
+        setAnalysisDone("✓ Live analysis complete — project shows 14 nodes, 13 edges");
+        setTimeout(() => setAnalysisDone(null), 5000);
+      } else {
+        throw new Error("Invalid response from engine");
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setLiveError(msg);
+    } finally {
+      setAnalyzing(false);
+    }
+  }, [token, apiAvailable, onSelectScenario]);
+
   return (
     <div className="card" style={{
       padding: 20, display: "flex", flexDirection: "column", gap: 12,
@@ -377,6 +432,44 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           })}
         </div>
       </div>
+
+      {apiAvailable && (
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.2), transparent)" }} />
+          </div>
+          <button onClick={runLiveDemo} disabled={analyzing}
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "12px 14px", fontSize: 12, fontWeight: 600, cursor: analyzing ? "not-allowed" : "pointer",
+              textAlign: "left",
+              border: "1px solid rgba(34,197,94,0.15)",
+              borderRadius: 8,
+              background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))",
+              color: "var(--text-primary)",
+              transition: "all 0.2s",
+              width: "100%",
+              opacity: analyzing ? 0.5 : 1,
+            }}
+            onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.04))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.3)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.08)"; }}}
+            onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.15)"; e.currentTarget.style.boxShadow = "none"; }}}
+          >
+            <span style={{ fontSize: 22 }}>🌐</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <span style={{ fontSize: 12 }}>
+                {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
+              </span>
+              <span style={{ fontSize: 10, fontWeight: 400, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
+                Queries real Orbit API against transcend/39251857 · 14 nodes, 13 edges
+              </span>
+            </div>
+            {analyzing && (
+              <span style={{ marginLeft: "auto", display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

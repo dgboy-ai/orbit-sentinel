@@ -4,7 +4,7 @@ import { config } from './config.js';
 import { sentinel, dataVisualizer, queryEngine, orbitClient } from './index.js';
 import type { SentinelReport } from './types.js';
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Security headers
@@ -466,11 +466,13 @@ app.get('/api/diag', async (_req, res) => {
   res.json(results);
 });
 
-app.listen(PORT, () => {
-  console.log(`Orbit Sentinel Engine API running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
-  console.log(`Analysis endpoint: http://localhost:${PORT}/api/analyze`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Orbit Sentinel Engine API running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/health`);
+    console.log(`Analysis endpoint: http://localhost:${PORT}/api/analyze`);
+  });
+}
 
 // Global error handler — must be last
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
