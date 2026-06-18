@@ -156,9 +156,15 @@ function getInitialDemo(): boolean {
 }
 
 export default function App() {
-  const [view, setView] = useState<View>(getInitialView);
-  const [demo, setDemo] = useState(getInitialDemo);
-  const [stepIndex, setStepIndex] = useState(0);
+  const ssKey = "orbit-vs";
+  function ssRead<T>(key: string, fallback: T): T {
+    try { const v = sessionStorage.getItem(`${ssKey}-${key}`); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+  }
+  function ssWrite(key: string, value: unknown) { try { sessionStorage.setItem(`${ssKey}-${key}`, JSON.stringify(value)); } catch {} }
+
+  const [view, setView] = useState<View>(() => ssRead("view", getInitialView()));
+  const [demo, setDemo] = useState(() => ssRead("demo", getInitialDemo()));
+  const [stepIndex, setStepIndex] = useState(() => ssRead("step", 0));
   const [data, setData] = useState<VisualizationData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -181,7 +187,7 @@ export default function App() {
   const [showNarrative, setShowNarrative] = useState(
     typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : !noEngine
   );
-  const [currentScenario, setCurrentScenario] = useState<string | null>(null);
+  const [currentScenario, setCurrentScenario] = useState<string | null>(() => ssRead("scenario", null));
   const [showQueryLog, setShowQueryLog] = useState(true);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const showNarrativeRef = useRef(showNarrative);
@@ -197,6 +203,12 @@ export default function App() {
   const demoRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTiny = useMediaQuery("(max-width: 360px)");
+
+  // Persist UI state to sessionStorage
+  useEffect(() => { ssWrite("view", view); }, [view]);
+  useEffect(() => { ssWrite("demo", demo); }, [demo]);
+  useEffect(() => { ssWrite("step", stepIndex); }, [stepIndex]);
+  useEffect(() => { ssWrite("scenario", currentScenario); }, [currentScenario]);
 
   const loadData = useCallback(async () => {
     if (!apiService.isApiAvailable() && !showNarrativeRef.current) {

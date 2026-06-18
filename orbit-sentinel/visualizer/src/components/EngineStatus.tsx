@@ -12,16 +12,18 @@ export default function EngineStatus() {
   const mountedRef = useRef(true);
 
   const checkHealth = useCallback(async () => {
+    if (!mountedRef.current) return;
     if (!API_BASE_URL || API_BASE_URL === "https://your-engine-domain.com") {
-      setState("unconfigured");
+      if (mountedRef.current) setState("unconfigured");
       return;
     }
-    setState("checking");
+    if (mountedRef.current) setState("checking");
     try {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(`${API_BASE_URL}/health`, { signal: controller.signal });
       clearTimeout(timer);
+      if (!mountedRef.current) return;
       if (res.ok) {
         setState("live");
         setLastCheck(new Date().toLocaleTimeString());
@@ -29,7 +31,7 @@ export default function EngineStatus() {
         setState("offline");
       }
     } catch {
-      setState("cold");
+      if (mountedRef.current) setState("cold");
     }
   }, []);
 

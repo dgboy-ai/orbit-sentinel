@@ -4,8 +4,13 @@ import {
   riskScoreToColor, riskScoreToGlow, riskScoreToKey, riskScoreToGradient, RISK,
 } from "../utils/colors";
 import { useMediaQuery } from "../hooks/useMediaQuery";
+import InlineError from "./InlineError";
 
 interface Props { data: VisualizationData }
+
+function ensureData(d: VisualizationData | null | undefined): d is VisualizationData {
+  return !!(d && d.hero && d.summary && Array.isArray(d.incidents) && Array.isArray(d.evidence) && Array.isArray(d.counterfactuals));
+}
 
 function scoreFromSummary(s: string): number {
   return Number(s.replace("%", "")) / 100;
@@ -322,6 +327,9 @@ function GlowOrb({ color, top, right, size = 280 }: { color: string; top?: numbe
 }
 
 export default function ImpactReport({ data }: Props) {
+  if (!ensureData(data)) {
+    return <InlineError message="Scenario data is incomplete or malformed. Try reloading demo data." />;
+  }
   const { summary, hero, evidence, decisionCenter, incidents, counterfactuals, riskData, futureTimeline } = data;
   const score = scoreFromSummary(summary.riskScore);
   const rk = riskScoreToKey(score);

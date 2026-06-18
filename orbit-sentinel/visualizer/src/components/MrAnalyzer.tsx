@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import type { VisualizationData } from "../types";
 import { SCENARIOS, type ScenarioOption } from "../data/scenarios";
 
@@ -22,6 +22,14 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   const [liveError, setLiveError] = useState<string | null>(null);
   const [showTokenInput, setShowTokenInput] = useState(false);
   const [analysisDone, setAnalysisDone] = useState<string | null>(null);
+
+  // Clear PAT and errors when scenario changes (live→demo or demo→demo switch)
+  useEffect(() => {
+    setToken("");
+    setLiveError(null);
+    setAnalysisDone(null);
+    setShowTokenInput(false);
+  }, [currentScenario]);
 
   const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
