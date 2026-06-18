@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
 
-**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. When a developer opens a merge request, it builds a living model of the affected software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — then posts a complete impact analysis on the MR.
+**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. Paste any GitLab MR URL into the visualizer to build a living model of the affected software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — with a complete impact analysis across 7 dashboard views. A Duo Agent Platform flow is also included for fully autonomous MR posting.
 
 ---
 
@@ -154,7 +154,7 @@ Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, re
 
 ## Details
 
-**Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Triggered on MR open and new commits. Posts results directly to the MR thread.
+**Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Configured to trigger on MR open and new commits, with a `create_merge_request_note` step to post analysis results directly to the MR thread. Ready to deploy — needs a Maintainer token to publish to AI Catalog.
 
 **Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, 75 tests). Key components:
 
@@ -167,7 +167,7 @@ Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, re
 
 **Duo Integration** — [Skill definition](orbit-sentinel/.gitlab/duo/skill.yml) for Duo Chat, [MCP config](orbit-sentinel/.gitlab/duo/mcp.json) for agent platform, [query recipes](orbit-sentinel/skills/orbit-sentinel/recipes/) with 6 ready-to-use JSON examples.
 
-**Stack** — Node 22, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Zod, Vitest.
+**Stack** — Node 22+, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Zod, Vitest.
 
 | Status |
 |--------|
