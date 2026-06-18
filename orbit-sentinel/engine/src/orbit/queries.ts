@@ -64,7 +64,7 @@ export class OrbitQueryEngine {
       { entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
       { entity: "Deployment", filters: { status: "success" } },
       3,
-      ["ON_BRANCH", "FROM_BRANCH", "DEPLOYED_TO"],
+      ["ON_BRANCH", "TRIGGERED", "DEPLOYED_TO"],
       20,
     );
   }
