@@ -448,7 +448,7 @@ export default function App() {
       case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
       case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
-  }, [view, data, navigate]);
+  }, [view, data, navigate, isMobile, isTiny]);
 
   if (!data) {
     return (

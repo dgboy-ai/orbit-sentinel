@@ -9,7 +9,7 @@ import InlineError from "./InlineError";
 interface Props { data: VisualizationData }
 
 function ensureData(d: VisualizationData | null | undefined): d is VisualizationData {
-  return !!(d && d.hero && d.summary && Array.isArray(d.incidents) && Array.isArray(d.evidence) && Array.isArray(d.counterfactuals));
+  return !!(d && d.hero && d.summary && d.decisionCenter && Array.isArray(d.incidents) && Array.isArray(d.evidence) && Array.isArray(d.counterfactuals) && Array.isArray(d.futureTimeline));
 }
 
 function scoreFromSummary(s: string): number {

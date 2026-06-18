@@ -128,7 +128,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     onSelectScenario(s.data, s.label);
   }, [onSelectScenario]);
 
-  const canAnalyze = parsed && (apiAvailable ? true : true);
+  const canAnalyze = !!parsed;
 
   const runLiveDemo = useCallback(async () => {
     if (!apiAvailable) {
