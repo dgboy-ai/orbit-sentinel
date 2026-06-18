@@ -1,7 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function HelpTooltip({ text, wide }: { text: string; wide?: boolean }) {
   const [show, setShow] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [leftAlign, setLeftAlign] = useState(false);
+
+  useEffect(() => {
+    if (!show || !tooltipRef.current) return;
+    const rect = tooltipRef.current.getBoundingClientRect();
+    if (rect.left < 0) setLeftAlign(true);
+    else if (rect.right > window.innerWidth) setLeftAlign(true);
+    else setLeftAlign(false);
+  }, [show]);
+
   return (
     <span style={{ position: "relative", display: "inline-flex", alignItems: "center" }}
       onMouseEnter={() => setShow(true)}
@@ -23,8 +34,9 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
         onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
       >?</span>
       {show && (
-        <div style={{
-          position: "absolute", left: "50%", bottom: "calc(100% + 6px)", transform: "translateX(-50%)",
+        <div ref={tooltipRef} style={{
+          position: "fixed", bottom: "calc(100% + 24px)",
+          left: leftAlign ? 8 : "50%", transform: leftAlign ? "none" : "translateX(-50%)",
           zIndex: 1000, width: wide ? 260 : 180,
           padding: "6px 10px", borderRadius: 6,
           background: "rgba(8,9,13,0.95)", backdropFilter: "blur(12px)",
@@ -36,7 +48,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
         }}>
           {text}
           <div style={{
-            position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)",
+            position: "absolute", top: "100%", left: leftAlign ? 16 : "50%", transform: leftAlign ? "none" : "translateX(-50%)",
             borderLeft: "5px solid transparent", borderRight: "5px solid transparent",
             borderTop: "5px solid rgba(255,255,255,0.1)",
           }} />

@@ -34,6 +34,7 @@ import ImpactCalculator from "./components/ImpactCalculator";
 import ArchitectureDiagram from "./components/ArchitectureDiagram";
 import MrAnalyzer from "./components/MrAnalyzer";
 import OrbitQueryExplorer from "./components/OrbitQueryExplorer";
+import ConfettiCelebration from "./components/ConfettiCelebration";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
@@ -169,12 +170,14 @@ export default function App() {
   const [loadingSlow, setLoadingSlow] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
   const screenshotMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("screenshot") === "true";
+  const presentMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("present") === "true";
   const noEngine = !API_BASE_URL || API_BASE_URL === 'https://your-engine-domain.com';
   const [showNarrative, setShowNarrative] = useState(
     typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : !noEngine
   );
   const [currentScenario, setCurrentScenario] = useState<string | null>(null);
   const [showQueryLog, setShowQueryLog] = useState(true);
+  const [showShortcuts, setShowShortcuts] = useState(false);
   const showNarrativeRef = useRef(showNarrative);
   showNarrativeRef.current = showNarrative;
   const onNarrativeDone = useCallback(() => {
@@ -264,6 +267,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (presentMode && !demo) startDemo();
+  }, [presentMode, demo, startDemo]);
+
+  useEffect(() => {
     if (!demo) {
       if (demoRef.current) { clearInterval(demoRef.current); demoRef.current = null; }
       return;
@@ -290,6 +297,11 @@ export default function App() {
         if (demo) stopDemo();
         setView(tabs[next][0]);
       }
+      if (e.key === "?" || (e.key === "/" && !e.shiftKey)) {
+        e.preventDefault();
+        setShowShortcuts(prev => !prev);
+      }
+      if (e.key === "Escape") setShowShortcuts(false);
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -356,69 +368,64 @@ export default function App() {
       case "overview":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-            {/* Tier 0: MR Analyzer — paste MR or try presets */}
-            <MrAnalyzer
-              onSelectScenario={onSelectScenario}
-              apiAvailable={apiService.isApiAvailable()}
-              currentScenario={currentScenario}
-            />
-            {/* Tier 0: Orbit Query Log + Problem/Solution side by side when log is visible */}
+            <ErrorBoundary>
+              <MrAnalyzer
+                onSelectScenario={onSelectScenario}
+                apiAvailable={apiService.isApiAvailable()}
+                currentScenario={currentScenario}
+              />
+            </ErrorBoundary>
             {showQueryLog ? (
               <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 8 : 12 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                  <OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} />
-                  <ArchitectureDiagram />
+                  <ErrorBoundary><OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} /></ErrorBoundary>
+                  <ErrorBoundary><ArchitectureDiagram /></ErrorBoundary>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                  <ProblemSection />
-                  <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
+                  <ErrorBoundary><ProblemSection /></ErrorBoundary>
+                  <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary>
                 </div>
               </div>
             ) : (
               <>
-                <ProblemSection />
-                <ArchitectureDiagram />
-                <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
+                <ErrorBoundary><ProblemSection /></ErrorBoundary>
+                <ErrorBoundary><ArchitectureDiagram /></ErrorBoundary>
+                <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary>
               </>
             )}
-            {/* Tier 1: Hero Outcome + Tagline */}
             <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
-              <HeroSection {...data.hero} />
-              {!isMobile && <TaglineBanner />}
+              <ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary>
+              {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
             </div>
-            {isMobile && <TaglineBanner />}
-            {/* Tier 2: Decision Center + Future Timeline + Path Analysis */}
+            {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
             <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
-              <DecisionCenter d={data.decisionCenter} />
-              <FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} />
-              <PathBrokenAnimation mrIid={data.hero.mrIid} />
+              <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
+              <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
+              <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} /></ErrorBoundary>
             </div>
-            {/* Tier 3: Evidence + Incidents + Graph + Simulation */}
             <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <OrbitEvidencePanel evidence={data.evidence} graph={data.graph} />
-                <IncidentIntelligence incidents={data.incidents} />
+                <ErrorBoundary><OrbitEvidencePanel evidence={data.evidence} graph={data.graph} /></ErrorBoundary>
+                <ErrorBoundary><IncidentIntelligence incidents={data.incidents} /></ErrorBoundary>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><DigitalTwinGraph graph={data.graph} /></div>
-                <CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} />
+                <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><ErrorBoundary><DigitalTwinGraph graph={data.graph} /></ErrorBoundary></div>
+                <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
               </div>
             </div>
-            {/* Tier 4: Simulate Webhook + Reality Check */}
             <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 8 : 12 }}>
-              <SimulateWebhook />
-              <RealityCheck />
+              <ErrorBoundary><SimulateWebhook /></ErrorBoundary>
+              <ErrorBoundary><RealityCheck /></ErrorBoundary>
             </div>
-            {/* Tier 5: Orbit Query Explorer — raw query results with tabbed view */}
-            <OrbitQueryExplorer evidence={data.evidence} />
+            <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
           </div>
         );
-      case "blast-radius": return <BlastRadiusExplorer graph={data.graph} />;
-      case "risk": return <RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} />;
-      case "simulation": return <ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} />;
-      case "historical": return <HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} />;
-      case "setup": return <SetupWizard />;
-      case "report": return <ImpactReport data={data} />;
+      case "blast-radius": return <ErrorBoundary><BlastRadiusExplorer graph={data.graph} /></ErrorBoundary>;
+      case "risk": return <ErrorBoundary><RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} /></ErrorBoundary>;
+      case "simulation": return <ErrorBoundary><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} /></ErrorBoundary>;
+      case "historical": return <ErrorBoundary><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} /></ErrorBoundary>;
+      case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
+      case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
   }, [view, data, navigate]);
 
@@ -497,7 +504,7 @@ export default function App() {
       <ScanLine />
       <div className="bg-grid" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />
       <header style={{
-        display: screenshotMode ? "none" : "flex",
+        display: screenshotMode || presentMode ? "none" : "flex",
         position: "relative", zIndex: 10,
         borderBottom: `1px solid ${accentColor}22`,
         padding: "8px 20px", alignItems: "center", justifyContent: "space-between", gap: 8,
@@ -623,7 +630,7 @@ export default function App() {
         </div>
       </header>
 
-      {demo && (
+      {demo && !presentMode && (
         <div style={{
           display: screenshotMode ? "none" : "flex",
           position: "absolute", top: isMobile ? 120 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
@@ -655,6 +662,47 @@ export default function App() {
                 transition: "all 0.3s ease",
               }} />
             ))}
+          </div>
+        </div>
+      )}
+
+      {data && data.hero && ["Low", "low"].includes(data.hero.riskLevel) && <ConfettiCelebration />}
+
+      {showShortcuts && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+          animation: "fadeSlideUp 0.2s ease",
+        }} onClick={() => setShowShortcuts(false)}>
+          <div className="card" style={{
+            padding: "24px 28px", maxWidth: 400, width: "90%",
+          }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 16 }}>⌨️ Keyboard Shortcuts</div>
+            {[
+              { key: "Space", desc: "Start / Stop demo" },
+              { key: "← →", desc: "Navigate between views" },
+              { key: "?", desc: "Toggle this overlay" },
+              { key: "Esc", desc: "Close this overlay" },
+              { key: "⬇ (btn)", desc: "Export report as HTML" },
+              { key: "👑 (btn)", desc: "Judge's Tour" },
+            ].map(s => (
+              <div key={s.key} style={{
+                display: "flex", alignItems: "center", gap: 12, padding: "6px 0",
+                borderBottom: "1px solid var(--border)",
+              }}>
+                <kbd style={{
+                  padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 700,
+                  background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+                  color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace",
+                  minWidth: 50, textAlign: "center",
+                }}>{s.key}</kbd>
+                <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>{s.desc}</span>
+              </div>
+            ))}
+            <div style={{ marginTop: 12, fontSize: 9, color: "var(--text-tertiary)", textAlign: "center" }}>
+              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontSize: 9 }}>?</kbd> to close
+            </div>
           </div>
         </div>
       )}
@@ -693,6 +741,8 @@ export default function App() {
         <span>⬇</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Export</span>
         <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
         <span>👑</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Tour</span>
+        <span style={{ width: 1, height: 10, background: "var(--border)", margin: "0 2px" }} />
+        <span>?</span><span style={{ color: "var(--text-secondary)", fontWeight: 600 }}>Keys</span>
       </div>
     </div>
   );

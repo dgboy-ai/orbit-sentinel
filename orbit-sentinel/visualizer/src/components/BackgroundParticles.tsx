@@ -25,6 +25,10 @@ export default function BackgroundParticles() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let visible = true;
+    function onVisibility() { visible = !document.hidden; }
+    document.addEventListener("visibilitychange", onVisibility);
+
     let w = 0, h = 0;
     function resize() {
       if (!canvas) return;
@@ -76,6 +80,7 @@ export default function BackgroundParticles() {
 
     function draw() {
       if (!ctx || !canvas) return;
+      if (!visible) { rafRef.current = requestAnimationFrame(draw); return; }
       ctx.clearRect(0, 0, w, h);
 
       const orbs = orbsRef.current;
@@ -138,6 +143,7 @@ export default function BackgroundParticles() {
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 

@@ -49,12 +49,38 @@ export default function TiltCard({ children, style, className, maxTilt = 6, glar
     if (glare) ref.current.style.setProperty("--glare-opacity", "0");
   }, [glare]);
 
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    stateRef.current = {
+      tiltX: -((y - centerY) / centerY) * maxTilt,
+      tiltY: ((x - centerX) / centerX) * maxTilt,
+      mouseX: x, mouseY: y, width: rect.width, height: rect.height,
+    };
+    updateTransform();
+  }, [maxTilt, updateTransform]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!ref.current) return;
+    stateRef.current = { tiltX: 0, tiltY: 0, mouseX: 0, mouseY: 0, width: 0, height: 0 };
+    ref.current.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)";
+    if (glare) ref.current.style.setProperty("--glare-opacity", "0");
+  }, [glare]);
+
   return (
     <div
       ref={ref}
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       style={{
         transition: "transform 0.15s cubic-bezier(0.16,1,0.3,1)",
         willChange: "transform",
