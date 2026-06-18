@@ -1,6 +1,11 @@
 {
   "name": "@orbit-sentinel/visualizer",
   "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/gitlab-ai-hackathon/transcend/39251857.git"

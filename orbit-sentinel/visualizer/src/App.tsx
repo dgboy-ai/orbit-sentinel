@@ -288,6 +288,9 @@ export default function App() {
     if (presentMode && !demo) startDemo();
   }, [presentMode, demo, startDemo]);
 
+  const VIEW_LABELS: Record<View, string> = { overview: "Dashboard", "blast-radius": "Blast Radius", risk: "Risk Investigation", simulation: "Forecast Engine", historical: "Historical Context", report: "Impact Report", setup: "Setup Wizard" };
+  useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]} | Engineering Digital Twin`; }, [view]);
+
   useEffect(() => {
     if (!demo) {
       if (demoRef.current) { clearInterval(demoRef.current); demoRef.current = null; }
