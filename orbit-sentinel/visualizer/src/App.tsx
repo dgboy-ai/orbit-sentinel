@@ -1,12 +1,8 @@
-import React, { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useRef, useMemo, Suspense } from "react";
 import type { VisualizationData } from "./types";
 import { DEMO_DATA } from "./data/demoData";
 import ErrorBoundary from "./components/ErrorBoundary";
-import DigitalTwinGraph from "./components/DigitalTwinGraph";
-import BlastRadiusExplorer from "./components/BlastRadiusExplorer";
 import RiskInvestigation from "./components/RiskInvestigation";
-import ForecastEngine from "./components/ForecastEngine";
-import HistoricalContext from "./components/HistoricalContext";
 import ImpactReport from "./components/ImpactReport";
 import HeroSection from "./components/HeroSection";
 import OrbitEvidencePanel from "./components/OrbitEvidencePanel";
@@ -38,6 +34,16 @@ import ConfettiCelebration from "./components/ConfettiCelebration";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
+
+// Lazy-loaded heavy components (D3, large bundles)
+const DigitalTwinGraph = React.lazy(() => import("./components/DigitalTwinGraph"));
+const BlastRadiusExplorer = React.lazy(() => import("./components/BlastRadiusExplorer"));
+const ForecastEngine = React.lazy(() => import("./components/ForecastEngine"));
+const HistoricalContext = React.lazy(() => import("./components/HistoricalContext"));
+
+function PanelFallback({ height = 200 }: { height?: number }) {
+  return <div className="card" style={{ height, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "var(--text-tertiary)" }}>Loading...</div>;
+}
 
 // API configuration — set VITE_API_BASE_URL as Vercel env var to point to live engine.
 // Falls back to same-origin (Vite dev server proxy) or demo mode if unreachable.
@@ -409,7 +415,7 @@ export default function App() {
                 <ErrorBoundary><IncidentIntelligence incidents={data.incidents} /></ErrorBoundary>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><ErrorBoundary><DigitalTwinGraph graph={data.graph} /></ErrorBoundary></div>
+                <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><ErrorBoundary><Suspense fallback={<PanelFallback height={380} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary></div>
                 <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
               </div>
             </div>
@@ -420,10 +426,10 @@ export default function App() {
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
           </div>
         );
-      case "blast-radius": return <ErrorBoundary><BlastRadiusExplorer graph={data.graph} /></ErrorBoundary>;
+      case "blast-radius": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><BlastRadiusExplorer graph={data.graph} /></Suspense></ErrorBoundary>;
       case "risk": return <ErrorBoundary><RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} /></ErrorBoundary>;
-      case "simulation": return <ErrorBoundary><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} /></ErrorBoundary>;
-      case "historical": return <ErrorBoundary><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} /></ErrorBoundary>;
+      case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} /></Suspense></ErrorBoundary>;
+      case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} /></Suspense></ErrorBoundary>;
       case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
       case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
