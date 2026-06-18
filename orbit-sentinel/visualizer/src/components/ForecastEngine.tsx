@@ -36,6 +36,32 @@ function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top
   );
 }
 
+function CircularGauge({ pct, color, size = 32, strokeWidth = 3, label, value }: { pct: number; color: string; size?: number; strokeWidth?: number; label?: string; value?: string }) {
+  const r = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * r;
+  const offset = Math.max(circumference - (pct / 100) * circumference, 0);
+  const [animOffset, setAnimOffset] = useState(circumference);
+  useEffect(() => {
+    const t = setTimeout(() => setAnimOffset(offset), 50);
+    return () => clearTimeout(t);
+  }, [offset]);
+  return (
+    <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)", position: "absolute", top: 0, left: 0 }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={strokeWidth} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={strokeWidth}
+          strokeDasharray={circumference} strokeDashoffset={animOffset} strokeLinecap="round"
+          style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)", filter: `drop-shadow(0 0 4px ${color}44)` }}
+        />
+      </svg>
+      {value && <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+        <span style={{ fontSize: size * 0.28, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>{value}</span>
+        {label && <span style={{ fontSize: size * 0.14, color: "var(--text-tertiary)", lineHeight: 1, marginTop: 1 }}>{label}</span>}
+      </div>}
+    </div>
+  );
+}
+
 function StatusBadge({ label, good }: { label: string; good?: boolean }) {
   return (
     <span style={{
@@ -108,18 +134,28 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
     const summary: Record<string, { nodes?: number; edges?: number; finding: string }> = {};
     for (const e of evidence) {
       const text = e.result || "";
-      const nodeMatch = text.match(/(\d+)\s*nodes?/i);
-      const edgeMatch = text.match(/(\d+)\s*edges?/i);
-      const nodes = nodeMatch ? parseInt(nodeMatch[1]) : undefined;
-      const edges = edgeMatch ? parseInt(edgeMatch[1]) : undefined;
+      const nodeCapture = (t: string) => {
+        const colon = t.match(/(?:Nodes?|Nodes detected):\s*(\d+)/i);
+        if (colon) return parseInt(colon[1]);
+        const inline = t.match(/(\d+)\s+nodes?\b/i);
+        return inline ? parseInt(inline[1]) : undefined;
+      };
+      const edgeCapture = (t: string) => {
+        const colon = t.match(/(?:Edges?|Edges detected):\s*(\d+)/i);
+        if (colon) return parseInt(colon[1]);
+        const inline = t.match(/(\d+)\s+edges?\b/i);
+        return inline ? parseInt(inline[1]) : undefined;
+      };
+      const nodes = nodeCapture(text);
+      const edges = edgeCapture(text);
       const firstLine = text.split("\n")[0] || text.slice(0, 80);
       summary[e.queryType] = { nodes, edges, finding: firstLine };
     }
     return summary;
   }, [evidence]);
 
-  const totalNodes = evidenceSummary.NEIGHBORS?.nodes ?? evidenceSummary["Orbit Graph Discovery"]?.nodes ?? 210;
-  const totalEdges = evidenceSummary.NEIGHBORS?.edges ?? evidenceSummary["Orbit Graph Discovery"]?.edges ?? 183;
+  const totalNodes = evidenceSummary.NEIGHBORS?.nodes ?? evidenceSummary["Orbit Graph Discovery"]?.nodes ?? 23;
+  const totalEdges = evidenceSummary.NEIGHBORS?.edges ?? evidenceSummary["Orbit Graph Discovery"]?.edges ?? 43;
 
   // Derive real MR state from evidence
   const mrState = useMemo(() => {
@@ -551,23 +587,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Forecast Confidence</div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", fontStyle: "italic" }}>All 4 Orbit query types independently support this prediction</div>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: "50%", position: "relative",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: `conic-gradient(#22c55e ${91}%, rgba(255,255,255,0.05) ${91}%)`,
-                boxShadow: "0 0 16px rgba(34,197,94,0.2)",
-              }}>
-                <div style={{
-                  width: 36, height: 36, borderRadius: "50%",
-                  background: "rgba(15,18,26,0.95)",
-                  display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
-                }}>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1 }}>91%</span>
-                  <span style={{ fontSize: 6, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>HIGH</span>
-                </div>
-              </div>
-            </div>
+            <CircularGauge pct={91} color="#22c55e" size={52} strokeWidth={4} value="91%" label="HIGH" />
           </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
             {[
@@ -582,18 +602,12 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 display: "flex", alignItems: "center", gap: 8,
                 animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
               }}>
+                <CircularGauge pct={q.pct} color={q.color} size={32} strokeWidth={3} />
                 <div style={{
-                  width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
-                  position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
-                  background: `conic-gradient(${q.color} ${q.pct}%, rgba(255,255,255,0.05) ${q.pct}%)`,
-                }}>
-                  <div style={{
-                    width: 24, height: 24, borderRadius: "50%",
-                    background: "rgba(15,18,26,0.9)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 11,
-                  }}>{q.icon}</div>
-                </div>
+                  position: "absolute", width: 32, height: 32,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 11, pointerEvents: "none",
+                }}>{q.icon}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
                     <span style={{ fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: q.color }}>{q.type}</span>
