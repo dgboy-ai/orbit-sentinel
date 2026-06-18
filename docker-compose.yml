@@ -10,7 +10,7 @@ services:
       - ORBIT_API_KEY=${ORBIT_API_KEY:-}
       - ORBIT_ENDPOINT=${ORBIT_ENDPOINT:-https://api.orbit.dev}
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/health').then(r => process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r => process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 15s
       timeout: 5s
       retries: 3
