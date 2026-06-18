@@ -35,15 +35,11 @@ export class OrbitQueryEngine {
 
   async findHistoricalMRs(projectPath: string, filePath: string): Promise<OrbitQueryResult> {
     return orbitClient.traversal(
-      { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
+      { id: "p", entity: "Project", filters: { full_path: projectPath } },
       [
-        { id: "b", entity: "Branch" },
-        { id: "p", entity: "Project" },
         { id: "mr", entity: "MergeRequest" },
       ],
       [
-        { type: "ON_BRANCH", from: "f", to: "b" },
-        { type: "CONTAINS", from: "p", to: "b" },
         { type: "IN_PROJECT", from: "mr", to: "p" },
       ],
       50,
@@ -66,10 +62,10 @@ export class OrbitQueryEngine {
   async findDeploymentPath(projectId: number): Promise<OrbitQueryResult> {
     return orbitClient.pathFinding(
       [
-        { id: "mr", entity: "MergeRequest" },
+        { id: "f", entity: "File", filters: { path: { op: "ends_with", value: ".ts" } } },
         { id: "dep", entity: "Deployment" },
       ],
-      { type: "shortest", from: "mr", to: "dep", max_depth: 3, rel_types: ["DEPLOYED_BY", "TRIGGERED", "IN_PIPELINE", "HAS_HEAD_PIPELINE"] },
+      { type: "shortest", from: "f", to: "dep", max_depth: 3, rel_types: ["DEPLOYED_BY", "TRIGGERED", "IN_PIPELINE"] },
       undefined,
       20,
     );

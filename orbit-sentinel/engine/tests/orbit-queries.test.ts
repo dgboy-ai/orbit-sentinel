@@ -38,14 +38,14 @@ describe("OrbitQueryEngine", () => {
   });
 
   describe("findHistoricalMRs", () => {
-    it("queries traversal with file→MR path", async () => {
+    it("queries traversal with project→MR path", async () => {
       const engine = await importQueryEngine();
       await engine.findHistoricalMRs("group/project", "src/auth.ts");
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("traversal");
-      expect(body.query.nodes).toHaveLength(4);
-      expect(body.query.relationships[0].type).toBe("ON_BRANCH");
+      expect(body.query.nodes).toHaveLength(2);
+      expect(body.query.relationships[0].type).toBe("IN_PROJECT");
     });
   });
 
@@ -62,15 +62,16 @@ describe("OrbitQueryEngine", () => {
   });
 
   describe("findDeploymentPath", () => {
-    it("queries path_finding with shortest path", async () => {
+    it("queries path_finding from File to Deployment", async () => {
       const engine = await importQueryEngine();
       await engine.findDeploymentPath(42);
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.query.query_type).toBe("path_finding");
       expect(body.query.path.type).toBe("shortest");
-      expect(body.query.path.from).toBe("mr");
+      expect(body.query.path.from).toBe("f");
       expect(body.query.path.to).toBe("dep");
+      expect(body.query.nodes[0].filters).toBeDefined();
     });
   });
 
