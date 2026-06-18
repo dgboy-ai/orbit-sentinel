@@ -4,7 +4,25 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
-## Latest Session (June 18)
+## Latest Session (June 18, Session 2)
+
+### Added
+
+- **PredictionsTracker.tsx** — Post-merge verification + accuracy scoreboard. Animated stat counters (total tracked, accuracy %, true positives, avg error), DualSparkline showing predicted vs actual risk trend over time, filterable/sortable MR ledger with outcome badges, verification input per MR, accuracy insights panel.
+- **Grep fallback** (`engine/src/fallback/grep-fallback.ts`) — File-analysis fallback when Orbit is unavailable. Fetches files via GitLab Repository Files API, parses JS/TS/Python imports, builds dependency graph. Fast-paths to empty when no token present. Four fallback methods: `neighborsFile`, `pathFindingFiles`, `traversalFiles`, `emptyResult`.
+- **`orbitOrFallback()`** in `DigitalTwinBuilder` — Wraps all 8 Orbit query types with try/catch. On Orbit failure, calls fallback and sets `usedFallback = true`. Propagates `fallback` flag through twin metadata → engine response → visualizer.
+- **Degraded mode** (`DataModeBanner`) — New `"degraded"` mode: orange dot, orange border, "Degraded" label, "Orbit unavailable — using file analysis fallback" description. Activated when `result.report.fallback === true`.
+- **`"predictions"` view** — 8th view registered in App.tsx. Added to View type, VIEW_LABELS, DEMO_STEPS, tabs, getInitialView, switch body.
+- **Memory store fallback** — `memoryStore.findHistoricalMatches()` now wrapped in try/catch inside `analyzeChange`. Returns empty array on failure instead of crashing the whole analysis.
+- **Close-loop accuracy tracking** — PredictionsTracker records predicted risk vs actual outcome, computes accuracy score, shows risk trend chart with DualSparkline.
+- **README update** — Added Predictions view, fallback resilience, competitive comparison vs Sankofa, updated test count (105), closed-loop section, Docker quick start.
+
+### Changed
+
+- **Demo script** — Updated "6 views" → "8 views" to include predictions.
+- **METHODOLOGY.md** — Added fallback behavior section and post-merge verification rubric.
+
+---
 
 ### Fixed
 
@@ -131,7 +149,7 @@ Added a complete error classification and recovery system:
 ## Test Results
 
 ```
- ✓  75 tests passed (13 files)
+ ✓  95 tests passed (15 files)
 ```
 
 | Test File | Tests | What It Covers |

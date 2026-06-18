@@ -67,3 +67,20 @@ Key edges discovered:
 | No deployment chain | 🟡 Medium | Zero Deployment → Environment edges |
 | Duplicate issues | 🟢 Low | #1 and #2 identical titles/descriptions |
 | No vulnerabilities | ✅ Clean | Zero HAS_VULNERABILITY edges |
+
+---
+
+## Fallback & Closed-Loop Verification
+
+When Orbit is unavailable (not indexed, network down, quota exhausted), Orbit Sentinel degrades to **grep-based file analysis**:
+
+1. Fetches changed files via GitLab Repository Files API
+2. Parses JS/TS `import`/`require` and Python `import`/`from` statements
+3. Builds dependency graph without Orbit
+4. Returns `fallback: true` flag → visualizer shows "Degraded" mode banner
+
+**Closed-loop accuracy tracking** (Predictions Tracker view):
+- Every prediction tracked post-merge through 7-day survival window
+- DualSparkline shows predicted vs actual risk trend
+- Accuracy = (TP + TN) / (TP + TN + FP + FN)
+- Real-time verification input updates accuracy score

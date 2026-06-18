@@ -21,16 +21,17 @@ This guide provides detailed instructions for capturing high-quality screenshots
 ### 1. Visualizer Dashboard
 
 **What to Capture**:
-- Full dashboard view with all 6 analysis tabs visible
+- Full dashboard view with all 8 analysis tabs visible (Overview, Setup, Blast Radius, Risk, Simulation, History, Report, Predictions)
 - Active demo mode with Space bar interaction
 - Interactive graph exploration
 - Risk gauge and what-if simulation
+- Predictions Tracker: accuracy scoreboard, DualSparkline trend chart, verification input
 
 **Technical Specifications**:
 - Resolution: 1920x1080 or higher
 - Format: PNG (for quality) or JPG (for size)
 - File size: < 5MB per image
-- Naming: `visualizer-overview.png`, `visualizer-blast-radius.png`
+- Naming: `view-overview.png`, `view-blast-radius.png`, `view-predictions.png`
 
 **Steps**:
 1. Navigate to `http://localhost:5173/?demo=true`

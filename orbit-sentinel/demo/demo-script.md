@@ -65,7 +65,7 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 
 **Visual**: React visualizer dashboard
 
-**Narrator**: "The interactive dashboard shows 6 comprehensive analysis views:
+**Narrator**: "The interactive dashboard shows 8 comprehensive analysis views — including the new Predictions Tracker for post-merge verification:
 
 **Overview View**:
 - Hero prediction with risk score
@@ -100,7 +100,14 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 - Reviewer recommendations
 - Rollback strategies
 - Test plans
-- Remediation steps"
+- Remediation steps
+
+**Predictions Tracker**:
+- Accuracy scoreboard with animated stat counters
+- DualSparkline showing predicted vs actual risk trend
+- Filterable/sortable MR ledger with outcome badges
+- Post-merge verification input (failed/shipped)
+- 7-day survival window for high-risk predictions"
 
 **Visual**: Space bar toggles auto-play demo
 

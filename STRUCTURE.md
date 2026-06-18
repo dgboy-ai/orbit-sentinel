@@ -7,21 +7,24 @@ orbit-sentinel/
 │   └── mcp.json                   # MCP server config
 ├── visualizer/                    # React/D3 interactive dashboard
 │   ├── src/
-│   │   ├── components/           # React components
+│   │   ├── components/           # 38 React components (PredictionsTracker, AgentFlowProgress, etc.)
 │   │   ├── types/                # TypeScript types
-│   │   └── utils/                # Helper functions
+│   │   └── utils/                # Helper functions (colors, animations)
 │   └── public/                   # Static assets
-├── engine/                        # TypeScript Orbit client + twin
+├── engine/                        # TypeScript Orbit client + digital twin
 │   ├── src/
 │   │   ├── orbit/                # Orbit API client
-│   │   │   ├── client.ts         # Main Orbit client with error handling
-│   │   │   └── queries.ts        # Query definitions
-│   │   ├── twin/                # Digital twin construction
+│   │   │   ├── client.ts         # Main Orbit client with retry/backoff
+│   │   │   └── queries.ts        # 4 query type definitions
+│   │   ├── fallback/             # Grep fallback (file analysis when Orbit down)
+│   │   │   └── grep-fallback.ts  # GitLab Repository Files API + import parsing
+│   │   ├── twin/                # Digital twin construction + simulation
 │   │   ├── risk/                # Risk scoring engine
-│   │   ├── remediation/         # Remediation planning
-│   │   └── reporter/            # Report generation
+│   │   ├── remediation/         # Remediation planner + test generator
+│   │   ├── memory/              # Historical memory + similarity engine
+│   │   └── reporter/            # Markdown + Visualizer data reporters
 │   ├── errors.ts                # Error handling and classification
-│   └── validators.ts            # Input validation and sanitization
+│   ├── validators.ts            # Input validation and sanitization
 │   └── dist/                     # Built output
 ├── flow/                          # GitLab Duo Agent Platform
 │   └── orbit-sentinel-flow.yaml
@@ -29,17 +32,20 @@ orbit-sentinel/
 │   └── orbit-sentinel/
 │       └── recipes/              # 6 query recipes (blast-radius, dependency-chain, etc.)
 ├── demo/                          # Demo materials
-│   ├── demo-script.md             # ~3-minute video script
+│   ├── demo-script.md             # 3-minute video script (8 views)
 │   ├── screenshots-guide.md       # Screenshot capture guide
 │   └── devpost-submission.md     # Devpost entry text
 ├── docs/                          # Documentation
+│   ├── orbit-traversal-results.md  # Live Orbit query proof
 │   └── screenshots/               # Reference UI screenshots
-├── setup.ps1                        # One-click install & run (enhanced)
+├── docker-compose.yml             # Full stack: engine + visualizer + nginx
+├── setup.ps1                      # One-click install & run (enhanced)
 ├── INSTALLATION.md                # Comprehensive setup guide
 ├── SETUP.md                       # Setup instructions
-├── AGENTS.md                      # Agent instructions (enhanced)
+├── AGENTS.md                      # Agent behavior spec (fallback + closed-loop)
 ├── CHANGELOG.md                   # Full history of features and fixes
 ├── CONTRIBUTING.md                # Contribution guidelines
-├── SECURITY.md                    # Security policy
+├── DEPLOYMENT.md                  # Deploy to Vercel + Render + Docker
+├── SECURITY.md                    # Security policy (token handling in fallback)
 └── LICENSE                        # MIT
 ```

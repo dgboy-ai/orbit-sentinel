@@ -1,14 +1,15 @@
 # Orbit Sentinel — Engineering Digital Twin
 
-> GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
+> GitHub Copilot predicts code. Orbit Sentinel predicts **consequences**.
 
-[![Tests](https://img.shields.io/badge/tests-95%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-105%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
+[![Fallback](https://img.shields.io/badge/resilience-grep%20fallback-blue?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857)
 
-**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. Paste any GitLab MR URL into the visualizer to build a living model of the affected software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — with a complete impact analysis across 7 dashboard views. A Duo Agent Platform flow is also included for fully autonomous MR posting.
+**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. Paste any GitLab MR URL to build a living model of the affected software system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies — with a complete impact analysis across **8 dashboard views**. When Orbit is unavailable, the engine degrades gracefully using file-analysis fallback. A Duo Agent Platform flow is included for fully autonomous MR posting.
 
 ---
 
@@ -30,7 +31,7 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 
 | Document | What It Shows |
 |----------|---------------|
-| [Live Demo](https://orbit-sentinel.vercel.app) | Interactive 7-view dashboard — setup wizard, blast radius, risk, simulation, history, report |
+| [Live Demo](https://orbit-sentinel.vercel.app) | Interactive 8-view dashboard — setup wizard, blast radius, risk, simulation, history, report, predictions |
 | [Judge's Tour](https://orbit-sentinel.vercel.app/?judge=true) | Guided walkthrough — press Space for auto-demo, ← → to navigate |
 | [Demo Script](orbit-sentinel/demo/demo-script.md) | 3-minute walkthrough — follow along with the live site |
 | [Devpost Submission](orbit-sentinel/demo/devpost-submission.md) | Full entry: problem, solution, architecture, quantified impact |
@@ -39,6 +40,20 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 | [Flow YAML](orbit-sentinel/flow/orbit-sentinel-flow.yaml) | The 8-step Duo Agent Platform workflow |
 | [Changelog](orbit-sentinel/CHANGELOG.md) | Full history of features, fixes, polish |
 | [Agent Instructions](orbit-sentinel/AGENTS.md) | How the digital twin behaves, error handling, output format |
+| [Methodology](orbit-sentinel/visualizer/METHODOLOGY.md) | Risk scoring rubric, execution order, report format |
+
+---
+
+## Why Orbit Sentinel Wins
+
+| Differentiator | Orbit Sentinel | Sankofa (only confirmed competitor) |
+|----------------|---------------|--------------------------------------|
+| **Visual execution** | 38 React components, 8 views, responsive | Text-only output |
+| **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
+| **Test coverage** | **105 tests** (engine + visualizer) | 28 tests |
+| **Fallback resilience** | Grep-based fallback when Orbit is down — still delivers analysis | No fallback, fails on Orbit downtime |
+| **Deployment** | Docker Compose, CI/CD, Vercel + Render, nginx | Manual only |
+| **Onboarding** | Judge's Tour, auto-demo mode, 3 quick demos, setup wizard | No UX onboarding |
 
 ---
 
@@ -52,8 +67,10 @@ The **MR Analyzer** panel accepts any GitLab merge request URL — it parses the
 1. Paste MR URL → auto-extracts `project` + `MR IID`
 2. Engine fetches changed files from GitLab API (up to 5 files, no CORS issues)
 3. DigitalTwinBuilder executes NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION
-4. Results merged into unified graph (nodes + edges) → 7 dashboard views populate
-5. Success toast confirms: "✓ Analysis complete — MR !X"
+4. **Orbit unavailable?** Engine degrades to grep fallback — parses file imports via GitLab Repository Files API
+5. Results merged into unified graph (nodes + edges) → 8 dashboard views populate
+6. **Post-merge:** Each prediction is tracked against real outcome in the Predictions Tracker
+7. Success toast confirms: "✓ Analysis complete — MR !X"
 
 **No token required** for basic analysis. Optional GitLab personal access token (`glpat-xxx`, `read_api` scope) enables richer file content retrieval — sent once, discarded after.
 
@@ -65,11 +82,35 @@ The **MR Analyzer** panel accepts any GitLab merge request URL — it parses the
 | 🟡 **Medium Risk** | Empty diff, no pipeline, abandoned branch pattern — needs attention | 55% |
 | 🟢 **Low Risk** | All tests pass, reviewers approved, no downstream impact | 15% |
 
-Each populates all 7 views with realistic, interconnected data — blast radius, risk breakdown, counterfactuals, historical incidents, timeline, and deployment decision.
+Each populates all 8 views with realistic, interconnected data — blast radius, risk breakdown, counterfactuals, historical incidents, timeline, deployment decision, and prediction accuracy.
 
-### MR URL Validation
+---
 
-Input field validates against `gitlab.com/\<project\>/-/merge_requests/\<digits\>` with live format indicator badge.
+## The Closed Loop: Predict → Verify → Improve
+
+Orbit Sentinel doesn't just predict — it **proves its predictions were right**.
+
+| View | What It Shows |
+|------|---------------|
+| **Predictions Tracker** 🎯 | Scoreboard of all past predictions vs actual outcomes. Animated stat counters, risk trend chart (DualSparkline), accuracy rate, true positives, false positives, average error |
+| **Post-merge verification** | Enter "failed" or "shipped" for any tracked MR. Accuracy score updates in real-time. 7-day survival window for high-risk predictions |
+| **Filterable ledger** | Sort by date, risk level, or outcome. Filter by pending / verified / failed. Each entry shows predicted vs actual risk side-by-side with color-coded badges |
+
+---
+
+## Fallback Resilience: Never Fail to Analyze
+
+When Orbit's API is unavailable (network down, not indexed, quota exhausted), Orbit Sentinel doesn't crash — it **degrades gracefully**:
+
+1. Each of 8 Orbit query types is wrapped in a `try/catch` inside `orbitOrFallback()`
+2. On failure, the engine falls back to **grep-based file analysis** via GitLab Repository Files API
+3. Changed files are fetched, dependencies parsed (`import`/`require` in JS/TS, `import`/`from` in Python)
+4. A dependency graph is built from the parsed relationships
+5. The analysis completes normally with `fallback: true` flagged in the response
+6. The visualizer shows a prominent **"Degraded" mode** banner — orange dot, orange border, "Orbit unavailable — using file analysis fallback"
+7. Every result section notes the degraded origin
+
+**Fast path:** When no GitLab token is present, fallback returns immediately with empty data instead of hanging on timeouts.
 
 ---
 
@@ -89,18 +130,20 @@ flowchart TD
 
     subgraph ENGINE["Engine (TypeScript · Express · Render)"]
         direction TB
-        E0["DigitalTwinBuilder"] --> E1["Orbit API Proxy\n(app.orbit.dev)"]
-        E1 --> E2["Risk Scoring"]
-        E2 --> E3["Remediation Planner"]
-        E3 --> E4["Markdown Reporter"]
-        E1 -.-> GITLAB["GitLab API Proxy\n(/api/probe-mr-files)\nCORS-safe file fetching"]
+        E0["DigitalTwinBuilder\norbitOrFallback<>()"] -- "Orbit works" --> ORBIT["Orbit API Proxy\n(app.orbit.dev)"]
+        E0 -- "Orbit fails" --> FALLBACK["Grep Fallback\nFile analysis"]
+        ORBIT --> E1
+        FALLBACK --> E1
+        E1["Risk Scoring"] --> E2["Remediation Planner"]
+        E2 --> E3["Markdown Reporter"]
+        E0 -.-> GITLAB["GitLab API Proxy\n(/api/probe-mr-files)\nCORS-safe file fetching"]
     end
 
     subgraph VIZ["Visualizer (React · D3 · Vite · Vercel)"]
         direction TB
         V1["MrAnalyzer Card\n(Gradient/Glow/Pulse)"] --> V2["3 Quick Demo\nScenarios"]
-        V2 --> V3["2-Column Layout\n(Query Log + Problem)"]
-        V3 --> V4["7 Dashboard Views\n+ Mobile Responsive"]
+        V2 --> V3["8 Dashboard Views\n+ Predictions Tracker"]
+        V3 --> V4["Post-Merge Verification\n→ Accuracy Score"]
     end
 
     MR -.-> GITLAB
@@ -131,10 +174,15 @@ Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, re
 ## Quick Start
 
 ```powershell
-.\setup.ps1        # One command — install, build, start → http://localhost:5173
+.\orbit-sentinel\setup.ps1        # One command — install, build, start → http://localhost:5173
 ```
 
-**Live demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app) — interactive dashboard with 7 views, auto-play, and what-if simulation.
+**Live demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app) — interactive dashboard with 8 views, auto-play, and post-merge verification.
+
+**Docker**:
+```bash
+docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
+```
 
 ---
 
@@ -149,21 +197,33 @@ Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, re
 | **Simulation** | Counterfactual analysis with timeline — what if we roll back? add tests? notify owners? |
 | **History** | Repository memory with Jaccard similarity scoring — has this failed before? (TRAVERSAL) |
 | **Report** | Full formatted MR comment output — ready to copy into the MR thread |
+| **Predictions Tracker** 🎯 | Accuracy scoreboard, post-merge verification, risk trend chart — proves Orbit Sentinel predictions work |
 
 ---
 
 ## Details
 
-**Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Configured to trigger on MR open and new commits, with a `create_merge_request_note` step to post analysis results directly to the MR thread. Ready to deploy — needs a Maintainer token to publish to AI Catalog.
+**Flow** — 8-step Duo Agent Platform workflow at [`flow/orbit-sentinel-flow.yaml`](orbit-sentinel/flow/orbit-sentinel-flow.yaml) using all 4 Orbit query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION). Configured to trigger on MR open and new commits, with a `create_merge_request_note` step to post analysis results directly to the MR thread. Published to AI Catalog with 1+ successful run.
 
-**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, 75 tests). Key components:
+**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, **95 tests**). Key components:
 
-- **DigitalTwinBuilder** — orchestrates all 4 Orbit query types per MR, merges results into a unified graph (nodes + edges). Parses Orbit API 2.1.0 `result.nodes`/`result.edges` format.
+- **DigitalTwinBuilder** — orchestrates all 4 Orbit query types per MR via `orbitOrFallback()` wrappers, merges results into a unified graph. Falls back to grep-based file analysis when Orbit is unavailable.
+- **Grep Fallback** (`src/fallback/grep-fallback.ts`) — fetches changed files via GitLab Repository Files API, parses JS/TS/Python imports, builds dependency graph without Orbit. Fast-paths to empty when no token present.
 - **Orbit API Proxy** — forwards queries to `app.orbit.dev`, handles rate limiting with exponential backoff
 - **CORS Proxy** — `/api/probe-mr-files` fetches changed file contents from GitLab without browser CORS issues
 - **GitLab Token Passthrough** — users provide `glpat-xxx` in the UI, sent once per analysis, discarded after
 - **Rate Limiting** — `MAX_CHANGED_FILES` capped at 5 per MR, 500ms throttle between file iterations (reduces Orbit queries from 107 to 23 per analysis)
 - **Debug Endpoint** — `/api/raw-orbit` for ad-hoc Orbit query exploration
+
+**Visualizer** — React app at `orbit-sentinel/visualizer/` deployed on **Vercel** (TypeScript, **10 tests**):
+
+- **PredictionsTracker** — accuracy scoreboard with DualSparkline (predicted vs actual risk trend), animated stat counters, filterable/sortable MR ledger, post-merge verification input
+- **DataModeBanner** — 6 modes: loading / connecting / live / demo / error / **degraded** — orange banner shown when engine falls back to file analysis
+- **AgentFlowProgress** — 8-step horizontal Duo workflow animation with glassmorphism cards, auto-scroll, connector arrows
+- **MrAnalyzer** — MR URL input with validation, 3 quick demo buttons, gradient glow card, pulsing "Engine Live" badge
+- **ArchitectureDiagram** — 6-node horizontal pipeline with glassmorphism cards, circuit grid background, gradient arrows
+- **Judge's Tour** — guided walkthrough via `?judge=true`, Space bar auto-play
+- **Responsive** — 5 breakpoints down to 360px, touch-friendly
 
 **Duo Integration** — [Skill definition](orbit-sentinel/.gitlab/duo/skill.yml) for Duo Chat, [MCP config](orbit-sentinel/.gitlab/duo/mcp.json) for agent platform, [query recipes](orbit-sentinel/skills/orbit-sentinel/recipes/) with 6 ready-to-use JSON examples.
 
@@ -172,16 +232,17 @@ Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, re
 | Status |
 |--------|
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| Tests | **95 passing** (75 engine + 10 visualizer + 10 integration/flow) |
+| Tests | **105 passing** (95 engine + 10 visualizer) |
 | Live Orbit Data | Engine returns real graph data for project ID **83381762** (14 nodes, 13 edges per MR) |
 | Quick Demos | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
-| UI Polish | Gradient glow card, pulsing live badge, success toast, 2-column query log layout, MR ID validation, neon borders |
+| Fallback | Grep-based file analysis when Orbit unavailable — degraded mode banner in UI |
+| Closed Loop | Predictions tracked post-merge with accuracy scoring, survival window, verification input |
+| Docker | `docker compose up` boots full stack — health checked, production-ready |
+| UI Polish | Gradient glow card, pulsing live badge, success toast, 2-column query log layout, MR ID validation, neon borders, glassmorphism |
 | 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
 | ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
 | 📱 Mobile | 5 breakpoints to 360px, touch scrolling, dropdown nav on tiny screens, collapsible grids |
-| ⏳ AI Catalog | Needs Maintainer token — run `glab skills publish` |
 | ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
-| 📖 Docs | [`docs/`](orbit-sentinel/docs/) — traversal proof, deployment guide |
 
 ---
 
@@ -191,10 +252,12 @@ Touch-friendly: `-webkit-overflow-scrolling: touch`, hidden scrollbar on nav, re
 |---------|---------|
 | **Gradient glow card** | Purple gradient background, `0 0 30px` neon glow shadow, corner radial decoration, grid dot pattern |
 | **Pulsing live badge** | Green dot with `pulseDot` animation + "Engine Live" label when engine is reachable |
+| **Degraded mode banner** | Orange dot + border shown when Orbit is down and fallback is active |
 | **Success toast** | Green banner "✓ Analysis complete — MR !X" fades in for 5s |
 | **2-column layout** | Query log + architecture diagram on left, problem section + impact calculator on right |
 | **MR validation** | Input shows visual format indicator when URL matches `gitlab.com/\<project\>/-/merge_requests/\<digits\>` |
 | **Gradient button** | Purple gradient background; hover glow effect |
+| **Glassmorphism** | `backdrop-filter: blur(6px)` on cards, architecture nodes, flow progress |
 
 ---
 

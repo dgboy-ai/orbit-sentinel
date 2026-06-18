@@ -6,6 +6,7 @@
 - **npm** v10+
 - **Git** (for cloning)
 - **PowerShell 5.1+** (Windows) or **bash** (macOS/Linux)
+- **Docker** (optional, for containerized deployment)
 
 ## Quick Start (Windows)
 
@@ -15,6 +16,14 @@
 
 This installs the engine, visualizer, and starts the dev server at `http://localhost:5173`.
 
+## Quick Start (Docker)
+
+```bash
+docker compose up
+```
+
+Boots engine (port 3001) + visualizer (port 80 via nginx) with health checks.
+
 ## Manual Setup
 
 ### Engine
@@ -23,7 +32,7 @@ This installs the engine, visualizer, and starts the dev server at `http://local
 cd engine
 npm install
 npm run build    # compiles TypeScript → dist/
-npm test         # runs 75 tests
+npm test         # runs 95 tests
 ```
 
 ### Visualizer
@@ -34,14 +43,14 @@ npm install
 npm run dev      # starts at http://localhost:5173
 ```
 
-Open `http://localhost:5173/?demo=true` for auto-play mode.
+Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8 views).
 
 ## Verify It Works
 
 | Check | Command (PowerShell) | Expected |
 |-------|----------------------|----------|
 | Engine compiles | `cd engine; if ($?) { npx tsc --noEmit }` | No errors |
-| Tests pass | `cd engine; if ($?) { npm test }` | 75 tests passed |
+| Tests pass | `cd engine; if ($?) { npm test }` | 95 tests passed |
 | Visualizer builds | `cd visualizer; if ($?) { npm run build }` | `dist/` created |
 | Dev server | `cd visualizer; if ($?) { npm run dev }` | Opens at :5173 |
 

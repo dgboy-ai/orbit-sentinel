@@ -25,7 +25,7 @@ import { testGenerator } from "./remediation/test-generator.js";
 import { ErrorHandler, OrbitSentinelError, ErrorType } from "./errors.js";
 import { MRValidator } from "./validators.js";
 
-import type { SentinelReport, ReviewerRecommendation } from "./types.js";
+import type { SentinelReport, ReviewerRecommendation, HistoricalMatch } from "./types.js";
 
 interface AnalyzeChangeParams {
   projectId: number;
@@ -71,10 +71,15 @@ export class OrbitSentinel {
         params.changedFiles,
       );
 
-      const historicalMatches = await memoryStore.findHistoricalMatches(
-        params.projectPath,
-        params.changedFiles,
-      );
+      let historicalMatches: HistoricalMatch[] = [];
+      try {
+        historicalMatches = await memoryStore.findHistoricalMatches(
+          params.projectPath,
+          params.changedFiles,
+        );
+      } catch {
+        // Memory store depends on Orbit — use empty matches on failure
+      }
 
       const reviewerRecommendations = await this.analyzeReviewers(twin);
 

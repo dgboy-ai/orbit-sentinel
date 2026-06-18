@@ -4,11 +4,18 @@ Get from zero to running in one command.
 
 ---
 
-## Quick Start
+## Quick Start (Windows)
 
 ```powershell
 .\setup.ps1
 # → http://localhost:5173
+```
+
+## Quick Start (Docker)
+
+```bash
+docker compose up
+# → visualizer at http://localhost, engine at http://localhost:3001
 ```
 
 Or visit the live demo: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app)
@@ -20,6 +27,7 @@ Or visit the live demo: [orbit-sentinel.vercel.app](https://orbit-sentinel.verce
 - **Node.js** v18+ (v22 recommended)
 - **npm** v10+
 - **Git** 2.0+
+- **Docker** (optional)
 
 ---
 
@@ -96,10 +104,10 @@ To enable the autonomous agent on merge requests:
 
 | Check | Expected |
 |---|---|
-| `npm test` in `engine/` | 75 tests passed |
+| `npm test` in `engine/` | 95 tests passed |
 | `npm run dev` in `visualizer/` | Server starts on port 5173 |
 | Browser at `http://localhost:5173` | Interactive dashboard loads |
-| `http://localhost:5173/?demo=true` | Auto-play demo cycles through all 6 views |
+| `http://localhost:5173/?demo=true` | Auto-play demo cycles through all 8 views |
 
 ---
 
@@ -111,3 +119,4 @@ To enable the autonomous agent on merge requests:
 | [CHANGELOG.md](CHANGELOG.md) | History of changes and fixes |
 | [AGENTS.md](AGENTS.md) | Agent behavior, error handling, Orbit queries |
 | [flow/orbit-sentinel-flow.yaml](flow/orbit-sentinel-flow.yaml) | Duo Agent Platform workflow definition |
+| [METHODOLOGY.md](visualizer/METHODOLOGY.md) | Risk scoring, fallback behavior, post-merge verification |

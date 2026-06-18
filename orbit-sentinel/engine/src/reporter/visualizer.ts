@@ -73,6 +73,7 @@ export interface VisualizationData {
     date: string;
   }>;
   queryTimings?: QueryTimingInfo[];
+  fallback?: boolean;
 }
 
 const COLORS = {
@@ -180,7 +181,9 @@ export class DataVisualizer {
         predictedOutcome: outcome,
         recommendedAction: remediations.map(r => r.description).join(", ") || "Review the risk breakdown below.",
         confidence: `High (${matches.length} historical match(es) analyzed)`,
-        generatedUsing: "Generated via GitLab Duo Flow using Orbit",
+        generatedUsing: twin.metadata.fallback
+          ? "Generated via local analysis (Orbit unavailable) — results may be partial"
+          : "Generated via GitLab Duo Flow using Orbit",
         confidenceFactors: [
           { label: "Historical Matches", value: `${matches.length} prior MRs`, status: matches.length > 2 ? "warning" as const : "success" as const },
           { label: "Pipeline Evidence", value: simulation.blastRadius.pipelines.length > 0 ? "Found" : "Missing", status: simulation.blastRadius.pipelines.length > 0 ? "success" as const : "error" as const },
@@ -234,6 +237,7 @@ export class DataVisualizer {
             { label: "Assign Reviewers", riskAfter: Math.max(0.05, currentRisk - 0.25), color: "#a78bfa" },
             { label: "All Mitigations", riskAfter: Math.max(0.05, currentRisk - 0.45), color: "#f97316" },
           ],
+      fallback: twin.metadata.fallback,
       queryTimings: twin.metadata.queryTimings?.map(t => ({
         queryType: t.queryType,
         queryName: t.queryName,

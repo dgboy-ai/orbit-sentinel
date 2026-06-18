@@ -32,6 +32,7 @@ import MrAnalyzer from "./components/MrAnalyzer";
 import OrbitQueryExplorer from "./components/OrbitQueryExplorer";
 import ConfettiCelebration from "./components/ConfettiCelebration";
 import AgentFlowProgress from "./components/AgentFlowProgress";
+import PredictionsTracker from "./components/PredictionsTracker";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
@@ -72,7 +73,7 @@ function PanelFallback({ height = 200 }: { height?: number }) {
 // Falls back to same-origin (Vite dev server proxy) or demo mode if unreachable.
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
 
-type View = "overview" | "blast-radius" | "risk" | "simulation" | "historical" | "report" | "setup";
+type View = "overview" | "blast-radius" | "risk" | "simulation" | "historical" | "report" | "predictions" | "setup";
 
 type DemoStep = { view: View; label: string; sublabel: string; icon: string };
 
@@ -84,9 +85,10 @@ const DEMO_STEPS: DemoStep[] = [
   { view: "simulation", label: "Forecast Engine", sublabel: "Digital twin forecast with interactive what-if scenarios — predicts outcomes before deployment", icon: "🧪" },
   { view: "historical", label: "Historical Context", sublabel: "Past incidents and MRs with similarity scores from Orbit TRAVERSAL query", icon: "📜" },
   { view: "report", label: "Impact Report", sublabel: "Full MR impact summary — deploy decisions, rollback strategy, and evidence chain", icon: "📋" },
+  { view: "predictions", label: "Predictions Tracker", sublabel: "Prediction accuracy scoreboard, post-merge verification, risk trend chart — proves Orbit Sentinel predictions work", icon: "🎯" },
 ];
 
-const VIEW_LABELS: Record<View, string> = { overview: "Dashboard", "blast-radius": "Blast Radius", risk: "Risk Investigation", simulation: "Forecast Engine", historical: "Historical Context", report: "Impact Report", setup: "Setup Wizard" };
+const VIEW_LABELS: Record<View, string> = { overview: "Dashboard", "blast-radius": "Blast Radius", risk: "Risk Investigation", simulation: "Forecast Engine", historical: "Historical Context", report: "Impact Report", predictions: "Predictions", setup: "Setup Wizard" };
 
 const SS_KEY = "orbit-vs";
 function ssRead<T>(key: string, fallback: T): T {
@@ -177,7 +179,7 @@ function getInitialView(): View {
   if (typeof window === "undefined") return "overview";
   const p = new URLSearchParams(window.location.search);
   const v = p.get("view");
-  if (v && ["overview","blast-radius","risk","simulation","historical","report","setup"].includes(v)) return v as View;
+  if (v && ["overview","blast-radius","risk","simulation","historical","report","predictions","setup"].includes(v)) return v as View;
   return "overview";
 }
 
@@ -264,7 +266,7 @@ export default function App() {
         branch: 'test-sentinel',
       });
       setData(result.report);
-      setDataMode("live");
+      setDataMode(result.report.fallback ? "degraded" : "live");
     } catch (err) {
       console.error('Failed to load data:', err);
       setData(DEMO_DATA);
@@ -403,7 +405,7 @@ export default function App() {
     }
   }, []);
 
-  const tabs: [View, string][] = [["overview","Overview"],["setup","Setup"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"]];
+  const tabs: [View, string][] = [["overview","Overview"],["setup","Setup"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"],["predictions","Predictions"]];
   const VIEW_QUERY_TAG: Partial<Record<View, {tag: string; color: string}>> = {
     "blast-radius": { tag: "NEIGHBORS", color: "#a78bfa" },
     "historical": { tag: "TRAVERSAL", color: "#22d3ee" },
@@ -488,6 +490,7 @@ export default function App() {
       case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} /></Suspense></ErrorBoundary>;
       case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} /></Suspense></ErrorBoundary>;
       case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
+      case "predictions": return <ErrorBoundary><PredictionsTracker /></ErrorBoundary>;
       case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
   }, [view, data, navigate, isMobile, isTiny]);

@@ -445,7 +445,7 @@ const report = await sentinel.analyzeChange({
 
 ### Technical Metrics
 
-- **Test Coverage**: 85%+ (Vitest)
+- **Test Coverage**: 105 tests passing (95 engine + 10 visualizer)
 - **Build Time**: < 2 minutes
 - **Response Time**: < 5 seconds
 - **Bundle Size**: < 500KB

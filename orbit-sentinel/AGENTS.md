@@ -87,9 +87,20 @@ Never retry authentication errors. Never retry validation errors. Never retry in
 
 ### Fallback Behavior
 
-- **Orbit unavailable** — Use cached digital twin (if available). Report "degraded mode — results may be stale."
+- **Orbit unavailable** — Use grep-based file analysis fallback. Fetch changed files via GitLab Repository Files API, parse JS/TS/Python imports, build dependency graph. Fast-paths to empty when no token present. Report "degraded mode — results from file analysis."
 - **Partial query failure** — Report with the queries that succeeded. Annotate missing sections.
 - **Complete failure** — Post a note on the MR: "Orbit Sentinel encountered an error during analysis. Details have been logged. The pipeline will proceed without impact prediction."
+
+### Closed-Loop Accuracy (Post-Merge Verification)
+
+Every prediction is tracked post-merge through a 7-day survival window:
+
+- **True Positive**: High-risk prediction (≥60%) → ship → failed within 7 days ✅
+- **True Negative**: Low-risk prediction → ship → no incident in 7 days ✅
+- **False Positive**: High-risk prediction → ship → no incident ❌
+- **False Negative**: Low-risk prediction → ship → failed ❌
+
+Accuracy = (TP + TN) / (TP + TN + FP + FN). Results surfaced in Predictions Tracker view with DualSparkline trend chart.
 
 ---
 

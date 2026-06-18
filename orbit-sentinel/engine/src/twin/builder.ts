@@ -1,8 +1,10 @@
 import { queryEngine } from "../orbit/queries.js";
+import { grepFallback } from "../fallback/grep-fallback.js";
 import type {
   DigitalTwin,
   DigitalTwinNode,
   DigitalTwinEdge,
+  OrbitQueryResult,
 } from "../types.js";
 
 interface BuildTwinParams {
@@ -20,10 +22,12 @@ export interface QueryTiming {
   nodeCount: number;
   edgeCount: number;
   status: "success" | "error";
+  fallback?: boolean;
 }
 
 export class DigitalTwinBuilder {
   private timings: QueryTiming[] = [];
+  private usedFallback = false;
 
   getQueryTimings(): QueryTiming[] {
     return [...this.timings];
@@ -68,6 +72,24 @@ export class DigitalTwinBuilder {
     }
   }
 
+  private async orbitOrFallback<T>(
+    queryType: string,
+    queryName: string,
+    orbitFn: () => Promise<T>,
+    fallbackFn: () => Promise<T>,
+  ): Promise<{ data: T; fromFallback: boolean }> {
+    try {
+      const result = await orbitFn();
+      const isEmpty = Array.isArray(result) ? result.length === 0 : false;
+      if (isEmpty) throw new Error("Empty result");
+      return { data: result, fromFallback: false };
+    } catch {
+      this.usedFallback = true;
+      const fallbackResult = await fallbackFn();
+      return { data: fallbackResult, fromFallback: true };
+    }
+  }
+
   private mergeGraph(nodes: Map<string, DigitalTwinNode>, edges: Map<string, DigitalTwinEdge>, result: { nodes?: unknown[], edges?: unknown[] }): void {
     if (!result.nodes) return;
     const edgeKey = (s: string, t: string, type: string) => `${s}|${t}|${type}`;
@@ -94,53 +116,88 @@ export class DigitalTwinBuilder {
 
   async build(params: BuildTwinParams): Promise<DigitalTwin> {
     this.clearTimings();
+    this.usedFallback = false;
     const nodes: Map<string, DigitalTwinNode> = new Map();
     const edges: Map<string, DigitalTwinEdge> = new Map();
 
     // Cap changed files to avoid Orbit API rate limits
     const changedFiles = params.changedFiles.slice(0, DigitalTwinBuilder.MAX_CHANGED_FILES);
 
-    const projectSummary = await this.timedQuery("NEIGHBORS", "Project Summary", () =>
-      queryEngine.getProjectSummary(params.projectId)
+    // Project Summary (NEIGHBORS)
+    const projSum = await this.orbitOrFallback(
+      "NEIGHBORS", "Project Summary",
+      () => this.timedQuery("NEIGHBORS", "Project Summary (Orbit)", () =>
+        queryEngine.getProjectSummary(params.projectId)),
+      () => this.timedQuery("NEIGHBORS", "Project Summary (Fallback)", async () =>
+        grepFallback.emptyResult("neighbors")),
     );
-    this.mergeGraph(nodes, edges, projectSummary.result);
+    this.mergeGraph(nodes, edges, (projSum.data as OrbitQueryResult).result);
 
     const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
 
     for (const filePath of changedFiles) {
-      const blastRadiusResult = await this.timedQuery("NEIGHBORS", "Blast Radius", () =>
-        queryEngine.findBlastRadius(filePath)
+      // Blast Radius (NEIGHBORS) with grep fallback
+      const blast = await this.orbitOrFallback(
+        "NEIGHBORS", "Blast Radius",
+        () => this.timedQuery("NEIGHBORS", "Blast Radius (Orbit)", () =>
+          queryEngine.findBlastRadius(filePath)),
+        () => this.timedQuery("NEIGHBORS", "Blast Radius (Fallback)", () =>
+          grepFallback.neighborsFile(params.projectPath, filePath, params.branch)),
       );
-      this.mergeGraph(nodes, edges, blastRadiusResult.result);
+      this.mergeGraph(nodes, edges, (blast.data as OrbitQueryResult).result);
 
-      const depResult = await this.timedQuery("PATH_FINDING", "Dependency Chain", () =>
-        queryEngine.findDependentProjects(filePath)
+      // Dependency Chain (PATH_FINDING) with grep fallback
+      const dep = await this.orbitOrFallback(
+        "PATH_FINDING", "Dependency Chain",
+        () => this.timedQuery("PATH_FINDING", "Dependency Chain (Orbit)", () =>
+          queryEngine.findDependentProjects(filePath)),
+        () => this.timedQuery("PATH_FINDING", "Dependency Chain (Fallback)", () =>
+          grepFallback.pathFindingFiles(params.projectPath, [filePath], params.branch)),
       );
-      this.mergeGraph(nodes, edges, depResult.result);
+      this.mergeGraph(nodes, edges, (dep.data as OrbitQueryResult).result);
 
-      const historicalResult = await this.timedQuery("TRAVERSAL", "Historical MRs", () =>
-        queryEngine.findHistoricalMRs(params.projectPath, filePath)
+      // Historical MRs (TRAVERSAL) with grep fallback
+      const hist = await this.orbitOrFallback(
+        "TRAVERSAL", "Historical MRs",
+        () => this.timedQuery("TRAVERSAL", "Historical MRs (Orbit)", () =>
+          queryEngine.findHistoricalMRs(params.projectPath, filePath)),
+        () => this.timedQuery("TRAVERSAL", "Historical MRs (Fallback)", () =>
+          grepFallback.traversalFiles(params.projectPath, [filePath], params.branch)),
       );
-      this.mergeGraph(nodes, edges, historicalResult.result);
+      this.mergeGraph(nodes, edges, (hist.data as OrbitQueryResult).result);
 
-      const incidentResult = await this.timedQuery("TRAVERSAL", "File Incidents", () =>
-        queryEngine.findIncidentsConnectedToFile(filePath)
+      // File Incidents (TRAVERSAL) with grep fallback
+      const inc = await this.orbitOrFallback(
+        "TRAVERSAL", "File Incidents",
+        () => this.timedQuery("TRAVERSAL", "File Incidents (Orbit)", () =>
+          queryEngine.findIncidentsConnectedToFile(filePath)),
+        () => this.timedQuery("TRAVERSAL", "File Incidents (Fallback)", () =>
+          grepFallback.traversalFiles(params.projectPath, [filePath], params.branch)),
       );
-      this.mergeGraph(nodes, edges, incidentResult.result);
+      this.mergeGraph(nodes, edges, (inc.data as OrbitQueryResult).result);
 
-      // Throttle between files to avoid Orbit API rate limits
       await delay(500);
     }
 
-    // PATH_FINDING: deployment path tracing — the 4th required Orbit query type
-    const deployPathResult = await this.timedQuery("PATH_FINDING", "Deployment Path", () =>
-      queryEngine.findDeploymentPath(params.projectId)
+    // Deployment Path (PATH_FINDING) with grep fallback
+    const deploy = await this.orbitOrFallback(
+      "PATH_FINDING", "Deployment Path",
+      () => this.timedQuery("PATH_FINDING", "Deployment Path (Orbit)", () =>
+        queryEngine.findDeploymentPath(params.projectId)),
+      () => this.timedQuery("PATH_FINDING", "Deployment Path (Fallback)", () =>
+        grepFallback.pathFindingFiles(params.projectPath, changedFiles, params.branch)),
     );
-    this.mergeGraph(nodes, edges, deployPathResult.result);
+    this.mergeGraph(nodes, edges, (deploy.data as OrbitQueryResult).result);
 
-    const pipelineResult = await this.timedQuery("AGGREGATION", "Pipeline Failures", () =>
-      queryEngine.findPipelineFailures([params.projectId])
+    // Pipeline Failures (AGGREGATION) with fallback
+    const pipe = await this.orbitOrFallback(
+      "AGGREGATION", "Pipeline Failures",
+      () => this.timedQuery("AGGREGATION", "Pipeline Failures (Orbit)", () =>
+        queryEngine.findPipelineFailures([params.projectId])),
+      () => this.timedQuery("AGGREGATION", "Pipeline Failures (Fallback)", async () =>
+        grepFallback.emptyResult("aggregation")),
     );
+    const pipelineResult = pipe.data as OrbitQueryResult;
     if (pipelineResult.result.rows) {
       for (const row of pipelineResult.result.rows as Array<Record<string, unknown>>) {
         const pipelineInfo = row as { failed_pipelines?: number; p?: { id: string; type: string; properties: Record<string, unknown> } };
@@ -154,7 +211,6 @@ export class DigitalTwinBuilder {
         }
       }
     }
-    // Also merge aggregation nodes/edges if available
     this.mergeGraph(nodes, edges, pipelineResult.result);
 
     const allNodes = Array.from(nodes.values());
@@ -162,7 +218,6 @@ export class DigitalTwinBuilder {
     const nodeCount = allNodes.length;
     const edgeCount = allEdges.length;
 
-    // Update timings with actual node/edge counts
     this.timings = this.timings.map(t => ({ ...t, nodeCount, edgeCount }));
 
     return {
@@ -174,7 +229,8 @@ export class DigitalTwinBuilder {
         branch: params.branch,
         timestamp: new Date().toISOString(),
         queryTimings: this.getQueryTimings(),
-      },
+        fallback: this.usedFallback || undefined,
+      } as DigitalTwin["metadata"] & { fallback?: boolean },
     };
   }
 

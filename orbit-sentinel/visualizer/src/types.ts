@@ -121,4 +121,5 @@ export interface VisualizationData {
   counterfactuals: CounterfactualScenario[];
   incidents: HistoricalIncident[];
   queryTimings?: QueryTimingInfo[];
+  fallback?: boolean;
 }

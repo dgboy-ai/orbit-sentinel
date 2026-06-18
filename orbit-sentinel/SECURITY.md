@@ -22,3 +22,9 @@ Orbit Sentinel is a hackathon project and does not process production data. If y
 - Orbit API tokens should use **project access tokens** with minimal required scopes
 - Store tokens as **masked CI/CD variables** in GitLab
 - Never commit tokens to the repository
+
+## Fallback Token Handling
+
+- When `GITLAB_ACCESS_TOKEN` is not set, the grep fallback fast-paths to empty data (no network calls)
+- When token is set, fallback uses GitLab Repository Files API with Bearer auth — token sent once per file, discarded after use
+- Tokens are never logged, cached, or persisted beyond the single analysis request

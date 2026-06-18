@@ -115,6 +115,7 @@ export interface DigitalTwin {
     branch?: string;
     timestamp: string;
     queryTimings?: QueryTiming[];
+    fallback?: boolean;
   };
 }
 

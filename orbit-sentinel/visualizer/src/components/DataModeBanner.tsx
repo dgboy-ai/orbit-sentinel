@@ -1,6 +1,6 @@
 import React from "react";
 
-export type DataMode = "loading" | "connecting" | "live" | "demo" | "error";
+export type DataMode = "loading" | "connecting" | "live" | "demo" | "error" | "degraded";
 
 interface Props {
   mode: DataMode;
@@ -14,6 +14,7 @@ const MODE_CONFIG: Record<DataMode, { label: string; color: string; dotColor: st
   live: { label: "Live", color: "#22c55e", dotColor: "#22c55e", description: "Real-time data from Orbit engine" },
   demo: { label: "Demo", color: "#60a5fa", dotColor: "#60a5fa", description: "Showing sample data — engine unavailable" },
   error: { label: "Error", color: "#ef4444", dotColor: "#ef4444", description: "" },
+  degraded: { label: "Degraded", color: "#f97316", dotColor: "#f97316", description: "Orbit unavailable — using file analysis fallback" },
 };
 
 export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
@@ -26,7 +27,7 @@ export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
       background: mode === "live" ? "rgba(34,197,94,0.06)" :
                  mode === "demo" ? "rgba(96,165,250,0.06)" :
                  mode === "error" ? "rgba(239,68,68,0.06)" :
-                 mode === "connecting" ? "rgba(234,179,8,0.06)" :
+                 mode === "connecting" || mode === "degraded" ? "rgba(234,179,8,0.06)" :
                  "rgba(255,255,255,0.03)",
       border: `1px solid ${cfg.color}18`,
       fontSize: 9,

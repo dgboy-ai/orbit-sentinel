@@ -33,7 +33,7 @@ describe("Server API integration", () => {
     expect(res.status).toBe(400);
   });
 
-  it("POST /api/analyze returns 500 when no Orbit token available", async () => {
+  it("POST /api/analyze uses fallback when no Orbit token available", async () => {
     const res = await request(app)
       .post("/api/analyze")
       .send({
@@ -44,10 +44,11 @@ describe("Server API integration", () => {
         changedFiles: ["src/main.ts"],
         changeDescription: "Test analysis",
       });
-    // Without GITLAB_ACCESS_TOKEN, Orbit API returns 401
-    // The endpoint returns 500 with an error message about auth
-    expect(res.status).toBe(500);
-    expect(res.body.error).toBeTruthy();
+    // Without GITLAB_ACCESS_TOKEN, the engine falls back to file-based analysis
+    // Returns 200 with fallback flag and empty digital twin
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.report.fallback).toBe(true);
     expect(res.body.demoMode).toBe(true);
   });
 
