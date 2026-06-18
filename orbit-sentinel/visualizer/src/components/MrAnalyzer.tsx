@@ -40,6 +40,29 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
     try {
       const useCreds = !!token;
+
+      // Fetch actual changed files from GitLab API
+      const encodedPath = encodeURIComponent(parsed.project);
+      const filesUrl = `https://gitlab.com/api/v4/projects/${encodedPath}/merge_requests/${parsed.mrIid}/changes`;
+      let changedFiles: string[] = ["src/main.ts"];
+      try {
+        const ac = new AbortController();
+        const ft = setTimeout(() => ac.abort(), 8000);
+        const filesHeaders: Record<string, string> = { "Content-Type": "application/json" };
+        if (useCreds) filesHeaders["Authorization"] = `Bearer ${token}`;
+        const filesRes = await fetch(filesUrl, {
+          headers: filesHeaders,
+          signal: ac.signal,
+        });
+        clearTimeout(ft);
+        if (filesRes.ok) {
+          const filesData = await filesRes.json() as { changes?: Array<{ new_path: string }> };
+          if (filesData.changes?.length) {
+            changedFiles = filesData.changes.map(c => c.new_path);
+          }
+        }
+      } catch { /* fallback */ }
+
       const endpoint = `${API_BASE_URL}${useCreds ? "/api/analyze-with-creds" : "/api/analyze"}`;
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
@@ -49,8 +72,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         projectPath: parsed.project,
         mrIid: parsed.mrIid,
         mrTitle: `MR !${parsed.mrIid}`,
-        changedFiles: ["."],
-        changeDescription: `Analyze MR !${parsed.mrIid}`,
+        changedFiles,
+        changeDescription: `Analyze MR !${parsed.mrIid} — ${changedFiles.length} file(s) changed`,
       };
       if (useCreds) body.gitlabToken = token;
 
