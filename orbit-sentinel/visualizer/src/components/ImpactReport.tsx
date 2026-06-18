@@ -3,6 +3,7 @@ import type { VisualizationData, OrbitQueryEvidence } from "../types";
 import {
   riskScoreToColor, riskScoreToGlow, riskScoreToKey, riskScoreToGradient, RISK,
 } from "../utils/colors";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 interface Props { data: VisualizationData }
 
@@ -288,8 +289,9 @@ const SectionCard = React.memo(function SectionCard({
 }: {
   id: string; icon: string; title: string; col: string; children: React.ReactNode;
 }) {
+  const isMobile = useMediaQuery("(max-width: 640px)");
   return (
-    <div id={id} className="card" style={{ padding: "18px 22px" }}>
+    <div id={id} className="card" style={{ padding: isMobile ? "14px 14px" : "20px 24px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <div style={{
           width: 30, height: 30, borderRadius: 7,
@@ -305,6 +307,17 @@ const SectionCard = React.memo(function SectionCard({
 });
 
 /* ─── Main Component ─── */
+function GlowOrb({ color, top, right, size = 280 }: { color: string; top?: number; right?: number; size?: number }) {
+  return (
+    <div style={{
+      position: "absolute", top: top ?? -80, right: right ?? 20,
+      width: size, height: size,
+      borderRadius: "50%", background: `${color}06`, filter: "blur(80px)",
+      pointerEvents: "none",
+    }} />
+  );
+}
+
 export default function ImpactReport({ data }: Props) {
   const { summary, hero, evidence, decisionCenter, incidents, counterfactuals, riskData, futureTimeline } = data;
   const score = scoreFromSummary(summary.riskScore);
@@ -312,6 +325,8 @@ export default function ImpactReport({ data }: Props) {
   const col = RISK[rk].hex;
   const glow = RISK[rk].glow;
   const grad = RISK[rk].gradient;
+  const isMobile = useMediaQuery("(max-width: 640px)");
+  const isSmall = useMediaQuery("(max-width: 480px)");
 
   const [stickyVerdict, setStickyVerdict] = useState(false);
   const verdictRef = useRef<HTMLDivElement>(null);
@@ -347,7 +362,7 @@ export default function ImpactReport({ data }: Props) {
   ];
 
   return (
-    <div style={{ maxWidth: 820, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12, position: "relative", wordBreak: "break-word", overflowWrap: "break-word" }}>
+    <div style={{ maxWidth: isMobile ? "100%" : 820, margin: "0 auto", display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12, padding: isMobile ? "0 4px" : 0, position: "relative", wordBreak: "break-word", overflowWrap: "break-word" }}>
       {/* ── Scroll Progress Bar ── */}
       <div style={{
         position: "fixed", top: 0, left: 0, right: 0, height: 2, zIndex: 200,
@@ -360,14 +375,14 @@ export default function ImpactReport({ data }: Props) {
       {/* ── Sticky Verdict Banner ── */}
       {stickyVerdict && (
         <div style={{
-          position: "fixed", top: 54, left: "50%", transform: "translateX(-50%)", zIndex: 150,
-          padding: "6px 18px", borderRadius: 20,
+          position: "fixed", top: isMobile ? 46 : 54, left: "50%", transform: "translateX(-50%)", zIndex: 150,
+          padding: isMobile ? "4px 12px" : "6px 18px", borderRadius: 20,
           background: `linear-gradient(135deg, ${col}22, ${col}11)`,
           backdropFilter: "blur(16px)",
           border: `1px solid ${col}33`,
           boxShadow: `0 4px 20px rgba(0,0,0,0.3)`,
           display: "flex", alignItems: "center", gap: 10,
-          fontSize: 11, fontWeight: 600, color: col,
+          fontSize: isMobile ? 9 : 11, fontWeight: 600, color: col,
           animation: "fadeSlideDown 0.2s ease",
           whiteSpace: "nowrap",
         }}>
@@ -386,7 +401,7 @@ export default function ImpactReport({ data }: Props) {
           padding: "8px 16px", display: "flex", alignItems: "center", gap: 4,
           background: "rgba(8,9,13,0.85)", backdropFilter: "blur(16px)",
         }}>
-          <div style={{ display: "flex", gap: 3, flex: 1, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 3, flex: 1, overflowX: "auto", whiteSpace: "nowrap", scrollbarWidth: "none", msOverflowStyle: "none" }}>
             {navSections.map(s => (
               <button key={s.key} aria-label={`Scroll to ${s.label} section`} onClick={() => {
                 document.getElementById(`sec-${s.key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -431,15 +446,10 @@ export default function ImpactReport({ data }: Props) {
       }}>
         <div style={{
           background: `linear-gradient(135deg, ${col}12, transparent 60%)`,
-          padding: "26px 30px", position: "relative",
+          padding: isMobile ? "18px 18px" : "26px 30px", position: "relative",
         }} ref={verdictRef}>
-          {/* Glow orb */}
-          <div style={{
-            position: "absolute", top: -80, right: 20, width: 280, height: 280,
-            borderRadius: "50%", background: `${col}06`, filter: "blur(80px)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 24, position: "relative", zIndex: 1 }}>
+          <GlowOrb color={col} top={-80} right={20} size={isMobile ? 180 : 280} />
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 14 : 24, position: "relative", zIndex: 1, flexDirection: isMobile ? "column" : "row" }}>
             <div style={{ flexShrink: 0, textAlign: "center" }}>
               <RiskGauge score={score} size={88} />
               <div style={{
@@ -496,7 +506,9 @@ export default function ImpactReport({ data }: Props) {
 
         {/* Quick stats row */}
         <div style={{
-          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0,
+          display: "grid",
+          gridTemplateColumns: isSmall ? "repeat(2, 1fr)" : isMobile ? "repeat(4, 1fr)" : "repeat(4, 1fr)",
+          gap: 0,
           borderTop: `1px solid ${col}12`,
         }}>
           {[
@@ -506,8 +518,9 @@ export default function ImpactReport({ data }: Props) {
             { label: "Risk Reduction", value: 1 - decisionCenter.riskReduction.afterRecommendation / decisionCenter.riskReduction.current, suffix: "%", color: "#22c55e", decimals: 0, icon: "📉" },
           ].map((stat, i) => (
             <div key={stat.label} style={{
-              padding: "14px 16px 12px", textAlign: "center",
-              borderRight: i < 3 ? `1px solid var(--border)` : "none",
+              padding: isSmall ? "10px 8px" : "14px 16px 12px", textAlign: "center",
+              borderRight: i < 3 && !isSmall ? `1px solid var(--border)` : "none",
+              borderBottom: isSmall && i < 2 ? `1px solid var(--border)` : "none",
             }}>
               <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 5 }}>
                 {stat.icon} {stat.label}
@@ -521,7 +534,7 @@ export default function ImpactReport({ data }: Props) {
       </div>
 
       {/* ── 2-Column Body Grid ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, alignItems: "start" }}>
         {/* Left Column */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
           {/* ── Executive Summary ── */}
@@ -582,7 +595,7 @@ export default function ImpactReport({ data }: Props) {
           </SectionCard>
 
           {/* ── Risk Trajectory + Timeline side by side ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
             <SectionCard id="sec-remediation" icon="📉" title="Trajectory" col={col}>
               <RiskSparkline points={[
                 { label: "Current", value: decisionCenter.riskReduction.current },
@@ -683,6 +696,8 @@ export default function ImpactReport({ data }: Props) {
       </div>
 
       {/* ── Section: Decision Center + Remediation (full-width) ── */}
+      <div style={{ position: "relative" }}>
+        <GlowOrb color={col} top={-60} right={10} size={200} />
       <SectionCard id="sec-decision" icon="🎯" title="Decision Center & Remediation Plan" col={col}>
         {/* Verdict banner */}
         <div style={{
@@ -698,7 +713,7 @@ export default function ImpactReport({ data }: Props) {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
           {/* Left half: Risk bars + remediation flow */}
           <div>
             <div style={{ marginBottom: 10 }}>
@@ -729,7 +744,7 @@ export default function ImpactReport({ data }: Props) {
 
           {/* Right half: Reviewers + Tests + Rollback */}
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8 }}>
               <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>👤 Reviewers</div>
                 {decisionCenter.reviewers.map(r => (
@@ -757,6 +772,7 @@ export default function ImpactReport({ data }: Props) {
           </div>
         </div>
       </SectionCard>
+      </div>
 
       {/* ── Footer ── */}
       <div style={{
