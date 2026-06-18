@@ -379,11 +379,29 @@ app.post('/api/probe-mr-files', async (req, res) => {
   }
 });
 
+// Raw Orbit query proxy — lets the UI test arbitrary queries (debug only)
+app.post('/api/raw-orbit', async (req, res) => {
+  try {
+    const { query_type, entity, filters, format } = req.body;
+    const query: import("./types.js").OrbitQuery = {
+      query_type: query_type || "neighbors",
+      node: { entity: entity || "Project", ...(filters ? { filters } : {}) },
+    };
+    const result = await orbitClient.safeQuery(query, 1, format || "raw");
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Orbit query failed',
+      message: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
 // Diagnostic endpoint — tests each Orbit query type individually
 app.get('/api/diag', async (_req, res) => {
   const results: Record<string, unknown> = {};
-  const projectId = 39251857;
-  const filePath = "flows/flow.yml";
+  const projectId = 278964;
+  const filePath = "app/services/auto_merge/base_service.rb";
 
   // Fetch schema to discover valid entity types and relationship types
   try {
@@ -399,7 +417,7 @@ app.get('/api/diag', async (_req, res) => {
 
   // Test TRAVERSAL
   try {
-    const r = await queryEngine.findHistoricalMRs("gitlab-ai-hackathon/transcend/39251857", filePath);
+    const r = await queryEngine.findHistoricalMRs("gitlab-org/gitlab", filePath);
     results.traversal = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.traversal = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
