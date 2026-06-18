@@ -16,7 +16,7 @@ export class MRValidator {
     if (!path || typeof path !== 'string') {
       return { isValid: false, error: 'Project path is required' };
     }
-    const pathRegex = /^[a-zA-Z0-9\-_]+\/[a-zA-Z0-9\-_]+$/;
+    const pathRegex = /^[a-zA-Z0-9\-_]+(?:\/[a-zA-Z0-9\-_]+)+$/;
     if (!pathRegex.test(path)) {
       return { isValid: false, error: 'Project path must be in format "group/project"' };
     }
