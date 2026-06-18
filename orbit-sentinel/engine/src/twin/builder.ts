@@ -33,6 +33,9 @@ export class DigitalTwinBuilder {
     this.timings = [];
   }
 
+  // Cap changed files to avoid Orbit API rate limits (max queries: 1 + cap * 4 + 2)
+  private static readonly MAX_CHANGED_FILES = 5;
+
   private async timedQuery<T>(
     queryType: string,
     queryName: string,
@@ -71,6 +74,9 @@ export class DigitalTwinBuilder {
     const edges: Map<string, DigitalTwinEdge> = new Map();
     const edgeKey = (s: string, t: string, type: string) => `${s}|${t}|${type}`;
 
+    // Cap changed files to avoid Orbit API rate limits
+    const changedFiles = params.changedFiles.slice(0, DigitalTwinBuilder.MAX_CHANGED_FILES);
+
     const projectSummary = await this.timedQuery("NEIGHBORS", "Project Summary", () =>
       queryEngine.getProjectSummary(params.projectId)
     );
@@ -103,7 +109,9 @@ export class DigitalTwinBuilder {
       }
     }
 
-    for (const filePath of params.changedFiles) {
+    const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+    for (const filePath of changedFiles) {
       const blastRadiusResult = await this.timedQuery("NEIGHBORS", "Blast Radius", () =>
         queryEngine.findBlastRadius(filePath)
       );
@@ -188,6 +196,9 @@ export class DigitalTwinBuilder {
           }
         }
       }
+
+      // Throttle between files to avoid Orbit API rate limits
+      await delay(500);
     }
 
     // PATH_FINDING: deployment path tracing — the 4th required Orbit query type
