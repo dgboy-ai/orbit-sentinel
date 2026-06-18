@@ -365,7 +365,10 @@ export default function App() {
             {/* Tier 0: Orbit Query Log + Problem/Solution side by side when log is visible */}
             {showQueryLog ? (
               <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 8 : 12 }}>
-                <OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} />
+                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+                  <OrbitQueryLog onComplete={() => setTimeout(() => setShowQueryLog(false), 2000)} />
+                  <ArchitectureDiagram />
+                </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
                   <ProblemSection />
                   <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
@@ -374,11 +377,10 @@ export default function App() {
             ) : (
               <>
                 <ProblemSection />
+                <ArchitectureDiagram />
                 <ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} />
               </>
             )}
-            {/* Tier 1: Architecture Diagram */}
-            <ArchitectureDiagram />
             {/* Tier 1: Hero Outcome + Tagline */}
             <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
               <HeroSection {...data.hero} />
