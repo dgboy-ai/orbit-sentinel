@@ -76,38 +76,61 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
 
   return (
     <div style={{
-      display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-      animation: mounted ? `fadeSlideUp 0.4s ${index * 0.06}s cubic-bezier(0.16,1,0.3,1) both` : "none",
+      display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+      animation: mounted ? `fadeSlideUp 0.35s ${index * 0.05}s cubic-bezier(0.16,1,0.3,1) both` : "none",
     }}>
       <div style={{
-        width: 52, height: 52, borderRadius: 12, cursor: "pointer",
+        width: 46, height: 46, borderRadius: 10, cursor: "pointer",
         background: isOpen
-          ? `linear-gradient(135deg, ${node.color}22, ${node.color}11)`
-          : "rgba(255,255,255,0.03)",
+          ? `linear-gradient(135deg, ${node.color}18, ${node.color}08)`
+          : "rgba(255,255,255,0.02)",
         border: isOpen
-          ? `1.5px solid ${node.color}55`
-          : "1px solid rgba(255,255,255,0.08)",
+          ? `1.5px solid ${node.color}44`
+          : "1px solid rgba(255,255,255,0.06)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 20, flexShrink: 0,
-        transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
-        transform: isOpen ? "scale(1.08)" : "scale(1)",
-        boxShadow: isOpen ? `0 0 20px ${node.color}22` : "none",
+        fontSize: 17, flexShrink: 0,
+        transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)",
+        transform: isOpen ? "scale(1.06)" : "scale(1)",
+        boxShadow: isOpen
+          ? `0 0 16px ${node.color}18, inset 0 0 20px ${node.color}08`
+          : "none",
+        position: "relative",
       }}
         onClick={() => onSelect(isOpen ? "" : node.id)}
-        onMouseEnter={e => { if (!isOpen) { e.currentTarget.style.background = `${node.color}11`; e.currentTarget.style.borderColor = `${node.color}33`; e.currentTarget.style.transform = "scale(1.04)"; } }}
-        onMouseLeave={e => { if (!isOpen) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.transform = "scale(1)"; } }}
+        onMouseEnter={e => {
+          if (!isOpen) {
+            e.currentTarget.style.background = `${node.color}10`;
+            e.currentTarget.style.borderColor = `${node.color}28`;
+            e.currentTarget.style.transform = "scale(1.04)";
+          }
+        }}
+        onMouseLeave={e => {
+          if (!isOpen) {
+            e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+            e.currentTarget.style.transform = "scale(1)";
+          }
+        }}
         title={`Click for details: ${node.title}`}
       >
         {node.icon}
+        {isOpen && (
+          <div style={{
+            position: "absolute", inset: -3, borderRadius: 13,
+            border: `1px solid ${node.color}18`,
+            animation: "pulseGlow 2s ease-in-out infinite",
+          }} />
+        )}
       </div>
       <div style={{
-        fontSize: 9, fontWeight: 600, color: isOpen ? node.color : "var(--text-secondary)",
-        textAlign: "center", maxWidth: 64, lineHeight: 1.2,
-        transition: "color 0.2s ease",
+        fontSize: 8.5, fontWeight: 600,
+        color: isOpen ? node.color : "var(--text-secondary)",
+        textAlign: "center", maxWidth: 58, lineHeight: 1.15,
+        transition: "color 0.2s",
       }}>{node.title}</div>
       <div style={{
-        fontSize: 8, color: "var(--text-tertiary)", textAlign: "center",
-        maxWidth: 72, lineHeight: 1.2,
+        fontSize: 7.5, color: "var(--text-tertiary)", textAlign: "center",
+        maxWidth: 64, lineHeight: 1.15,
       }}>{node.subtitle}</div>
     </div>
   );
@@ -118,21 +141,29 @@ function ArchDetail({ node }: { node: ArchNode }) {
   useEffect(() => { setMounted(true); }, []);
   return (
     <div style={{
-      padding: "12px 16px", borderRadius: 8, marginTop: 8,
-      background: `${node.color}06`, border: `1px solid ${node.color}18`,
+      padding: "10px 14px", borderRadius: 8, marginTop: 6,
+      background: `linear-gradient(135deg, ${node.color}06, transparent)`,
+      border: `1px solid ${node.color}14`,
       animation: mounted ? "fadeSlideUp 0.25s cubic-bezier(0.16,1,0.3,1) both" : "none",
     }}>
-      <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 8 }}>
+      <div style={{
+        display: "flex", alignItems: "center", gap: 5, marginBottom: 6,
+      }}>
+        <span style={{ fontSize: 13 }}>{node.icon}</span>
+        <span style={{ fontSize: 10, fontWeight: 700, color: node.color }}>{node.title}</span>
+        <span style={{ fontSize: 8, color: "var(--text-tertiary)", marginLeft: "auto" }}>{node.subtitle}</span>
+      </div>
+      <div style={{ fontSize: 9.5, color: "var(--text-secondary)", lineHeight: 1.45, marginBottom: 6 }}>
         {node.detail}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {node.subItems.map((item, i) => (
           <div key={i} style={{
-            display: "flex", alignItems: "center", gap: 5,
-            fontSize: 9, color: "var(--text-primary)", lineHeight: 1.3,
-            animation: mounted ? `fadeSlideUp 0.2s ${0.04 + i * 0.02}s cubic-bezier(0.16,1,0.3,1) both` : "none",
+            display: "flex", alignItems: "center", gap: 4,
+            fontSize: 8.5, color: "var(--text-primary)", lineHeight: 1.3,
+            animation: mounted ? `fadeSlideUp 0.2s ${0.03 + i * 0.015}s cubic-bezier(0.16,1,0.3,1) both` : "none",
           }}>
-            <span style={{ width: 4, height: 4, borderRadius: "50%", background: node.color, flexShrink: 0 }} />
+            <span style={{ width: 3, height: 3, borderRadius: "50%", background: node.color, flexShrink: 0 }} />
             {item}
           </div>
         ))}
@@ -150,55 +181,75 @@ export default function ArchitectureDiagram() {
 
   return (
     <div className="card" style={{
-      padding: "18px 22px",
-      borderColor: "rgba(96,165,250,0.12)",
-      background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
+      padding: "14px 16px",
+      borderColor: "rgba(139,92,246,0.08)",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.03), rgba(15,18,26,0.95))",
       animation: mounted ? "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both" : "none",
+      position: "relative", overflow: "hidden",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-        <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>🏗️</div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)" }}>System Architecture</div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Click any node to learn how the system works end-to-end</div>
+      <div style={{ position: "absolute", top: -60, right: -60, width: 180, height: 180, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: "rgba(139,92,246,0.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>🏗️</div>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>System Architecture</div>
+          </div>
+          <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginLeft: "auto" }}>Click a node to explore</div>
         </div>
-      </div>
 
-      {/* Horizontal flow */}
-      <div style={{
-        display: "flex", alignItems: "flex-start", justifyContent: "center",
-        gap: 0, flexWrap: "nowrap",
-        padding: "12px 0",
-        overflowX: "auto",
-        WebkitOverflowScrolling: "touch",
-      }}>
-        {NODES.map((node, i) => (
-          <React.Fragment key={node.id}>
-            <ArchNodeCard node={node} index={i} selected={selected} onSelect={setSelected} />
-            {i < NODES.length - 1 && (
-              <div style={{
-                width: 20, height: 1, flexShrink: 0, margin: "26px 2px 0 2px",
-                background: "rgba(255,255,255,0.08)",
-                transition: "background 0.3s ease",
-              }} />
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-
-      {/* Selected detail */}
-      {selectedNode && <ArchDetail node={selectedNode} />}
-
-      {/* Hint */}
-      {!selected && (
+        {/* Flow with arrow connectors */}
         <div style={{
-          textAlign: "center", fontSize: 9, color: "var(--text-tertiary)",
-          padding: "4px 0 0 0",
-          opacity: mounted ? 1 : 0,
-          transition: "opacity 0.4s ease 0.6s",
+          display: "flex", alignItems: "flex-start", justifyContent: "center",
+          gap: 0, flexWrap: "nowrap",
+          padding: "6px 0 8px",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none", msOverflowStyle: "none",
         }}>
-          💡 Click a node above to explore the architecture
+          {NODES.map((node, i) => (
+            <React.Fragment key={node.id}>
+              <ArchNodeCard node={node} index={i} selected={selected} onSelect={setSelected} />
+              {i < NODES.length - 1 && (
+                <div style={{
+                  width: 18, flexShrink: 0,
+                  display: "flex", flexDirection: "column", alignItems: "center",
+                  marginTop: 22, gap: 2,
+                  opacity: 0.3,
+                  transition: "opacity 0.2s",
+                }}>
+                  <div style={{
+                    width: 10, height: 1.5,
+                    background: `linear-gradient(90deg, ${node.color}66, ${NODES[i + 1].color}66)`,
+                  }} />
+                  <div style={{
+                    width: 0, height: 0,
+                    borderLeft: "3px solid transparent",
+                    borderRight: "3px solid transparent",
+                    borderTop: `3px solid ${NODES[i + 1].color}44`,
+                    marginTop: -1,
+                  }} />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
         </div>
-      )}
+
+        {/* Selected detail */}
+        {selectedNode && <ArchDetail node={selectedNode} />}
+
+        {/* Hint */}
+        {!selected && (
+          <div style={{
+            textAlign: "center", fontSize: 8.5, color: "var(--text-tertiary)",
+            padding: "2px 0 0 0",
+            opacity: mounted ? 1 : 0,
+            transition: "opacity 0.4s ease 0.6s",
+          }}>
+            💡 Click a node to explore the architecture
+          </div>
+        )}
+      </div>
     </div>
   );
 }
