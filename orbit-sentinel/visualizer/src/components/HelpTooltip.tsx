@@ -3,9 +3,12 @@ import React, { useState, useRef, useCallback } from "react";
 export default function HelpTooltip({ text, wide }: { text: string; wide?: boolean }) {
   const [show, setShow] = useState(false);
   const triggerRef = useRef<HTMLSpanElement>(null);
-  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
+  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({
+    position: "fixed", left: -9999, top: -9999,
+  });
 
-  const updatePosition = useCallback(() => {
+  const showWithPos = useCallback(() => {
+    setShow(true);
     const el = triggerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -19,12 +22,14 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
     });
   }, [wide]);
 
+  const hide = useCallback(() => setShow(false), []);
+
   return (
     <span style={{ position: "relative", display: "inline-flex", alignItems: "center" }}
-      onMouseEnter={() => { setShow(true); requestAnimationFrame(updatePosition); }}
-      onMouseLeave={() => setShow(false)}
-      onFocus={() => { setShow(true); requestAnimationFrame(updatePosition); }}
-      onBlur={() => setShow(false)}
+      onMouseEnter={showWithPos}
+      onMouseLeave={hide}
+      onFocus={showWithPos}
+      onBlur={hide}
     >
       <span ref={triggerRef} tabIndex={0} role="button" aria-label={`Help: ${text}`}
         style={{
