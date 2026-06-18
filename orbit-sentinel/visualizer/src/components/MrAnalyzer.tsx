@@ -21,6 +21,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   const [analyzing, setAnalyzing] = useState(false);
   const [liveError, setLiveError] = useState<string | null>(null);
   const [showTokenInput, setShowTokenInput] = useState(false);
+  const [analysisDone, setAnalysisDone] = useState<string | null>(null);
 
   const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -92,6 +93,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       const data = await res.json();
       if (data.success && data.report) {
         onSelectScenario(data.report, `Live · MR !${parsed.mrIid}`);
+        setAnalysisDone(`✓ Analysis complete — MR !${parsed.mrIid}`);
+        setTimeout(() => setAnalysisDone(null), 5000);
       } else {
         throw new Error("Invalid response from engine");
       }
@@ -249,50 +252,61 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
       {liveError && (
         <div style={{
-          padding: "6px 10px", borderRadius: 6, fontSize: 9,
+          padding: "8px 12px", borderRadius: 6, fontSize: 10,
           background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)",
-          color: "#ef4444",
+          color: "#ef4444", fontWeight: 500,
         }}>
           ✗ {liveError}
         </div>
       )}
 
+      {analysisDone && (
+        <div style={{
+          padding: "8px 12px", borderRadius: 6, fontSize: 10, fontWeight: 600,
+          background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)",
+          color: "#22c55e",
+          animation: "fadeSlideUp 0.3s ease",
+        }}>
+          {analysisDone}
+        </div>
+      )}
+
       <div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-          <span style={{ fontSize: 9, fontWeight: 600, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Quick Demos</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>⚡ Quick Demos</span>
           <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
         </div>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
           {SCENARIOS.map(s => {
             const active = currentScenario === s.id || currentScenario === s.label;
             return (
               <button key={s.id} onClick={() => handlePreset(s)}
                 style={{
-                  display: "flex", alignItems: "center", gap: 5,
-                  padding: "6px 12px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "10px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  textAlign: "left",
                   border: active
-                    ? `1.5px solid ${s.color}88`
+                    ? `1.5px solid ${s.color}`
                     : "1px solid var(--border)",
-                  borderRadius: 6, flex: 1, minWidth: 0,
-                  background: active ? `${s.color}15` : "rgba(255,255,255,0.02)",
-                  color: active ? s.color : "var(--text-secondary)",
+                  borderRadius: 8,
+                  background: active ? `${s.color}18` : "rgba(255,255,255,0.03)",
+                  color: active ? s.color : "var(--text-primary)",
                   transition: "all 0.15s",
+                  width: "100%",
                 }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "var(--text-primary)"; }}}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.color = "var(--text-secondary)"; }}}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}}
               >
-                <span>{s.icon}</span>
-                <span style={{ whiteSpace: "nowrap" }}>{s.label}</span>
+                <span style={{ fontSize: 18 }}>{s.icon}</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <span>{s.label}</span>
+                  <span style={{ fontSize: 10, fontWeight: 400, color: active ? `${s.color}cc` : "var(--text-tertiary)", lineHeight: 1.3 }}>
+                    {s.description}
+                  </span>
+                </div>
               </button>
             );
           })}
-        </div>
-        <div style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
-          {SCENARIOS.map(s => (
-            <span key={s.id} style={{ fontSize: 9, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
-              {s.description}
-            </span>
-          ))}
         </div>
       </div>
     </div>
