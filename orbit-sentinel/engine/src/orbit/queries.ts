@@ -67,7 +67,7 @@ export class OrbitQueryEngine {
         { id: "mr", entity: "MergeRequest" },
         { id: "dep", entity: "Deployment" },
       ],
-      { type: "shortest", from: "mr", to: "dep", max_depth: 4 },
+      { type: "shortest", from: "mr", to: "dep", max_depth: 3 },
       undefined,
       20,
     );
@@ -87,7 +87,7 @@ export class OrbitQueryEngine {
         { id: "f1", entity: "File", filters: { path: { op: "ends_with", value: fromFile } } },
         { id: "f2", entity: "File", filters: { path: { op: "ends_with", value: toFile } } },
       ],
-      { type: "all", from: "f1", to: "f2", max_depth: 4 },
+      { type: "all", from: "f1", to: "f2", max_depth: 3 },
       [{ type: "IMPORTS", from: "f1", to: "f2" }],
       20,
     );

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config.js';
-import { sentinel, dataVisualizer, queryEngine } from './index.js';
+import { sentinel, dataVisualizer, queryEngine, orbitClient } from './index.js';
 import type { SentinelReport } from './types.js';
 
 const app = express();
@@ -312,6 +312,12 @@ app.get('/api/diag', async (_req, res) => {
   const projectId = 39251857;
   const filePath = "flows/flow.yml";
 
+  // Fetch schema to discover valid entity types and relationship types
+  try {
+    const schema = await orbitClient.getSchema();
+    results.schema = { ok: true, data: schema };
+  } catch (e) { results.schema = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+
   // Test NEIGHBORS
   try {
     const r = await queryEngine.getProjectSummary(projectId);
@@ -335,6 +341,15 @@ app.get('/api/diag', async (_req, res) => {
     const r = await queryEngine.findPipelineFailures([projectId]);
     results.aggregation = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.aggregation = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+
+  // Try traversal without relationships to test if the query format itself is valid
+  try {
+    const r = await orbitClient.traversal(
+      { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
+      undefined, undefined, 10
+    );
+    results.traversal_no_rel = { ok: true, rows: r.result.rows?.length ?? 0 };
+  } catch (e) { results.traversal_no_rel = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
   res.json(results);
 });
