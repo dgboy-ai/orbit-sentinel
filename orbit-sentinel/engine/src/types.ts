@@ -47,6 +47,9 @@ export interface OrbitQuery {
   query_type: QueryType;
   node?: OrbitNodeSelector;
   nodes?: OrbitNodeSelector[];
+  from?: OrbitNodeSelector;
+  to?: OrbitNodeSelector;
+  max_path_length?: number;
   relationships?: OrbitRelationship[];
   aggregations?: OrbitAggregation[];
   group_by?: OrbitGroupBy[];

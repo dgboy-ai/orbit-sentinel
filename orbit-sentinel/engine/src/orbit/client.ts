@@ -195,6 +195,29 @@ export class OrbitClient {
     }
   }
 
+  async pathFindingInline(
+    from: OrbitNodeSelector,
+    to: OrbitNodeSelector,
+    maxPathLength: number,
+    relTypes?: string[],
+    limit?: number,
+  ): Promise<OrbitQueryResult> {
+    try {
+      const query: Record<string, unknown> = {
+        query_type: "path_finding",
+        from,
+        to,
+        max_path_length: maxPathLength,
+        ...(relTypes ? { rel_types: relTypes } : {}),
+        ...(limit ? { limit } : {}),
+      };
+      return await this.executeQuery(query as unknown as OrbitQuery);
+    } catch (error) {
+      const se = this.errorHandler.handleError(error, 'pathFinding');
+      throw new Error(se.message);
+    }
+  }
+
   async neighbors(
     node: OrbitNodeSelector,
     neighborsConfig: Omit<OrbitNeighborsConfig, 'node'>,
