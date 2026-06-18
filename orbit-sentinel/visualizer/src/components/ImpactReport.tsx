@@ -30,9 +30,11 @@ function AnimatedCounter({ value, suffix = "%", decimals = 0 }: { value: number;
     if (!firstRunRef.current) { setDisplayed(value); return; }
     firstRunRef.current = false;
     const dur = 1400;
-    const t0 = performance.now();
+    const nowFn = typeof performance !== "undefined" ? () => performance.now() : () => Date.now();
+    const t0 = nowFn();
     const target = valueRef.current;
-    function tick(now: number) {
+    function tick() {
+      const now = nowFn();
       const p = Math.min((now - t0) / dur, 1);
       const eased = 1 - Math.pow(1 - p, 3);
       setDisplayed(target * eased);

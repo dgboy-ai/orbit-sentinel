@@ -33,7 +33,7 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(code).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 4000);
     }).catch(() => {});
   }, [code]);
   return (
