@@ -124,28 +124,59 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
   return (
     <div className="card" style={{
-      padding: 16, display: "flex", flexDirection: "column", gap: 10,
+      padding: 20, display: "flex", flexDirection: "column", gap: 12,
       animation: "fadeSlideUp 0.5s ease both",
+      position: "relative", overflow: "hidden",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(15,15,30,0.95) 50%, rgba(139,92,246,0.03) 100%)",
+      border: "1px solid rgba(139,92,246,0.2)",
+      boxShadow: "0 0 30px rgba(139,92,246,0.08), inset 0 0 60px rgba(139,92,246,0.02)",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-        <div className="card-header-icon" style={{ background: "rgba(139,92,246,0.12)" }}>🔍</div>
-        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>MR Analyzer</span>
-        <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>
-          {apiAvailable ? "Engine connected — live Orbit API" : "Paste any GitLab MR URL or try a preset"}
-        </span>
+      {/* Decorative corner glow */}
+      <div style={{
+        position: "absolute", top: -80, right: -80, width: 200, height: 200,
+        borderRadius: "50%", background: "radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+      {/* Subtle grid dots decoration */}
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundImage: "radial-gradient(rgba(139,92,246,0.06) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+        pointerEvents: "none", opacity: 0.4,
+      }} />
+
+      <div style={{ display: "flex", alignItems: "center", gap: 10, position: "relative", zIndex: 1 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: 8,
+          background: "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05))",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 16,
+          border: "1px solid rgba(139,92,246,0.15)",
+        }}>🔍</div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>MR Analyzer</span>
+          <span style={{ fontSize: 9, color: "var(--text-tertiary)", marginTop: 1 }}>
+            Paste any GitLab MR URL or try a preset below
+          </span>
+        </div>
+        {apiAvailable && (
+          <div style={{
+            marginLeft: "auto", display: "flex", alignItems: "center", gap: 4,
+            padding: "3px 10px", borderRadius: 20,
+            background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)",
+          }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: "50%",
+              background: "#22c55e", display: "inline-block",
+              boxShadow: "0 0 8px rgba(34,197,94,0.6)",
+              animation: "pulseDot 2s ease-in-out infinite",
+            }} />
+            <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase" }}>Engine Live</span>
+          </div>
+        )}
       </div>
 
-      {apiAvailable && (
-        <div style={{
-          display: "flex", alignItems: "center", gap: 4, fontSize: 9,
-          color: "var(--accent-blue)", marginBottom: 2,
-        }}>
-          <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
-          <span>Engine live · {showTokenInput ? "Token will be sent to engine for real Orbit API calls" : "Enter token below to analyze real MRs"}</span>
-        </div>
-      )}
-
-      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", position: "relative", zIndex: 1 }}>
         <div style={{ position: "relative", flex: 1 }}>
           <input
             type="text"
@@ -153,39 +184,67 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             onChange={handleUrlChange}
             placeholder="https://gitlab.com/group/project/-/merge_requests/123"
             style={{
-              width: "100%", padding: "7px 10px", fontSize: 11, borderRadius: 6,
-              border: "1px solid var(--border)", outline: "none",
-              background: "rgba(0,0,0,0.2)", color: "var(--text-primary)",
+              width: "100%", padding: "10px 14px", fontSize: 12, borderRadius: 8,
+              border: "1px solid rgba(139,92,246,0.15)", outline: "none",
+              background: "rgba(0,0,0,0.3)", color: "var(--text-primary)",
               fontFamily: "'JetBrains Mono', monospace",
+              transition: "all 0.2s",
+              boxShadow: url && parsed ? "0 0 20px rgba(139,92,246,0.06)" : "none",
             }}
-            onFocus={e => { e.currentTarget.style.borderColor = "#a78bfa66"; }}
-            onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
+            onFocus={e => { e.currentTarget.style.borderColor = "#a78bfa"; e.currentTarget.style.boxShadow = "0 0 25px rgba(139,92,246,0.1)"; }}
+            onBlur={e => { e.currentTarget.style.borderColor = "rgba(139,92,246,0.15)"; e.currentTarget.style.boxShadow = url && parsed ? "0 0 20px rgba(139,92,246,0.06)" : "none"; }}
           />
+          {parsed && (
+            <div style={{
+              position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+              fontSize: 8, fontWeight: 700, color: "#22c55e",
+              background: "rgba(34,197,94,0.08)", padding: "2px 8px", borderRadius: 10,
+              border: "1px solid rgba(34,197,94,0.12)",
+              pointerEvents: "none",
+            }}>
+              ✓ MR !{parsed.mrIid}
+            </div>
+          )}
         </div>
         <button onClick={handleAnalyze}
           disabled={!canAnalyze || analyzing}
           style={{
-            padding: analyzing ? "7px 16px" : "7px 16px", fontSize: 11, fontWeight: 600,
+            padding: analyzing ? "10px 20px" : "10px 20px", fontSize: 12, fontWeight: 700,
             cursor: canAnalyze && !analyzing ? "pointer" : "not-allowed",
-            border: "1px solid rgba(139,92,246,0.3)", borderRadius: 6,
-            background: analyzing ? "rgba(139,92,246,0.06)" :
-                       canAnalyze ? "rgba(139,92,246,0.12)" : "rgba(255,255,255,0.03)",
-            color: analyzing ? "#a78bfa88" : canAnalyze ? "#a78bfa" : "var(--text-tertiary)",
-            whiteSpace: "nowrap", transition: "all 0.15s",
-            display: "flex", alignItems: "center", gap: 4,
+            border: canAnalyze && !analyzing ? "1px solid rgba(139,92,246,0.4)" : "1px solid rgba(255,255,255,0.05)",
+            borderRadius: 8,
+            background: canAnalyze && !analyzing
+              ? "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.08))"
+              : "rgba(255,255,255,0.03)",
+            color: canAnalyze && !analyzing ? "#c4b5fd" : "var(--text-tertiary)",
+            whiteSpace: "nowrap", transition: "all 0.2s",
+            display: "flex", alignItems: "center", gap: 6,
+            boxShadow: canAnalyze && !analyzing ? "0 0 25px rgba(139,92,246,0.08)" : "none",
+            letterSpacing: "0.3px",
           }}
-          onMouseEnter={e => { if (canAnalyze && !analyzing) { e.currentTarget.style.background = "rgba(139,92,246,0.2)"; }}}
-          onMouseLeave={e => { if (canAnalyze && !analyzing) { e.currentTarget.style.background = "rgba(139,92,246,0.12)"; }}}
+          onMouseEnter={e => {
+            if (canAnalyze && !analyzing) {
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(139,92,246,0.3), rgba(139,92,246,0.12))";
+              e.currentTarget.style.boxShadow = "0 0 35px rgba(139,92,246,0.15)";
+            }
+          }}
+          onMouseLeave={e => {
+            if (canAnalyze && !analyzing) {
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.08))";
+              e.currentTarget.style.boxShadow = "0 0 25px rgba(139,92,246,0.08)";
+            }
+          }}
         >
           {analyzing ? (
             <>
-              <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: "50%", border: "2px solid #a78bfa44", borderTopColor: "#a78bfa", animation: "spin 0.6s linear infinite" }} />
+              <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(167,139,250,0.3)", borderTopColor: "#a78bfa", animation: "spin 0.6s linear infinite" }} />
               Analyzing…
             </>
-          ) : apiAvailable ? (
-            "🔍 Analyze Live"
           ) : (
-            "Analyze (Demo)"
+            <>
+              <span>🔍</span>
+              Analyze Live
+            </>
           )}
         </button>
       </div>
@@ -200,23 +259,25 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       {apiAvailable && !showTokenInput && (
         <button onClick={() => setShowTokenInput(true)}
           style={{
-            fontSize: 9, fontWeight: 600, cursor: "pointer", padding: "3px 10px",
-            border: "1px dashed rgba(255,255,255,0.1)", borderRadius: 4,
+            fontSize: 9, fontWeight: 600, cursor: "pointer", padding: "4px 12px",
+            border: "1px dashed rgba(139,92,246,0.2)", borderRadius: 6,
             background: "transparent", color: "var(--text-tertiary)",
-            alignSelf: "flex-start",
+            alignSelf: "flex-start", transition: "all 0.2s",
+            position: "relative", zIndex: 1,
           }}
-          onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
-          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
-        >+ Add GitLab token for live Orbit API</button>
+          onMouseEnter={e => { e.currentTarget.style.color = "#a78bfa"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)"; e.currentTarget.style.background = "rgba(139,92,246,0.04)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)"; e.currentTarget.style.background = "transparent"; }}
+        >+ Add GitLab token</button>
       )}
 
       {apiAvailable && showTokenInput && (
         <div style={{
-          padding: "8px 10px", borderRadius: 6,
-          background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.1)",
+          padding: "10px 12px", borderRadius: 8,
+          background: "rgba(139,92,246,0.04)", border: "1px solid rgba(139,92,246,0.1)",
+          position: "relative", zIndex: 1,
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--accent-blue)" }}>🔑 GitLab Personal Access Token</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa" }}>🔑 GitLab Personal Access Token</span>
             <a href="https://gitlab.com/-/user_settings/personal_access_tokens" target="_blank" rel="noreferrer"
               style={{ fontSize: 8, color: "var(--text-tertiary)", marginLeft: "auto" }}
             >Generate →</a>
@@ -228,23 +289,27 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
               onChange={e => setToken(e.target.value)}
               placeholder="glpat-xxxxxxxxxxxx"
               style={{
-                flex: 1, padding: "5px 8px", fontSize: 10, borderRadius: 4,
-                border: "1px solid var(--border)", outline: "none",
+                flex: 1, padding: "6px 10px", fontSize: 10, borderRadius: 6,
+                border: "1px solid rgba(139,92,246,0.1)", outline: "none",
                 background: "rgba(0,0,0,0.2)", color: "var(--text-primary)",
                 fontFamily: "'JetBrains Mono', monospace",
+                transition: "border-color 0.2s",
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = "#60a5fa66"; }}
-              onBlur={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
+              onFocus={e => { e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)"; }}
+              onBlur={e => { e.currentTarget.style.borderColor = "rgba(139,92,246,0.1)"; }}
             />
             <button onClick={() => setShowToken(!showToken)}
               style={{
-                padding: "3px 6px", fontSize: 9, cursor: "pointer",
-                background: "transparent", border: "1px solid var(--border)", borderRadius: 4,
+                padding: "4px 8px", fontSize: 9, cursor: "pointer",
+                background: "transparent", border: "1px solid rgba(139,92,246,0.1)", borderRadius: 6,
                 color: "var(--text-secondary)",
+                transition: "all 0.2s",
               }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(139,92,246,0.1)"; }}
             >{showToken ? "Hide" : "Show"}</button>
           </div>
-          <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 3 }}>
+          <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 4 }}>
             Token is sent once to the engine and discarded after analysis. Requires <code>read_api</code> scope.
           </div>
         </div>
@@ -271,10 +336,10 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         </div>
       )}
 
-      <div>
+      <div style={{ position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>⚡ Quick Demos</span>
-          <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "1px" }}>⚡ Quick Demos</span>
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.2), transparent)" }} />
         </div>
         <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
           {SCENARIOS.map(s => {
@@ -282,25 +347,28 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             return (
               <button key={s.id} onClick={() => handlePreset(s)}
                 style={{
-                  display: "flex", alignItems: "center", gap: 8,
-                  padding: "10px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "12px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer",
                   textAlign: "left",
                   border: active
-                    ? `1.5px solid ${s.color}`
-                    : "1px solid var(--border)",
+                    ? `1.5px solid ${s.color}66`
+                    : "1px solid rgba(255,255,255,0.06)",
                   borderRadius: 8,
-                  background: active ? `${s.color}18` : "rgba(255,255,255,0.03)",
+                  background: active
+                    ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)`
+                    : "rgba(255,255,255,0.02)",
                   color: active ? s.color : "var(--text-primary)",
-                  transition: "all 0.15s",
+                  transition: "all 0.2s",
                   width: "100%",
+                  boxShadow: active ? `0 0 20px ${s.color}10` : "none",
                 }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}}
               >
-                <span style={{ fontSize: 18 }}>{s.icon}</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <span>{s.label}</span>
-                  <span style={{ fontSize: 10, fontWeight: 400, color: active ? `${s.color}cc` : "var(--text-tertiary)", lineHeight: 1.3 }}>
+                <span style={{ fontSize: 22, filter: active ? "none" : "grayscale(0.3)" }}>{s.icon}</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <span style={{ fontSize: 12 }}>{s.label}</span>
+                  <span style={{ fontSize: 10, fontWeight: 400, color: active ? `${s.color}bb` : "var(--text-tertiary)", lineHeight: 1.3 }}>
                     {s.description}
                   </span>
                 </div>
