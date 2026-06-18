@@ -72,8 +72,10 @@ export class OrbitClient {
         }
 
         if (attempt === retries) {
+          const body = await response.text().catch(() => '(no body)');
+          const preview = body.length > 200 ? body.slice(0, 200) + '...' : body;
           throw new OrbitSentinelError(
-            `Orbit API error: ${response.status} ${response.statusText}`,
+            `Orbit API error: ${response.status} ${response.statusText} — ${preview}`,
             ErrorType.ORBIT_API_ERROR,
             response.status
           );
