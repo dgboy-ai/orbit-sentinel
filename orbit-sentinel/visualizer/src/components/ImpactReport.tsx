@@ -13,17 +13,17 @@ function scoreFromSummary(s: string): number {
 
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ value, suffix = "%", decimals = 0 }: { value: number; suffix?: string; decimals?: number }) {
-  const [displayed, setDisplayed] = useState(value);
+  const [displayed, setDisplayed] = useState(0);
   const rafRef = useRef(0);
   const valueRef = useRef(value);
-  const startedRef = useRef(false);
+  const firstRunRef = useRef(true);
   valueRef.current = value;
   useEffect(() => {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
   useEffect(() => {
-    if (startedRef.current) { setDisplayed(value); return; }
-    startedRef.current = true;
+    if (!firstRunRef.current) { setDisplayed(value); return; }
+    firstRunRef.current = false;
     const dur = 1400;
     const t0 = performance.now();
     const target = valueRef.current;
