@@ -41,24 +41,23 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     try {
       const useCreds = !!token;
 
-      // Fetch actual changed files from GitLab API
-      const encodedPath = encodeURIComponent(parsed.project);
-      const filesUrl = `https://gitlab.com/api/v4/projects/${encodedPath}/merge_requests/${parsed.mrIid}/changes`;
+      // Fetch actual changed files from GitLab API via engine (avoids CORS)
       let changedFiles: string[] = ["src/main.ts"];
       try {
-        const ac = new AbortController();
-        const ft = setTimeout(() => ac.abort(), 8000);
-        const filesHeaders: Record<string, string> = { "Content-Type": "application/json" };
-        if (useCreds) filesHeaders["Authorization"] = `Bearer ${token}`;
-        const filesRes = await fetch(filesUrl, {
-          headers: filesHeaders,
-          signal: ac.signal,
+        const probeRes = await fetch(`${API_BASE_URL}/api/probe-mr-files`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            projectPath: parsed.project,
+            mrIid: parsed.mrIid,
+            ...(useCreds ? { gitlabToken: token } : {}),
+          }),
+          signal: AbortSignal.timeout(10000),
         });
-        clearTimeout(ft);
-        if (filesRes.ok) {
-          const filesData = await filesRes.json() as { changes?: Array<{ new_path: string }> };
-          if (filesData.changes?.length) {
-            changedFiles = filesData.changes.map(c => c.new_path);
+        if (probeRes.ok) {
+          const probeData = await probeRes.json() as { files: string[] };
+          if (probeData.files?.length) {
+            changedFiles = probeData.files;
           }
         }
       } catch { /* fallback */ }
@@ -87,7 +86,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: "Request failed" }));
-        throw new Error(err.error || err.message || "Analysis failed");
+        throw new Error(err.message || err.error || "Analysis failed");
       }
 
       const data = await res.json();

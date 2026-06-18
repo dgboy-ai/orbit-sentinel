@@ -339,6 +339,46 @@ app.get('/api/demo', (req, res) => {
   });
 });
 
+// Proxy endpoint to fetch MR changed files from GitLab API (avoids CORS in browser)
+app.post('/api/probe-mr-files', async (req, res) => {
+  try {
+    const { projectPath, mrIid, gitlabToken } = req.body;
+    if (!projectPath || !mrIid) {
+      return res.status(400).json({ error: 'projectPath and mrIid required' });
+    }
+
+    const token = gitlabToken || process.env.GITLAB_ACCESS_TOKEN;
+    if (!token) {
+      return res.status(400).json({ error: 'No GitLab token available' });
+    }
+
+    const encodedPath = encodeURIComponent(projectPath);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
+    const response = await fetch(
+      `https://gitlab.com/api/v4/projects/${encodedPath}/merge_requests/${mrIid}/changes`,
+      { headers: { Authorization: `Bearer ${token}` }, signal: controller.signal }
+    );
+    clearTimeout(timer);
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: `GitLab API returned ${response.status}`,
+        message: await response.text().catch(() => ''),
+      });
+    }
+
+    const data = await response.json() as { changes?: Array<{ new_path: string }> };
+    const files = (data.changes || []).map(c => c.new_path);
+    return res.json({ files, count: files.length });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to fetch MR files',
+      message: error instanceof Error ? error.message : String(error),
+    });
+  }
+});
+
 // Diagnostic endpoint — tests each Orbit query type individually
 app.get('/api/diag', async (_req, res) => {
   const results: Record<string, unknown> = {};
