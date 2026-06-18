@@ -117,7 +117,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
         <div ref={scrollRef} style={{
           display: "flex", gap: 0, alignItems: "stretch",
           overflowX: "auto", overflowY: "hidden",
-          paddingBottom: 4,
+          paddingBottom: 4, paddingLeft: 8,
           scrollBehavior: "smooth",
           WebkitOverflowScrolling: "touch",
           scrollbarWidth: "none", msOverflowStyle: "none",
