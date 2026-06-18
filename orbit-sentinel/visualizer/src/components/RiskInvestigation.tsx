@@ -32,7 +32,7 @@ function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top
   );
 }
 
-function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryEvidence[] }) {
+function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: OrbitQueryEvidence[]; isMobile?: boolean }) {
   const q = evidence.find(e => e.queryType === card.queryType);
   const [touched, setTouched] = useState(false);
   const severityColors = {
@@ -43,7 +43,7 @@ function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryE
   const c = severityColors[card.severity];
   return (
     <div style={{
-      padding: "16px 18px", borderRadius: 12, position: "relative", overflow: "hidden",
+      padding: isMobile ? "12px 14px" : "16px 18px", borderRadius: 12, position: "relative", overflow: "hidden",
       background: touched ? `${c.dot}12` : c.bg, border: `1px solid ${touched ? c.dot : c.border}`,
       animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both",
       display: "flex", flexDirection: "column", gap: 8,
@@ -66,7 +66,7 @@ function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryE
           </span>
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: c.dot, marginBottom: 1 }}>{c.label}</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>{card.title}</div>
+            <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: "var(--text-primary)" }}>{card.title}</div>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ function EvidenceCard({ card, evidence }: { card: CardDef; evidence: OrbitQueryE
           )}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "60px 1fr", gap: "3px 10px", fontSize: 11, lineHeight: 1.5 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "3px 8px", fontSize: isMobile ? 10 : 11, lineHeight: 1.5 }}>
           <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 9 }}>Finding</span>
           <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{card.finding}</span>
           <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 9 }}>Orbit Evidence</span>
@@ -195,7 +195,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
             <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)" }}>
               <div style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#ef4444", textShadow: "0 0 12px rgba(239,68,68,0.2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Will Not Reach Production</div>
+              <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: "#ef4444", textShadow: "0 0 12px rgba(239,68,68,0.2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Will Not Reach Production</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
                 <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>91%</span></div>
                 <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Horizon </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>7 Days</span></div>
@@ -241,7 +241,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
       {/* PREDICTED PATH TIMELINE */}
       <div className="card" style={{
-        padding: "14px 20px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "10px 14px" : "14px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(255,255,255,0.06)",
         background: "linear-gradient(135deg, rgba(255,255,255,0.02), rgba(15,18,26,0.95))",
         ...fadeIn(0.04),
@@ -283,7 +283,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
       {/* ORBIT CONFIDENCE BREAKDOWN */}
       <div className="card" style={{
-        padding: "14px 18px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "10px 14px" : "14px 18px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.12)",
         background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95), rgba(139,92,246,0.03))",
         ...fadeIn(0.05),
@@ -302,7 +302,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 const pct = CONF_PCTS[e.queryType] ?? 50;
                 return (
                   <div key={e.queryType} style={{ display: "flex", alignItems: "center", gap: 6, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                    <span style={{ fontSize: 9, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: 80 }}>{e.queryType}</span>
+                    <span style={{ fontSize: isSmall ? 8 : 9, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: isSmall ? 60 : 80 }}>{e.queryType}</span>
                     <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 5, borderRadius: 3, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
                       <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 8px ${color}33` }} />
                     </div>
@@ -322,7 +322,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
               <span style={{ color: "#22c55e" }}>●</span> Overall Confidence
             </span>
-            <span style={{ fontSize: 14, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>HIGH</span>
+            <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>HIGH</span>
           </div>
         </div>
       </div>
@@ -331,7 +331,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {cards.map((card, i) => (
           <div key={card.title} style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
-            <EvidenceCard card={card} evidence={evidence} />
+            <EvidenceCard card={card} evidence={evidence} isMobile={isMobile} />
           </div>
         ))}
       </div>
@@ -421,7 +421,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both",
               }}>
                 <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Expected Risk After Mitigation</span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
+                <span style={{ fontSize: isMobile ? 15 : 18, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
                   {(afterRisk * 100).toFixed(0)}%
                 </span>
               </div>

@@ -287,7 +287,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4, flexShrink: 0 }}>→</div>
             <div style={{ flex: 1, minWidth: 120 }}>
               <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Predicted</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: curCol, transition: "color 0.4s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sel.outcome}</div>
+              <div style={{ fontSize: isMobile ? 12 : 15, fontWeight: 700, color: curCol, transition: "color 0.4s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sel.outcome}</div>
             </div>
             <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4, flexShrink: 0 }}>→</div>
             <div style={{ flex: 1, minWidth: 100 }}>
@@ -310,7 +310,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               }}>{sel.icon}</div>
               <div>
                 <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Risk</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: gaugeColor, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.1s linear", textShadow: `0 0 16px ${riskScoreToGlow(animRisk)}` }}>
+                <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 800, color: gaugeColor, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.1s linear", textShadow: `0 0 16px ${riskScoreToGlow(animRisk)}` }}>
                   {(animRisk * 100).toFixed(0)}%
                 </div>
               </div>
@@ -336,7 +336,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
       {/* LIFECYCLE TIMELINE — 5 stages of MR lifecycle with Orbit prediction */}
       <div className="card" style={{
-        padding: "14px 20px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "10px 14px" : "14px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.1)",
         background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
         ...fadeIn(0.03),
@@ -476,7 +476,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 </span>
               </div>
               {/* Title */}
-              <div style={{ fontSize: 14, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3 }}>{signal.title}</div>
+              <div style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3 }}>{signal.title}</div>
               {/* Finding */}
               <div style={{ fontSize: 9, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4, fontStyle: "italic", borderLeft: `2px solid ${signal.color}33`, paddingLeft: 8 }}>
                 {signal.finding}
@@ -515,10 +515,10 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {/* State Transition */}
         <div className="card" style={{
-          padding: "16px 18px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column",
+          padding: isMobile ? "12px 14px" : "16px 18px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column",
           ...fadeIn(0.08),
         }}>
-          <GlowOrb color="rgba(96,165,250,0.06)" top="-40%" left="-30%" size={160} />
+          <GlowOrb color="rgba(96,165,250,0.06)" top="-40%" left="-30%" size={isMobile ? 100 : 160} />
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 10 }}>Digital Twin State Transition</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0, alignItems: "center" }}>
@@ -558,10 +558,10 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
         {/* What-If Scenarios */}
         <div className="card" style={{
-          padding: "16px 18px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column",
+          padding: isMobile ? "12px 14px" : "16px 18px", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column",
           ...fadeIn(0.1),
         }}>
-          <GlowOrb color={`${curCol}08`} top="-30%" right="-20%" size={160} />
+          <GlowOrb color={`${curCol}08`} top="-30%" right="-20%" size={isMobile ? 100 : 160} />
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 2 }}>What-If Scenarios</div>
             <div style={{ fontSize: 9, color: "var(--text-tertiary)", marginBottom: 10, lineHeight: 1.4 }}>Click to simulate a different future.</div>
@@ -578,7 +578,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
       {/* FORECAST CONFIDENCE — Circular gauges for each query type + overall */}
       <div className="card" style={{
-        padding: "16px 20px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "12px 14px" : "16px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.1)",
         background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95), rgba(139,92,246,0.02))",
         ...fadeIn(0.08),
@@ -600,7 +600,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               { type: "AGGREGATION", pct: 75, color: "#f97316", icon: "📊", label: "Pipeline Trend" },
             ].map(q => (
               <div key={q.type} style={{
-                padding: "6px 10px", borderRadius: 6,
+                padding: isSmall ? "4px 8px" : "6px 10px", borderRadius: 6,
                 background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
                 display: "flex", alignItems: "center", gap: 8,
                 animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
@@ -664,8 +664,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 10, alignItems: "center", marginBottom: 14 }}>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))", border: "1px solid rgba(239,68,68,0.1)" }}>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 4 }}>If Nothing Changes</div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>MR Closed</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginBottom: 4 }}>Without merge · 78% probability</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>MR Closed</div>
+              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>Without merge · 78% probability</div>
               <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.1)", fontSize: 9, color: "var(--text-tertiary)" }}>Based on 9 historical matches</div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
@@ -680,8 +680,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             </div>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))", border: "1px solid rgba(34,197,94,0.1)" }}>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>If Recommendations Followed</div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#22c55e", marginBottom: 2 }}>Successfully Merged</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginBottom: 4 }}>88% probability · Risk 55% → 10%</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", marginBottom: 2 }}>Successfully Merged</div>
+              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>88% probability · Risk 55% → 10%</div>
               <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.1)", fontSize: 9, color: "var(--text-tertiary)" }}>All 4 mitigations applied</div>
             </div>
           </div>

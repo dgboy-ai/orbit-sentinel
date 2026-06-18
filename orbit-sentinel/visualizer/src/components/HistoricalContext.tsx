@@ -146,13 +146,13 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
     <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "0 2px" }}>
       {/* HEADER */}
       <div className="card" style={{
-        padding: "16px 20px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "14px 16px" : "16px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(139,92,246,0.3)",
         background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(15,18,26,0.95), rgba(59,130,246,0.05))",
         animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)",
         boxShadow: "0 0 20px rgba(139,92,246,0.1)",
       }}>
-        <GlowOrb color="rgba(139,92,246,0.08)" top="-40%" left="-10%" size={240} />
+        <GlowOrb color="rgba(139,92,246,0.08)" top="-40%" left="-10%" size={isMobile ? 160 : 240} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
             <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Repository Memory Intelligence</span>
@@ -249,7 +249,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             >
               <GlowOrb color={`${caseColor}06`} top="-20%" right={i % 2 === 0 ? "-10%" : "auto"} left={i % 2 !== 0 ? "-10%" : "auto"} size={120} />
               <div style={{ position: "relative", zIndex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6, gap: 4, flexWrap: isMobile ? "wrap" : "nowrap" }}>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
                       <span style={{ fontSize: 11, fontWeight: 800, color: caseColor, letterSpacing: "0.3px" }}>Case File #{item.mrIid}</span>
@@ -262,7 +262,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                   </div>
                   <OutcomeBadge outcome={item.outcome} />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "60px 1fr", gap: "2px 10px", fontSize: 9, lineHeight: 1.5, marginBottom: 6 }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "1px 8px", fontSize: 9, lineHeight: 1.5, marginBottom: 6 }}>
                   <span style={{ color: "var(--text-tertiary)", fontSize: 7, letterSpacing: "0.3px" }}>Root Cause</span>
                   <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{item.rootCause}</span>
                   <span style={{ color: "var(--text-tertiary)", fontSize: 7, letterSpacing: "0.3px" }}>Orbit Insight</span>
@@ -296,7 +296,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
             <div>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#22c55e", marginBottom: 1 }}>Successful Precedent</div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.2)" }}>✓ MR #1 — Successfully Merged</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.2)" }}>✓ MR #1 — Successfully Merged</div>
             </div>
             <div style={{
               padding: "3px 8px", borderRadius: 4, fontSize: 7, color: "var(--text-secondary)",
@@ -515,7 +515,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
                 {s.target !== undefined
                   ? <AnimatedCounter target={s.target} suffix={s.suffix || ""} color={s.color} duration={1400} />
-                  : <div style={{ fontSize: 18, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${s.color}40` }}>{s.value}</div>}
+                  : <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 900, color: s.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${s.color}40` }}>{s.value}</div>}
               </div>
             ))}
           </div>
@@ -546,14 +546,14 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
             }}>
               <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 500, letterSpacing: "0.3px" }}>Pattern Occurred</div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>{closedCount}× before</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>{closedCount}× before</div>
             </div>
           </div>
           
           {/* Pattern Flow */}
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 8, textAlign: "center", letterSpacing: "0.3px" }}>Pattern Visualization</div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, overflowX: isMobile ? "auto" : "visible", WebkitOverflowScrolling: "touch", paddingBottom: isMobile ? 4 : 0 }}>
               {[
                 { label: "MR #2", color: "#ef4444", status: "CLOSED" },
                 { label: "MR #5", color: "#ef4444", status: "CLOSED" },
@@ -603,7 +603,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
             >
               <div style={{ fontSize: 8, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>If No Action</div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.4)" }}>Closed</div>
+              <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.4)" }}>Closed</div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 3 }}>within 7 days</div>
               <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>{closeRate}% probability</div>
             </div>
@@ -617,7 +617,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
             >
               <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>With Mitigations</div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>88% Merged</div>
+              <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>88% Merged</div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 3 }}>with CI + reviewer + changes</div>
               <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>Risk: 55% → 10%</div>
             </div>
