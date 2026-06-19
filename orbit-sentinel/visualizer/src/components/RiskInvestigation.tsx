@@ -130,7 +130,116 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 480px)");
 
-  const cards: CardDef[] = [
+  const isLow = riskData.level?.toLowerCase() === "low";
+  const isMedium = riskData.level?.toLowerCase() === "medium" || riskData.level?.toLowerCase() === "warning";
+
+  const config = isLow ? {
+    color: "#22c55e",
+    bg: "linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(34,197,94,0.02) 100%)",
+    border: "rgba(34,197,94,0.25)",
+    glow: "rgba(34,197,94,0.12)",
+    predictedOutcome: "Safe to Deploy",
+    primaryWarn: "Primary: Change scope is isolated in graph.",
+    secondaryWarn: "Secondary: Reviewers approved, head pipeline passed.",
+    primaryColor: "#22c55e",
+    secondaryColor: "#22c55e",
+    verdictLabel: "SAFE TO DEPLOY",
+    verdictIcon: "✅",
+    reasoning: [
+      "All unit and integration tests pass",
+      "Full reviewer approvals received",
+      "Isolated scope has zero downstream risk",
+      "Historical similarity matches clean merges",
+    ],
+  } : isMedium ? {
+    color: "#eab308",
+    bg: "linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(234,179,8,0.02) 100%)",
+    border: "rgba(234,179,8,0.25)",
+    glow: "rgba(234,179,8,0.12)",
+    predictedOutcome: "Needs Review",
+    primaryWarn: "Primary: Empty changes diff detected.",
+    secondaryWarn: "Secondary: No pipeline execution triggered.",
+    primaryColor: "#eab308",
+    secondaryColor: "#eab308",
+    verdictLabel: "NEEDS REMEDIATION",
+    verdictIcon: "⚠️",
+    reasoning: [
+      "Empty changes diff detected",
+      "No pipeline execution triggered",
+      "Branch abandonment history match",
+      "No reviewers assigned to the MR",
+    ],
+  } : {
+    color: "#ef4444",
+    bg: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(239,68,68,0.02) 100%)",
+    border: "rgba(239,68,68,0.25)",
+    glow: "rgba(239,68,68,0.12)",
+    predictedOutcome: "Will Not Reach Production",
+    primaryWarn: "Primary: No deployment path exists.",
+    secondaryWarn: "Secondary: 9 prior MRs from this branch were abandoned.",
+    primaryColor: "#ef4444",
+    secondaryColor: "#f97316",
+    verdictLabel: "DO NOT DEPLOY",
+    verdictIcon: "🚫",
+    reasoning: [
+      "No deployment path exists",
+      "No validated pipeline exists",
+      "No meaningful code changes detected",
+      "Historical abandonment pattern detected",
+    ],
+  };
+
+  const cards: CardDef[] = isLow ? [
+    {
+      severity: "medium", title: "Isolated Change Scope",
+      evidenceSource: "Orbit Graph Discovery", finding: "No downstream services affected",
+      orbitEvidence: "NEIGHBORS: Change is fully isolated in graph",
+      impact: "Zero impact on production service dependency paths", confidence: 96, queryType: "NEIGHBORS",
+    },
+    {
+      severity: "medium", title: "Pipeline Passed",
+      evidenceSource: "MR-to-Pipeline Trace", finding: "All deployment gates are green",
+      orbitEvidence: "PATH_FINDING: head pipeline passed cleanly",
+      impact: "Build and deploy artifacts verified safe", confidence: 95, queryType: "PATH_FINDING",
+    },
+    {
+      severity: "medium", title: "Clean Merges History",
+      evidenceSource: "Historical Similarity", finding: "12 similar MRs merged with no incidents",
+      orbitEvidence: "TRAVERSAL: zero incident patterns matching files",
+      impact: "Extremely low probability of regression", confidence: 90, queryType: "TRAVERSAL",
+    },
+    {
+      severity: "medium", title: "Ecosystem Stability",
+      evidenceSource: "Pipeline Risk Aggregation", finding: "0 pipeline failures in last 30 days",
+      orbitEvidence: "AGGREGATION: no failures detected on target files",
+      impact: "Highly stable codebase location", confidence: 95, queryType: "AGGREGATION",
+    },
+  ] : isMedium ? [
+    {
+      severity: "medium", title: "Reviewers Required",
+      evidenceSource: "Ownership Analysis", finding: "No reviewers have approved the MR yet",
+      orbitEvidence: "NEIGHBORS: Reviewer approval links missing from graph",
+      impact: "Requires manual check before deployment", confidence: 75, queryType: "NEIGHBORS",
+    },
+    {
+      severity: "medium", title: "No Executing Pipeline",
+      evidenceSource: "MR-to-Pipeline Trace", finding: "Pipeline has not run for this MR",
+      orbitEvidence: "PATH_FINDING: MR → Pipeline relation missing",
+      impact: "Deployment states cannot be validated", confidence: 80, queryType: "PATH_FINDING",
+    },
+    {
+      severity: "high", title: "Branch Abandonment Pattern",
+      evidenceSource: "Historical Similarity", finding: "9 prior MRs from this branch abandoned",
+      orbitEvidence: "TRAVERSAL: 9 of 10 prior MRs from this branch were closed",
+      impact: "High probability of MR being closed without merge", confidence: 90, queryType: "TRAVERSAL",
+    },
+    {
+      severity: "critical", title: "Empty Changes Diff",
+      evidenceSource: "Orbit Graph Discovery", finding: "MR contains no file changes",
+      orbitEvidence: "NEIGHBORS: Diff state is empty — no code to deploy",
+      impact: "Nothing deployable identified", confidence: 100, queryType: "NEIGHBORS",
+    },
+  ] : [
     {
       severity: "critical", title: "No Head Pipeline",
       evidenceSource: "MR-to-Pipeline Trace", finding: "MR has no validated deployment path",
@@ -170,17 +279,36 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
   });
 
+  const timelineSteps = isLow ? [
+    { label: "MR OPEN", color: "#22c55e", icon: "📝" },
+    { label: "PIPELINE PASSED", color: "#22c55e", icon: "✅" },
+    { label: "REVIEW APPROVED", color: "#22c55e", icon: "👍" },
+    { label: "READY TO MERGE", color: "#22c55e", icon: "🚀" },
+  ] : isMedium ? [
+    { label: "MR OPEN", color: "#eab308", icon: "📝" },
+    { label: "EMPTY DIFF", color: "#eab308", icon: "⚠️" },
+    { label: "NO PIPELINE", color: "#eab308", icon: "⏸" },
+    { label: "UNASSIGNED REVIEWERS", color: "#ef4444", icon: "⏳" },
+  ] : [
+    { label: "MR OPEN", color: "#22c55e", icon: "📝" },
+    { label: "PIPELINE MISSING", color: "#ef4444", icon: "✗" },
+    { label: "REVIEW NEVER STARTS", color: "#eab308", icon: "⏸" },
+    { label: "DEVELOPMENT STALLS", color: "#eab308", icon: "⏳" },
+  ];
+
+  const timelinePredicted = isLow ? { label: "DEPLOYED", color: "#22c55e" } : { label: "CLOSED", color: "#ef4444" };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 2px" }}>
       {/* TOP HERO BANNER */}
       <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
         padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(239,68,68,0.25)",
-        background: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(239,68,68,0.02) 100%)",
+        borderColor: config.border,
+        background: config.bg,
         ...fadeIn(0),
       }}>
-        <GlowOrb color="rgba(239,68,68,0.12)" top="-30%" right="-5%" size={isMobile ? 200 : 300} />
+        <GlowOrb color={config.glow} top="-30%" right="-5%" size={isMobile ? 200 : 300} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, flexDirection: isSmall ? "column" : "row", gap: isSmall ? 6 : 0 }}>
             <div>
@@ -188,7 +316,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>Orbit Forecast</span>
                 <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
               </div>
-              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 900, color: "#ef4444", textShadow: "0 0 40px rgba(239,68,68,0.3)", display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 900, color: config.color, textShadow: `0 0 40px ${config.glow}`, display: "flex", alignItems: "center", gap: 8 }}>
                 🔮 ORBIT FORECAST
               </div>
             </div>
@@ -201,30 +329,30 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
             <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)" }}>
               <div style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
-              <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: "#ef4444", textShadow: "0 0 12px rgba(239,68,68,0.2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Will Not Reach Production</div>
+              <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: config.color, textShadow: `0 0 12px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.predictedOutcome}</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
-                <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>91%</span></div>
+                <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>{isLow ? "96%" : isMedium ? "90%" : "91%"}</span></div>
                 <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Horizon </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>7 Days</span></div>
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <div style={{
                 padding: "6px 10px", borderRadius: 6,
-                background: "linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.03))",
-                border: "1px solid rgba(239,68,68,0.15)", fontSize: 11, color: "#ef4444",
+                background: `linear-gradient(135deg, ${config.primaryColor}10, ${config.primaryColor}03)`,
+                border: `1px solid ${config.primaryColor}25`, fontSize: 11, color: config.primaryColor,
                 display: "flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ fontSize: 12, flexShrink: 0 }}>⚠</span>
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><strong>Primary:</strong> No deployment path exists.</span>
+                <span style={{ fontSize: 12, flexShrink: 0 }}>{isLow ? "✓" : "⚠"}</span>
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.primaryWarn}</span>
               </div>
               <div style={{
                 padding: "6px 10px", borderRadius: 6,
-                background: "linear-gradient(135deg, rgba(249,115,22,0.1), rgba(249,115,22,0.03))",
-                border: "1px solid rgba(249,115,22,0.15)", fontSize: 11, color: "#f97316",
+                background: `linear-gradient(135deg, ${config.secondaryColor}10, ${config.secondaryColor}03)`,
+                border: `1px solid ${config.secondaryColor}25`, fontSize: 11, color: config.secondaryColor,
                 display: "flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ fontSize: 12, flexShrink: 0 }}>⚠</span>
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><strong>Secondary:</strong> 9 prior MRs from this branch were abandoned.</span>
+                <span style={{ fontSize: 12, flexShrink: 0 }}>{isLow ? "✓" : "⚠"}</span>
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.secondaryWarn}</span>
               </div>
             </div>
           </div>
@@ -253,13 +381,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         ...fadeIn(0.04),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4 }}>
-          {[
-            { label: "MR OPEN", color: "#22c55e", icon: "📝" },
-            { label: "PIPELINE MISSING", color: "#ef4444", icon: "✗" },
-            { label: "REVIEW NEVER STARTS", color: "#eab308", icon: "⏸" },
-            { label: "DEVELOPMENT STALLS", color: "#eab308", icon: "⏳" },
-            { label: "MR CLOSED", color: "#ef4444", icon: "🔒" },
-          ].map((step, i) => (
+          {timelineSteps.map((step, i) => (
             <React.Fragment key={step.label}>
               <div style={{
                 display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, minWidth: 0,
@@ -272,17 +394,18 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 }}>{step.icon}</div>
                 <span style={{ fontSize: 7, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
               </div>
-              {i < 4 && <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${step.color}66, transparent)`, marginTop: -14 }} />}
+              {i < timelineSteps.length - 1 && <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${step.color}66, transparent)`, marginTop: -14 }} />}
             </React.Fragment>
           ))}
+          <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${timelineSteps[timelineSteps.length - 1].color}66, transparent)`, marginTop: -14 }} />
           <div style={{
             display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: "0 0 auto",
             padding: "4px 8px", borderRadius: 5, marginLeft: 4,
-            background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)",
+            background: `${timelinePredicted.color}12`, border: `1px solid ${timelinePredicted.color}25`,
             animation: "fadeSlideUp 0.3s 0.3s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", whiteSpace: "nowrap" }}>Predicted</span>
-            <span style={{ fontSize: 10, fontWeight: 800, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>CLOSED</span>
+            <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap" }}>Predicted</span>
+            <span style={{ fontSize: 10, fontWeight: 800, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace" }}>{timelinePredicted.label}</span>
           </div>
         </div>
       </div>
@@ -320,15 +443,15 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
           <div style={{
             marginTop: 8, padding: "6px 12px", borderRadius: 6,
-            background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))",
-            border: "1px solid rgba(34,197,94,0.12)",
+            background: isLow ? "rgba(34,197,94,0.08)" : isMedium ? "rgba(234,179,8,0.08)" : "rgba(34,197,94,0.08)",
+            border: `1px solid ${isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e"}15`,
             display: "flex", alignItems: "center", justifyContent: "space-between",
             animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
           }}>
             <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
-              <span style={{ color: "#22c55e" }}>●</span> Overall Confidence
+              <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Confidence
             </span>
-            <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>HIGH</span>
+            <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.3)" : isMedium ? "rgba(234,179,8,0.3)" : "rgba(34,197,94,0.3)"}` }}>{isLow ? "VERY HIGH" : "HIGH"}</span>
           </div>
         </div>
       </div>
@@ -360,11 +483,11 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
         padding: isMobile ? "14px 16px" : "20px 24px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(239,68,68,0.2)",
-        background: "linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(15,18,26,0.95) 50%, rgba(249,115,22,0.03) 100%)",
+        borderColor: config.border,
+        background: config.bg,
         ...fadeIn(0.2),
       }}>
-        <GlowOrb color="rgba(239,68,68,0.08)" top="-20%" right="-10%" size={isMobile ? 150 : 220} />
+        <GlowOrb color={config.glow} top="-20%" right="-10%" size={isMobile ? 150 : 220} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
             <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)" }}>Orbit Verdict</span>
@@ -372,28 +495,23 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 6 : 10,
             padding: isMobile ? "8px 16px" : "12px 28px", borderRadius: 10, marginBottom: 12, maxWidth: "100%", boxSizing: "border-box",
-            background: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))",
-            border: "1px solid rgba(239,68,68,0.25)",
+            background: `linear-gradient(135deg, ${config.color}15, ${config.color}05)`,
+            border: `1px solid ${config.color}25`,
             animation: mounted ? "pulseGlow 2s ease-in-out infinite" : "none",
           }}>
-            <span style={{ fontSize: isMobile ? 18 : 24, flexShrink: 0 }}>🚫</span>
-            <span style={{ fontSize: isMobile ? 16 : 22, fontWeight: 900, color: "#ef4444", letterSpacing: "0.8px", textShadow: "0 0 20px rgba(239,68,68,0.3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>DO NOT DEPLOY</span>
+            <span style={{ fontSize: isMobile ? 18 : 24, flexShrink: 0 }}>{config.verdictIcon}</span>
+            <span style={{ fontSize: isMobile ? 16 : 22, fontWeight: 900, color: config.color, letterSpacing: "0.8px", textShadow: `0 0 20px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.verdictLabel}</span>
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 10 : 16 }}>
             <div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                {[
-                  "No deployment path exists",
-                  "No validated pipeline exists",
-                  "No meaningful code changes detected",
-                  "Historical abandonment pattern detected",
-                ].map((r, i) => (
+                {config.reasoning.map((r, i) => (
                   <div key={r} style={{
                     display: "flex", alignItems: "center", gap: 6,
                     padding: "5px 8px", borderRadius: 5,
-                    background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.08)",
+                    background: `${config.color}04`, border: `1px solid ${config.color}08`,
                     fontSize: 11, color: "var(--text-primary)",
                     animation: `fadeSlideUp 0.3s ${0.25 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}>
