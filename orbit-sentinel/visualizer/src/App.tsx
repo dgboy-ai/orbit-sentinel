@@ -473,7 +473,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: `0 0 16px ${accentGlow}` }}>🛰️</div>
           <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
-        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 320, minWidth: 0, display: "flex", alignItems: "center", gap: 5, marginLeft: 4 }}>
+        <div className="resp-hide-subtitle" style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: "auto" }}>
           <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
           <EngineStatus />
         </div>
@@ -541,7 +541,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0, marginLeft: 28 }}>
+        <div style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0 }}>
           <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
