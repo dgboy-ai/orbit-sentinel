@@ -135,7 +135,7 @@ export default function ProblemSection() {
         {[
           { label: "Orbit Query Types", value: "4", color: "#a78bfa" },
           { label: "Digital Twin Nodes", value: "23", color: "#60a5fa" },
-          { label: "Engine Tests", value: "124", color: "#34d399" },
+          { label: "Total Tests", value: "134", color: "#34d399" },
           { label: "Time per MR", value: "~5m", color: "#fbbf24" },
         ].map(stat => (
           <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>

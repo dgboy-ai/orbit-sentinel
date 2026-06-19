@@ -563,7 +563,7 @@ function LaunchStep() {
     { icon: "📝", label: "Devpost Submission", done: false, detail: "Fill in description, gallery, docs on Devpost" },
     { icon: "🖼️", label: "Screenshots", done: true, detail: "Capture all 6 dashboard views" },
     { icon: "📋", label: "Contribute MRs", done: false, detail: "Submit orbit::hackathon MRs to GitLab Orbit" },
-    { icon: "🧪", label: "Tests Passing", done: true, detail: "75 tests across 13 files" },
+    { icon: "🧪", label: "Tests Passing", done: true, detail: "134 tests across 19 files" },
     { icon: "🏗️", label: "Build Succeeds", done: true, detail: "TypeScript + Vite production build" },
     { icon: "🚀", label: "Live Demo Deployed", done: true, detail: "orbit-sentinel.vercel.app" },
   ];
