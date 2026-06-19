@@ -1,6 +1,6 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import ImpactCalculator from "../components/ImpactCalculator";
 import RealityCheck from "../components/RealityCheck";
 import SimulateWebhook from "../components/SimulateWebhook";
@@ -89,7 +89,8 @@ describe("PredictionsTracker", () => {
     expect(screen.getByText("1 verified")).toBeInTheDocument();
   });
 
-  it("calls onVerify for prediction with pre-set outcome", () => {
+  it("calls onVerify for prediction with pre-set outcome", async () => {
+    vi.useFakeTimers();
     const onVerify = vi.fn();
     const predictions = [
       { mrIid: 5, title: "Update API", predictedRisk: 0.7, predictedLevel: "high", actualOutcome: "failed" as const, actualRisk: 0.9, mergedAt: "2026-06-01", evidence: "failed" },
@@ -97,7 +98,10 @@ describe("PredictionsTracker", () => {
     render(<PredictionsTracker predictions={predictions} onVerify={onVerify} />);
     const input = screen.getByPlaceholderText("MR IID (e.g. 42)");
     fireEvent.change(input, { target: { value: "5" } });
-    expect(screen.getByText("✓ Verify")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("✓ Verify"));
+    act(() => { vi.advanceTimersByTime(1200); });
+    expect(onVerify).toHaveBeenCalledWith(5, "failed");
+    vi.useRealTimers();
   });
 });
 

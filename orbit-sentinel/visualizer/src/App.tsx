@@ -106,7 +106,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   });
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-    try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch { /* localStorage may be blocked */ }
+    try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch { console.warn("localStorage theme write blocked"); }
   }, [dark]);
   const toggleTheme = useCallback(() => setDark(prev => !prev), []);
   const showNarrativeRef = useRef(showNarrative);
@@ -285,12 +285,12 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   const navigate = useCallback((v: View) => {
     if (v === view) return;
     setView(v);
-    try { window.history.replaceState(null, '', `?view=${v}`); } catch { /* history.replaceState may be restricted */ }
+    try { window.history.replaceState(null, '', `?view=${v}`); } catch { console.warn("history.replaceState blocked"); }
   }, [view]);
 
   const dismissOnboarding = useCallback(() => {
     setShowOnboarding(false);
-    try { localStorage.setItem("orbit-sentinel-onboarded", "1"); } catch { /* localStorage may be blocked */ }
+    try { localStorage.setItem("orbit-sentinel-onboarded", "1"); } catch { console.warn("localStorage onboarded write blocked"); }
   }, []);
 
   const onVerifyPrediction = useCallback((mrIid: number, outcome: "verified" | "failed") => {
@@ -420,7 +420,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         );
       case "blast-radius": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><BlastRadiusExplorer graph={data.graph} /></Suspense></ErrorBoundary>;
       case "risk": return <ErrorBoundary><RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} /></ErrorBoundary>;
-      case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} /></Suspense></ErrorBoundary>;
+      case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Pipelines Found" || t.label === "Ecosystem Pipelines")?.value ?? 0} /></Suspense></ErrorBoundary>;
       case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} /></Suspense></ErrorBoundary>;
       case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
       case "predictions": return <ErrorBoundary><PredictionsTracker predictions={predictions} onVerify={onVerifyPrediction} /></ErrorBoundary>;

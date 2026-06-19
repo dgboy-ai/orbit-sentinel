@@ -210,8 +210,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
     requestAnimationFrame(tick);
   }, [scenarios, riskScore]);
 
-  const failureCount = fc ?? Math.round(pipelinesTotal * 0.178);
-  const failureRate = pipelinesTotal > 0 ? ((failureCount / pipelinesTotal) * 100).toFixed(1) : "17.8";
+  const failureCount = fc ?? Math.round(pipelinesTotal * 0.18);
+  const failureRate = pipelinesTotal > 0 ? ((failureCount / pipelinesTotal) * 100).toFixed(1) : "N/A";
 
   const curCol = riskScoreToColor(sel.riskAfter);
   const gaugeColor = riskScoreToColor(animRisk);

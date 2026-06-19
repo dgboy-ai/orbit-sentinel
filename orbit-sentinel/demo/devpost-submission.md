@@ -2,7 +2,7 @@
 
 ## Inspiration
 
-> GitHub Copilot predicts code. Orbit Sentinel predicts **consequences**.
+> AI predicts code. Orbit Sentinel predicts **consequences**.
 
 You hit merge. Then you hold your breath. 🔮 Will this break something? Did I miss a downstream dependency? Has this file failed before? Is there a rollback plan?
 
@@ -34,27 +34,27 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 ## How We Built It 🏗️
 
 ```
-GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3, 13 tests)
+GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3, 29 tests)
                    │                                     │
                    ▼                                     │
           GitLab Orbit Knowledge Graph ◀─────────────────┘
           (4 query types, 14 nodes/13 edges per MR)
 ```
 
-**Engine** ⚙️ — TypeScript, Express, Zod validation, 8 classified error types with exponential backoff:
+**Engine** ⚙️ — TypeScript, Express, custom validation, 8 classified error types with exponential backoff:
 - `DigitalTwinBuilder` — orchestrates all 4 Orbit queries, merges into unified graph via `orbitOrFallback()`
 - `Grep Fallback` — when Orbit is unavailable, fetches files via GitLab API, parses imports, builds dependency graph without Orbit. Fast-paths to empty when no token present (no hanging)
-- `Risk Engine` — 5-dimension scoring (functionality, code quality, security, alignment, improvement) from Orbit evidence
+- `Risk Engine` — 5-factor scoring (predictions, blast radius, incidents, pipeline health, reviewer coverage) from Orbit evidence
 - `Memory Store` — Jaccard similarity engine for historical incident matching
 - `Remediation Planner` — rollback strategies, test plans, remediation steps by risk priority
-- Rate-limited to 23 queries per MR (was 107 — 78% reduction via caching + dedup + file cap)
+- Rate-limited to 28 queries per MR (was 107 — 74% reduction via dedup + file cap)
 
-**Visualizer** 🎨 — React 18, D3.js, Vite, 40 components, zero CSS files:
-- 8 interactive views, responsive across 5 breakpoints (360px to 1600px)
+**Visualizer** 🎨 — React 18, D3.js, Vite, 41 components, zero CSS files:
+- 8 interactive views, responsive across 3 breakpoints (360px to 768px)
 - Design token system: centralized colors, z-index tiers, animation presets, spacing scale
 - Judge's Tour (`?judge=true`) 🧑‍⚖️ — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
 - Theme toggle (light/dark) persisted to localStorage 🌗
-- 13 component smoke tests covering all major views
+- 29 component tests (26 component + 3 app) covering DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views
 
 **Duo Agent Platform** 🔌:
 - Flow YAML at `flow/orbit-sentinel-flow.yaml` — published to AI Catalog (1 run, public)
@@ -62,9 +62,9 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 - MCP config at `.gitlab/duo/mcp.json` — HTTP connection to Orbit knowledge graph
 - 6 query recipes in `skills/orbit-sentinel/recipes/` — ready-to-use JSON for each query pattern
 
-**Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks), CI/CD via `.gitlab-ci.yml` (6 jobs, 4 stages)
+**Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks)
 
-**Testing** ✅ — 108 tests (95 engine + 13 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning
+**Testing** ✅ — 124 tests (95 engine + 29 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
 
 ## Challenges We Ran Into 🧗
 
@@ -72,7 +72,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 **CORS blocking GitLab file fetches.** Browser couldn't fetch changed files from gitlab.com. Built a CORS proxy at `/api/probe-mr-files` on the engine — now all file fetches route through the server.
 
-**Rate limit amplification.** Initial code made 107 Orbit queries per MR analysis. Capped changed files at 5, added 500ms throttle, deduplicated query types. Down to 23 queries — 78% reduction.
+**Rate limit amplification.** Initial code made 107 Orbit queries per MR analysis. Capped changed files at 5, added 500ms throttle, deduplicated query types. Down to 28 queries — 74% reduction.
 
 **Dark screen on GitLab Pages.** Pages access control was Private, requiring auth the static site couldn't provide. Moved to Vercel. Kept Pages config for future use.
 
@@ -80,7 +80,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 ## Accomplishments That We're Proud Of 🏆
 
-**108 tests. Zero fluff.** Every test is meaningful — Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component smoke tests. No coverage theater.
+**124 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
 **Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph and returns actual graph data: 14 nodes, 13 edges per MR across 7 node types. Full traversal results documented.
 
@@ -88,7 +88,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 **Fallback resilience.** When Orbit is unavailable, the engine degrades to grep-based file analysis. The visualizer shows a "Degraded" mode banner. No crash. No blank screen. No "Orbit is down" error.
 
-**40 components, 8 views, 5 breakpoints, zero CSS files.** Design token system. Theme toggle. Keyboard shortcuts. Judge's Tour. Everything inline-styled. 📱
+**41 components, 8 views, 3 breakpoints, zero CSS files.** Design token system. Theme toggle. Keyboard shortcuts. Judge's Tour. Everything inline-styled. 📱
 
 **Flow published to AI Catalog** alongside GitLab's official flows — the only one with a fully interactive visual dashboard.
 

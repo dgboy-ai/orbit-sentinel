@@ -1,6 +1,5 @@
 import { getConfig } from "../config.js";
 import { ErrorHandler, OrbitSentinelError, ErrorType } from "../errors.js";
-import { MRValidator } from "../validators.js";
 import type {
   OrbitQuery,
   OrbitQueryEnvelope,
