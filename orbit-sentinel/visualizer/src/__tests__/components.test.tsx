@@ -5,6 +5,10 @@ import ImpactCalculator from "../components/ImpactCalculator";
 import RealityCheck from "../components/RealityCheck";
 import SimulateWebhook from "../components/SimulateWebhook";
 import TaglineBanner from "../components/TaglineBanner";
+import PredictionsTracker from "../components/PredictionsTracker";
+import SetupWizard from "../components/SetupWizard";
+import ImpactReport from "../components/ImpactReport";
+import { DEMO_DATA } from "../data/demoData";
 
 describe("ImpactCalculator", () => {
   it("renders calculator header and sliders", () => {
@@ -56,5 +60,29 @@ describe("TaglineBanner", () => {
     expect(screen.getByText("Why This Is Unique")).toBeInTheDocument();
     expect(screen.getByText((content) => content.startsWith("Predicts"))).toBeInTheDocument();
     expect(screen.getByText("consequences")).toBeInTheDocument();
+  });
+});
+
+describe("PredictionsTracker", () => {
+  it("renders accuracy scoreboard and vulnerability section", () => {
+    render(<PredictionsTracker />);
+    expect(screen.getByText("Prediction Accuracy Scoreboard")).toBeInTheDocument();
+    expect(screen.getByText("Vulnerability-Adjusted Predictions")).toBeInTheDocument();
+  });
+});
+
+describe("SetupWizard", () => {
+  it("renders setup steps and problem section", () => {
+    render(<SetupWizard />);
+    expect(screen.getByText("The Problem")).toBeInTheDocument();
+    expect(screen.getByText("The Mission")).toBeInTheDocument();
+  });
+});
+
+describe("ImpactReport", () => {
+  it("renders export dropdown button", () => {
+    render(<ImpactReport data={DEMO_DATA} />);
+    expect(screen.getByLabelText("Export report")).toBeInTheDocument();
+    expect(screen.getByLabelText("Print report")).toBeInTheDocument();
   });
 });
