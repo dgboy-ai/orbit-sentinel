@@ -323,12 +323,12 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               </div>
             ) : (
               <>
+                <ErrorBoundary><ProblemSection /></ErrorBoundary>
                 <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary>
                   {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
                 </div>
                 {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
-                <ErrorBoundary><ProblemSection /></ErrorBoundary>
                 <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
                   <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
