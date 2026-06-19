@@ -32,7 +32,7 @@ Boots engine (port 3001) + visualizer (port 80 via nginx) with health checks.
 cd engine
 npm install
 npm run build    # compiles TypeScript → dist/
-npm test         # runs 95 tests
+npm test         # runs 95 engine tests
 ```
 
 ### Visualizer
@@ -41,6 +41,7 @@ npm test         # runs 95 tests
 cd visualizer
 npm install
 npm run dev      # starts at http://localhost:5173
+npx vitest run   # runs 13 visualizer tests
 ```
 
 Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8 views).
@@ -50,7 +51,8 @@ Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8
 | Check | Command (PowerShell) | Expected |
 |-------|----------------------|----------|
 | Engine compiles | `cd engine; if ($?) { npx tsc --noEmit }` | No errors |
-| Tests pass | `cd engine; if ($?) { npm test }` | 95 tests passed |
+| Engine tests pass | `cd engine; if ($?) { npm test }` | 95 tests passed |
+| Visualizer tests pass | `cd visualizer; if ($?) { npx vitest run }` | 13 tests passed |
 | Visualizer builds | `cd visualizer; if ($?) { npm run build }` | `dist/` created |
 | Dev server | `cd visualizer; if ($?) { npm run dev }` | Opens at :5173 |
 
