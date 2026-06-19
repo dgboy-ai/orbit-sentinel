@@ -757,13 +757,18 @@ export default function SetupWizard() {
   );
 }
 
-function ErrorBoundary({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) {
-  const [hasError, setHasError] = useState(false);
-  useEffect(() => {
-    const handler = () => setHasError(true);
-    window.addEventListener("error", handler);
-    return () => window.removeEventListener("error", handler);
-  }, []);
-  if (hasError) return <>{fallback}</>;
-  return <>{children}</>;
+class ErrorBoundary extends React.Component<{ children: React.ReactNode; fallback: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) return <>{this.props.fallback}</>;
+    return <>{this.props.children}</>;
+  }
 }
