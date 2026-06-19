@@ -16,7 +16,7 @@ All notable changes to Orbit Sentinel are documented here.
 
 - **Vulnerability-Adjusted Predictions** (`PredictionsTracker.tsx`) — New "Vulnerability-Adjusted Predictions" section showing predicted vs actual vulns per MR. Per-file breakdown table with severity icons, predicted count, actual count, and confirmation toggle per file. Pulls predictions from `vulnerabilityPredictions` on each MR entry.
 
-- **Keyboard Shortcuts & Power User Hints** (`App.tsx`) — Global keyboard shortcuts: **1–8** switch between dashboard views (Overview=1, Setup=2, Blast Radius=3, Risk=4, Simulation=5, History=6, Report=7, Predictions=8). **D** toggles demo mode. **E** toggles the Editor panel. Shortcuts shown in a tooltip overlay at bottom of screen. Captured in `useEffect` keydown listener. Added `"opencode": true` to `visualizer/package.json`.
+- **Keyboard Shortcuts & Power User Hints** (`App.tsx`) — Global keyboard shortcuts: **1–8** switch between dashboard views (Overview=1, Setup=2, Blast Radius=3, Risk=4, Simulation=5, History=6, Report=7, Predictions=8). **D** toggles demo mode. **E** toggles the Editor panel. Shortcuts shown in a tooltip overlay at bottom of screen. Captured in `useEffect` keydown listener.
 
 - **Light/Dark Theme Toggle** (`index.html`, `App.tsx`) — Theme state persisted in `localStorage` under key `orbit-theme`. Toggle button in top nav bar (sun/moon icon). CSS custom properties for light theme (`--bg-card: rgba(255,255,255,0.85)`, `--bg-elevated: rgba(255,255,255,0.95)`). Theme stored and restored on load via `useEffect`. All components use `var(--...)` variables so they automatically adapt.
 
