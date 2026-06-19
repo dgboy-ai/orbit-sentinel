@@ -47,15 +47,15 @@
       }
       [data-theme="light"] {
         --bg-primary: #f5f7fa;
-        --bg-card: rgba(255,255,255,0.85);
-        --bg-elevated: rgba(255,255,255,0.95);
-        --border: rgba(0,0,0,0.08);
-        --border-hover: rgba(0,0,0,0.12);
-        --text-primary: rgba(0,0,0,0.88);
-        --text-secondary: rgba(0,0,0,0.45);
-        --text-tertiary: rgba(0,0,0,0.25);
-        --shadow-card: 0 2px 16px rgba(0,0,0,0.08);
-        --shadow-elevated: 0 4px 24px rgba(0,0,0,0.12);
+        --bg-card: rgba(255,255,255,0.9);
+        --bg-elevated: rgba(255,255,255,0.98);
+        --border: rgba(0,0,0,0.12);
+        --border-hover: rgba(0,0,0,0.18);
+        --text-primary: rgba(0,0,0,0.92);
+        --text-secondary: rgba(0,0,0,0.55);
+        --text-tertiary: rgba(0,0,0,0.35);
+        --shadow-card: 0 4px 24px rgba(0,0,0,0.15);
+        --shadow-elevated: 0 8px 40px rgba(0,0,0,0.2);
       }
       [data-theme="dark"] {
         --bg-primary: #08090d;
@@ -223,9 +223,9 @@
       .glow-judge { box-shadow: 0 0 40px rgba(139,92,246,0.2), 0 0 80px rgba(139,92,246,0.08), inset 0 0 40px rgba(139,92,246,0.04); animation: judgePulse 3s ease-in-out infinite; }
       @keyframes judgePulse { 0%, 100% { box-shadow: 0 0 40px rgba(139,92,246,0.2), 0 0 80px rgba(139,92,246,0.08), inset 0 0 40px rgba(139,92,246,0.04); } 50% { box-shadow: 0 0 50px rgba(139,92,246,0.3), 0 0 100px rgba(139,92,246,0.12), inset 0 0 40px rgba(139,92,246,0.06); } }
       .section-accent { position: relative; }
-      .section-accent::before { content: ''; position: absolute; left: -1px; top: 10%; bottom: 10%; width: 3px; border-radius: 3px; background: linear-gradient(180deg, var(--accent-blue), rgba(96,165,250,0.2)); opacity: 0.7; }
-      .section-accent-verdict::before { background: linear-gradient(180deg, #ef4444, rgba(239,68,68,0.2)); }
-      .section-accent-roi::before { background: linear-gradient(180deg, #22c55e, rgba(34,197,94,0.2)); }
+      .section-accent::before { content: ''; position: absolute; left: -1px; top: 10%; bottom: 10%; width: 3px; border-radius: 3px; background: linear-gradient(180deg, var(--accent-blue), rgba(59,130,246,0.15)); opacity: 0.8; }
+      .section-accent-verdict::before { background: linear-gradient(180deg, #ef4444, rgba(239,68,68,0.15)); }
+      .section-accent-roi::before { background: linear-gradient(180deg, #22c55e, rgba(34,197,94,0.15)); }
 
       .bg-grid {
         background-image:
