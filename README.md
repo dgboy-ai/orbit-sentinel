@@ -132,40 +132,7 @@ When Orbit's API is unavailable, Orbit Sentinel **degrades gracefully**:
 - **Caching**: 5-minute API response caching, `localStorage` for user preferences and theme persistence
 
 
-```mermaid
-flowchart TD
-    MR["📝 MR Opened"] --> FLOW
-
-    subgraph FLOW["Duo Agent Flow (8 steps)"]
-        direction TB
-        S1["1. get_graph_schema"] --> S2["2. NEIGHBORS"] --> S3["3. PATH_FINDING"]
-        S3 --> S4["4. TRAVERSAL"] --> S5["5. AGGREGATION"]
-        S5 --> S6["6. Compose Report"] --> S7["7. Post MR Note"] --> S8["8. Complete"]
-    end
-
-    FLOW --> NOTE["📋 MR Note Posted"]
-
-    subgraph ENGINE["Engine (TypeScript · Express · Render)"]
-        direction TB
-        E0["DigitalTwinBuilder\norbitOrFallback()"] --> ORBIT["Orbit API\n(gitlab.com/api/v4/orbit)"]
-        E0 --> FALLBACK["Grep Fallback\nFile analysis"]
-        ORBIT --> E1
-        FALLBACK --> E1
-        E1["Risk Scoring"] --> E2["Remediation Planner"]
-        E2 --> E3a["DataVisualizer\nDashboard JSON"]
-        E2 --> E3b["Markdown Reporter\nMR Note"]
-    end
-
-    subgraph VIZ["Visualizer (React · D3 · Vite · Vercel)"]
-        direction TB
-        V1["MrAnalyzer"] --> V2["3 Quick Demos"]
-        V2 --> V3["8 Dashboard Views\n+ Predictions Tracker"]
-        V3 --> V4["Post-Merge Verification"]
-    end
-
-    VIZ -->|"MR to analyze"| ENGINE
-    ENGINE -->|"JSON report"| VIZ
-```
+![Orbit Sentinel Architecture](orbit-sentinel/docs/screenshots/architecture.png)
 
 Every conclusion cites specific Orbit query evidence. No black box.
 
