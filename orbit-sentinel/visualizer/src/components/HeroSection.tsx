@@ -24,9 +24,6 @@ export default function HeroSection({
 }) {
   const rk = riskScoreToKey(riskScore);
   const r = RISK[rk];
-  const circ = 2 * Math.PI * 44;
-  const offset = circ - riskScore * circ;
-
   const isHigh = rk === "critical" || rk === "high" || rk === "medium";
 
   return (
@@ -130,7 +127,7 @@ export default function HeroSection({
             <svg width="100" height="60" viewBox="0 0 100 60">
               <path d="M10,50 A40,40 0 0,1 90,50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" strokeLinecap="round" />
               <path d="M10,50 A40,40 0 0,1 90,50" fill="none" stroke={r.hex} strokeWidth="8" strokeLinecap="round"
-                strokeDasharray={`${circ * 0.55} ${circ}`} strokeDashoffset={circ * 0.45}
+                strokeDasharray={Math.PI * 40} strokeDashoffset={(Math.PI * 40) - (riskScore * Math.PI * 40)}
                 style={{ filter: `drop-shadow(0 0 6px ${r.glow})`, transition: "stroke-dashoffset 1.4s ease" }} />
               <text x="50" y="52" textAnchor="middle" fontSize="11" fontWeight="800" fill={r.hex} fontFamily="'JetBrains Mono', monospace">{(riskScore * 100).toFixed(0)}%</text>
             </svg>
