@@ -50,7 +50,7 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 |----------------|---------------|--------------------------------------|
 | **Visual execution** | 40 React components, 8 views, responsive | Text-only output |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, vulnerability-adjusted predictions, computes accuracy score | Predicts but never verifies |
-| **Test coverage** | **108 tests** (engine + visualizer) | 28 tests |
+| **Test coverage** | **124 tests** (engine + visualizer) — zero `as any` | 28 tests |
 | **Fallback resilience** | Grep-based fallback when Orbit is down — still delivers analysis | No fallback, fails on Orbit downtime |
 | **Deployment** | Docker Compose, CI/CD, Vercel + Render, nginx | Manual only |
 | **Onboarding** | Judge's Tour, auto-demo mode, 3 quick demos, setup wizard | No UX onboarding |

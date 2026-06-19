@@ -116,9 +116,12 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
       });
     linkSelRef.current = linkSel;
 
+    const dragBehavior = d3.drag<SVGGElement,DN>()
+      .on("start",(e,d)=>{if(!e.active)sim.alphaTarget(0.1).restart();d.fx=d.x;d.fy=d.y;})
+      .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;})
+      .on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=undefined;d.fy=undefined;});
     const nodeSel = g.append("g").selectAll<SVGGElement,DN>("g").data(nd).join("g")
-      .call(d3.drag<SVGGElement,DN>().on("start",(e,d)=>{if(!e.active)sim.alphaTarget(0.1).restart();d.fx=d.x;d.fy=d.y;})
-        .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;}).on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=undefined;d.fy=undefined;}) as any);
+      .call(dragBehavior);
     nodeSelRef.current = nodeSel;
 
     nodeSel.append("circle").attr("class","br-glow")

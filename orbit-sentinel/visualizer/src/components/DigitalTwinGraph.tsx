@@ -107,16 +107,19 @@ export default function DigitalTwinGraph({ graph }: Props) {
     const ng = g.append("g");
 
     let clickPos: {x:number;y:number}|null = null;
+    const dragBehavior = d3.drag<SVGGElement,DN>()
+      .on("start",(e,d)=>{clickPos={x:e.x,y:e.y};if(!e.active)sim.alphaTarget(0.1).restart();d.fx=d.x;d.fy=d.y;})
+      .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;})
+      .on("end",(e,d)=>{
+        if(!e.active)sim.alphaTarget(0);
+        if(clickPos && Math.abs(e.x-clickPos.x)<5 && Math.abs(e.y-clickPos.y)<5) {
+          setSelected({id:d.id,label:d.label,type:d.type,riskLevel:d.riskLevel});
+        }
+        clickPos=null;
+        d.fx=undefined;d.fy=undefined;
+      });
     const node = ng.selectAll<SVGGElement,DN>("g").data(nd).join("g")
-      .call(d3.drag<SVGGElement,DN>().on("start",(e,d)=>{clickPos={x:e.x,y:e.y};if(!e.active)sim.alphaTarget(0.1).restart();d.fx=d.x;d.fy=d.y;})
-        .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y;}).on("end",(e,d)=>{
-          if(!e.active)sim.alphaTarget(0);
-          if(clickPos && Math.abs(e.x-clickPos.x)<5 && Math.abs(e.y-clickPos.y)<5) {
-            setSelected({id:d.id,label:d.label,type:d.type,riskLevel:d.riskLevel});
-          }
-          clickPos=null;
-          d.fx=undefined;d.fy=undefined;
-        }) as any);
+      .call(dragBehavior);
 
     const riskColors = allColors.filter(c => graph.nodes.some(n => n.riskLevel && riskLevelToColor(n.riskLevel) === c));
     riskColors.forEach(c => {

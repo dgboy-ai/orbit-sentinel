@@ -81,8 +81,8 @@ describe("PredictionsTracker", () => {
 
   it("shows stats with predictions provided", () => {
     const predictions = [
-      { mrIid: 1, predictedRisk: 0.8, actualOutcome: "verified" as const, actualRisk: 0.2, timestamp: "2026-06-01", files: ["src/main.ts"] },
-      { mrIid: 2, predictedRisk: 0.3, actualOutcome: "pending" as const, timestamp: "2026-06-02", files: ["src/utils.ts"] },
+      { mrIid: 1, title: "Fix auth", predictedRisk: 0.8, predictedLevel: "high", actualOutcome: "verified" as const, actualRisk: 0.2, mergedAt: "2026-06-01", evidence: "verified" },
+      { mrIid: 2, title: "Add logging", predictedRisk: 0.3, predictedLevel: "low", actualOutcome: "pending" as const, mergedAt: "2026-06-02" },
     ];
     render(<PredictionsTracker predictions={predictions} />);
     expect(screen.getByText("Total Tracked")).toBeInTheDocument();
@@ -92,13 +92,11 @@ describe("PredictionsTracker", () => {
   it("calls onVerify for prediction with pre-set outcome", () => {
     const onVerify = vi.fn();
     const predictions = [
-      { mrIid: 5, predictedRisk: 0.7, actualOutcome: "failed" as const, actualRisk: 0.9, timestamp: "2026-06-01", files: ["src/api.ts"] },
+      { mrIid: 5, title: "Update API", predictedRisk: 0.7, predictedLevel: "high", actualOutcome: "failed" as const, actualRisk: 0.9, mergedAt: "2026-06-01", evidence: "failed" },
     ];
     render(<PredictionsTracker predictions={predictions} onVerify={onVerify} />);
     const input = screen.getByPlaceholderText("MR IID (e.g. 42)");
     fireEvent.change(input, { target: { value: "5" } });
-    // handleVerify uses setTimeout(1200ms), but vi.useFakeTimers isn't set up.
-    // Just verify the input renders and button exists
     expect(screen.getByText("✓ Verify")).toBeInTheDocument();
   });
 });
