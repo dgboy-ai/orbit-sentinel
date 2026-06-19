@@ -96,6 +96,21 @@ When Orbit's API is unavailable, Orbit Sentinel **degrades gracefully**:
 
 ## Architecture
 
+### Component Patterns
+- **Atomic Design**: 41 components organized in a hierarchical pattern — atoms (basic UI elements), molecules (combinations of atoms), organisms (self-contained sections), templates (page layouts), and pages (complete view compositions)
+- **State Management**: Custom hooks (`useAnimatedValue`, `useMediaQuery`, `useVulnerabilities`) + React Context API + URL state via `useState`/`useEffect` for global application state
+- **Data Flow**: Client-server pattern with `ApiService` class handling Orbit API calls, `DigitalTwinBuilder` orchestrating query execution, and `DataVisualizer` transforming results into dashboard JSON
+
+### API Integration
+- **GitLab Auth**: Simple GitLab Personal Access Token (`glpat-xxx`) with `read_api` scope for file content access
+- **Rate Limiting**: 500ms throttle between file iterations, max 5 files per MR, exponential backoff for transient errors
+- **Error Classification**: 8 error types (`RATE_LIMIT`, `AUTHENTICATION_ERROR`, `QUOTA_EXCEEDED`, `ORBIT_API_ERROR`, `NETWORK_ERROR`, `SERVICE_UNAVAILABLE`, `VALIDATION_ERROR`, `INVALID_MR`) with specific recovery strategies
+
+### Performance Optimizations
+- **Bundle Size**: ~125KB gzipped with lazy-loading of critical components via Vite's code splitting
+- **Rendering**: React 18 concurrent rendering with `Suspense` boundaries, `React.memo` and `useMemo` optimizations
+- **Caching**: 5-minute API response caching, `localStorage` for user preferences and theme persistence
+
 ```mermaid
 flowchart TD
     MR["📝 MR Opened"] --> FLOW
