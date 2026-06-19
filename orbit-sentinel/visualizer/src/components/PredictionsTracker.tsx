@@ -3,9 +3,13 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "../utils/colors";
 import type { PredictionRecord } from "../types";
 
-function DualSparkline({ series, height = 60 }: { series: { data: number[]; color: string; label: string }[]; height?: number }) {
+function DualSparkline({ series, height = 80 }: { series: { data: number[]; color: string; label: string }[]; height?: number }) {
+  const [hoverX, setHoverX] = useState<number | null>(null);
   const w = 480;
   const h = height;
+  const pad = { top: 8, bottom: 14, left: 32, right: 12 };
+  const plotW = w - pad.left - pad.right;
+  const plotH = h - pad.top - pad.bottom;
   const all = series.flatMap(s => s.data);
   if (all.length === 0) {
     return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "var(--text-tertiary)" }}>No trend data yet</div>;
@@ -14,32 +18,104 @@ function DualSparkline({ series, height = 60 }: { series: { data: number[]; colo
   const max = Math.max(...all);
   const range = max - min || 1;
   const n = Math.max(...series.map(s => s.data.length));
+
+  const yTick = (v: number) => pad.top + plotH - ((v - min) / range) * plotH;
+  const xTick = (i: number) => pad.left + (i / Math.max(n - 1, 1)) * plotW;
+
+  const labelOff = 2;
+  const yLabels = [min, min + range * 0.5, max];
+  const midIdx = Math.floor((n - 1) / 2);
+  const lastIdx = n - 1;
+
   return (
-    <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: "block" }}>
-      <defs>
-        {series.map(s => (
-          <linearGradient key={`p-${s.color.replace("#", "")}`} id={`pg-${s.color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={s.color} stopOpacity="0.2" />
-            <stop offset="100%" stopColor={s.color} stopOpacity="0.02" />
+    <div style={{ position: "relative", width: "100%" }}
+      onMouseMove={e => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        const idx = Math.round(pct * (n - 1));
+        setHoverX(Math.max(0, Math.min(n - 1, idx)));
+      }}
+      onMouseLeave={() => setHoverX(null)}
+    >
+      <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: "block", overflow: "visible" }}>
+        <defs>
+          {series.map(s => (
+            <React.Fragment key={s.label}>
+              <linearGradient id={`pg-a-${s.color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={s.color} stopOpacity="0.35" />
+                <stop offset="100%" stopColor={s.color} stopOpacity="0.01" />
+              </linearGradient>
+              <filter id={`glow-${s.color.replace("#", "")}`}>
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </React.Fragment>
+          ))}
+          <linearGradient id="chart-bg-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.02)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
-        ))}
-      </defs>
-      {[0.25, 0.5, 0.75].map(v => (
-        <line key={v} x1={0} x2={w} y1={h - ((v - min) / range) * (h - 6) - 3} y2={h - ((v - min) / range) * (h - 6) - 3} stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" strokeDasharray="4,4" />
-      ))}
-      {series.map((s) => {
-        const pts = s.data.map((v, i) => `${(i / Math.max(n - 1, 1)) * w},${h - ((v - min) / range) * (h - 6) - 3}`).join(" ");
-        return (
-          <g key={s.label}>
-            <path d={`M${0},${h} ${pts} M${w},${h}`} fill={`url(#pg-${s.color.replace("#", "")})`} opacity="0.3" />
-            <polyline points={pts} fill="none" stroke={s.color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" opacity={0.9} />
-            {s.data.map((v, i) => (
-              <circle key={i} cx={(i / Math.max(n - 1, 1)) * w} cy={h - ((v - min) / range) * (h - 6) - 3} r={2.5} fill={s.color} opacity={0.6} />
-            ))}
+        </defs>
+
+        {/* subtle bg fill */}
+        <rect x={pad.left} y={pad.top} width={plotW} height={plotH} rx={4} fill="url(#chart-bg-grad)" />
+
+        {/* horizontal grid lines */}
+        {yLabels.map(v => (
+          <g key={v}>
+            <line x1={pad.left} x2={w - pad.right} y1={yTick(v)} y2={yTick(v)} stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" strokeDasharray="3,3" />
+            <text x={pad.left - labelOff} y={yTick(v) + 3} textAnchor="end" fill="rgba(255,255,255,0.2)" fontSize="7" fontFamily="'JetBrains Mono',monospace">{Math.round(v * 100)}%</text>
           </g>
-        );
-      })}
-    </svg>
+        ))}
+
+        {/* series lines */}
+        {series.map((s) => {
+          const pts = s.data.map((v, i) => `${xTick(i)},${yTick(v)}`).join(" ");
+          const area = s.data.map((v, i) => `${xTick(i)},${yTick(v)}`).join(" ") + ` ${xTick(lastIdx)},${pad.top + plotH} ${xTick(0)},${pad.top + plotH}`;
+          return (
+            <g key={s.label}>
+              <polygon points={area} fill={`url(#pg-a-${s.color.replace("#", "")})`} />
+              <polyline points={pts} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.85} filter={`url(#glow-${s.color.replace("#", "")})`} />
+              {s.data.map((v, i) => (
+                <circle key={i} cx={xTick(i)} cy={yTick(v)} r={3.5} fill="rgba(15,18,26,0.9)" stroke={s.color} strokeWidth="1.8" opacity={0.9} />
+              ))}
+            </g>
+          );
+        })}
+
+        {/* hover indicator */}
+        {hoverX !== null && (
+          <g>
+            <line x1={xTick(hoverX)} x2={xTick(hoverX)} y1={pad.top} y2={pad.top + plotH} stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="2,2" />
+            {series.map((s) => {
+              const v = s.data[hoverX];
+              if (v === undefined) return null;
+              return (
+                <g key={`hv-${s.label}`}>
+                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={5} fill={s.color} opacity={0.15} />
+                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={3} fill={s.color} />
+                </g>
+              );
+            })}
+            <rect x={xTick(hoverX) - 40} y={pad.top - 2} width={80} height={14} rx={4} fill="rgba(15,18,26,0.9)" stroke="rgba(255,255,255,0.06)" />
+            {series.map((s, si) => {
+              const v = s.data[hoverX];
+              if (v === undefined) return null;
+              return (
+                <text key={si} x={xTick(hoverX)} y={pad.top + 9} textAnchor="middle" fill={s.color} fontSize="7" fontWeight="700" fontFamily="'JetBrains Mono',monospace">
+                  {s.label[0]}:{Math.round(v * 100)}%
+                </text>
+              );
+            })}
+          </g>
+        )}
+
+        {/* x-axis labels */}
+        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">MR #1</text>
+        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.1)" fontSize="6" fontFamily="'JetBrains Mono',monospace">MR #{midIdx + 1}</text>}
+        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">MR #{n}</text>
+      </svg>
+    </div>
   );
 }
 
@@ -246,18 +322,18 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </div>
           </div>
           <div style={{ overflowX: "auto", paddingBottom: 4 }}>
-            <DualSparkline
-              series={[
-                { data: trendData.predicted, color: "#60a5fa", label: "Predicted" },
-                { data: trendData.actual.filter((v): v is number => v !== null), color: "#22c55e", label: "Actual" },
-              ]}
-              height={60}
-            />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8, color: "var(--text-tertiary)", marginTop: 4 }}>
-            <span>Earliest MR</span>
-            <span style={{ fontStyle: "italic" }}>Each point = one MR's risk score</span>
-            <span>Latest MR</span>
+              <DualSparkline
+                series={[
+                  { data: trendData.predicted, color: "#60a5fa", label: "Predicted" },
+                  { data: trendData.actual.filter((v): v is number => v !== null), color: "#22c55e", label: "Actual" },
+                ]}
+                height={80}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8, color: "var(--text-tertiary)", marginTop: 4 }}>
+              <span>Earliest MR</span>
+              <span style={{ fontStyle: "italic" }}>Hover to see values · Each dot = one MR</span>
+              <span>Latest MR</span>
           </div>
         </div>
       </div>
