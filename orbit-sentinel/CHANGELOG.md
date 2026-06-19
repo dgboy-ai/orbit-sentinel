@@ -4,6 +4,14 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
+## Header Spacing & Layout (June 19 — Desktop Right-Aligned Nav)
+
+### Changed
+
+- **Header layout** — Removed `flex: 1` and `maxWidth: 320` from the center (Demo+Live) section. Added `marginLeft: auto` so all nav elements (Demo+Live, tabs, actions) are pushed to the far right. Logo stays on the far left. Removed stale `marginLeft: 28` from right actions group.
+
+---
+
 ## Final Polish (June 19 — Loading UX + Fallback Honesty + Judge Polish)
 
 ### Added
