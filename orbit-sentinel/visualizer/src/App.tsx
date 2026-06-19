@@ -91,7 +91,7 @@ export default function App() {
   const [currentScenario, setCurrentScenario] = useState<string | null>(() => ssRead("scenario", null));
   const [analyzing, setAnalyzing] = useState(false);
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
-  const [showQueryLog, setShowQueryLog] = useState(true);
+  const [showQueryLog, setShowQueryLog] = useState(false);
   const [showQueryInspector, setShowQueryInspector] = useState(false);
 const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPredictions());
   const [showShortcuts, setShowShortcuts] = useState(false);
