@@ -82,7 +82,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 **124 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
-**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph and returns actual graph data: 14 nodes, 13 edges per MR across 7 node types. Full traversal results documented.
+**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph and returns actual graph data: 14 nodes, 13 edges per MR across 7 node types. Full traversal results documented. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live: 51 nodes, 29 edges, all 4 query types executed, report posted as MR !12 note.
 
 **Closed-loop accuracy.** We don't predict and disappear. Every prediction is tracked post-merge with a 7-day survival window. Accuracy rate, risk trends, vulnerability-adjusted forecasts — all surfaced in the Predictions Tracker. This is the difference between a demo and a tool. 🎯
 
