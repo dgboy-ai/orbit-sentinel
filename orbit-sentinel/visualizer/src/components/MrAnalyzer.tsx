@@ -60,7 +60,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
     const coldStartTimer = setTimeout(() => {
       setColdStartActive(true);
-    }, 8000);
+    }, 12000);
 
     try {
       const useCreds = !!token;
@@ -173,7 +173,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
     const coldStartTimer = setTimeout(() => {
       setColdStartActive(true);
-    }, 8000);
+    }, 12000);
 
     try {
       const changedFiles = ["src/main.ts"];
@@ -428,13 +428,14 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       {coldStartActive && analyzing && (
         <div style={{
           padding: "10px 14px", borderRadius: 8, fontSize: 11,
-          background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.2)",
-          color: "#c4b5fd", display: "flex", alignItems: "center", gap: 8,
+          background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.18)",
+          color: "#93c5fd", display: "flex", alignItems: "center", gap: 10,
           animation: "pulseGlow 2s ease-in-out infinite",
         }}>
-          <span style={{ fontSize: 14 }}>⏳</span>
-          <div>
-            <strong>Backend cold start:</strong> Render API is spinning up, please wait (takes ~30-50s when idle)...
+          <span style={{ fontSize: 16, flexShrink: 0 }}>🔍</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <div style={{ fontWeight: 700, color: "#60a5fa" }}>Orbit is running graph queries…</div>
+            <div style={{ fontSize: 9, color: "var(--text-tertiary)" }}>NEIGHBORS → PATH_FINDING → TRAVERSAL → AGGREGATION</div>
           </div>
         </div>
       )}
