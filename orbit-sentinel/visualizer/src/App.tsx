@@ -322,6 +322,15 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
                 </div>
                 {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
+                <ErrorBoundary>
+                  <MrAnalyzer
+                    onSelectScenario={onSelectScenario}
+                    apiAvailable={apiService.isApiAvailable()}
+                    currentScenario={currentScenario}
+                    onAnalyzeStart={onAnalyzeStart}
+                  />
+                </ErrorBoundary>
+                {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} />}
                 <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
                   <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
@@ -342,15 +351,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   <ErrorBoundary><SimulateWebhook data={data} dataMode={dataMode} /></ErrorBoundary>
                   <ErrorBoundary><RealityCheck /></ErrorBoundary>
                 </div>
-                <ErrorBoundary>
-                  <MrAnalyzer
-                    onSelectScenario={onSelectScenario}
-                    apiAvailable={apiService.isApiAvailable()}
-                    currentScenario={currentScenario}
-                    onAnalyzeStart={onAnalyzeStart}
-                  />
-                </ErrorBoundary>
-                {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} />}
               </>
             )}
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
