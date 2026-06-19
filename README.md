@@ -2,7 +2,7 @@
 
 > GitHub Copilot predicts code. Orbit Sentinel predicts **consequences**.
 
-[![Tests](https://img.shields.io/badge/tests-105%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-108%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab.com/gitlab-ai-hackathon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -48,9 +48,9 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 
 | Differentiator | Orbit Sentinel | Sankofa (only confirmed competitor) |
 |----------------|---------------|--------------------------------------|
-| **Visual execution** | 38 React components, 8 views, responsive | Text-only output |
+| **Visual execution** | 40 React components, 8 views, responsive | Text-only output |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, vulnerability-adjusted predictions, computes accuracy score | Predicts but never verifies |
-| **Test coverage** | **105 tests** (engine + visualizer) | 28 tests |
+| **Test coverage** | **108 tests** (engine + visualizer) | 28 tests |
 | **Fallback resilience** | Grep-based fallback when Orbit is down — still delivers analysis | No fallback, fails on Orbit downtime |
 | **Deployment** | Docker Compose, CI/CD, Vercel + Render, nginx | Manual only |
 | **Onboarding** | Judge's Tour, auto-demo mode, 3 quick demos, setup wizard | No UX onboarding |
@@ -215,7 +215,7 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 - **Rate Limiting** — `MAX_CHANGED_FILES` capped at 5 per MR, 500ms throttle between file iterations (reduces Orbit queries from 107 to 23 per analysis)
 - **Debug Endpoint** — `/api/raw-orbit` for ad-hoc Orbit query exploration
 
-**Visualizer** — React app at `orbit-sentinel/visualizer/` deployed on **Vercel** (TypeScript, **10 tests**):
+**Visualizer** — React app at `orbit-sentinel/visualizer/` deployed on **Vercel** (TypeScript, **13 tests**):
 
 - **PredictionsTracker** — accuracy scoreboard with DualSparkline (predicted vs actual risk trend), animated stat counters, filterable/sortable MR ledger, post-merge verification input, Vulnerability-Adjusted Predictions table with per-file breakdown and confirmation toggles
 - **DataModeBanner** — 6 modes: loading / connecting / live / demo / error / **degraded** — orange banner shown when engine falls back to file analysis
@@ -232,7 +232,7 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 | Status |
 |--------|
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| Tests | **105 passing** (95 engine + 10 visualizer) |
+| Tests | **108 passing** (95 engine + 13 visualizer) |
 | Live Orbit Data | Engine returns real graph data for project ID **83381762** (14 nodes, 13 edges per MR) |
 | Quick Demos | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
 | Fallback | Grep-based file analysis when Orbit unavailable — degraded mode banner in UI |
