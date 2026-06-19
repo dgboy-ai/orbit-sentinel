@@ -464,12 +464,12 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         display: screenshotMode || presentMode ? "none" : "flex",
         position: "relative", zIndex: Z.dropdown,
         borderBottom: `1px solid ${accentColor}22`,
-        padding: "6px 16px", alignItems: "center", gap: 6,
+        padding: "6px 16px", alignItems: "center", gap: 10,
         flexShrink: 0, background: "rgba(8,9,13,0.85)", backdropFilter: "blur(20px)",
         boxShadow: `0 1px 0 ${accentColor}11, 0 4px 24px ${accentGlow}08`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <div style={{ width: 26, height: 26, borderRadius: 7, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, boxShadow: `0 0 12px ${accentGlow}` }}>🛰️</div>
           <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
@@ -514,7 +514,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             )}
           </div>
         )}
-        <div className={`header-nav${isMobile ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 1, alignItems: "center", flexShrink: 0, overflow: "auto" }} role="tablist" aria-label="Dashboard views">
+        <div className={`header-nav${isMobile ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0, overflow: "auto" }} role="tablist" aria-label="Dashboard views">
           {tabs.map(([k, lbl]) => (
             <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }}
               role="tab"
@@ -541,8 +541,8 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 1, alignItems: "center", flexShrink: 0 }}>
-          <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 3px", flexShrink: 0 }} />
+        <div style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0 }}>
+          <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
               padding: "4px 7px", fontSize: 11, cursor: "pointer",
