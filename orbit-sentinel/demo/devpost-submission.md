@@ -64,7 +64,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 **Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks), CI/CD via `.gitlab-ci.yml` (6 jobs, 4 stages)
 
-**Testing** ✅ — 124 tests (95 engine + 29 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
+**Testing** ✅ — 134 tests (105 engine + 29 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
 
 ## Challenges We Ran Into 🧗
 
@@ -80,7 +80,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 ## Accomplishments That We're Proud Of 🏆
 
-**124 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
+**134 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
 **Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph and returns actual graph data: 14 nodes, 13 edges per MR across 7 node types. Full traversal results documented. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live: 51 nodes, 29 edges, all 4 query types executed, report posted as MR !12 note.
 

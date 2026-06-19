@@ -4,6 +4,18 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
+## SetupWizard & UI/UX Gaps (June 20 — Polish & Gaps)
+
+### Added
+- **D3 navigation zoom controls on Blast Radius Explorer** (`BlastRadiusExplorer.tsx`) — Added floating buttons (`➕`, `➖`, `🎯`) inside the Blast Radius graph card to allow programmatic zoom-in, zoom-out, and centering of the dependency chain diagram.
+- **Mobile responsiveness for Predictions Ledger** (`PredictionsTracker.tsx`) — Added stacked flex layout fallback when viewed on mobile viewports (`isMobile === true`) to render clear card-based layouts for MR scoreboard ledger entries instead of squished grids.
+- **Transient error recovery options** (`InlineError.tsx`) — Added a "Clear Cache & Reset" button inside panel error boundaries to flush `localStorage`/`sessionStorage` and reload the page in case of preference corruption.
+
+### Refactored
+- **Setup Wizard Error Boundary** (`SetupWizard.tsx`) — Replaced the non-standard functional `ErrorBoundary` component using global window listeners with a standard class-based component implementing `getDerivedStateFromError` to properly capture rendering exceptions in wizard steps.
+
+---
+
 ## Header Spacing & Layout (June 19 — Desktop Right-Aligned Nav)
 
 ### Changed

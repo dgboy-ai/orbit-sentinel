@@ -2,7 +2,7 @@
 
 > AI predicts code. Orbit Sentinel predicts **consequences**.
 
-[![Tests](https://img.shields.io/badge/tests-124%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-134%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab-transcend.devpost.com)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
@@ -34,7 +34,7 @@
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION cross-referenced | Single-query or no graph data |
 | **Fallback resilience** | Grep-based file analysis when Orbit is down — still delivers analysis | Fails on Orbit downtime |
-| **Test coverage** | **124 tests** (95 engine + 29 visualizer) — zero `as any` in production code | Minimal or no test suite |
+| **Test coverage** | **134 tests** (105 engine + 29 visualizer) — zero `as any` in production code | Minimal or no test suite |
 | **Deployment** | Vercel + Render, Docker Compose, CI/CD (6 jobs, 4 stages) | Manual setup |
 | **Onboarding** | Judge's Tour, auto-demo, setup wizard, keyboard shortcuts | No UX |
 
@@ -203,7 +203,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 
 ## Details
 
-**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, **95 tests**):
+**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, **105 tests**):
 - `DigitalTwinBuilder` — orchestrates 9 Orbit queries across all 4 query types via `orbitOrFallback()` wrappers, merges results into unified graph
 - `Grep Fallback` — fetches files via GitLab Repository Files API, parses imports, builds dependency graph without Orbit
 - `Risk Engine` — 5-factor scoring from Orbit evidence (predictions, blast radius, incidents, pipeline health, reviewer coverage)
@@ -226,14 +226,14 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 - MCP config (`.gitlab/duo/mcp.json`) — HTTP connection to Orbit knowledge graph
 - 6 query recipes (`skills/orbit-sentinel/recipes/`) — ready-to-use JSON for each query pattern
 
-**Testing** — **124 tests total** (95 engine + 29 visualizer), zero `as any` in production code. Engine covers Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies. Visualizer covers DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views.
+**Testing** — **134 tests total** (105 engine + 29 visualizer), zero `as any` in production code. Engine covers Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies. Visualizer covers DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views.
 
 **Stack** — Node 22+, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Vitest.
 
 | Status | |
 |--------|---|
 | Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| Tests | **124 passing** (95 engine + 29 visualizer) |
+| Tests | **134 passing** (105 engine + 29 visualizer) |
 | Live Orbit Data | Engine returns real graph data for project ID **39251857** (222+ nodes, 187+ edges from live Orbit) |
 | Quick Demos | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
 | Fallback | Grep-based file analysis when Orbit unreachable — degraded mode banner in UI |
