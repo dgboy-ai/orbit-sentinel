@@ -33,15 +33,15 @@ npx vercel --prod
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `VITE_API_BASE_URL` | `https://your-engine.onrender.com` | Points visualizer to live engine API |
+| `VITE_API_BASE_URL` | `https://orbit-sentinel.onrender.com` | Points visualizer to live engine API |
 
-Without `VITE_API_BASE_URL`, the visualizer runs in demo mode with embedded sample data.
+Without `VITE_API_BASE_URL`, the visualizer runs in demo mode with embedded sample data (dashboard loads instantly, upgrades to live when engine responds).
 
 ---
 
 ## Engine (Render)
 
-The engine is deployed at [orbit-sentinel.onrender.com](https://orbit-sentinel.onrender.com). It will **not** return live Orbit data until `GITLAB_ACCESS_TOKEN` is set — without it, the engine runs in **fallback mode** (grep-based file analysis) and the visualizer shows a "Degraded" banner.
+The engine is deployed at [orbit-sentinel.onrender.com](https://orbit-sentinel.onrender.com). It will **not** return live Orbit data until `GITLAB_ACCESS_TOKEN` is set — without it, the engine runs in **fallback mode** (grep-based file analysis) and the visualizer shows a "Degraded" banner. The visualizer dashboard loads instantly with demo data and upgrades to live data when the engine responds.
 
 ### Prerequisites
 

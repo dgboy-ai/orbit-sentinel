@@ -41,7 +41,7 @@ npm test         # runs 95 engine tests
 cd visualizer
 npm install
 npm run dev      # starts at http://localhost:5173
-npx vitest run   # runs 13 visualizer tests
+npx vitest run   # runs 29 visualizer tests
 ```
 
 Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8 views).
@@ -52,7 +52,7 @@ Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8
 |-------|----------------------|----------|
 | Engine compiles | `cd engine; if ($?) { npx tsc --noEmit }` | No errors |
 | Engine tests pass | `cd engine; if ($?) { npm test }` | 95 tests passed |
-| Visualizer tests pass | `cd visualizer; if ($?) { npx vitest run }` | 13 tests passed |
+| Visualizer tests pass | `cd visualizer; if ($?) { npx vitest run }` | 29 tests passed |
 | Visualizer builds | `cd visualizer; if ($?) { npm run build }` | `dist/` created |
 | Dev server | `cd visualizer; if ($?) { npm run dev }` | Opens at :5173 |
 
