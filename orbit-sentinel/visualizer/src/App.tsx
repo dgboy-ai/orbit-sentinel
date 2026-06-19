@@ -458,7 +458,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         padding: "8px 20px", alignItems: "center", justifyContent: "space-between", gap: 8,
         flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
         boxShadow: `0 1px 0 ${accentColor}11`,
-        transition: "border-color 0.5s ease, box-shadow 0.5s ease", overflowX: "hidden",
+        transition: "border-color 0.5s ease, box-shadow 0.5s ease",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, boxShadow: `0 2px 8px ${accentGlow}` }}>🛰️</div>
