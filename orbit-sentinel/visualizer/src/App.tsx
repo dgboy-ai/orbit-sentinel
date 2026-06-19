@@ -88,8 +88,6 @@ export default function App() {
   const [firstLoad, setFirstLoad] = useState(true);
   const screenshotMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("screenshot") === "true";
   const presentMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("present") === "true";
-  const noEngine = !apiService.isApiAvailable();
-  const [showNarrative, setShowNarrative] = useState(false);
   const [currentScenario, setCurrentScenario] = useState<string | null>(() => ssRead("scenario", null));
   const [analyzing, setAnalyzing] = useState(false);
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
