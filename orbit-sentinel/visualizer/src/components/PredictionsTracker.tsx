@@ -506,6 +506,57 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             ) : sorted.map((item, i) => {
               const isHovered = hoveredRow === item.mrIid;
               const outcomeColor = item.actualOutcome === "verified" ? "#22c55e" : item.actualOutcome === "failed" ? "#ef4444" : "var(--text-tertiary)";
+              if (isMobile) {
+                return (
+                  <div key={item.mrIid} style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    padding: "12px 14px", borderRadius: 8,
+                    background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
+                    border: `1px solid ${isHovered ? `${outcomeColor}22` : "rgba(255,255,255,0.04)"}`,
+                    transition: "all 0.15s ease",
+                    animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                  }}
+                    onMouseEnter={() => setHoveredRow(item.mrIid)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
+                      <OutcomeBadge outcome={item.actualOutcome} />
+                    </div>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>{item.title}</div>
+                    
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 4, borderTop: "1px solid rgba(255,255,255,0.03)", paddingTop: 6 }}>
+                      <div>
+                        <div style={{ fontSize: 8, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 2 }}>Predicted Risk</div>
+                        <RiskBadge score={item.predictedRisk} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 8, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 2 }}>Actual Risk</div>
+                        {item.actualRisk !== undefined ? <RiskBadge score={item.actualRisk} /> : <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>—</span>}
+                      </div>
+                    </div>
+
+                    {item.actualRisk !== undefined && (
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4, background: "rgba(255,255,255,0.01)", padding: "4px 8px", borderRadius: 4 }}>
+                        <span style={{ fontSize: 8, color: "var(--text-tertiary)" }}>Verdict:</span>
+                        <VerdictLabel predicted={item.predictedRisk} actual={item.actualRisk} />
+                      </div>
+                    )}
+                    
+                    {(isHovered || true) && item.evidence && (
+                      <div style={{
+                        marginTop: 4, padding: "6px 10px", borderRadius: 4,
+                        background: "rgba(0,0,0,0.2)", borderLeft: `2px solid ${outcomeColor}44`,
+                        fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
+                      }}>
+                        {item.evidence}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
               return (
                 <div key={item.mrIid} style={{
                   display: "grid",

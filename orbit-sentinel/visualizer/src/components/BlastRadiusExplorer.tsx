@@ -49,6 +49,31 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
   const linkSelRef = useRef<d3.Selection<SVGLineElement, DL, SVGGElement, unknown> | null>(null);
   const nodeSelRef = useRef<d3.Selection<SVGGElement, DN, SVGGElement, unknown> | null>(null);
   onClickRef.current = onNodeClick;
+  const zoomBehaviorRef = useRef<any>(null);
+
+  const handleZoomIn = () => {
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    d3.select(svgRef.current)
+      .transition()
+      .duration(300)
+      .call(zoomBehaviorRef.current.scaleBy, 1.3);
+  };
+
+  const handleZoomOut = () => {
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    d3.select(svgRef.current)
+      .transition()
+      .duration(300)
+      .call(zoomBehaviorRef.current.scaleBy, 1 / 1.3);
+  };
+
+  const handleResetZoom = () => {
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    d3.select(svgRef.current)
+      .transition()
+      .duration(400)
+      .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
+  };
 
   useEffect(() => {
     if (!svgRef.current || nodes.length === 0) return;
@@ -81,7 +106,9 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
 
     svg.append("rect").attr("width","100%").attr("height","100%").attr("fill","url(#br-grid)");
     const g = svg.append("g");
-    svg.call(d3.zoom<SVGSVGElement,unknown>().scaleExtent([0.2,8]).on("zoom",e=>g.attr("transform",e.transform)));
+    const zoomBehavior = d3.zoom<SVGSVGElement,unknown>().scaleExtent([0.2,8]).on("zoom",e=>g.attr("transform",e.transform));
+    zoomBehaviorRef.current = zoomBehavior;
+    svg.call(zoomBehavior);
 
     const ln = links.map(l=>({...l})) as unknown as DL[];
     const nd = nodes.map(n=>({...n})) as unknown as DN[];
@@ -219,7 +246,33 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
   }, [highlight]);
 
   return (
-    <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Blast radius dependency graph showing connected services, files, and pipelines" style={{ display:"block", borderRadius:8 }} />
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Blast radius dependency graph showing connected services, files, and pipelines" style={{ display:"block", borderRadius:8 }} />
+      {/* Floating zoom and pan controls */}
+      <div style={{
+        position: "absolute", bottom: 12, right: 12, zIndex: 10,
+        display: "flex", gap: 4,
+        background: "rgba(15,18,26,0.92)", backdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8,
+        padding: "4px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+      }}>
+        <button onClick={handleZoomIn} title="Zoom In" style={{
+          background: "transparent", border: "none", color: "var(--text-primary)",
+          width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
+          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+        }}>➕</button>
+        <button onClick={handleZoomOut} title="Zoom Out" style={{
+          background: "transparent", border: "none", color: "var(--text-primary)",
+          width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
+          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+        }}>➖</button>
+        <button onClick={handleResetZoom} title="Reset View" style={{
+          background: "transparent", border: "none", color: "var(--text-primary)",
+          width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
+          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+        }}>🎯</button>
+      </div>
+    </div>
   );
 }
 
