@@ -32,7 +32,7 @@
 
 | Differentiator | Orbit Sentinel | Traditional CI/CD |
 |----------------|---------------|------------------|
-| **Visual analysis** | 41 components, 8 views, 3 breakpoints, interactive D3 graphs | Text-only output |
+| **Visual analysis** | 40 components, 8 views, interactive D3 graphs | Text-only output |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION cross-referenced | Single-query or no graph data |
 | **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
@@ -100,7 +100,7 @@ Orbit Sentinel doesn't just predict — it **proves its predictions were right**
 
 ### Visualizer — React · D3 · Vite · Vercel (29 tests)
 
-- 41 components, zero CSS files — design token system (colors, z-index tiers, animation presets, spacing scale on 4px grid)
+- 40 components, zero CSS files — design token system (colors, z-index tiers, animation presets, spacing scale on 4px grid)
 - 3 responsive breakpoints (360px–768px+), touch-friendly
 - **Judge's Tour** (`?judge=true`) — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
 - **Keyboard shortcuts**: **1–8** switch views, **D** toggle theme, **E** export report as HTML
@@ -116,7 +116,7 @@ Orbit Sentinel doesn't just predict — it **proves its predictions were right**
 
 ### Component Design Patterns
 
-- **Atomic Design**: 41 components — atoms → molecules → organisms → templates → pages
+- **Atomic Design**: 40 components — atoms → molecules → organisms → templates → pages
 - **State Management**: Custom hooks (`useAnimatedValue`, `useMediaQuery`, `useVulnerabilities`) + React Context API
 - **Data Flow**: `ApiService` → `DigitalTwinBuilder` → `DataVisualizer` → dashboard JSON
 
