@@ -3,7 +3,7 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "../utils/colors";
 import type { PredictionRecord } from "../types";
 
-function DualSparkline({ series, height = 80 }: { series: { data: number[]; color: string; label: string }[]; height?: number }) {
+function DualSparkline({ series, labels, height = 80 }: { series: { data: number[]; color: string; label: string }[]; labels?: string[]; height?: number }) {
   const [hoverX, setHoverX] = useState<number | null>(null);
   const w = 480;
   const h = height;
@@ -97,23 +97,26 @@ function DualSparkline({ series, height = 80 }: { series: { data: number[]; colo
                 </g>
               );
             })}
-            <rect x={xTick(hoverX) - 40} y={pad.top - 2} width={80} height={14} rx={4} fill="rgba(15,18,26,0.9)" stroke="rgba(255,255,255,0.06)" />
+            <rect x={xTick(hoverX) - 42} y={pad.top - 2} width={84} height={20} rx={4} fill="rgba(15,18,26,0.92)" stroke="rgba(255,255,255,0.08)" />
+            <text x={xTick(hoverX)} y={pad.top + 8} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize="6" fontFamily="'JetBrains Mono',monospace">
+              {labels?.[hoverX] ?? `!${hoverX + 1}`}
+            </text>
             {series.map((s, si) => {
               const v = s.data[hoverX];
               if (v === undefined) return null;
               return (
-                <text key={si} x={xTick(hoverX)} y={pad.top + 9} textAnchor="middle" fill={s.color} fontSize="7" fontWeight="700" fontFamily="'JetBrains Mono',monospace">
-                  {s.label[0]}:{Math.round(v * 100)}%
+                <text key={si} x={xTick(hoverX) + (si === 0 ? -16 : 16)} y={pad.top + 17} textAnchor="middle" fill={s.color} fontSize="6" fontWeight="700" fontFamily="'JetBrains Mono',monospace" opacity={0.85}>
+                  {Math.round(v * 100)}%
                 </text>
               );
             })}
           </g>
         )}
 
-        {/* x-axis labels */}
-        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">MR #1</text>
-        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.1)" fontSize="6" fontFamily="'JetBrains Mono',monospace">MR #{midIdx + 1}</text>}
-        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">MR #{n}</text>
+        {/* x-axis labels — use real MR IIDs from labels prop */}
+        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">{labels?.[0] ?? `MR #1`}</text>
+        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.1)" fontSize="6" fontFamily="'JetBrains Mono',monospace">{labels?.[midIdx] ?? `MR #${midIdx + 1}`}</text>}
+        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">{labels?.[lastIdx] ?? `MR #${n}`}</text>
       </svg>
     </div>
   );
@@ -327,6 +330,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   { data: trendData.predicted, color: "#60a5fa", label: "Predicted" },
                   { data: trendData.actual.filter((v): v is number => v !== null), color: "#22c55e", label: "Actual" },
                 ]}
+                labels={trendData.labels}
                 height={80}
               />
             </div>
