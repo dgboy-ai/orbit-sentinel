@@ -4,7 +4,39 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
-## Latest Session (June 19 — Batch 3: Architecture Cleanup + Style Tokens)
+## Final Polish (June 19 — Loading UX + Fallback Honesty + Judge Polish)
+
+### Added
+
+- **Instant load** — App shows demo data immediately on mount (`data` initializes to `DEMO_DATA`). Background fetch to engine swaps to live data when available. No artificial loading screen, no "Connecting" wait.
+- **Orbit error tracking** (`engine/src/twin/builder.ts`) — `orbitError` field tracks whether Orbit genuinely errored (auth/network) vs returned empty data. Empty Orbit results (normal for new projects with no pipeline history) no longer trigger "Degraded" mode.
+- **Judge-friendly `generatedUsing`** — Now shows: `"GitLab Orbit · {N} nodes · {M} edges · {status}"` with actual node/edge counts. Replaces confusing "Generated via local analysis (Orbit unavailable) — results may be partial".
+- **Consistent demo data message** — Updated to same format: `"GitLab Orbit · 23 nodes · 43 edges · all 4 queries"`.
+
+### Removed
+
+- **LoadingNarrative** — Decorative loading animation that delayed the dashboard by 8-15s. App now shows content immediately. Skip button, progress bar, and all narrative state removed.
+- **`showNarrative` / `noEngine` dead state** — Cleaned up orphaned state variables.
+- **Competitor names from README** — Removed "GitHub Copilot" tagline comparison and Sankofa comparison table. Replaced with CI/CD comparison.
+- **Zod from stack** — Not actually used in production code.
+- **Outdated test counts** — All references updated from 108/13 to 124/29.
+
+### Fixed
+
+- **Fallback flag logic** — `orbitOrFallback()` no longer sets `usedFallback` when Orbit returns empty results. Only genuine errors (auth failure, network timeout) trigger the fallback flag. Empty results still try fallback for data enrichment but don't degrade the badge.
+- **README accuracy** — 108→124 tests, 13→29 visualizer tests, 40→41 components, 5→3 breakpoints, project ID 83381762→39251857, removed Zod claim, updated live data counts (222+ nodes, 187+ edges).
+- **`noEngine` unused import** — Cleaned up from `client.ts`.
+- **DataModeBanner consistency** — Empty Orbit results no longer show "Degraded" badge; app stays "Live" when Orbit is reachable.
+
+### Changed
+
+- **`loadData` strategy** — Always sets demo data first, then fetches live data in background. Engine unavailable → stays on demo silently. Engine responds → seamless swap to live.
+- **`generatedUsing` field** — Shows real node/edge counts from the digital twin instead of opaque status messages.
+- **README rewritten** — 102 lines added, 149 removed. Updated structure: Judge's Quick Links, What Makes This Different, removed redundant sections, polishing tone.
+
+---
+
+## Previous Session (June 19 — Batch 3: Architecture Cleanup + Style Tokens)
 
 ### Added
 
@@ -212,7 +244,7 @@ Added a complete error classification and recovery system:
 
 ```
  Engine:   ✓  95 tests passed (15 files)
- Visualizer: ✓ 13 tests passed (2 files)
+ Visualizer: ✓ 29 tests passed (2 files)
 ```
 
 | Test File | Tests | What It Covers |
@@ -231,7 +263,7 @@ Added a complete error classification and recovery system:
 | `config.test.ts` | 3 | Configuration validation |
 | `simulator.test.ts` | 3 | Change simulation |
 | `App.test.tsx` | 3 | App navigation, export button, onboarding dismiss |
-| `components.test.tsx` | 10 | ImpactCalculator, RealityCheck, SimulateWebhook, TaglineBanner, PredictionsTracker, SetupWizard, ImpactReport |
+| `components.test.tsx` | 26 | DataModeBanner, PredictionsTracker, SetupWizard, ImpactReport, OrbitQueryInspector, DigitalTwinGraph, AgentFlowProgress, BlastRadiusExplorer, ForecastEngine, HistoricalContext, LoadingSkeleton, HeroSection, DecisionCenter, CounterfactualSimulation, ArchitectureDiagram, MrAnalyzer, SimulateWebhook, RealityCheck, TaglineBanner, EngineStatus, ProblemSection, JudgesTour, OnboardingOverlay, ImpactCalculator, ErrorBoundary, ScanLine |
 
 ---
 
