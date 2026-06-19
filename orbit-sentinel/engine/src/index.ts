@@ -78,7 +78,7 @@ export class OrbitSentinel {
           params.changedFiles,
         );
       } catch {
-        // Memory store depends on Orbit — use empty matches on failure
+        console.warn("[OrbitSentinel] Memory store failed — using empty matches");
       }
 
       const reviewerRecommendations = await this.analyzeReviewers(twin);

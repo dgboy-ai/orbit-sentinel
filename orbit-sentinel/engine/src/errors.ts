@@ -63,7 +63,7 @@ export class ErrorHandler {
       sentinelError = this.classifyError(error, context);
     } else if (error && typeof error === 'object' && 'message' in error) {
       sentinelError = {
-        message: String((error as any).message),
+        message: String((error as { message: string }).message),
         type: ErrorType.ORBIT_API_ERROR,
         timestamp
       };
@@ -83,7 +83,8 @@ export class ErrorHandler {
 
   private classifyError(error: Error, context?: string): SentinelError {
     const message = error.message.toLowerCase();
-    const statusCode = (error as any).statusCode || (error as any).response?.status;
+    const err = error as { statusCode?: number; response?: { status?: number } };
+    const statusCode = err.statusCode || err.response?.status;
 
     if (statusCode === 429) {
       return {

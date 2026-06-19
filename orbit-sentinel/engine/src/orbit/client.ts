@@ -272,11 +272,11 @@ export class OrbitClient {
         return await this.executeQuery<T>(query, format);
       } catch (error) {
         const sentinelErr = error instanceof Error ? error : this.errorHandler.handleError(error, 'safeQuery');
-        const msg = typeof sentinelErr === 'object' && 'message' in sentinelErr ? (sentinelErr as any).message : String(sentinelErr);
+        const msg = typeof sentinelErr === 'object' && 'message' in sentinelErr ? (sentinelErr as { message: string }).message : String(sentinelErr);
         
         // If it's a rate limit error, wait before retrying
         if ('type' in sentinelErr && sentinelErr.type === ErrorType.RATE_LIMIT && 'retryAfter' in sentinelErr) {
-          const retryAfter = (sentinelErr as any).retryAfter;
+          const retryAfter = (sentinelErr as { retryAfter?: number }).retryAfter;
           if (retryAfter) {
             await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
             continue;

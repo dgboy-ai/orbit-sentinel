@@ -67,7 +67,7 @@ app.post('/api/analyze', async (req, res) => {
             projectId = projData.id;
           }
         }
-      } catch { /* keep 0 */ }
+      } catch { console.warn("[OrbitSentinel] Failed to look up project ID from path"); }
     }
 
     const report = await sentinel.analyzeChange({
@@ -95,7 +95,7 @@ app.post('/api/analyze', async (req, res) => {
   } catch (error) {
     const msg = error instanceof Error ? error.message :
                 error && typeof error === 'object' && 'message' in error ?
-                String((error as any).message) : `Non-Error thrown: ${typeof error} ${String(error)}`;
+                String((error as { message: string }).message) : `Non-Error thrown: ${typeof error} ${String(error)}`;
     console.error('Analysis error:', msg, error);
     return res.status(500).json({
       error: 'Analysis failed',
@@ -179,7 +179,7 @@ app.post('/api/analyze-with-creds', async (req, res) => {
             projectId = projData.id;
           }
         } catch {
-          // fallback: keep 0
+          console.warn("[OrbitSentinel] Failed to look up project ID with user token");
         }
       }
 

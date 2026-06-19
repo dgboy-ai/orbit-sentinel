@@ -16,7 +16,7 @@ export function savePrediction(rec: PredictionRecord) {
     const all = loadPredictions().filter(p => p.mrIid !== rec.mrIid);
     all.unshift(rec);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  } catch { /* localStorage may be blocked */ }
+  } catch { console.warn("localStorage save blocked"); }
 }
 
 export function updatePrediction(mrIid: number, updates: Partial<PredictionRecord>) {
@@ -26,11 +26,11 @@ export function updatePrediction(mrIid: number, updates: Partial<PredictionRecor
     if (i === -1) return;
     all[i] = { ...all[i], ...updates };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  } catch { /* localStorage may be blocked */ }
+  } catch { console.warn("localStorage update blocked"); }
 }
 
 export function clearPredictions() {
   try {
     localStorage.removeItem(STORAGE_KEY);
-  } catch { /* localStorage may be blocked */ }
+  } catch { console.warn("localStorage clear blocked"); }
 }
