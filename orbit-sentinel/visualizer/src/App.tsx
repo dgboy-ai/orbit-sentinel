@@ -311,28 +311,42 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><ProblemSection /></ErrorBoundary>
-                  <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary>
+                <div className="section-accent section-accent-roi" style={{ position: "relative" }}><ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary></div>
                 </div>
               </div>
             ) : (
               <>
                 <ErrorBoundary><ProblemSection /></ErrorBoundary>
                 <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
-                  <ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary>
+                  <div className="section-accent" style={{ position: "relative" }}><ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary></div>
                   {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
                 </div>
                 {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
-                <ErrorBoundary>
-                  <MrAnalyzer
-                    onSelectScenario={onSelectScenario}
-                    apiAvailable={apiService.isApiAvailable()}
-                    currentScenario={currentScenario}
-                    onAnalyzeStart={onAnalyzeStart}
-                  />
-                </ErrorBoundary>
+                <div className="glow-judge" style={{
+                  position: "relative", borderRadius: "var(--radius-lg)",
+                  border: "1px solid rgba(139,92,246,0.15)",
+                }}>
+                  {!currentScenario && !analyzing && (
+                    <div style={{
+                      position: "absolute", top: -10, right: 16, zIndex: 5,
+                      padding: "3px 12px", borderRadius: 20, fontSize: 9, fontWeight: 700,
+                      background: "linear-gradient(135deg, #a78bfa, #7c3aed)",
+                      color: "#fff", letterSpacing: "0.5px", textTransform: "uppercase",
+                      boxShadow: "0 0 20px rgba(139,92,246,0.4)",
+                    }}>🔬 Try This →</div>
+                  )}
+                  <ErrorBoundary>
+                    <MrAnalyzer
+                      onSelectScenario={onSelectScenario}
+                      apiAvailable={apiService.isApiAvailable()}
+                      currentScenario={currentScenario}
+                      onAnalyzeStart={onAnalyzeStart}
+                    />
+                  </ErrorBoundary>
+                </div>
                 {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} />}
                 <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
-                  <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
+                  <div className="section-accent section-accent-verdict" style={{ position: "relative" }}><ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary></div>
                   <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
                   <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} evidence={data.evidence} /></ErrorBoundary>
                 </div>

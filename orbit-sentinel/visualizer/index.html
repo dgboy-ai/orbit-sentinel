@@ -220,6 +220,12 @@
       .glow-blue { box-shadow: 0 0 20px rgba(59,130,246,0.15), inset 0 0 20px rgba(59,130,246,0.05); }
       .glow-green { box-shadow: 0 0 20px rgba(34,197,94,0.15), inset 0 0 20px rgba(34,197,94,0.05); }
       .glow-purple { box-shadow: 0 0 20px rgba(139,92,246,0.15), inset 0 0 20px rgba(139,92,246,0.05); }
+      .glow-judge { box-shadow: 0 0 40px rgba(139,92,246,0.2), 0 0 80px rgba(139,92,246,0.08), inset 0 0 40px rgba(139,92,246,0.04); animation: judgePulse 3s ease-in-out infinite; }
+      @keyframes judgePulse { 0%, 100% { box-shadow: 0 0 40px rgba(139,92,246,0.2), 0 0 80px rgba(139,92,246,0.08), inset 0 0 40px rgba(139,92,246,0.04); } 50% { box-shadow: 0 0 50px rgba(139,92,246,0.3), 0 0 100px rgba(139,92,246,0.12), inset 0 0 40px rgba(139,92,246,0.06); } }
+      .section-accent { position: relative; }
+      .section-accent::before { content: ''; position: absolute; left: -1px; top: 10%; bottom: 10%; width: 3px; border-radius: 3px; background: linear-gradient(180deg, var(--accent-blue), rgba(96,165,250,0.2)); opacity: 0.7; }
+      .section-accent-verdict::before { background: linear-gradient(180deg, #ef4444, rgba(239,68,68,0.2)); }
+      .section-accent-roi::before { background: linear-gradient(180deg, #22c55e, rgba(34,197,94,0.2)); }
 
       .bg-grid {
         background-image:
