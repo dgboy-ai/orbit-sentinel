@@ -559,7 +559,7 @@ export default function ImpactReport({ data }: Props) {
                 textShadow: `0 0 16px ${glow}`,
                 marginTop: -52, position: "relative", pointerEvents: "none",
               }}>
-                <AnimatedCounter value={score} />
+                <AnimatedCounter value={score * 100} />
               </div>
               <div style={{
                 fontSize: 7, fontWeight: 700, color: col, letterSpacing: "1px", marginTop: 1,
@@ -605,7 +605,6 @@ export default function ImpactReport({ data }: Props) {
           </div>
         </div>
 
-        {/* Quick stats row */}
         <div style={{
           display: "grid",
           gridTemplateColumns: isSmall ? "repeat(2, 1fr)" : isMobile ? "repeat(4, 1fr)" : "repeat(4, 1fr)",
@@ -615,20 +614,24 @@ export default function ImpactReport({ data }: Props) {
           {[
             { label: "Graph Nodes", value: summary.totalNodes, suffix: "", color: "#60a5fa", icon: "🔷" },
             { label: "Connections", value: summary.totalEdges, suffix: "", color: "#a78bfa", icon: "🔗" },
-            { label: "Past Incidents", value: incidents.length, suffix: "", color: "#fb923c", icon: "⚠️" },
-            { label: "Risk Reduction", value: 1 - decisionCenter.riskReduction.afterRecommendation / decisionCenter.riskReduction.current, suffix: "%", color: "#22c55e", decimals: 0, icon: "📉" },
+            { label: "Historical MRs", value: incidents.length, suffix: "", color: "#fb923c", icon: "📚",
+              sub: `${incidents.filter(i => i.outcome === "Closed").length} abandoned` },
+            { label: "Risk Reduction", value: Math.round((1 - decisionCenter.riskReduction.afterRecommendation / decisionCenter.riskReduction.current) * 100), suffix: "%", color: "#22c55e", icon: "📉" },
           ].map((stat, i) => (
             <div key={stat.label} style={{
-              padding: isSmall ? "10px 8px" : "14px 16px 12px", textAlign: "center",
+              padding: isSmall ? "10px 8px" : "12px 16px 10px", textAlign: "center",
               borderRight: i < 3 && !isSmall ? `1px solid var(--border)` : "none",
               borderBottom: isSmall && i < 2 ? `1px solid var(--border)` : "none",
             }}>
-              <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 5 }}>
+              <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>
                 {stat.icon} {stat.label}
               </div>
               <div style={{ fontSize: 21, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} decimals={stat.decimals ?? 0} />
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} decimals={0} />
               </div>
+              {"sub" in stat && stat.sub && (
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 2 }}>{stat.sub}</div>
+              )}
             </div>
           ))}
         </div>
@@ -672,8 +675,29 @@ export default function ImpactReport({ data }: Props) {
             </div>
           </SectionCard>
 
-          {/* ── Risk Breakdown ── */}
           <SectionCard id="sec-breakdown" icon="📊" title="Risk Factor Breakdown" col={col}>
+            {/* Top Risk Driver callout */}
+            {riskData.breakdown.length > 0 && (() => {
+              const top = [...riskData.breakdown].sort((a, b) => (b.value / b.maxValue) - (a.value / a.maxValue))[0];
+              const topPct = Math.round((top.value / top.maxValue) * 100);
+              const topColor = topPct > 75 ? "#ef4444" : topPct > 50 ? "#f97316" : "#eab308";
+              return (
+                <div style={{
+                  padding: "7px 12px", borderRadius: 6, marginBottom: 10,
+                  background: `linear-gradient(135deg, ${topColor}10, ${topColor}04)`,
+                  border: `1px solid ${topColor}25`,
+                  display: "flex", alignItems: "center", gap: 8,
+                }}>
+                  <span style={{ fontSize: 14, flexShrink: 0 }}>🔺</span>
+                  <div>
+                    <div style={{ fontSize: 7, color: topColor, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Top Risk Driver</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)" }}>{top.category}</div>
+                    <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>{topPct}% severity — largest contributor to current risk score</div>
+                  </div>
+                  <div style={{ marginLeft: "auto", fontSize: 16, fontWeight: 900, color: topColor, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>{top.value}/{top.maxValue}</div>
+                </div>
+              );
+            })()}
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {riskData.breakdown.map((b, i) => {
                 const pct = (b.value / b.maxValue) * 100;
@@ -778,13 +802,14 @@ export default function ImpactReport({ data }: Props) {
           </SectionCard>
 
           {/* ── Report Metadata ── */}
-          <SectionCard id="sec-info" icon="ℹ️" title="Metadata" col={col}>
+          <SectionCard id="sec-info" icon="ℹ️" title="Technical Metadata" col={col}>
             <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {[
-                { label: "Generated", value: new Date(summary.timestamp).toLocaleString() },
-                { label: "Confidence", value: hero.confidence },
-                { label: "Score", value: summary.riskScore },
-                { label: "Level", value: summary.riskLevel },
+                { label: "MR ID", value: `!${summary.mrIid} · ${summary.project}` },
+                { label: "Branch", value: summary.branch || "(not specified)" },
+                { label: "Orbit Queries Used", value: `${evidence.length} queries · 4 types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION)` },
+                { label: "Analysis Timestamp", value: new Date(summary.timestamp).toLocaleString() },
+                { label: "Historical Sample Size", value: `${incidents.length} repository precedents analysed` },
               ].map(item => (
                 <div key={item.label} style={{ padding: "5px 8px", borderRadius: 4, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)", wordBreak: "break-word" }}>
                   <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.2px", textTransform: "uppercase", marginBottom: 1 }}>{item.label}</div>
