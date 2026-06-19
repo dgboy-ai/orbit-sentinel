@@ -176,7 +176,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           </div>
           <div style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 12, maxWidth: "90%" }}>
             Orbit analysed{" "}
-            <strong style={{ color: "var(--text-primary)" }}>{totalAnalyzed} historical MRs</strong> from this branch.
+            <strong style={{ color: "var(--text-primary)" }}>{totalAnalyzed} historical repository precedents</strong>.
             {closedCount > 0 && <span style={{ color: "#ef4444", fontWeight: 600 }}> {closedCount} closed without merge</span>}
             {closedCount > 0 && mergedCount > 0 && <span style={{ color: "var(--text-tertiary)" }}>,</span>}
             {mergedCount > 0 && <span style={{ color: "#22c55e", fontWeight: 600 }}> {mergedCount} successfully merged</span>}
