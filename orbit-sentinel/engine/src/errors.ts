@@ -114,7 +114,7 @@ export class ErrorHandler {
       };
     }
 
-    if (statusCode >= 500) {
+    if (statusCode && statusCode >= 500) {
       return {
         message: 'GitLab Orbit service is temporarily unavailable.',
         type: ErrorType.SERVICE_UNAVAILABLE,
