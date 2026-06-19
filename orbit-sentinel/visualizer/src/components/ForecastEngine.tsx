@@ -682,34 +682,49 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>If Recommendations Followed</div>
               <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", marginBottom: 2 }}>Successfully Merged</div>
               <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>88% probability · Risk 55% → 10%</div>
-              <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.1)", fontSize: 9, color: "var(--text-tertiary)" }}>All 4 mitigations applied</div>
+              
+              {/* Why This Changed (Causality reinforcement) */}
+              <div style={{
+                marginTop: 6, padding: "6px 10px", borderRadius: 6,
+                background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)"
+              }}>
+                <div style={{ fontSize: 7, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Why This Changed</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 9, color: "#22c55e", fontWeight: 500 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Pipeline Triggered</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Reviewer Assigned</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Meaningful Code Change</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Deployment Path Restored</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Orbit Delta */}
+          {/* Orbit Delta (Louder & Defensible Outcome Improvement) */}
           <div style={{
             padding: "10px 14px", borderRadius: 8, marginBottom: 14,
             background: "linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.03))",
             border: "1px solid rgba(96,165,250,0.12)",
           }}>
-            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 6 }}>Orbit Delta</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Delta</span>
+              <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34, 197, 94, 0.1)", padding: "1px 6px", borderRadius: 4 }}>Forecast Shift: Closed ➔ Merged</span>
+            </div>
             <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.1)", textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Path</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#ef4444" }}>MR Closed (78%)</div>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Success Prob.</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#ef4444" }}>22%</div>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>Failure Expected</div>
               </div>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)", textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Recommended</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e" }}>Merged (88%)</div>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Target Success Prob.</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#22c55e" }}>88%</div>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>With Mitigations</div>
               </div>
-              <div style={{ padding: "6px 10px", borderRadius: 6, background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.04))", border: "1px solid rgba(96,165,250,0.15)", textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Improvement</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>5.5×</div>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>Risk: 55% → 10%</div>
+              <div style={{ padding: "6px 10px", borderRadius: 6, background: "linear-gradient(135deg, rgba(96,165,250,0.08), rgba(139,92,246,0.04))", border: "1px solid rgba(96,165,250,0.15)", textAlign: "center" }}>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Leap</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>+66% pp</div>
+                <div style={{ fontSize: 7, color: "var(--text-secondary)", marginTop: 1 }}>82% Risk Reduction</div>
               </div>
-            </div>
-            <div style={{ marginTop: 6, textAlign: "center", fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.2px" }}>
-              Forecast Shift: <span style={{ color: "#ef4444", fontWeight: 600 }}>Failure</span> → <span style={{ color: "#22c55e", fontWeight: 600 }}>Success</span>
             </div>
           </div>
 
