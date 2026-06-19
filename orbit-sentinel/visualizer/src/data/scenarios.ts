@@ -7,6 +7,8 @@ function clone(d: VisualizationData): VisualizationData {
 
 export const SCENARIO_CRITICAL: VisualizationData = (() => {
   const d = clone(DEMO_DATA);
+  d.hero.mrIid = 42;
+  d.summary.mrIid = 42;
   d.hero.riskScore = 0.88;
   d.hero.riskLevel = "CRITICAL";
   d.hero.predictedOutcome = "Critical — pipeline failure expected. Dependency graph shows 7 downstream services at risk. Immediate rollback plan required.";
@@ -60,6 +62,8 @@ export const SCENARIO_CRITICAL: VisualizationData = (() => {
 
 export const SCENARIO_SAFE: VisualizationData = (() => {
   const d = clone(DEMO_DATA);
+  d.hero.mrIid = 7;
+  d.summary.mrIid = 7;
   d.hero.riskScore = 0.15;
   d.hero.riskLevel = "LOW";
   d.hero.predictedOutcome = "Safe to deploy — all tests pass, reviewers approved, no downstream impact detected.";
