@@ -41,6 +41,7 @@ import { ssRead, ssWrite } from "./utils/session";
 import type { View } from "./constants/views";
 import { DEMO_STEPS, VIEW_LABELS, VIEW_QUERY_TAG, ALL_VIEWS } from "./constants/views";
 import PanelFallback from "./components/PanelFallback";
+import { COLORS, Z, FONT, ANIM } from "./constants/tokens";
 import ScanLine from "./components/ScanLine";
 
 // Lazy-loaded heavy components (D3, large bundles)
@@ -390,7 +391,7 @@ export default function App() {
       <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "var(--bg-primary)" }}>
         {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
         <header style={{
-          position: "relative", zIndex: 10,
+          position: "relative", zIndex: Z.dropdown,
           borderBottom: "1px solid rgba(255,255,255,0.06)",
           padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
           flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)", overflowX: "hidden",
@@ -413,18 +414,18 @@ export default function App() {
         {loading ? <>
           <LoadingSkeleton />
           {loadingSlow && (
-            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 200, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)", animation: "fadeSlideUp 0.4s ease" }}>
+            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: Z.overlay, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)",   animation: ANIM.fadeSlideUp.medium }}>
               <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
-                style={{ padding: "5px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: "#60a5fa", whiteSpace: "nowrap" }}
+                style={{ padding: "5px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: COLORS.info, whiteSpace: "nowrap" }}
                 onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.2)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(96,165,250,0.12)"; }}
               >Use Demo Data →</button>
             </div>
           )}
         </> : (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 10, padding: 20, animation: "fadeSlideUp 0.5s ease" }}>
-            <div style={{ fontSize: 36, animation: "float 6s ease-in-out infinite" }}>🛰️</div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 10, padding: 20, animation: ANIM.fadeSlideUp.slow }}>
+            <div style={{ fontSize: 36, animation: ANIM.float.slow }}>🛰️</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
               {dataMode === "error" ? "Engine API Unreachable" : "No Data Available"}
             </div>
@@ -440,7 +441,7 @@ export default function App() {
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
               >Retry</button>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
-                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, cursor: "pointer", background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}
+                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, cursor: "pointer", background: "rgba(96,165,250,0.1)", color: COLORS.info }}
                 onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.18)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(96,165,250,0.1)"; }}
               >Use Demo Data</button>
@@ -461,7 +462,7 @@ export default function App() {
       <div className="bg-grid" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }} />
       <header style={{
         display: screenshotMode || presentMode ? "none" : "flex",
-        position: "relative", zIndex: 10,
+        position: "relative", zIndex: Z.dropdown,
         borderBottom: `1px solid ${accentColor}22`,
         padding: "8px 20px", alignItems: "center", justifyContent: "space-between", gap: 8,
         flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
@@ -475,7 +476,7 @@ export default function App() {
         <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 420, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
           <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
           <EngineStatus />
-          <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
+          <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: COLORS.purple, border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
         </div>
         {isTiny && (
           <div style={{ position: "relative" }}>
@@ -489,7 +490,7 @@ export default function App() {
             >{tabs.find(([k]) => k === view)?.[1] ?? "Overview"} ▾</button>
             {mobileViewOpen && (
               <div style={{
-                position: "absolute", top: "100%", right: 0, zIndex: 100, marginTop: 4,
+                position: "absolute", top: "100%", right: 0, zIndex: Z.modal, marginTop: 4,
                 background: "rgba(15,18,26,0.96)", backdropFilter: "blur(12px)",
                 border: "1px solid var(--border)", borderRadius: 6, overflow: "hidden",
                 minWidth: 140, boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
@@ -554,7 +555,7 @@ export default function App() {
             style={{
               padding: isMobile ? "3px 7px" : "4px 8px", fontSize: isMobile ? 10 : 12, cursor: "pointer",
               border: "1px solid rgba(167,139,250,0.25)", borderRadius: 6,
-              background: "rgba(167,139,250,0.08)", color: "#a78bfa",
+              background: "rgba(167,139,250,0.08)", color: COLORS.purple,
               transition: "all 0.15s ease", flexShrink: 0,
             }}
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.16)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)"; }}
@@ -599,9 +600,9 @@ export default function App() {
       {demo && !presentMode && (
         <div style={{
           display: screenshotMode ? "none" : "flex",
-          position: "absolute", top: isMobile ? 120 : 64, left: "50%", transform: "translateX(-50%)", zIndex: 50,
+          position: "absolute", top: isMobile ? 120 : 64, left: "50%", transform: "translateX(-50%)", zIndex: Z.sticky,
           flexDirection: "column", alignItems: "center", gap: 2,
-          animation: "fadeSlideDown 0.3s ease, pulseGlow 2s ease-in-out infinite",
+          animation: `${ANIM.fadeSlideDown.medium}, ${ANIM.pulseGlow}`,
           pointerEvents: "none",
         }}>
           <div style={{
@@ -636,10 +637,10 @@ export default function App() {
 
       {showShortcuts && (
         <div style={{
-          position: "fixed", inset: 0, zIndex: 9999,
+          position: "fixed", inset: 0, zIndex: Z.onboarding,
           display: "flex", alignItems: "center", justifyContent: "center",
           background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
-          animation: "fadeSlideUp 0.2s ease",
+          animation: ANIM.fadeSlideUp.xfast,
         }} onClick={() => setShowShortcuts(false)}>
           <div className="card" style={{
             padding: "24px 28px", maxWidth: 400, width: "90%",
@@ -677,15 +678,15 @@ export default function App() {
 
       {presentMode && (
         <div style={{
-          position: "fixed", top: 8, left: 8, zIndex: 999,
+          position: "fixed", top: 8, left: 8, zIndex: Z.toast,
           padding: "3px 10px", borderRadius: 6, fontSize: 9, fontWeight: 700,
           background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)",
-          color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase",
+          color: COLORS.critical, letterSpacing: "0.5px", textTransform: "uppercase",
         }}>● Presenting</div>
       )}
 
       <main style={{
-        position: "relative", zIndex: 1, flex: 1, padding: isMobile ? 10 : 16, overflow: "auto", minHeight: 0,
+        position: "relative", zIndex: Z.base, flex: 1, padding: isMobile ? 10 : 16, overflow: "auto", minHeight: 0,
         willChange: "transform", display: "flex", flexDirection: "column",
         animation: firstLoad ? "scaleIn 0.45s cubic-bezier(0.16,1,0.3,1) both" : "none",
       }}>
@@ -702,7 +703,7 @@ export default function App() {
       </main>
 
       <div className={isMobile ? 'resp-hide-subtitle' : ''} style={{
-        position: "fixed", bottom: 12, left: "50%", transform: "translateX(-50%)", zIndex: 100,
+        position: "fixed", bottom: 12, left: "50%", transform: "translateX(-50%)", zIndex: Z.modal,
         display: "flex", alignItems: "center", gap: 8,
         padding: "5px 14px", borderRadius: 8,
         background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
