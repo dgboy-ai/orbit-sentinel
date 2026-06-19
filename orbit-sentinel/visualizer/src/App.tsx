@@ -70,10 +70,10 @@ export default function App() {
   const [view, setView] = useState<View>(() => ssRead("view", getInitialView()));
   const [demo, setDemo] = useState(() => ssRead("demo", getInitialDemo()));
   const [stepIndex, setStepIndex] = useState(() => ssRead("step", 0));
-  const [data, setData] = useState<VisualizationData | null>(null);
+  const [data, setData] = useState<VisualizationData | null>(DEMO_DATA);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [dataMode, setDataMode] = useState<DataMode>("loading");
+  const [dataMode, setDataMode] = useState<DataMode>("demo");
   const [showOnboarding, setShowOnboarding] = useState(() => {
     if (typeof window === "undefined") return false;
     return !localStorage.getItem("orbit-sentinel-onboarded") && new URLSearchParams(window.location.search).get("judge") !== "true";
@@ -134,39 +134,26 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   useEffect(() => { ssWrite("scenario", currentScenario); }, [currentScenario]);
 
   const loadData = useCallback(async () => {
-    if (!apiService.isApiAvailable()) {
-      setData(DEMO_DATA);
-      setDataMode("demo");
-      setLoading(false);
-      return;
-    }
+    setData(DEMO_DATA);
+    setDataMode("demo");
+    setLoading(false);
 
-    setLoading(true);
-    setError(null);
-
-    setDataMode("connecting");
-
-    // Engine configured: try live fetch during narrative
-    setDataMode("connecting");
-    try {
-      const result = await apiService.analyzeChange({
-        projectId: 39251857,
-        projectPath: 'gitlab-ai-hackathon/transcend/39251857',
-        mrIid: 10,
-        mrTitle: 'test sentinel',
-        changedFiles: ['flows/flow.yml'],
-        changeDescription: 'test sentinel MR',
-        branch: 'test-sentinel',
-      });
-      setData(result.report);
-      setDataMode(result.report.fallback ? "degraded" : "live");
-    } catch (err) {
-      console.error('Failed to load data:', err);
-      setData(DEMO_DATA);
-      setDataMode("demo");
-      setError(null);
-    } finally {
-      setLoading(false);
+    if (apiService.isApiAvailable()) {
+      try {
+        const result = await apiService.analyzeChange({
+          projectId: 39251857,
+          projectPath: 'gitlab-ai-hackathon/transcend/39251857',
+          mrIid: 10,
+          mrTitle: 'test sentinel',
+          changedFiles: ['flows/flow.yml'],
+          changeDescription: 'test sentinel MR',
+          branch: 'test-sentinel',
+        });
+        setData(result.report);
+        setDataMode(result.report.fallback ? "degraded" : "live");
+      } catch {
+        // Engine unavailable — stay on demo data
+      }
     }
   }, []);
 
