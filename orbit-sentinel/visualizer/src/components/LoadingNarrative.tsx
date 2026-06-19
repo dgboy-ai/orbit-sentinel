@@ -16,12 +16,12 @@ export default function LoadingNarrative({ startTime, onDone }: Props) {
     const timer = setInterval(() => {
       const e = Date.now() - startTime;
       setElapsed(e);
-      if (e > 3000) setShowSkip(true);
+      if (e > 1500) setShowSkip(true);
     }, 200);
     return () => clearInterval(timer);
   }, [startTime]);
 
-  const progress = Math.min(elapsed / 15000, 1);
+  const progress = Math.min(elapsed / 8000, 1);
 
   return (
     <div style={{
@@ -102,12 +102,15 @@ export default function LoadingNarrative({ startTime, onDone }: Props) {
         {showSkip && (
           <button onClick={() => { setFadeOut(true); setTimeout(onDone, 500); }}
             style={{
-              marginTop: 14, padding: "4px 16px", fontSize: 10, fontWeight: 600, cursor: "pointer",
-              border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6,
-              background: "transparent", color: "var(--text-tertiary)",
+              marginTop: 14, padding: "6px 20px", fontSize: 11, fontWeight: 700, cursor: "pointer",
+              border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6,
+              background: "rgba(96,165,250,0.1)", color: "#60a5fa",
+              transition: "all 0.2s",
               animation: "fadeSlideUp 0.3s ease",
             }}
-          >Skip →</button>
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(96,165,250,0.2)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(96,165,250,0.1)"}
+          >Skip → View Dashboard</button>
         )}
       </div>
     </div>
