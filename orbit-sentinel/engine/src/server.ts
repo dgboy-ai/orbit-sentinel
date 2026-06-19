@@ -3,16 +3,18 @@ import cors from 'cors';
 import { config } from './config.js';
 import { sentinel, dataVisualizer, queryEngine, orbitClient } from './index.js';
 import type { SentinelReport } from './types.js';
+import { GitLabErrorHandler } from './errors.js';
 
 export const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Security headers
+// Security headers middleware
 app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '0');
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
   next();
 });
 
@@ -22,27 +24,64 @@ app.use((req, _res, next) => {
   next();
 });
 
-// Middleware
+// Enhanced CORS configuration
 const CORS_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:5173,https://orbit-sentinel.vercel.app').split(',').map(s => s.trim());
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || CORS_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) {
       cb(null, true);
     } else {
-      cb(null, true); // permissive for hackathon
+      cb(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
 }));
+
 app.use(express.json({ limit: '100kb' }));
+
+// GitLab token validation middleware for /api/analyze
+const gitLabTokenValidation = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (process.env.NODE_ENV === 'test') {
+    return next();
+  }
+  const token = req.body.gitlabToken || process.env.GITLAB_ACCESS_TOKEN;
+  if (!token) {
+    return res.status(401).json({
+      error: 'Unauthorized: GitLab Access Token is missing',
+      gitLabErrorCode: 'TOKEN_INVALID',
+      recoveryAction: 'Please configure GITLAB_ACCESS_TOKEN in the environment or provide a valid gitlabToken in the request.'
+    });
+  }
+  if (!token.startsWith('glpat-')) {
+    return res.status(401).json({
+      error: 'Unauthorized: Invalid GitLab Access Token format',
+      gitLabErrorCode: 'TOKEN_INVALID',
+      recoveryAction: 'Please ensure your GitLab token starts with "glpat-"'
+    });
+  }
+  next();
+};
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const token = process.env.GITLAB_ACCESS_TOKEN;
+  const tokenStatus = token 
+    ? (token.startsWith('glpat-') ? 'configured' : 'invalid_format') 
+    : 'missing';
+
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    details: {
+      gitlabToken: tokenStatus,
+      env: process.env.NODE_ENV || 'development',
+      demoMode: process.env.DEMO_MODE === 'true'
+    }
+  });
 });
 
 // Main analysis endpoint
-app.post('/api/analyze', async (req, res) => {
+app.post('/api/analyze', gitLabTokenValidation, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     let { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch } = req.body;
 
@@ -51,6 +90,22 @@ app.post('/api/analyze', async (req, res) => {
         error: 'Missing required fields',
         required: ['projectPath', 'mrIid', 'mrTitle', 'changedFiles', 'changeDescription']
       });
+    }
+
+    if (typeof projectPath !== 'string' || projectPath.trim() === '') {
+      return res.status(400).json({ error: 'Invalid projectPath format' });
+    }
+    if (isNaN(Number(mrIid)) || Number(mrIid) <= 0) {
+      return res.status(400).json({ error: 'Invalid mrIid' });
+    }
+    if (typeof mrTitle !== 'string' || mrTitle.trim() === '') {
+      return res.status(400).json({ error: 'Invalid mrTitle format' });
+    }
+    if (!Array.isArray(changedFiles)) {
+      return res.status(400).json({ error: 'Invalid changedFiles format' });
+    }
+    if (typeof changeDescription !== 'string' || changeDescription.trim() === '') {
+      return res.status(400).json({ error: 'Invalid changeDescription format' });
     }
 
     // Look up project ID from path if not provided
@@ -93,15 +148,7 @@ app.post('/api/analyze', async (req, res) => {
       demoMode: process.env.DEMO_MODE === 'true',
     });
   } catch (error) {
-    const msg = error instanceof Error ? error.message :
-                error && typeof error === 'object' && 'message' in error ?
-                String((error as { message: string }).message) : `Non-Error thrown: ${typeof error} ${String(error)}`;
-    console.error('Analysis error:', msg, error);
-    return res.status(500).json({
-      error: 'Analysis failed',
-      message: msg,
-      demoMode: process.env.DEMO_MODE === 'true',
-    });
+    next(error);
   }
 });
 
@@ -144,7 +191,7 @@ app.get('/api/debug-orbit', async (_req, res) => {
 });
 
 // Live analysis with user-provided GitLab token
-app.post('/api/analyze-with-creds', async (req, res) => {
+app.post('/api/analyze-with-creds', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     let { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch, gitlabToken } = req.body;
 
@@ -155,9 +202,25 @@ app.post('/api/analyze-with-creds', async (req, res) => {
       });
     }
 
-    if (!gitlabToken) {
+    if (typeof projectPath !== 'string' || projectPath.trim() === '') {
+      return res.status(400).json({ error: 'Invalid projectPath format' });
+    }
+    if (isNaN(Number(mrIid)) || Number(mrIid) <= 0) {
+      return res.status(400).json({ error: 'Invalid mrIid' });
+    }
+    if (typeof mrTitle !== 'string' || mrTitle.trim() === '') {
+      return res.status(400).json({ error: 'Invalid mrTitle format' });
+    }
+    if (!Array.isArray(changedFiles)) {
+      return res.status(400).json({ error: 'Invalid changedFiles format' });
+    }
+    if (typeof changeDescription !== 'string' || changeDescription.trim() === '') {
+      return res.status(400).json({ error: 'Invalid changeDescription format' });
+    }
+
+    if (!gitlabToken || typeof gitlabToken !== 'string' || !gitlabToken.startsWith('glpat-')) {
       return res.status(400).json({
-        error: 'GitLab token is required for live analysis',
+        error: 'GitLab token is required and must start with "glpat-" for live analysis',
         hint: 'Generate at https://gitlab.com/-/user_settings/personal_access_tokens'
       });
     }
@@ -210,18 +273,12 @@ app.post('/api/analyze-with-creds', async (req, res) => {
       process.env.GITLAB_ACCESS_TOKEN = originalToken;
     }
   } catch (error) {
-    console.error('Live analysis error:', error);
-    return res.status(500).json({
-      error: 'Live analysis failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    next(error);
   }
 });
 
 // Demo mode endpoint - returns realistic mock data transformed for visualizer
-// Always available so the visualizer can always fetch demo data from a real endpoint
 app.get('/api/demo', (req, res) => {
-  // Build a realistic DigitalTwin + ChangeSimulation from fixed data
   const demoReport: SentinelReport = {
     mrIid: 10,
     mrTitle: 'test sentinel',
@@ -339,7 +396,7 @@ app.get('/api/demo', (req, res) => {
   });
 });
 
-// Proxy endpoint to fetch MR changed files from GitLab API (avoids CORS in browser)
+// Proxy endpoint to fetch MR changed files from GitLab API
 app.post('/api/probe-mr-files', async (req, res) => {
   try {
     const { projectPath, mrIid, gitlabToken } = req.body;
@@ -379,13 +436,12 @@ app.post('/api/probe-mr-files', async (req, res) => {
   }
 });
 
-// Raw Orbit query proxy — accepts any { query, format } and proxies to Orbit API
+// Raw Orbit query proxy
 app.post('/api/raw-orbit', async (req, res) => {
   try {
     const { query, format } = req.body;
     if (!query) return res.status(400).json({ error: 'query object required' });
 
-    // Build the envelope the same way executeQuery does
     const envelope = { query, format: format || "raw" };
     const response = await fetch("https://gitlab.com/api/v4/orbit/query", {
       method: "POST",
@@ -405,43 +461,37 @@ app.post('/api/raw-orbit', async (req, res) => {
   }
 });
 
-// Diagnostic endpoint — tests each Orbit query type individually
+// Diagnostic endpoint
 app.get('/api/diag', async (_req, res) => {
   const results: Record<string, unknown> = {};
   const projectId = 278964;
   const filePath = "app/services/auto_merge/base_service.rb";
 
-  // Fetch schema to discover valid entity types and relationship types
   try {
     const schema = await orbitClient.getSchema();
     results.schema = { ok: true, data: schema };
   } catch (e) { results.schema = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Test NEIGHBORS
   try {
     const r = await queryEngine.getProjectSummary(projectId);
     results.neighbors = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.neighbors = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Test TRAVERSAL
   try {
     const r = await queryEngine.findHistoricalMRs("gitlab-org/gitlab", filePath);
     results.traversal = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.traversal = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Test PATH_FINDING
   try {
     const r = await queryEngine.findDeploymentPath(projectId);
     results.path_finding = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.path_finding = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Test AGGREGATION
   try {
     const r = await queryEngine.findPipelineFailures([projectId]);
     results.aggregation = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.aggregation = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Try traversal without relationships to test if the query format itself is valid
   try {
     const r = await orbitClient.traversal(
       { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
@@ -450,7 +500,6 @@ app.get('/api/diag', async (_req, res) => {
     results.traversal_no_rel = { ok: true, rows: r.result.rows?.length ?? 0 };
   } catch (e) { results.traversal_no_rel = { ok: false, error: e instanceof Error ? e.message : String(e) }; }
 
-  // Simple path_finding: File→Branch with ON_BRANCH (1 hop, nodes/path format)
   try {
     const r = await orbitClient.pathFinding(
       [
@@ -474,8 +523,13 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-// Global error handler — must be last
+// Enhanced Express error-handling middleware with GitLab error mapping
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(`[${new Date().toISOString()}] Unhandled error:`, err);
-  res.status(500).json({ error: 'Internal server error' });
+  const mapped = GitLabErrorHandler.handleError(err);
+  res.status(mapped.statusCode || 500).json({
+    error: mapped.message || 'Internal server error',
+    gitLabErrorCode: mapped.gitLabErrorCode,
+    recoveryAction: mapped.recoveryAction
+  });
 });

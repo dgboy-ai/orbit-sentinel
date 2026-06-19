@@ -101,15 +101,36 @@ When Orbit's API is unavailable, Orbit Sentinel **degrades gracefully**:
 - **State Management**: Custom hooks (`useAnimatedValue`, `useMediaQuery`, `useVulnerabilities`) + React Context API + URL state via `useState`/`useEffect` for global application state
 - **Data Flow**: Client-server pattern with `ApiService` class handling Orbit API calls, `DigitalTwinBuilder` orchestrating query execution, and `DataVisualizer` transforming results into dashboard JSON
 
+### GitLab Integration Enhancements
+- **GitLab Error Handling**: Standardized mapping class `GitLabErrorHandler` mapping HTTP/API responses into explicit `GitLabErrorCode` instances:
+  - `404` → `PROJECT_NOT_FOUND` / `MR_NOT_FOUND`
+  - `403` → `INSUFFICIENT_PERMISSIONS`
+  - `429` → `RATE_LIMIT_EXCEEDED`
+  - `401` → `TOKEN_INVALID`
+  - `5xx` → `NETWORK_TIMEOUT`
+- **Error Recovery Recommendations**: Every mapped error includes a concrete `recoveryAction` prompt (e.g. suggesting checking permission scopes or token validities).
+- **Graceful Degradation**: Seamlessly falls back to file dependency analysis when Orbit is unavailable, signaling degraded state in visualizer banner.
+
+### Security Best Practices
+- **Strict Headers**: Both API client requests and Express server responses enforce security-minded headers:
+  - `X-Content-Type-Options: nosniff` (prevents MIME sniffing)
+  - `X-Frame-Options: DENY` (mitigates clickjacking threats)
+  - `X-XSS-Protection: 0`
+  - `Strict-Transport-Security` (forces HTTPS usage)
+  - `Referrer-Policy: no-referrer-when-downgrade`
+  - `X-Request-Source: OrbitSentinelVisualizer` (identifies client application)
+- **Validation Layers**: Strict client and server request validation checks (e.g. formatting schemas, non-negative numerical identifiers, non-empty descriptors).
+- **Token Validation**: Pre-validation middleware verifying incoming Personal Access Tokens follow correct GitLab format (`glpat-` prefixes) before invoking APIs.
+
 ### API Integration
 - **GitLab Auth**: Simple GitLab Personal Access Token (`glpat-xxx`) with `read_api` scope for file content access
 - **Rate Limiting**: 500ms throttle between file iterations, max 5 files per MR, exponential backoff for transient errors
-- **Error Classification**: 8 error types (`RATE_LIMIT`, `AUTHENTICATION_ERROR`, `QUOTA_EXCEEDED`, `ORBIT_API_ERROR`, `NETWORK_ERROR`, `SERVICE_UNAVAILABLE`, `VALIDATION_ERROR`, `INVALID_MR`) with specific recovery strategies
 
 ### Performance Optimizations
 - **Bundle Size**: ~125KB gzipped with lazy-loading of critical components via Vite's code splitting
 - **Rendering**: React 18 concurrent rendering with `Suspense` boundaries, `React.memo` and `useMemo` optimizations
 - **Caching**: 5-minute API response caching, `localStorage` for user preferences and theme persistence
+
 
 ```mermaid
 flowchart TD
