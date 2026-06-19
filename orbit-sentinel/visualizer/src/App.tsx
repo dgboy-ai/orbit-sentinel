@@ -137,23 +137,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     setData(DEMO_DATA);
     setDataMode("demo");
     setLoading(false);
-
-    if (apiService.isApiAvailable()) {
-      try {
-        const result = await apiService.analyzeChange({
-          projectId: 39251857,
-          projectPath: 'gitlab-ai-hackathon/transcend/39251857',
-          mrIid: 10,
-          mrTitle: 'test sentinel',
-          changedFiles: ['flows/flow.yml'],
-          changeDescription: 'test sentinel MR',
-          branch: 'test-sentinel',
-        });
-        setDataMode("live");
-      } catch {
-        // Engine unavailable — stay on demo data with Demo badge
-      }
-    }
   }, []);
 
   // Load data from API or fallback to demo
