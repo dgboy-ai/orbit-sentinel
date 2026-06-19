@@ -1,14 +1,24 @@
 import React, { useEffect, useState, useMemo } from "react";
+import type { OrbitQueryEvidence } from "../types";
 
 interface Step { label: string; icon: string; desc: string; broken?: boolean }
 
-function makeSteps(mrIid: number): Step[] {
+function parseEvidence(evidence?: OrbitQueryEvidence[]) {
+  const pf = evidence?.find(e => e.queryType === "PATH_FINDING")?.result || "";
+  const hasPipeline = /pipeline found/i.test(pf);
+  const depCount = parseInt(pf.match(/(\d+)\s*deployment\s*path/i)?.[1] ?? "0");
+  const hasDeployments = depCount > 0;
+  return { hasPipeline, hasDeployments, depCount };
+}
+
+function makeSteps(mrIid: number, evidence?: OrbitQueryEvidence[]): Step[] {
+  const { hasPipeline, hasDeployments, depCount } = parseEvidence(evidence);
   return [
     { label: `MR !${mrIid}`, icon: "🔀", desc: "Merge Request opened" },
-    { label: "Pipeline", icon: "🔄", desc: "No head pipeline", broken: true },
-    { label: "Service", icon: "⚙️", desc: "ci-validate-items" },
-    { label: "Deployment", icon: "🚀", desc: "Deploy blocked" },
-    { label: "Production", icon: "🌐", desc: "Cannot reach" },
+    { label: "Pipeline", icon: "🔄", desc: hasPipeline ? "Pipeline detected" : "No head pipeline", broken: !hasPipeline },
+    { label: "Service", icon: "⚙️", desc: hasPipeline ? "Dependency chain mapped" : "ci-validate-items" },
+    { label: "Deployment", icon: "🚀", desc: hasDeployments ? `${depCount} deployment path${depCount > 1 ? "s" : ""} found` : "Deploy blocked", broken: !hasDeployments },
+    { label: "Production", icon: "🌐", desc: hasDeployments ? "Reachable" : "Cannot reach", broken: !hasDeployments },
   ];
 }
 
@@ -23,8 +33,10 @@ function FlowArrow({ broken }: { broken?: boolean }) {
   );
 }
 
-export default function PathBrokenAnimation({ mrIid = 10 }: { mrIid?: number }) {
-  const STEPS = useMemo(() => makeSteps(mrIid), [mrIid]);
+export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: number; evidence?: OrbitQueryEvidence[] }) {
+  const STEPS = useMemo(() => makeSteps(mrIid, evidence), [mrIid, evidence]);
+  const { hasPipeline, hasDeployments } = useMemo(() => parseEvidence(evidence), [evidence]);
+  const conclusion = !hasPipeline ? "No path to production detected." : hasDeployments ? "Deployment path intact." : "Path exists but no active deployments.";
   const [visible, setVisible] = useState(0);
   const [showBroken, setShowBroken] = useState(false);
   const [showConclusion, setShowConclusion] = useState(false);
@@ -121,7 +133,7 @@ export default function PathBrokenAnimation({ mrIid = 10 }: { mrIid?: number }) 
           textAlign: "center",
         }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Conclusion</div>
-          <div style={{ fontSize: 12, color: "var(--text-secondary)", fontStyle: "italic" }}>No path to production detected.</div>
+          <div style={{ fontSize: 12, color: "var(--text-secondary)", fontStyle: "italic" }}>{conclusion}</div>
         </div>
       </div>
     </div>

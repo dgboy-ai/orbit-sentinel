@@ -342,7 +342,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
               <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
               <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
-              <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} /></ErrorBoundary>
+              <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} evidence={data.evidence} /></ErrorBoundary>
             </div>
             <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
