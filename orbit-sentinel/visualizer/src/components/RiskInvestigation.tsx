@@ -150,6 +150,12 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       impact: "Nothing deployable identified", confidence: 100, queryType: "NEIGHBORS",
     },
     {
+      severity: "critical", title: "Pipeline Failure Correlation",
+      evidenceSource: "Pipeline Risk Aggregation", finding: "23 failed pipelines in blast radius services",
+      orbitEvidence: "AGGREGATION: 23 failed pipelines across 7 affected services",
+      impact: "High probability of pipeline failure propagating to production", confidence: 88, queryType: "AGGREGATION",
+    },
+    {
       severity: "medium", title: "No Reviewers Assigned",
       evidenceSource: "Ownership Analysis", finding: "No reviewer assigned to MR",
       orbitEvidence: "NEIGHBORS: Ownership path missing from graph",

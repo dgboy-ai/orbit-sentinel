@@ -103,11 +103,19 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 - Remediation steps
 
 **Predictions Tracker**:
-- Accuracy scoreboard with animated stat counters
-- DualSparkline showing predicted vs actual risk trend
-- Filterable/sortable MR ledger with outcome badges
-- Post-merge verification input (failed/shipped)
-- 7-day survival window for high-risk predictions"
+  - Accuracy scoreboard with animated stat counters
+  - DualSparkline showing predicted vs actual risk trend
+  - Filterable/sortable MR ledger with outcome badges
+  - Post-merge verification input (failed/shipped)
+  - 7-day survival window for high-risk predictions
+  - **Vulnerability-Adjusted Predictions**: per-file severity breakdown with predicted vs actual vulns and confirmation toggles
+
+**New power features**:
+- **Security Findings in Blast Radius**: each service node shows vulnerability badges (severity-colored) with count — spot risky dependencies at a glance
+- **Pipeline Failure Correlation in Risk View**: coefficient bar, failure probability heatmap, and historical reliability insight tied to AGGREGATION data
+- **Export/Share Report**: click the 📤 button in Impact Report toolbar to copy Markdown or download JSON
+- **Keyboard Shortcuts**: press **1–8** to jump between views, **D** toggle demo, **E** toggle editor — tooltip overlay at screen bottom
+- **Theme Toggle**: click 🌙/☀️ in top nav to switch dark/light — persists in localStorage"
 
 **Visual**: Space bar toggles auto-play demo
 

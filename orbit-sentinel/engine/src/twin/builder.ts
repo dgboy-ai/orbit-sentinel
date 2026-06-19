@@ -176,6 +176,16 @@ export class DigitalTwinBuilder {
       );
       this.mergeGraph(nodes, edges, (inc.data as OrbitQueryResult).result);
 
+      // Security Findings (TRAVERSAL) - query for vulnerabilities/findings on changed files
+      const sec = await this.orbitOrFallback(
+        "TRAVERSAL", "Security Findings",
+        () => this.timedQuery("TRAVERSAL", "Security Findings (Orbit)", () =>
+          queryEngine.findSecurityFindings(filePath)),
+        () => this.timedQuery("TRAVERSAL", "Security Findings (Fallback)", async () =>
+          grepFallback.emptyResult("traversal")),
+      );
+      this.mergeGraph(nodes, edges, (sec.data as OrbitQueryResult).result);
+
       await delay(500);
     }
 

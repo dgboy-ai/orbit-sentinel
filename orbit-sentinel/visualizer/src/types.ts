@@ -10,6 +10,7 @@ export interface GraphNode {
   y?: number;
   vx?: number;
   vy?: number;
+  properties?: Record<string, unknown>;
 }
 
 export interface GraphLink {

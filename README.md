@@ -49,7 +49,7 @@ Live Orbit API queries against indexed project `gitlab-ai-hackathon/transcend/39
 | Differentiator | Orbit Sentinel | Sankofa (only confirmed competitor) |
 |----------------|---------------|--------------------------------------|
 | **Visual execution** | 38 React components, 8 views, responsive | Text-only output |
-| **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
+| **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, vulnerability-adjusted predictions, computes accuracy score | Predicts but never verifies |
 | **Test coverage** | **105 tests** (engine + visualizer) | 28 tests |
 | **Fallback resilience** | Grep-based fallback when Orbit is down — still delivers analysis | No fallback, fails on Orbit downtime |
 | **Deployment** | Docker Compose, CI/CD, Vercel + Render, nginx | Manual only |
@@ -192,12 +192,12 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 |------|---------------|
 | **Overview** | Impact Calculator (interactive ROI sliders), hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph |
 | **Setup** | 4-step guided journey — Mission → Architecture → Setup → Launch. Copy commands, Devpost checklist |
-| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect (NEIGHBORS) |
-| **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down (AGGREGATION) |
+| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect (NEIGHBORS). Security Findings stat pill shows critical/high vulnerability counts. Per-file vulnerability badges on each service node with severity coloring |
+| **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down (AGGREGATION). Pipeline Failure Correlation card with coefficient bar, failure probability heatmap, and historical reliability insight |
 | **Simulation** | Counterfactual analysis with timeline — what if we roll back? add tests? notify owners? |
 | **History** | Repository memory with Jaccard similarity scoring — has this failed before? (TRAVERSAL) |
-| **Report** | Full formatted MR comment output — ready to copy into the MR thread |
-| **Predictions Tracker** 🎯 | Accuracy scoreboard, post-merge verification, risk trend chart — proves Orbit Sentinel predictions work |
+| **Report** | Full formatted MR comment output — ready to copy into the MR thread. Export dropdown: copy Markdown to clipboard or download full report as JSON |
+| **Predictions Tracker** 🎯 | Accuracy scoreboard, post-merge verification, risk trend chart, **Vulnerability-Adjusted Predictions** table with per-file severity breakdown and confirmation toggles — proves Orbit Sentinel predictions work |
 
 ---
 
@@ -217,7 +217,7 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 
 **Visualizer** — React app at `orbit-sentinel/visualizer/` deployed on **Vercel** (TypeScript, **10 tests**):
 
-- **PredictionsTracker** — accuracy scoreboard with DualSparkline (predicted vs actual risk trend), animated stat counters, filterable/sortable MR ledger, post-merge verification input
+- **PredictionsTracker** — accuracy scoreboard with DualSparkline (predicted vs actual risk trend), animated stat counters, filterable/sortable MR ledger, post-merge verification input, Vulnerability-Adjusted Predictions table with per-file breakdown and confirmation toggles
 - **DataModeBanner** — 6 modes: loading / connecting / live / demo / error / **degraded** — orange banner shown when engine falls back to file analysis
 - **AgentFlowProgress** — 8-step horizontal Duo workflow animation with glassmorphism cards, auto-scroll, connector arrows
 - **MrAnalyzer** — MR URL input with validation, 3 quick demo buttons, gradient glow card, pulsing "Engine Live" badge
@@ -241,6 +241,12 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 | UI Polish | Gradient glow card, pulsing live badge, success toast, 2-column query log layout, MR ID validation, neon borders, glassmorphism |
 | 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
 | ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
+| 🔐 Security Findings | Per-file vulnerability badges in Blast Radius stat pills and component picker — severity-colored (crit/high/med/low) |
+| 🔄 Pipeline Correlation | Failure probability heatmap + coefficient bar in Risk view — links risk score to historical pipeline reliability |
+| 📤 Export Report | Copy Markdown to clipboard or download JSON from the Impact Report toolbar |
+| 🎯 Vuln-Adjusted Predictions | Per-file vulnerability forecast with confirmation toggles in Predictions Tracker |
+| ⌨️ Keyboard Shortcuts | **1–8** switch views, **D** toggle demo, **E** toggle editor — tooltip overlay shown at bottom of screen |
+| 🌗 Theme Toggle | Light/dark mode persisted in localStorage — sun/moon icon in top nav, all components adapt via CSS variables |
 | 📱 Mobile | 5 breakpoints to 360px, touch scrolling, dropdown nav on tiny screens, collapsible grids |
 | ⏳ Demo video | Needs recording (≤3 min) — [script](orbit-sentinel/demo/demo-script.md) ready |
 
@@ -258,6 +264,8 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 | **MR validation** | Input shows visual format indicator when URL matches `gitlab.com/\<project\>/-/merge_requests/\<digits\>` |
 | **Gradient button** | Purple gradient background; hover glow effect |
 | **Glassmorphism** | `backdrop-filter: blur(6px)` on cards, architecture nodes, flow progress |
+| **Keyboard Shortcuts** | **1–8** switch views, **D** toggle demo, **E** toggle editor — tooltip overlay at screen bottom |
+| **Theme Toggle** | 🌙/☀️ in top nav toggles light/dark — persists in localStorage |
 
 ---
 

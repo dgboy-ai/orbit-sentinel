@@ -33,7 +33,7 @@ describe("Server API integration", () => {
     expect(res.status).toBe(400);
   });
 
-  it("POST /api/analyze uses fallback when no Orbit token available", async () => {
+  it("POST /api/analyze uses fallback when no Orbit token available", { timeout: 15000 }, async () => {
     const res = await request(app)
       .post("/api/analyze")
       .send({

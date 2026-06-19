@@ -25,7 +25,12 @@ This guide provides detailed instructions for capturing high-quality screenshots
 - Active demo mode with Space bar interaction
 - Interactive graph exploration
 - Risk gauge and what-if simulation
-- Predictions Tracker: accuracy scoreboard, DualSparkline trend chart, verification input
+- Predictions Tracker: accuracy scoreboard, DualSparkline trend chart, verification input, Vulnerability-Adjusted Predictions table
+- **Blast Radius**: Security Findings stat pill, per-file vulnerability badges on service nodes
+- **Risk View**: Pipeline Failure Correlation card with coefficient bar and failure probability heatmap
+- **Report**: Export dropdown (📤) with Copy Markdown and Download JSON options
+- **Keyboard shortcuts**: tooltip overlay at bottom of screen showing 1–8, D, E bindings
+- **Theme toggle**: light mode view (click ☀️ in top nav)
 
 **Technical Specifications**:
 - Resolution: 1920x1080 or higher

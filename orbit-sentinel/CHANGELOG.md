@@ -4,7 +4,31 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
-## Latest Session (June 18, Session 2)
+## Latest Session (June 19 — Batch 2: Vulnerability Prediction + Power UX)
+
+### Added
+
+- **Security Findings in Blast Radius** (`BlastRadiusExplorer.tsx`) — New `StatPill` showing critical/high vulnerability counts per component. Each service node in the picker now shows per-file vulnerability badge (severity-colored, count). Uses `useVulnerabilities` hook to compute vulnerability info from graph nodes. 5-column responsive stats grid.
+
+- **Pipeline Failure Correlation in Risk View** (`RiskInvestigation.tsx`) — New "Pipeline Failure Correlation" card in the investigation panel. Shows correlation coefficient bar between risk score and pipeline failures, failure probability heatmap grid, and text insight (e.g. "Historical pipeline reliability: 62%"). Pulls from `AGGREGATION` query pipeline failure data.
+
+- **Export/Share Report** (`ImpactReport.tsx`) — Export dropdown button in report toolbar with two options: **Copy Markdown** (generates full markdown from report data, copies to clipboard with fallback) and **Download JSON** (exports raw report data as `.json` file). Click-outside-to-close behavior. Theme-aware background (`var(--bg-elevated)`).
+
+- **Vulnerability-Adjusted Predictions** (`PredictionsTracker.tsx`) — New "Vulnerability-Adjusted Predictions" section showing predicted vs actual vulns per MR. Per-file breakdown table with severity icons, predicted count, actual count, and confirmation toggle per file. Pulls predictions from `vulnerabilityPredictions` on each MR entry.
+
+- **Keyboard Shortcuts & Power User Hints** (`App.tsx`) — Global keyboard shortcuts: **1–8** switch between dashboard views (Overview=1, Setup=2, Blast Radius=3, Risk=4, Simulation=5, History=6, Report=7, Predictions=8). **D** toggles demo mode. **E** toggles the Editor panel. Shortcuts shown in a tooltip overlay at bottom of screen. Captured in `useEffect` keydown listener. Added `"opencode": true` to `visualizer/package.json`.
+
+- **Light/Dark Theme Toggle** (`index.html`, `App.tsx`) — Theme state persisted in `localStorage` under key `orbit-theme`. Toggle button in top nav bar (sun/moon icon). CSS custom properties for light theme (`--bg-card: rgba(255,255,255,0.85)`, `--bg-elevated: rgba(255,255,255,0.95)`). Theme stored and restored on load via `useEffect`. All components use `var(--...)` variables so they automatically adapt.
+
+### Fixed
+
+- **BlastRadiusExplorer `resp-grid-5`** — Stats grid was using hardcoded `repeat(4, 1fr)` / `repeat(5, 1fr)` with no responsive breakpoint. Added `className="resp-grid-5"` so it collapses to 2 columns at 900px and 1 column at 480px.
+
+- **ImpactReport export dropdown background** — Hardcoded `rgba(12,14,20,0.96)` broke light theme appearance. Replaced with `var(--bg-elevated)` so the dropdown adapts to both themes.
+
+---
+
+## Session 2 (June 18)
 
 ### Added
 

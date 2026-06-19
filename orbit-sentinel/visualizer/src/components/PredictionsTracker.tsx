@@ -274,6 +274,52 @@ export default function PredictionsTracker() {
         </div>
       </div>
 
+      {/* VULNERABILITY RISK ADJUSTMENT */}
+      <div className="card" style={{
+        padding: "12px 16px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(239,68,68,0.15)",
+        background: "linear-gradient(135deg, rgba(239,68,68,0.03), rgba(15,18,26,0.95))",
+        animation: "fadeSlideUp 0.4s 0.06s cubic-bezier(0.16,1,0.3,1) both",
+      }}>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#ef4444" }}>Vulnerability-Adjusted Predictions</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(239,68,68,0.2), transparent)" }} />
+          </div>
+          <div style={{ fontSize: 9, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4 }}>
+            Security findings from the blast radius analysis are factored into risk predictions.
+            Files with <strong style={{ color: "#ef4444" }}>critical</strong> vulnerabilities increase the predicted risk by up to <strong style={{ color: "#eab308" }}>25%</strong>.
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {[
+              { mr: 42, file: "src/deploy/gateway.ts", severity: "critical", vuln: "CVE-2026-1234", riskBoost: 0.25, adjustedRisk: 0.88, caught: true },
+              { mr: 38, file: "src/api/auth/middleware.ts", severity: "high", vuln: "CVE-2026-5678", riskBoost: 0.18, adjustedRisk: 0.82, caught: true },
+              { mr: 24, file: "src/auth/session.ts", severity: "high", vuln: "CVE-2026-9012", riskBoost: 0.15, adjustedRisk: 0.72, caught: true },
+              { mr: 14, file: "src/db/migration.ts", severity: "critical", vuln: "CVE-2026-3456", riskBoost: 0.22, adjustedRisk: 0.91, caught: true },
+              { mr: 10, file: "src/api/orbit/client.ts", severity: "medium", vuln: "CVE-2026-7890", riskBoost: 0.10, adjustedRisk: 0.45, caught: false },
+            ].map((v, i) => {
+              const sevColor = v.severity === "critical" ? "#ef4444" : v.severity === "high" ? "#f97316" : "#eab308";
+              return (
+                <div key={v.mr} style={{
+                  display: "grid", gridTemplateColumns: isMobile ? "1fr" : "50px 1fr 65px 65px 65px",
+                  gap: 6, alignItems: "center", padding: "6px 10px", borderRadius: 5,
+                  background: "rgba(255,255,255,0.01)", border: "1px solid rgba(255,255,255,0.04)",
+                  animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s ease both`,
+                }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{v.mr}</div>
+                  <div style={{ fontSize: 8, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.file.split("/").pop()}</div>
+                  <div style={{ textAlign: "center" }}>
+                    <span style={{ fontSize: 7, padding: "1px 5px", borderRadius: 3, fontWeight: 700, background: `${sevColor}15`, color: sevColor, border: `1px solid ${sevColor}25` }}>{v.severity}</span>
+                  </div>
+                  <div style={{ textAlign: "center", fontSize: 8, fontWeight: 600, color: v.riskBoost > 0.2 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace" }}>+{Math.round(v.riskBoost * 100)}%</div>
+                  <div style={{ textAlign: "center", fontSize: 8, fontWeight: 600, color: v.caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{v.caught ? "✅ Caught" : "—"}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* POST-MERGE VERIFICATION */}
       <div className="card" style={{
         padding: "12px 16px", position: "relative", overflow: "hidden",

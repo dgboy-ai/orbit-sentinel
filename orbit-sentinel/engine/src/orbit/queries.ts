@@ -113,6 +113,35 @@ export class OrbitQueryEngine {
     );
   }
 
+  async findSecurityFindings(filePath: string): Promise<OrbitQueryResult> {
+    return orbitClient.traversal(
+      { id: "f", entity: "File", filters: { path: { op: "ends_with", value: filePath } } },
+      [
+        { id: "vuln", entity: "Vulnerability" },
+        { id: "finding", entity: "SecurityFinding" },
+      ],
+      [
+        { type: "HAS_VULNERABILITY", from: "f", to: "vuln" },
+        { type: "HAS_FINDING", from: "f", to: "finding" },
+      ],
+      50,
+    );
+  }
+
+  async findVulnerabilitiesForFiles(filePaths: string[]): Promise<OrbitQueryResult> {
+    const fileNodes = filePaths.map((fp, i) => ({
+      id: `f${i}`,
+      entity: "File",
+      filters: { path: { op: "ends_with", value: fp } },
+    }));
+    return orbitClient.traversal(
+      fileNodes.length === 1 ? fileNodes[0] : { id: "files", entity: "File" },
+      fileNodes.length > 1 ? fileNodes.slice(1) : undefined,
+      undefined,
+      100,
+    );
+  }
+
   async findMRsByAuthor(authorUsername: string): Promise<OrbitQueryResult> {
     return orbitClient.traversal(
       { id: "u", entity: "User", filters: { username: authorUsername } },

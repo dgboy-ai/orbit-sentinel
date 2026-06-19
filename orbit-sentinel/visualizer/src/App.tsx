@@ -219,6 +219,16 @@ export default function App() {
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
   const [showQueryLog, setShowQueryLog] = useState(true);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const saved = localStorage.getItem("orbit-sentinel-theme");
+    return saved !== null ? saved === "dark" : true;
+  });
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch {}
+  }, [dark]);
+  const toggleTheme = useCallback(() => setDark(prev => !prev), []);
   const showNarrativeRef = useRef(showNarrative);
   showNarrativeRef.current = showNarrative;
   const onNarrativeDone = useCallback(() => {
@@ -356,6 +366,16 @@ export default function App() {
         if (u.searchParams.get("present") === "true") u.searchParams.delete("present"); else u.searchParams.set("present", "true");
         window.history.replaceState({}, "", u.toString());
         window.location.reload();
+      }
+      if (e.key === "d" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleTheme(); }
+      if (e.key === "e" && !e.ctrlKey && !e.metaKey) { e.preventDefault(); if (data) exportAsHtml(data); }
+      if (e.key >= "1" && e.key <= "8" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        const idx = parseInt(e.key, 10) - 1;
+        if (idx >= 0 && idx < tabs.length) {
+          if (demo) stopDemo();
+          setView(tabs[idx][0]);
+        }
       }
     };
     window.addEventListener("keydown", handler);
@@ -680,6 +700,16 @@ export default function App() {
             onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
             onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border)"; }}
           >⬇</button>
+          <button onClick={toggleTheme} title={dark ? "Switch to light theme" : "Switch to dark theme"} aria-label="Toggle theme"
+            style={{
+              padding: isMobile ? "3px 7px" : "5px 10px", fontSize: isMobile ? 10 : 13, cursor: "pointer",
+              border: "1px solid var(--border)", borderRadius: 6,
+              background: "transparent", color: "var(--text-secondary)",
+              transition: "all 0.15s ease", flexShrink: 0,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border)"; }}
+          >{dark ? "☀️" : "🌙"}</button>
           <button onClick={demo ? stopDemo : startDemo}
             aria-label={demo ? "Stop demo" : "Play demo"}
             style={{
@@ -748,11 +778,12 @@ export default function App() {
             {[
               { key: "Space", desc: "Start / Stop demo" },
               { key: "← →", desc: "Navigate between views" },
+              { key: "1-8", desc: "Jump to view by number" },
+              { key: "D", desc: "Toggle dark/light theme" },
+              { key: "E", desc: "Export report as HTML" },
               { key: "P", desc: "Toggle presentation mode" },
               { key: "?", desc: "Toggle this overlay" },
               { key: "Esc", desc: "Close overlays" },
-              { key: "⬇ (btn)", desc: "Export report as HTML" },
-              { key: "👑 (btn)", desc: "Judge's Tour" },
             ].map(s => (
               <div key={s.key} style={{
                 display: "flex", alignItems: "center", gap: 12, padding: "6px 0",

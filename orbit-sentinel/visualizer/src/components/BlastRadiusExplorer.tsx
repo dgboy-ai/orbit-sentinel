@@ -4,6 +4,7 @@ import type { GraphNode, GraphLink } from "../types";
 import { findConnectedComponents, filterNodesByType } from "../utils/graph";
 import { NODE_COLORS, riskLevelToColor, riskLevelToGlow } from "../utils/colors";
 import { useAnimatedValue } from "../hooks/useAnimatedValue";
+import { useVulnerabilities } from "../hooks/useVulnerabilities";
 
 interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
 
@@ -285,6 +286,8 @@ export default function BlastRadiusExplorer({ graph }: Props) {
   const [search, setSearch] = useState("");
   const [renderErr, setRenderErr] = useState<string | null>(null);
 
+  const { vulnerabilitiesByFile, criticalCount, highCount, hasVulnerabilities, getFileVulnerabilities } = useVulnerabilities(graph.nodes, graph.links);
+
   useEffect(() => { setRenderErr(null); }, [graph]);
 
   const services = useMemo(() => filterNodesByType(graph.nodes, ["Service", "Project", "File", "Pipeline"]), [graph]);
@@ -340,10 +343,11 @@ export default function BlastRadiusExplorer({ graph }: Props) {
               <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>NEIGHBORS query — digital twin impact analysis</div>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+          <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
             <StatPill label="Affected Nodes" value={String(Math.round(animNodes))} color="#60a5fa" sub={br ? `${fileCount} files, ${serviceCount} services` : undefined} />
             <StatPill label="Dependency Edges" value={String(Math.round(animLinks))} color="#a78bfa" sub="Direct + indirect" />
             <StatPill label="High / Critical Risk" value={String(Math.round(animRisk))} color="#ef4444" sub={br ? `${((riskCount / Math.max(br.nodes.length, 1)) * 100).toFixed(0)}% of affected` : undefined} />
+            <StatPill label="Security Findings" value={hasVulnerabilities ? `${criticalCount} crit, ${highCount} high` : "Clean"} color="#ef4444" sub={hasVulnerabilities ? `${criticalCount + highCount} findings` : "No vulnerabilities"} />
             <StatPill label="Search Depth" value={String(Math.round(animDepth))} color="#f97316" sub="hops from root" />
           </div>
         </div>
@@ -379,6 +383,15 @@ export default function BlastRadiusExplorer({ graph }: Props) {
               {filteredServices.map(n => {
                 const riskColor = n.riskLevel ? riskLevelToColor(n.riskLevel) : NODE_COLORS[n.type] ?? "#666";
                 const isActive = selectedNode === n.id;
+                const fileVulns = getFileVulnerabilities(n.id);
+                const hasVulns = fileVulns.length > 0;
+                const maxSeverity = fileVulns.length > 0 
+                  ? fileVulns.reduce((max, v) => {
+                      const order = { critical: 4, high: 3, medium: 2, low: 1 };
+                      return order[v.severity] > order[max] ? v.severity : max;
+                    }, "low" as "critical" | "high" | "medium" | "low")
+                  : null;
+                const vulnColor = maxSeverity === "critical" ? "#ef4444" : maxSeverity === "high" ? "#f97316" : maxSeverity === "medium" ? "#eab308" : "#22c55e";
                 return (
                   <button key={n.id} onClick={() => handleNodeClick(n.id)}
                     onMouseEnter={e => { setHighlight(n.id); if (!isActive) { e.currentTarget.style.background = "rgba(96,165,250,0.08)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.2)"; } }}
@@ -386,7 +399,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                     style={{
                       padding: "5px 8px", borderRadius: 6, cursor: "pointer", textAlign: "left", fontSize: 10,
                       background: isActive ? "rgba(249,115,22,0.1)" : "transparent",
-                      border: isActive ? "1px solid rgba(249,115,22,0.25)" : "1px solid transparent",
+                      border: isActive ? "1px solid rgba(249,115,22,0.25)" : hasVulns ? `1px solid ${vulnColor}40` : "1px solid transparent",
                       color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 5,
                       transition: "all 0.12s ease",
                     }}>
@@ -395,6 +408,17 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                       boxShadow: n.riskLevel === "critical" || n.riskLevel === "high" ? `0 0 6px ${riskColor}` : undefined,
                     }} />
                     <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.label}</span>
+                    {hasVulns && (
+                      <span style={{
+                        fontSize: 6, padding: "1px 4px", borderRadius: 3,
+                        background: `${vulnColor}20`, color: vulnColor,
+                        border: `1px solid ${vulnColor}40`, fontWeight: 700,
+                        fontFamily: "'JetBrains Mono', monospace",
+                        marginLeft: 4,
+                      }}>
+                        {fileVulns.length} vuln{fileVulns.length > 1 ? "s" : ""}
+                      </span>
+                    )}
                     <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{n.type === "Service" ? "⚙️" : n.type === "File" ? "📄" : n.type === "Pipeline" ? "🔄" : "📦"}</span>
                   </button>
                 );
