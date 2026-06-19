@@ -7,7 +7,9 @@
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab-transcend.devpost.com)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
 
-**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. Paste any GitLab MR URL to build a living model of the affected system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies across **8 interactive dashboard views**. When Orbit is unavailable, the engine degrades gracefully using file-analysis fallback. A published Duo Agent Platform flow enables fully autonomous MR posting.
+**Orbit Sentinel** is an autonomous engineering digital twin powered by GitLab Orbit. Paste any GitLab MR URL to build a living model of the affected system — discovering blast radius, historical incidents, ownership, deployment dependencies, and rollback strategies across **8 interactive dashboard views**.
+
+![Orbit Sentinel Architecture](orbit-sentinel/docs/screenshots/architecture.png)
 
 ---
 
@@ -33,7 +35,7 @@
 | **Visual analysis** | 41 components, 8 views, 3 breakpoints, interactive D3 graphs | Text-only output |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION cross-referenced | Single-query or no graph data |
-| **Fallback resilience** | Grep-based file analysis when Orbit is down — still delivers analysis | Fails on Orbit downtime |
+| **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
 | **Test coverage** | **134 tests** (105 engine + 29 visualizer) — zero `as any` in production code | Minimal or no test suite |
 | **Deployment** | Vercel + Render, Docker Compose, CI/CD (6 jobs, 4 stages) | Manual setup |
 | **Onboarding** | Judge's Tour, auto-demo, setup wizard, keyboard shortcuts | No UX |
@@ -79,6 +81,59 @@ Orbit Sentinel doesn't just predict — it **proves its predictions were right**
 
 ---
 
+## Architecture
+
+### Engine — TypeScript · Express · Render (105 tests)
+
+- **`MRValidator + GitLabErrorHandler`** — validates all inputs before any query runs; maps `401/403/404/429/5xx` to typed `GitLabErrorCode` instances with concrete `recoveryAction` prompts
+- **`DigitalTwinBuilder`** — orchestrates 9 Orbit queries across all 4 query types via `orbitOrFallback()` wrappers, merges results into a unified graph (23+ nodes, 43+ edges)
+- **`orbitOrFallback()`** — wraps every query: tries Orbit API first, falls back to `GrepFallback` on auth/network error; empty Orbit results also trigger enrichment from grep without marking the session as degraded
+- **`GrepFallback`** — fetches changed files via GitLab Repository Files API, parses `import`/`require` statements, builds dependency graph without Orbit
+- **`ChangeSimulator`** — computes blast radius and failure predictions from the digital twin graph
+- **`RiskEngine`** — 5-factor scoring from Orbit evidence (predictions, blast radius, incidents, pipeline health, reviewer coverage)
+- **`MemoryStore + SimilarityEngine`** — Jaccard similarity engine for historical incident matching; stores all past MR data for cross-session recall
+- **`RemediationPlanner`** — prioritizes and orders concrete fix steps from failure predictions
+- **`TestGenerator`** — generates unit + integration test plans from blast radius analysis
+- **`MarkdownReporter`** — formats the full report and auto-posts it to the MR via GitLab API
+- **`DataVisualizer`** — transforms the SentinelReport into dashboard JSON consumed by the React frontend
+- Rate-limited: max 5 files per MR, 500ms throttle between iterations · Debug endpoint: `/api/debug-orbit`
+
+### Visualizer — React · D3 · Vite · Vercel (29 tests)
+
+- 41 components, zero CSS files — design token system (colors, z-index tiers, animation presets, spacing scale on 4px grid)
+- 3 responsive breakpoints (360px–768px+), touch-friendly
+- **Judge's Tour** (`?judge=true`) — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
+- **Keyboard shortcuts**: **1–8** switch views, **D** toggle theme, **E** export report as HTML
+- **DataModeBanner**: 6 modes — loading / connecting / live / demo / error / degraded
+- **OrbitQueryInspector**: expandable raw GraphQL results from all 4 query types with per-query timing
+
+### Duo Agent Platform Integration
+
+- **Flow YAML** (`flow/orbit-sentinel-flow.yaml`) — 8 steps, published to AI Catalog with successful run
+- **Skill definition** (`.gitlab/duo/skill.yml`) — category: `code_review`, 3 capabilities
+- **MCP config** (`.gitlab/duo/mcp.json`) — HTTP connection to Orbit knowledge graph
+- **6 query recipes** (`skills/orbit-sentinel/recipes/`) — ready-to-use JSON for all 4 Orbit query types
+
+### Component Design Patterns
+
+- **Atomic Design**: 41 components — atoms → molecules → organisms → templates → pages
+- **State Management**: Custom hooks (`useAnimatedValue`, `useMediaQuery`, `useVulnerabilities`) + React Context API
+- **Data Flow**: `ApiService` → `DigitalTwinBuilder` → `DataVisualizer` → dashboard JSON
+
+### Security
+
+- **Strict Headers** on all requests/responses: `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Strict-Transport-Security`, `Referrer-Policy`
+- **Token Validation**: middleware verifies `glpat-` prefix before any API call
+- **Validation Layers**: strict input schemas, non-negative numerical identifiers, non-empty descriptors
+
+### Performance
+
+- **Bundle**: ~125KB gzipped, lazy-loaded chunks via Vite code splitting
+- **Rendering**: React 18 concurrent rendering, `Suspense` boundaries, `React.memo` / `useMemo`
+- **Caching**: 5-minute API response cache, `localStorage` for preferences and theme
+
+---
+
 ## Fallback Resilience
 
 When Orbit's API is unavailable, Orbit Sentinel **degrades gracefully**:
@@ -87,54 +142,10 @@ When Orbit's API is unavailable, Orbit Sentinel **degrades gracefully**:
 2. On failure, falls back to **grep-based file analysis** via GitLab Repository Files API
 3. Changed files are fetched, dependencies parsed (`import`/`require` in JS/TS, `import`/`from` in Python)
 4. Analysis completes with `fallback: true` flagged in the response
-5. Visualizer shows a **"Degraded" mode** banner — orange dot, orange border, "Orbit unavailable — using file analysis fallback"
-6. Empty Orbit results (normal for new projects with no pipeline history) no longer trigger the fallback flag — the app stays "Live"
+5. Visualizer shows a **"Degraded" mode** banner — orange dot, orange border
+6. Empty Orbit results (normal for new projects) no longer trigger fallback — the app stays "Live"
 
-**Fast path:** No GitLab token → return empty immediately instead of hanging on timeouts.
-
----
-
-## Architecture
-
-### Component Patterns
-- **Atomic Design**: 41 components organized in a hierarchical pattern — atoms (basic UI elements), molecules (combinations of atoms), organisms (self-contained sections), templates (page layouts), and pages (complete view compositions)
-- **State Management**: Custom hooks (`useAnimatedValue`, `useMediaQuery`, `useVulnerabilities`) + React Context API + URL state via `useState`/`useEffect` for global application state
-- **Data Flow**: Client-server pattern with `ApiService` class handling Orbit API calls, `DigitalTwinBuilder` orchestrating query execution, and `DataVisualizer` transforming results into dashboard JSON
-
-### GitLab Integration Enhancements
-- **GitLab Error Handling**: Standardized mapping class `GitLabErrorHandler` mapping HTTP/API responses into explicit `GitLabErrorCode` instances:
-  - `404` → `PROJECT_NOT_FOUND` / `MR_NOT_FOUND`
-  - `403` → `INSUFFICIENT_PERMISSIONS`
-  - `429` → `RATE_LIMIT_EXCEEDED`
-  - `401` → `TOKEN_INVALID`
-  - `5xx` → `NETWORK_TIMEOUT`
-- **Error Recovery Recommendations**: Every mapped error includes a concrete `recoveryAction` prompt (e.g. suggesting checking permission scopes or token validities).
-- **Graceful Degradation**: Seamlessly falls back to file dependency analysis when Orbit is unavailable, signaling degraded state in visualizer banner.
-
-### Security Best Practices
-- **Strict Headers**: Both API client requests and Express server responses enforce security-minded headers:
-  - `X-Content-Type-Options: nosniff` (prevents MIME sniffing)
-  - `X-Frame-Options: DENY` (mitigates clickjacking threats)
-  - `X-XSS-Protection: 0`
-  - `Strict-Transport-Security` (forces HTTPS usage)
-  - `Referrer-Policy: no-referrer-when-downgrade`
-  - `X-Request-Source: OrbitSentinelVisualizer` (identifies client application)
-- **Validation Layers**: Strict client and server request validation checks (e.g. formatting schemas, non-negative numerical identifiers, non-empty descriptors).
-- **Token Validation**: Pre-validation middleware verifying incoming Personal Access Tokens follow correct GitLab format (`glpat-` prefixes) before invoking APIs.
-
-### API Integration
-- **GitLab Auth**: Simple GitLab Personal Access Token (`glpat-xxx`) with `read_api` scope for file content access
-- **Rate Limiting**: 500ms throttle between file iterations, max 5 files per MR, exponential backoff for transient errors
-
-### Performance Optimizations
-- **Bundle Size**: ~125KB gzipped with lazy-loading of critical components via Vite's code splitting
-- **Rendering**: React 18 concurrent rendering with `Suspense` boundaries, `React.memo` and `useMemo` optimizations
-- **Caching**: 5-minute API response caching, `localStorage` for user preferences and theme persistence
-
-
-![Orbit Sentinel Architecture](orbit-sentinel/docs/screenshots/architecture.png)
-
-Every conclusion cites specific Orbit query evidence. No black box.
+**Fast path:** No GitLab token → returns empty immediately instead of hanging on timeouts.
 
 ---
 
@@ -159,54 +170,28 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 |------|---------------|-------------|
 | **Overview** | Impact Calculator (interactive ROI sliders), hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph, Orbit Query Inspector | All 4 |
 | **Setup** | 4-step guided journey — Mission → Architecture → Setup → Launch | — |
-| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect. Security Findings stat pill with critical/high vulnerability counts. Per-file vulnerability badges with severity coloring | NEIGHBORS |
-| **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down. Pipeline Failure Correlation card with correlation coefficient bar, failure probability heatmap, historical reliability insight | AGGREGATION |
-| **Forecast** | Counterfactual analysis with timeline — toggle variables, watch risk animate in real-time. Failure rate, pipeline evidence, deployment path, prediction confidence | Simulation |
+| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect. Security Findings stat pill with critical/high vulnerability counts | NEIGHBORS |
+| **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down. Pipeline Failure Correlation card, failure probability heatmap | AGGREGATION |
+| **Forecast** | Counterfactual analysis with timeline — toggle variables, watch risk animate in real-time | Simulation |
 | **History** | Repository memory with Jaccard similarity scoring — has this failed before? | TRAVERSAL |
-| **Report** | Full formatted MR comment output — ready to copy. Export dropdown: copy Markdown to clipboard or download as JSON | All 4 |
-| **Predictions Tracker** 🎯 | Accuracy scoreboard, post-merge verification, risk trend chart, vulnerability-adjusted predictions table with per-file severity breakdown and confirmation toggles | Closed-loop |
+| **Report** | Full formatted MR comment output — ready to copy. Export as Markdown or JSON | All 4 |
+| **Predictions Tracker** 🎯 | Accuracy scoreboard, post-merge verification, risk trend chart, vulnerability-adjusted predictions | Closed-loop |
 
 ---
 
-## Details
+## Status
 
-**Engine** — Express server at `orbit-sentinel/engine/` deployed on **Render** (TypeScript, **105 tests**):
-- `DigitalTwinBuilder` — orchestrates 9 Orbit queries across all 4 query types via `orbitOrFallback()` wrappers, merges results into unified graph
-- `Grep Fallback` — fetches files via GitLab Repository Files API, parses imports, builds dependency graph without Orbit
-- `Risk Engine` — 5-factor scoring from Orbit evidence (predictions, blast radius, incidents, pipeline health, reviewer coverage)
-- `Memory Store` — Jaccard similarity engine for historical incident matching
-- Rate-limited: max 5 files per MR, 500ms throttle between iterations (23 queries per analysis, down from 107)
-- Debug endpoint: `/api/debug-orbit` for live Orbit connectivity testing
-
-**Visualizer** — React app at `orbit-sentinel/visualizer/` deployed on **Vercel** (TypeScript, **29 tests**):
-- 41 components, zero CSS files — design token system (colors, z-index tiers, animation presets, spacing scale)
-- 3 responsive breakpoints (360px–768px+), touch-friendly
-- Judge's Tour (`?judge=true`) — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
-- Keyboard shortcuts: **1–8** switch views, **D** toggle theme, **E** export report as HTML
-- Theme toggle (light/dark) persisted to localStorage
-- DataModeBanner: 6 modes — loading / connecting / live / demo / error / degraded
-- OrbitQueryInspector: expandable raw GraphQL results from all 4 query types
-
-**Duo Agent Platform Integration**:
-- Flow YAML (`flow/orbit-sentinel-flow.yaml`) — 8 steps, published to AI Catalog with successful run
-- Skill definition (`.gitlab/duo/skill.yml`) — category: code_review, 3 capabilities
-- MCP config (`.gitlab/duo/mcp.json`) — HTTP connection to Orbit knowledge graph
-- 6 query recipes (`skills/orbit-sentinel/recipes/`) — ready-to-use JSON for each query pattern
-
-**Testing** — **134 tests total** (105 engine + 29 visualizer), zero `as any` in production code. Engine covers Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies. Visualizer covers DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views.
-
-**Stack** — Node 22+, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Vitest.
-
-| Status | |
-|--------|---|
-| Deployed | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| Tests | **134 passing** (105 engine + 29 visualizer) |
-| Live Orbit Data | Engine returns real graph data for project ID **39251857** (222+ nodes, 187+ edges from live Orbit) |
-| Quick Demos | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
-| Fallback | Grep-based file analysis when Orbit unreachable — degraded mode banner in UI |
-| Closed Loop | Predictions tracked post-merge with accuracy scoring, survival window, verification input |
-| Docker | `docker compose up` boots full stack with health checks |
-| Flow Published | 8-step Duo Agent Platform workflow in AI Catalog (1+ successful run) |
+| | |
+|--|--|
+| **Deployed** | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
+| **Tests** | **134 passing** (105 engine · 29 visualizer) |
+| **Live Orbit Data** | Real graph data for project ID **39251857** (222+ nodes, 187+ edges) |
+| **Quick Demos** | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
+| **Fallback** | Grep-based file analysis when Orbit unreachable — degraded mode banner in UI |
+| **Closed Loop** | Predictions tracked post-merge with accuracy scoring and 7-day survival window |
+| **Docker** | `docker compose up` boots full stack with health checks |
+| **Flow Published** | 8-step Duo Agent Platform workflow in AI Catalog (1+ successful run) |
+| **Stack** | Node 22+, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Vitest |
 
 ---
 
@@ -214,8 +199,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 
 | Feature | Details |
 |---------|---------|
-| **Instant load** | Demo data shown immediately on page open — engine data swapped in background when ready |
-| **Gradient glow card** | Purple gradient background, `0 0 30px` neon glow shadow, corner radial decoration, grid dot pattern |
+| **Instant load** | Demo data shown immediately — engine data swapped in background when ready |
 | **Pulsing live badge** | Green dot with `pulseDot` animation + "Engine Live" label when engine is reachable |
 | **Degraded mode banner** | Orange dot + border when Orbit is down and fallback is active |
 | **Success toast** | Green banner "✓ Analysis complete — MR !X" fades in for 5s |
@@ -223,7 +207,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 | **Glassmorphism** | `backdrop-filter: blur(6px)` on cards, architecture nodes, flow progress |
 | **Keyboard shortcuts** | **1–8** switch views, **D** toggle demo, **E** toggle editor — tooltip overlay at screen bottom |
 | **Theme toggle** | 🌙/☀️ in top nav — persists in localStorage, all components adapt via CSS variables |
-| **Mobile** | 3 breakpoints to 360px, touch scrolling, dropdown nav on tiny screens |
+| **Mobile** | 3 breakpoints to 360px, touch scrolling, dropdown nav on small screens |
 
 ---
 
