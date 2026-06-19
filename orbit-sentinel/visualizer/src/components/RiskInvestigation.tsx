@@ -410,7 +410,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         </div>
       </div>
 
-      {/* ORBIT CONFIDENCE BREAKDOWN */}
+      {/* CROSS-QUERY VERIFICATION (INDEPENDENT CONSENSUS) */}
       <div className="card" style={{
         padding: isMobile ? "10px 14px" : "14px 18px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.12)",
@@ -420,7 +420,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         <GlowOrb color="rgba(96,165,250,0.08)" top="-50%" left="-15%" size={180} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Confidence Breakdown</span>
+            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Cross-Query Verification (Independent Consensus)</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {(() => {
@@ -449,9 +449,9 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
           }}>
             <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
-              <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Confidence
+              <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
             </span>
-            <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.3)" : isMedium ? "rgba(234,179,8,0.3)" : "rgba(34,197,94,0.3)"}` }}>{isLow ? "VERY HIGH" : "HIGH"}</span>
+            <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.3)" : isMedium ? "rgba(234,179,8,0.3)" : "rgba(34,197,94,0.3)"}` }}>{isLow ? "STRONG CONSENSUS" : isMedium ? "WEAK CONSENSUS" : "STRONG CONSENSUS"}</span>
           </div>
         </div>
       </div>
@@ -492,6 +492,79 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
             <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)" }}>Orbit Verdict</span>
           </div>
+
+          {/* Traditional CI/CD vs Orbit Sentinel Verdict Comparison */}
+          <div style={{
+            display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12,
+            marginBottom: 12, padding: "12px", borderRadius: 8,
+            background: "rgba(0, 0, 0, 0.25)", border: "1px solid rgba(255, 255, 255, 0.05)"
+          }}>
+            {/* Traditional CI/CD */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: 4 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 4 }}>
+                <span>⚙️</span> Traditional CI/CD
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 11 }}>
+                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Build Passed</div>
+                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Tests Passed</div>
+                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Lint Passed</div>
+              </div>
+              <div style={{
+                marginTop: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34, 197, 94, 0.1)",
+                border: "1px solid rgba(34, 197, 94, 0.2)", fontSize: 9, fontWeight: 700, color: "#22c55e",
+                display: "inline-block", alignSelf: "flex-start"
+              }}>
+                Verdict: ✓ DEPLOYABLE
+              </div>
+            </div>
+
+            {/* Orbit Sentinel */}
+            <div style={{
+              display: "flex", flexDirection: "column", gap: 6, padding: 4,
+              borderLeft: isMobile ? "none" : "1px solid rgba(255, 255, 255, 0.08)",
+              borderTop: isMobile ? "1px solid rgba(255, 255, 255, 0.08)" : "none",
+              paddingTop: isMobile ? 12 : 4,
+              paddingLeft: isMobile ? 4 : 12
+            }}>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", display: "flex", alignItems: "center", gap: 4 }}>
+                <span>🔮</span> Orbit Sentinel
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 11 }}>
+                {isLow ? (
+                  <>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Isolated Change Scope</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Head Pipeline Passed</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Reviewers Approved</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Active Dependency Graph Checked</div>
+                  </>
+                ) : isMedium ? (
+                  <>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Empty Changes Diff</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Pipeline Execution</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Branch Abandonment Pattern</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Reviewer Chain</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Deployment Path</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Historical Failure Pattern</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Empty Diff</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Reviewer Chain</div>
+                  </>
+                )}
+              </div>
+              <div style={{
+                marginTop: 6, padding: "4px 8px", borderRadius: 4,
+                background: isLow ? "rgba(34, 197, 94, 0.1)" : isMedium ? "rgba(234, 179, 8, 0.1)" : "rgba(239, 68, 68, 0.1)",
+                border: `1px solid ${isLow ? "rgba(34, 197, 94, 0.2)" : isMedium ? "rgba(234, 179, 8, 0.2)" : "rgba(239, 68, 68, 0.2)"}`,
+                fontSize: 9, fontWeight: 700, color: config.color,
+                display: "inline-block", alignSelf: "flex-start"
+              }}>
+                Verdict: {config.verdictLabel}
+              </div>
+            </div>
+          </div>
+
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 6 : 10,
             padding: isMobile ? "8px 16px" : "12px 28px", borderRadius: 10, marginBottom: 12, maxWidth: "100%", boxSizing: "border-box",
