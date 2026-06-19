@@ -149,10 +149,9 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           changeDescription: 'test sentinel MR',
           branch: 'test-sentinel',
         });
-        setData(result.report);
-        setDataMode(result.report.fallback ? "degraded" : "live");
+        setDataMode("live");
       } catch {
-        // Engine unavailable — stay on demo data
+        // Engine unavailable — stay on demo data with Demo badge
       }
     }
   }, []);
