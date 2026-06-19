@@ -126,7 +126,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
 
   const demoRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const isTiny = useMediaQuery("(max-width: 360px)");
 
   useEffect(() => { ssWrite("view", view); }, [view]);
   useEffect(() => { ssWrite("demo", demo); }, [demo]);
@@ -378,7 +377,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       case "predictions": return <ErrorBoundary><PredictionsTracker predictions={predictions} onVerify={onVerifyPrediction} /></ErrorBoundary>;
       case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
-  }, [view, data, navigate, isMobile, isTiny]);
+  }, [view, data, navigate, isMobile]);
 
   if (!data) {
     return (
@@ -470,7 +469,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           <EngineStatus />
           <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: COLORS.purple, border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
         </div>
-        {isTiny && (
+        {isMobile && (
           <div style={{ position: "relative" }}>
             <button onClick={() => setMobileViewOpen(!mobileViewOpen)}
               aria-label="Switch view" aria-expanded={mobileViewOpen}
@@ -507,7 +506,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             )}
           </div>
         )}
-        <div className={`header-nav${isTiny ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0, flexWrap: "wrap", overflow: "auto" }} role="tablist" aria-label="Dashboard views">
+        <div className={`header-nav${isMobile ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0, flexWrap: "wrap", overflow: "auto" }} role="tablist" aria-label="Dashboard views">
           {tabs.map(([k, lbl]) => {
             const help = DEMO_STEPS.find(d => d.view === k)?.sublabel ?? "";
             return (
