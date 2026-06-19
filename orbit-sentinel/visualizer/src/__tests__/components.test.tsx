@@ -69,14 +69,14 @@ describe("TaglineBanner", () => {
 describe("PredictionsTracker", () => {
   it("renders accuracy scoreboard and vulnerability section", () => {
     render(<PredictionsTracker />);
-    expect(screen.getByText("Prediction Accuracy Scoreboard")).toBeInTheDocument();
+    expect(screen.getByText("Prediction Scoreboard")).toBeInTheDocument();
     expect(screen.getByText("Vulnerability-Adjusted Predictions")).toBeInTheDocument();
   });
 
   it("shows zero state when no predictions exist", () => {
     render(<PredictionsTracker predictions={[]} />);
-    expect(screen.getByText("0 MRs")).toBeInTheDocument();
-    expect(screen.getByText("0%")).toBeInTheDocument();
+    expect(screen.getAllByText("0%")[0]).toBeInTheDocument();
+    expect(screen.getByText("Total MRs Tracked")).toBeInTheDocument();
   });
 
   it("shows stats with predictions provided", () => {
@@ -85,8 +85,8 @@ describe("PredictionsTracker", () => {
       { mrIid: 2, title: "Add logging", predictedRisk: 0.3, predictedLevel: "low", actualOutcome: "pending" as const, mergedAt: "2026-06-02" },
     ];
     render(<PredictionsTracker predictions={predictions} />);
-    expect(screen.getByText("Total Tracked")).toBeInTheDocument();
-    expect(screen.getByText("1 verified")).toBeInTheDocument();
+    expect(screen.getByText("Total MRs Tracked")).toBeInTheDocument();
+    expect(screen.getByText("Stayed Shipped")).toBeInTheDocument();
   });
 
   it("calls onVerify for prediction with pre-set outcome", async () => {
@@ -98,7 +98,7 @@ describe("PredictionsTracker", () => {
     render(<PredictionsTracker predictions={predictions} onVerify={onVerify} />);
     const input = screen.getByPlaceholderText("MR IID (e.g. 42)");
     fireEvent.change(input, { target: { value: "5" } });
-    fireEvent.click(screen.getByText("✓ Verify"));
+    fireEvent.click(screen.getByText("✓ Verify MR"));
     act(() => { vi.advanceTimersByTime(1200); });
     expect(onVerify).toHaveBeenCalledWith(5, "failed");
     vi.useRealTimers();
