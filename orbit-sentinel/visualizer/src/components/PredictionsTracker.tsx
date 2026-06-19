@@ -3,16 +3,16 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "../utils/colors";
 import type { PredictionRecord } from "../types";
 
-function DualSparkline({ series, labels, height = 80 }: { series: { data: number[]; color: string; label: string }[]; labels?: string[]; height?: number }) {
+function DualSparkline({ series, labels, height = 120 }: { series: { data: number[]; color: string; label: string }[]; labels?: string[]; height?: number }) {
   const [hoverX, setHoverX] = useState<number | null>(null);
-  const w = 480;
+  const w = 500;
   const h = height;
-  const pad = { top: 8, bottom: 14, left: 32, right: 12 };
+  const pad = { top: 16, bottom: 18, left: 36, right: 16 };
   const plotW = w - pad.left - pad.right;
   const plotH = h - pad.top - pad.bottom;
   const all = series.flatMap(s => s.data);
   if (all.length === 0) {
-    return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "var(--text-tertiary)" }}>No trend data yet</div>;
+    return <div style={{ height, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "var(--text-tertiary)", fontWeight: 500 }}>No trend data yet</div>;
   }
   const min = Math.min(...all);
   const max = Math.max(...all);
@@ -22,7 +22,7 @@ function DualSparkline({ series, labels, height = 80 }: { series: { data: number
   const yTick = (v: number) => pad.top + plotH - ((v - min) / range) * plotH;
   const xTick = (i: number) => pad.left + (i / Math.max(n - 1, 1)) * plotW;
 
-  const labelOff = 2;
+  const labelOff = 4;
   const yLabels = [min, min + range * 0.5, max];
   const midIdx = Math.floor((n - 1) / 2);
   const lastIdx = n - 1;
@@ -63,8 +63,8 @@ function DualSparkline({ series, labels, height = 80 }: { series: { data: number
         {/* horizontal grid lines */}
         {yLabels.map(v => (
           <g key={v}>
-            <line x1={pad.left} x2={w - pad.right} y1={yTick(v)} y2={yTick(v)} stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" strokeDasharray="3,3" />
-            <text x={pad.left - labelOff} y={yTick(v) + 3} textAnchor="end" fill="rgba(255,255,255,0.2)" fontSize="7" fontFamily="'JetBrains Mono',monospace">{Math.round(v * 100)}%</text>
+            <line x1={pad.left} x2={w - pad.right} y1={yTick(v)} y2={yTick(v)} stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" strokeDasharray="3,3" />
+            <text x={pad.left - labelOff} y={yTick(v) + 3.5} textAnchor="end" fill="rgba(255,255,255,0.35)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{Math.round(v * 100)}%</text>
           </g>
         ))}
 
@@ -75,9 +75,9 @@ function DualSparkline({ series, labels, height = 80 }: { series: { data: number
           return (
             <g key={s.label}>
               <polygon points={area} fill={`url(#pg-a-${s.color.replace("#", "")})`} />
-              <polyline points={pts} fill="none" stroke={s.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.85} filter={`url(#glow-${s.color.replace("#", "")})`} />
+              <polyline points={pts} fill="none" stroke={s.color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity={0.9} filter={`url(#glow-${s.color.replace("#", "")})`} />
               {s.data.map((v, i) => (
-                <circle key={i} cx={xTick(i)} cy={yTick(v)} r={3.5} fill="rgba(15,18,26,0.9)" stroke={s.color} strokeWidth="1.8" opacity={0.9} />
+                <circle key={i} cx={xTick(i)} cy={yTick(v)} r={4.5} fill="rgba(15,18,26,0.95)" stroke={s.color} strokeWidth="2.2" opacity={0.95} />
               ))}
             </g>
           );
@@ -86,26 +86,27 @@ function DualSparkline({ series, labels, height = 80 }: { series: { data: number
         {/* hover indicator */}
         {hoverX !== null && (
           <g>
-            <line x1={xTick(hoverX)} x2={xTick(hoverX)} y1={pad.top} y2={pad.top + plotH} stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="2,2" />
+            <line x1={xTick(hoverX)} x2={xTick(hoverX)} y1={pad.top} y2={pad.top + plotH} stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="2,2" />
             {series.map((s) => {
               const v = s.data[hoverX];
               if (v === undefined) return null;
               return (
                 <g key={`hv-${s.label}`}>
-                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={5} fill={s.color} opacity={0.15} />
-                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={3} fill={s.color} />
+                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={8} fill={s.color} opacity={0.12} />
+                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={5} fill={s.color} opacity={0.9} />
+                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={2.5} fill="rgba(15,18,26,0.95)" />
                 </g>
               );
             })}
-            <rect x={xTick(hoverX) - 42} y={pad.top - 2} width={84} height={20} rx={4} fill="rgba(15,18,26,0.92)" stroke="rgba(255,255,255,0.08)" />
-            <text x={xTick(hoverX)} y={pad.top + 8} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize="6" fontFamily="'JetBrains Mono',monospace">
+            <rect x={xTick(hoverX) - 48} y={pad.top - 4} width={96} height={26} rx={6} fill="rgba(8,9,13,0.94)" stroke="rgba(255,255,255,0.1)" />
+            <text x={xTick(hoverX)} y={pad.top + 10} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="8" fontWeight="600" fontFamily="'JetBrains Mono',monospace">
               {labels?.[hoverX] ?? `!${hoverX + 1}`}
             </text>
             {series.map((s, si) => {
               const v = s.data[hoverX];
               if (v === undefined) return null;
               return (
-                <text key={si} x={xTick(hoverX) + (si === 0 ? -16 : 16)} y={pad.top + 17} textAnchor="middle" fill={s.color} fontSize="6" fontWeight="700" fontFamily="'JetBrains Mono',monospace" opacity={0.85}>
+                <text key={si} x={xTick(hoverX) + (si === 0 ? -20 : 20)} y={pad.top + 20} textAnchor="middle" fill={s.color} fontSize="8" fontWeight="800" fontFamily="'JetBrains Mono',monospace" opacity={0.9}>
                   {Math.round(v * 100)}%
                 </text>
               );
@@ -114,9 +115,9 @@ function DualSparkline({ series, labels, height = 80 }: { series: { data: number
         )}
 
         {/* x-axis labels — use real MR IIDs from labels prop */}
-        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">{labels?.[0] ?? `MR #1`}</text>
-        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.1)" fontSize="6" fontFamily="'JetBrains Mono',monospace">{labels?.[midIdx] ?? `MR #${midIdx + 1}`}</text>}
-        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="'JetBrains Mono',monospace">{labels?.[lastIdx] ?? `MR #${n}`}</text>
+        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[0] ?? `MR #1`}</text>
+        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.18)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[midIdx] ?? `MR #${midIdx + 1}`}</text>}
+        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[lastIdx] ?? `MR #${n}`}</text>
       </svg>
     </div>
   );
@@ -317,11 +318,11 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <span style={{ fontSize: 13 }}>📈</span>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>Predicted vs Actual Risk Trend</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>Predicted vs Actual Risk Trend</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(59,130,246,0.15), transparent)" }} />
-            <div style={{ display: "flex", gap: 10 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}><div style={{ width: 14, height: 2.5, borderRadius: 2, background: "#60a5fa" }} /><span style={{ fontSize: 8, color: "#60a5fa", fontWeight: 600 }}>Predicted</span></div>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}><div style={{ width: 14, height: 2.5, borderRadius: 2, background: "#22c55e" }} /><span style={{ fontSize: 8, color: "#22c55e", fontWeight: 600 }}>Actual</span></div>
+            <div style={{ display: "flex", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 18, height: 3, borderRadius: 2, background: "#60a5fa", boxShadow: "0 0 6px rgba(96,165,250,0.4)" }} /><span style={{ fontSize: 10, color: "#60a5fa", fontWeight: 700 }}>Predicted</span></div>
+              <div style={{ display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 18, height: 3, borderRadius: 2, background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.4)" }} /><span style={{ fontSize: 10, color: "#22c55e", fontWeight: 700 }}>Actual</span></div>
             </div>
           </div>
           <div style={{ overflowX: "auto", paddingBottom: 4 }}>
@@ -331,13 +332,13 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   { data: trendData.actual.filter((v): v is number => v !== null), color: "#22c55e", label: "Actual" },
                 ]}
                 labels={trendData.labels}
-                height={80}
+                height={120}
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8, color: "var(--text-tertiary)", marginTop: 4 }}>
-              <span>Earliest MR</span>
-              <span style={{ fontStyle: "italic" }}>Hover to see values · Each dot = one MR</span>
-              <span>Latest MR</span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "var(--text-tertiary)", marginTop: 6 }}>
+              <span style={{ fontWeight: 600 }}>Earliest MR</span>
+              <span style={{ fontStyle: "italic", opacity: 0.7 }}>Hover any dot for values</span>
+              <span style={{ fontWeight: 600 }}>Latest MR</span>
           </div>
         </div>
       </div>
