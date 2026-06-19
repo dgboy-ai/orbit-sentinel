@@ -44,7 +44,7 @@ prompts:
 
         The user can only see your output through the note you post on the merge request.
       user: "{{goal}}"
-      placeholder: history
+      placeholder: historyyes perfectl
     params:
       timeout: 300
 
