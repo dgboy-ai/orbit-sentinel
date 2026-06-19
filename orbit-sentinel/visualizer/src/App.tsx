@@ -177,13 +177,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     if (presentMode && !demo) startDemo();
   }, [presentMode, demo, startDemo]);
 
-  useEffect(() => {
-    if (data && !demo && !currentScenario) {
-      const t = setTimeout(startDemo, 2000);
-      return () => clearTimeout(t);
-    }
-  }, [data, demo, currentScenario, startDemo]);
-
   useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]}${presentMode ? " (Presentation)" : ""} | Engineering Digital Twin`; }, [view, presentMode]);
 
   useEffect(() => {
