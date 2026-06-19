@@ -27,7 +27,7 @@ export interface QueryTiming {
 
 export class DigitalTwinBuilder {
   private timings: QueryTiming[] = [];
-  private usedFallback = false;
+  private orbitError = false;
 
   getQueryTimings(): QueryTiming[] {
     return [...this.timings];
@@ -77,16 +77,19 @@ export class DigitalTwinBuilder {
     queryName: string,
     orbitFn: () => Promise<T>,
     fallbackFn: () => Promise<T>,
-  ): Promise<{ data: T; fromFallback: boolean }> {
+  ): Promise<{ data: T; fromFallback: boolean; orbitReachable: boolean }> {
     try {
       const result = await orbitFn();
       const isEmpty = Array.isArray(result) ? result.length === 0 : false;
-      if (isEmpty) throw new Error("Empty result");
-      return { data: result, fromFallback: false };
+      if (isEmpty) {
+        const fallbackResult = await fallbackFn();
+        return { data: fallbackResult, fromFallback: true, orbitReachable: true };
+      }
+      return { data: result, fromFallback: false, orbitReachable: true };
     } catch {
-      this.usedFallback = true;
+      this.orbitError = true;
       const fallbackResult = await fallbackFn();
-      return { data: fallbackResult, fromFallback: true };
+      return { data: fallbackResult, fromFallback: true, orbitReachable: false };
     }
   }
 
@@ -116,7 +119,7 @@ export class DigitalTwinBuilder {
 
   async build(params: BuildTwinParams): Promise<DigitalTwin> {
     this.clearTimings();
-    this.usedFallback = false;
+    this.orbitError = false;
     const nodes: Map<string, DigitalTwinNode> = new Map();
     const edges: Map<string, DigitalTwinEdge> = new Map();
 
@@ -239,7 +242,7 @@ export class DigitalTwinBuilder {
         branch: params.branch,
         timestamp: new Date().toISOString(),
         queryTimings: this.getQueryTimings(),
-        fallback: this.usedFallback || undefined,
+        fallback: this.orbitError || undefined,
       } as DigitalTwin["metadata"] & { fallback?: boolean },
     };
   }

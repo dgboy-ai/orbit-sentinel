@@ -95,7 +95,7 @@ export const DEMO_DATA: VisualizationData = {
     { label: "Pipelines Found", value: 132000, color: "#f97316" },
   ],
   summary: { project: "gitlab-ai-hackathon/transcend/orbit-sentinel", mrIid: 10, branch: "test-sentinel", totalNodes: 23, totalEdges: 43, riskScore: "55.0%", riskLevel: "MEDIUM", timestamp: new Date().toISOString() },
-  hero: { mrIid: 10, riskLevel: "MEDIUM", riskScore: 0.55, predictedOutcome: "Likely abandoned without merge — 9 of 10 prior MRs from this branch were closed with no pipeline ever triggered.", recommendedAction: "Add file changes, remove draft status, trigger pipeline, assign reviewers", confidence: "High (10 MR history across 4 Orbit query types)",   generatedUsing: "Orbit Sentinel · 23 nodes · 43 edges · v2.0", confidenceFactors: [
+  hero: { mrIid: 10, riskLevel: "MEDIUM", riskScore: 0.55, predictedOutcome: "Likely abandoned without merge — 9 of 10 prior MRs from this branch were closed with no pipeline ever triggered.", recommendedAction: "Add file changes, remove draft status, trigger pipeline, assign reviewers", confidence: "High (10 MR history across 4 Orbit query types)",   generatedUsing: "GitLab Orbit · 23 nodes · 43 edges · all 4 queries", confidenceFactors: [
     { label: "Historical Matches", value: "9 of 10 closed", status: "warning" as const },
     { label: "Pipeline Evidence", value: "None", status: "error" as const },
     { label: "Deployment Path", value: "None", status: "error" as const },

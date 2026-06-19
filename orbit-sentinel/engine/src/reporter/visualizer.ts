@@ -189,9 +189,7 @@ export class DataVisualizer {
         predictedOutcome: outcome,
         recommendedAction: remediations.map(r => r.description).join(", ") || "Review the risk breakdown below.",
         confidence: `High (${matches.length} historical match(es) analyzed)`,
-        generatedUsing: twin.metadata.fallback
-          ? "Generated via local analysis (Orbit unavailable) — results may be partial"
-          : "Generated via GitLab Duo Flow using Orbit",
+        generatedUsing: `GitLab Orbit · ${nodes.length} nodes · ${links.length} edges · ${twin.metadata.fallback ? "partial fallback" : "all 4 queries"}`,
         confidenceFactors: [
           { label: "Historical Matches", value: `${matches.length} prior MRs`, status: matches.length > 2 ? "warning" as const : "success" as const },
           { label: "Pipeline Evidence", value: simulation.blastRadius.pipelines.length > 0 ? "Found" : "Missing", status: simulation.blastRadius.pipelines.length > 0 ? "success" as const : "error" as const },
