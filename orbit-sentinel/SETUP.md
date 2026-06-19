@@ -19,7 +19,7 @@ This installs the engine, visualizer, and starts the dev server at `http://local
 ## Quick Start (Docker)
 
 ```bash
-docker compose up
+docker compose -f ../docker-compose.yml up
 ```
 
 Boots engine (port 3001) + visualizer (port 80 via nginx) with health checks.

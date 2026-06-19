@@ -77,7 +77,7 @@ All notable changes to Orbit Sentinel are documented here.
 - **`"predictions"` view** — 8th view registered in App.tsx. Added to View type, VIEW_LABELS, DEMO_STEPS, tabs, getInitialView, switch body.
 - **Memory store fallback** — `memoryStore.findHistoricalMatches()` now wrapped in try/catch inside `analyzeChange`. Returns empty array on failure instead of crashing the whole analysis.
 - **Close-loop accuracy tracking** — PredictionsTracker records predicted risk vs actual outcome, computes accuracy score, shows risk trend chart with DualSparkline.
-- **README update** — Added Predictions view, fallback resilience, competitive comparison vs Sankofa, updated test count (105), closed-loop section, Docker quick start.
+- **README update** — Added Predictions view, fallback resilience, competitive comparison vs Sankofa, updated test count (95→108), closed-loop section, Docker quick start.
 
 ### Changed
 

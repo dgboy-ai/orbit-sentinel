@@ -9,7 +9,7 @@ export const DEMO_DATA: VisualizationData = {
       { id: "mr:1", label: "MR !1: initial-orbit-integration", type: "MergeRequest", riskLevel: "low" },
       { id: "mr:2", label: "MR !2: test-sentinel-initial-attempt", type: "MergeRequest", riskLevel: "medium" },
       { id: "mr:9", label: "MR !9: test-sentinel-abandoned-iteration", type: "MergeRequest", riskLevel: "medium" },
-      { id: "pl:ecosystem", label: "Pipeline Ecosystem (132k+)", type: "Pipeline", riskLevel: "medium" },
+      { id: "pl:ecosystem", label: "Pipeline Ecosystem (Orbit)", type: "Pipeline", riskLevel: "medium" },
       { id: "pl:1", label: "Pipeline #14878452199", type: "Pipeline", riskLevel: "low" },
       { id: "c:1", label: "12eaea5", type: "Commit" },
       { id: "c:2", label: "b3a94728", type: "Commit" },

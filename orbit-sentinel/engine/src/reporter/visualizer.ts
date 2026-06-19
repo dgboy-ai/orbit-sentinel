@@ -144,6 +144,14 @@ export class DataVisualizer {
 
     const outcome = buildOutcome(simulation, matches);
 
+    const pipelineNodes = twin.nodes.filter(n => n.type === "Pipeline");
+    const failedPipelineNodes = simulation.blastRadius.pipelines;
+    const pipelineEvidence = failedPipelineNodes.length > 0
+      ? `→ ${pipelineNodes.length} pipeline(s) found in knowledge graph\n→ ${failedPipelineNodes.length} failed/running pipeline(s) detected`
+      : pipelineNodes.length > 0
+        ? `→ ${pipelineNodes.length} pipeline(s) found in knowledge graph\n→ No pipeline failures detected`
+        : `→ No pipeline data returned from Orbit for this project`;
+
     return {
       graph: { nodes, links },
       riskData: {
@@ -162,7 +170,7 @@ export class DataVisualizer {
         { label: "From Same Branch", value: matches.length, color: "#a78bfa" },
         { label: "Previously Merged", value: matches.filter(m => m.outcome === "merged").length, color: "#22c55e" },
         { label: "Previously Closed", value: matches.filter(m => m.outcome === "closed").length, color: "#ef4444" },
-        { label: "Ecosystem Pipelines", value: 132059, color: "#f97316" },
+        { label: "Pipelines Found", value: pipelineNodes.length, color: "#f97316" },
       ],
       summary: {
         project: twin.metadata.projectPath,
@@ -195,7 +203,7 @@ export class DataVisualizer {
         { queryType: "NEIGHBORS", queryName: "Blast Radius", result: `→ ${nodes.length} nodes + ${links.length} edges discovered\n→ ${simulation.blastRadius.files.length} affected files\n→ ${simulation.blastRadius.services.length} downstream services` },
         { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: `→ ${simulation.blastRadius.pipelines.length > 0 ? "Pipeline found for head commit" : "No linked pipeline for head commit"}\n→ ${simulation.blastRadius.deployments.length} deployment paths affected` },
         { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: `→ ${matches.length} historical MRs on branch\n→ ${matches.filter(m => m.outcome === "merged").length} merged, ${matches.filter(m => m.outcome !== "merged").length} closed/abandoned` },
-        { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: `→ 132,059 total pipelines across ecosystem\n→ ${Math.round(132059 * 0.178)} failed (17.8%), ${Math.round(132059 * 0.822)} success` },
+        { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: pipelineEvidence },
       ],
       futureTimeline: [
         { day: 0, label: "MR Opened", description: `MR !${twin.metadata.mrIid} created on ${twin.metadata.branch ?? "current"} branch`, icon: "📝" },

@@ -12,5 +12,5 @@ export function ssRead<T>(key: string, fallback: T): T {
 export function ssWrite(key: string, value: unknown) {
   try {
     sessionStorage.setItem(`${SS_KEY}-${key}`, JSON.stringify(value));
-  } catch {}
+  } catch { /* sessionStorage may be blocked */ }
 }

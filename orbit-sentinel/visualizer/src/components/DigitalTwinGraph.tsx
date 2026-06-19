@@ -279,7 +279,15 @@ export default function DigitalTwinGraph({ graph }: Props) {
         )}
       </div>
 
-      <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Digital twin knowledge graph showing connected nodes and edges across the ecosystem" style={{ flex:1, display:"block" }} />
+      {graph.nodes.length === 0 || graph.links.length === 0 ? (
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", flex:1, gap:8 }}>
+          <span style={{ fontSize:24, opacity:0.3 }}>🌐</span>
+          <div style={{ fontSize:12, fontWeight:600, color:"var(--text-secondary)" }}>No graph data yet</div>
+          <div style={{ fontSize:10, color:"var(--text-tertiary)", maxWidth:260, textAlign:"center" }}>Orbit data will populate the digital twin once project activity is detected.</div>
+        </div>
+      ) : (
+        <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Digital twin knowledge graph showing connected nodes and edges across the ecosystem" style={{ flex:1, display:"block" }} />
+      )}
     </div>
   );
 }

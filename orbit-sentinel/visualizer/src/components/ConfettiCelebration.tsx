@@ -29,7 +29,7 @@ export default function ConfettiCelebration() {
   }, []);
   if (!show) return null;
   return (
-    <>
+    <div aria-hidden="true">
       <style>{`
         @keyframes confettiFall {
           0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
@@ -37,6 +37,6 @@ export default function ConfettiCelebration() {
         }
       `}</style>
       {particles.map(i => <div key={i} style={particleStyle(i)} />)}
-    </>
+    </div>
   );
 }

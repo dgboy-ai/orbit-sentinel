@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo, Suspense } from "react";
-import type { VisualizationData } from "./types";
+import type { VisualizationData, PredictionRecord } from "./types";
 import { DEMO_DATA } from "./data/demoData";
 import ErrorBoundary from "./components/ErrorBoundary";
 import RiskInvestigation from "./components/RiskInvestigation";
@@ -33,11 +33,13 @@ import OrbitQueryExplorer from "./components/OrbitQueryExplorer";
 import ConfettiCelebration from "./components/ConfettiCelebration";
 import AgentFlowProgress from "./components/AgentFlowProgress";
 import PredictionsTracker from "./components/PredictionsTracker";
+import OrbitQueryInspector from "./components/OrbitQueryInspector";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
 import { apiService } from "./services/api";
 import { ssRead, ssWrite } from "./utils/session";
+import { loadPredictions, savePrediction, updatePrediction } from "./utils/predictions";
 import type { View } from "./constants/views";
 import { DEMO_STEPS, VIEW_LABELS, VIEW_QUERY_TAG, ALL_VIEWS } from "./constants/views";
 import PanelFallback from "./components/PanelFallback";
@@ -94,6 +96,8 @@ export default function App() {
   const [analyzing, setAnalyzing] = useState(false);
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
   const [showQueryLog, setShowQueryLog] = useState(true);
+  const [showQueryInspector, setShowQueryInspector] = useState(false);
+const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPredictions());
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -102,7 +106,7 @@ export default function App() {
   });
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-    try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch {}
+    try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch { /* localStorage may be blocked */ }
   }, [dark]);
   const toggleTheme = useCallback(() => setDark(prev => !prev), []);
   const showNarrativeRef = useRef(showNarrative);
@@ -115,6 +119,26 @@ export default function App() {
       setLoading(false);
     }
   }, [data]);
+
+  // Save prediction when new data arrives (from demo or live analysis)
+  useEffect(() => {
+    if (!data) return;
+    const mrIid = data.summary?.mrIid ?? data.hero?.mrIid;
+    if (!mrIid) return;
+    const existing = predictions.find(p => p.mrIid === mrIid);
+    if (existing) return;
+    const rec: PredictionRecord = {
+      mrIid,
+      title: `MR !${mrIid}`,
+      predictedRisk: data.hero?.riskScore ?? 0.5,
+      predictedLevel: data.hero?.riskLevel ?? "medium",
+      actualOutcome: "pending",
+      mergedAt: new Date().toISOString().split("T")[0],
+    };
+    savePrediction(rec);
+    setPredictions(loadPredictions());
+  }, [data]);
+
   const demoRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTiny = useMediaQuery("(max-width: 360px)");
@@ -261,12 +285,22 @@ export default function App() {
   const navigate = useCallback((v: View) => {
     if (v === view) return;
     setView(v);
-    try { window.history.replaceState(null, '', `?view=${v}`); } catch {}
+    try { window.history.replaceState(null, '', `?view=${v}`); } catch { /* history.replaceState may be restricted */ }
   }, [view]);
 
   const dismissOnboarding = useCallback(() => {
     setShowOnboarding(false);
-    try { localStorage.setItem("orbit-sentinel-onboarded", "1"); } catch {}
+    try { localStorage.setItem("orbit-sentinel-onboarded", "1"); } catch { /* localStorage may be blocked */ }
+  }, []);
+
+  const onVerifyPrediction = useCallback((mrIid: number, outcome: "verified" | "failed") => {
+    updatePrediction(mrIid, {
+      actualOutcome: outcome,
+      verifiedAt: new Date().toISOString().split("T")[0],
+      actualRisk: outcome === "failed" ? 0.8 : 0.15,
+      evidence: outcome === "failed" ? "Failed within the 7-day survival window." : "No incidents reported in the 7-day survival window.",
+    });
+    setPredictions(loadPredictions());
   }, []);
 
   const onSelectScenario = useCallback((scenarioData: VisualizationData, label: string) => {
@@ -374,6 +408,14 @@ export default function App() {
               <ErrorBoundary><RealityCheck /></ErrorBoundary>
             </div>
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
+            <button onClick={() => setShowQueryInspector(!showQueryInspector)} style={{
+              padding: "6px 12px", borderRadius: 6, fontSize: 10, fontWeight: 600,
+              background: showQueryInspector ? "rgba(96,165,250,0.12)" : "rgba(255,255,255,0.04)",
+              color: showQueryInspector ? "#60a5fa" : "var(--text-secondary)",
+              border: `1px solid ${showQueryInspector ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.08)"}`,
+              cursor: "pointer", fontFamily: "inherit", alignSelf: "flex-end",
+            }}>🔍 {showQueryInspector ? "Hide" : "Show"} Raw Query Data</button>
+            {showQueryInspector && <ErrorBoundary><OrbitQueryInspector evidence={data.evidence} timings={data.queryTimings} /></ErrorBoundary>}
           </div>
         );
       case "blast-radius": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><BlastRadiusExplorer graph={data.graph} /></Suspense></ErrorBoundary>;
@@ -381,7 +423,7 @@ export default function App() {
       case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Ecosystem Pipelines")?.value ?? 0} /></Suspense></ErrorBoundary>;
       case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} /></Suspense></ErrorBoundary>;
       case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
-      case "predictions": return <ErrorBoundary><PredictionsTracker /></ErrorBoundary>;
+      case "predictions": return <ErrorBoundary><PredictionsTracker predictions={predictions} onVerify={onVerifyPrediction} /></ErrorBoundary>;
       case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
   }, [view, data, navigate, isMobile, isTiny]);

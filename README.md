@@ -190,7 +190,7 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 
 | View | What It Shows |
 |------|---------------|
-| **Overview** | Impact Calculator (interactive ROI sliders), hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph |
+| **Overview** | Impact Calculator (interactive ROI sliders), hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph, **Orbit Query Inspector** (expandable raw GraphQL results with node/edge counts) |
 | **Setup** | 4-step guided journey — Mission → Architecture → Setup → Launch. Copy commands, Devpost checklist |
 | **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect (NEIGHBORS). Security Findings stat pill shows critical/high vulnerability counts. Per-file vulnerability badges on each service node with severity coloring |
 | **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down (AGGREGATION). Pipeline Failure Correlation card with coefficient bar, failure probability heatmap, and historical reliability insight |
@@ -223,6 +223,7 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 - **MrAnalyzer** — MR URL input with validation, 3 quick demo buttons, gradient glow card, pulsing "Engine Live" badge
 - **ArchitectureDiagram** — 6-node horizontal pipeline with glassmorphism cards, circuit grid background, gradient arrows
 - **Judge's Tour** — guided walkthrough via `?judge=true`, Space bar auto-play
+- **OrbitQueryInspector** — expandable panel showing raw GraphQL query results from all 4 query types, with parsed node/edge counts, query timing, and a "Raw JSON" toggle. Accessible via "🔍 Show Raw Query Data" button in the overview
 - **Responsive** — 5 breakpoints down to 360px, touch-friendly
 
 **Duo Integration** — [Skill definition](orbit-sentinel/.gitlab/duo/skill.yml) for Duo Chat, [MCP config](orbit-sentinel/.gitlab/duo/mcp.json) for agent platform, [query recipes](orbit-sentinel/skills/orbit-sentinel/recipes/) with 6 ready-to-use JSON examples.
@@ -239,7 +240,7 @@ docker compose up   # Boots engine (port 3001) + visualizer (port 80 via nginx)
 | Closed Loop | Predictions tracked post-merge with accuracy scoring, survival window, verification input |
 | Docker | `docker compose up` boots full stack — health checked, production-ready |
 | UI Polish | Gradient glow card, pulsing live badge, success toast, 2-column query log layout, MR ID validation, neon borders, glassmorphism |
-| 🧮 Impact Calculator | Interactive ROI sliders with animated metrics — adjust MRs/week, hourly rate, manual hours |
+| 🔍 Orbit Query Inspector | Expandable raw GraphQL results per query type — node/edge counts, timing, copyable JSON. Shows Orbit is truly queried, not mocked |
 | ⚡ Setup Wizard | 4-step guided journey with copyable commands and Devpost launch checklist |
 | 🔐 Security Findings | Per-file vulnerability badges in Blast Radius stat pills and component picker — severity-colored (crit/high/med/low) |
 | 🔄 Pipeline Correlation | Failure probability heatmap + coefficient bar in Risk view — links risk score to historical pipeline reliability |

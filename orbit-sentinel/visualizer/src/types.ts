@@ -94,6 +94,18 @@ export interface QueryTimingInfo {
   status: "success" | "error";
 }
 
+export interface PredictionRecord {
+  mrIid: number;
+  title: string;
+  predictedRisk: number;
+  predictedLevel: string;
+  actualOutcome: "verified" | "failed" | "pending" | "unknown";
+  actualRisk?: number;
+  mergedAt: string;
+  verifiedAt?: string;
+  evidence?: string;
+}
+
 export interface VisualizationData {
   graph: {
     nodes: GraphNode[];
@@ -122,5 +134,6 @@ export interface VisualizationData {
   counterfactuals: CounterfactualScenario[];
   incidents: HistoricalIncident[];
   queryTimings?: QueryTimingInfo[];
+  predictions?: PredictionRecord[];
   fallback?: boolean;
 }

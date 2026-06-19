@@ -1,33 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "../utils/colors";
+import type { PredictionRecord } from "../types";
 
-interface PredictionRecord {
-  mrIid: number;
-  title: string;
-  predictedRisk: number;
-  predictedLevel: string;
-  actualOutcome: "verified" | "failed" | "pending" | "unknown";
-  actualRisk?: number;
-  mergedAt: string;
-  verifiedAt?: string;
-  evidence?: string;
-}
 
-const MOCK_PREDICTIONS: PredictionRecord[] = [
-  { mrIid: 42, title: "critical-deploy-failure-3", predictedRisk: 0.88, predictedLevel: "CRITICAL", actualOutcome: "failed", actualRisk: 0.92, mergedAt: "2026-06-10", verifiedAt: "2026-06-17", evidence: "Pipeline failed at deploy gate. 23min production outage." },
-  { mrIid: 38, title: "pipeline-dependency-breakage", predictedRisk: 0.82, predictedLevel: "HIGH", actualOutcome: "failed", actualRisk: 0.79, mergedAt: "2026-06-08", verifiedAt: "2026-06-15", evidence: "Downstream API contract broke. Rolled back within 12min." },
-  { mrIid: 35, title: "test-coverage-gap", predictedRisk: 0.78, predictedLevel: "HIGH", actualOutcome: "failed", actualRisk: 0.71, mergedAt: "2026-06-05", verifiedAt: "2026-06-12", evidence: "Auth bug found in production. Hotfixed in 8min." },
-  { mrIid: 31, title: "refactor-api-middleware", predictedRisk: 0.55, predictedLevel: "MEDIUM", actualOutcome: "verified", actualRisk: 0.30, mergedAt: "2026-06-03", verifiedAt: "2026-06-10", evidence: "Deployed clean. No incidents reported in 7-day window." },
-  { mrIid: 28, title: "add-rate-limiting", predictedRisk: 0.48, predictedLevel: "MEDIUM", actualOutcome: "verified", actualRisk: 0.22, mergedAt: "2026-06-01", verifiedAt: "2026-06-08", evidence: "Deployed with monitoring. Zero customer-facing issues." },
-  { mrIid: 24, title: "update-auth-provider", predictedRisk: 0.72, predictedLevel: "HIGH", actualOutcome: "failed", actualRisk: 0.68, mergedAt: "2026-05-28", verifiedAt: "2026-06-04", evidence: "Session token migration caused 5min auth errors. Hotfixed." },
-  { mrIid: 20, title: "fix-caching-bug", predictedRisk: 0.35, predictedLevel: "LOW", actualOutcome: "verified", actualRisk: 0.18, mergedAt: "2026-05-25", verifiedAt: "2026-06-01", evidence: "Clean deployment. Cache hit rate improved 12%." },
-  { mrIid: 17, title: "add-search-index", predictedRisk: 0.62, predictedLevel: "HIGH", actualOutcome: "verified", actualRisk: 0.40, mergedAt: "2026-05-22", verifiedAt: "2026-05-29", evidence: "Deployed with feature flag. Gradual rollout, no issues." },
-  { mrIid: 14, title: "migrate-db-schema", predictedRisk: 0.91, predictedLevel: "CRITICAL", actualOutcome: "verified", actualRisk: 0.35, mergedAt: "2026-05-19", verifiedAt: "2026-05-26", evidence: "All mitigations applied. Zero-downtime migration succeeded." },
-  { mrIid: 10, title: "initial-orbit-integration", predictedRisk: 0.45, predictedLevel: "MEDIUM", actualOutcome: "verified", actualRisk: 0.25, mergedAt: "2026-05-15", verifiedAt: "2026-05-22", evidence: "First deployment with full monitoring. Stable." },
-  { mrIid: 7, title: "fix-logging-format", predictedRisk: 0.15, predictedLevel: "LOW", actualOutcome: "verified", actualRisk: 0.10, mergedAt: "2026-05-12", verifiedAt: "2026-05-19", evidence: "Trivial change. No incidents." },
-  { mrIid: 5, title: "clean-deployment-example", predictedRisk: 0.12, predictedLevel: "LOW", actualOutcome: "verified", actualRisk: 0.08, mergedAt: "2026-05-10", verifiedAt: "2026-05-17", evidence: "Reference deployment — all checks passed." },
-];
 
 function DualSparkline({ series, height = 50 }: { series: { data: number[]; color: string; label: string }[]; height?: number }) {
   const w = 480;
@@ -146,7 +122,12 @@ function VerdictLabel({ predicted, actual }: { predicted: number; actual: number
   return <span style={{ color: "#f97316", fontSize: 9, fontWeight: 600 }}>↓ Underestimated</span>;
 }
 
-export default function PredictionsTracker() {
+interface PredictionsTrackerProps {
+  predictions?: PredictionRecord[];
+  onVerify?: (mrIid: number, outcome: "verified" | "failed") => void;
+}
+
+export default function PredictionsTracker({ predictions: preds, onVerify }: PredictionsTrackerProps = {}) {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [verifyMrIid, setVerifyMrIid] = useState("");
@@ -154,59 +135,64 @@ export default function PredictionsTracker() {
   const [verifying, setVerifying] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
   const [filterOutcome, setFilterOutcome] = useState<string>("all");
+  const items = preds ?? [];
 
   const sorted = useMemo(() => {
-    const items = [...MOCK_PREDICTIONS];
-    if (sortAsc) items.sort((a, b) => a.mrIid - b.mrIid);
-    else items.sort((a, b) => b.mrIid - a.mrIid);
-    if (filterOutcome !== "all") return items.filter(i => i.actualOutcome === filterOutcome);
-    return items;
-  }, [sortAsc, filterOutcome]);
+    const list = [...items];
+    if (sortAsc) list.sort((a, b) => a.mrIid - b.mrIid);
+    else list.sort((a, b) => b.mrIid - a.mrIid);
+    if (filterOutcome !== "all") return list.filter(i => i.actualOutcome === filterOutcome);
+    return list;
+  }, [sortAsc, filterOutcome, items]);
 
   const stats = useMemo(() => {
-    const verified = MOCK_PREDICTIONS.filter(i => i.actualOutcome === "verified").length;
-    const failed = MOCK_PREDICTIONS.filter(i => i.actualOutcome === "failed").length;
-    const pending = MOCK_PREDICTIONS.filter(i => i.actualOutcome === "pending").length;
+    const verified = items.filter(i => i.actualOutcome === "verified").length;
+    const failed = items.filter(i => i.actualOutcome === "failed").length;
+    const pending = items.filter(i => i.actualOutcome === "pending").length;
     const total = verified + failed;
     const accuracy = total > 0 ? Math.round((verified / total) * 100) : 0;
-    const correctCount = MOCK_PREDICTIONS.filter(i => {
+    const correctCount = items.filter(i => {
       if (i.actualOutcome === "unknown" || i.actualOutcome === "pending") return false;
       return Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)) <= 0.15;
     }).length;
-    const avgPredicted = MOCK_PREDICTIONS.reduce((s, i) => s + i.predictedRisk, 0) / MOCK_PREDICTIONS.length;
-    const avgActual = MOCK_PREDICTIONS.filter(i => i.actualRisk !== undefined).reduce((s, i) => s + (i.actualRisk ?? 0), 0) / MOCK_PREDICTIONS.filter(i => i.actualRisk !== undefined).length;
+    const avgPredicted = items.reduce((s, i) => s + i.predictedRisk, 0) / items.length;
+    const avgActual = items.filter(i => i.actualRisk !== undefined).reduce((s, i) => s + (i.actualRisk ?? 0), 0) / items.filter(i => i.actualRisk !== undefined).length;
     return { verified, failed, pending, total, accuracy, correctCount, avgPredicted, avgActual };
-  }, []);
+  }, [items]);
 
   const trendData = useMemo(() => {
-    const sorted = [...MOCK_PREDICTIONS].sort((a, b) => a.mrIid - b.mrIid);
+    const sorted = [...items].sort((a, b) => a.mrIid - b.mrIid);
     return {
       predicted: sorted.map(i => i.predictedRisk),
       actual: sorted.map(i => i.actualRisk ?? null),
       labels: sorted.map(i => `!${i.mrIid}`),
     };
-  }, []);
+  }, [items]);
 
   const handleVerify = useCallback(() => {
     const iid = parseInt(verifyMrIid, 10);
     if (isNaN(iid)) return;
     setVerifying(true);
     setTimeout(() => {
-      const found = MOCK_PREDICTIONS.find(p => p.mrIid === iid);
+      const found = items.find(p => p.mrIid === iid);
       if (found) {
+        const outcome = found.actualOutcome === "verified" || found.actualOutcome === "failed" ? found.actualOutcome : "unknown";
+        if (outcome !== "unknown" && onVerify) onVerify(found.mrIid, outcome as "verified" | "failed");
         setVerifyResult({
           mrIid: found.mrIid,
-          outcome: found.actualOutcome,
-          message: found.actualOutcome === "verified"
+          outcome,
+          message: outcome === "verified"
             ? `MR !${found.mrIid} stayed shipped through the 7-day window. Prediction: ${Math.round(found.predictedRisk * 100)}% risk. Actual: clean deployment.`
-            : `MR !${found.mrIid} failed within the window. Prediction: ${Math.round(found.predictedRisk * 100)}% risk. Evidence: ${found.evidence}`,
+            : outcome === "failed"
+              ? `MR !${found.mrIid} failed within the window. Prediction: ${Math.round(found.predictedRisk * 100)}% risk. Evidence: ${found.evidence}`
+              : `MR !${found.mrIid} has not been verified yet.`,
         });
       } else {
-        setVerifyResult({ mrIid: iid, outcome: "unknown", message: `MR !${iid} not found in tracked predictions. It may not have been analyzed by Orbit Sentinel.` });
+        setVerifyResult({ mrIid: iid, outcome: "unknown", message: `MR !${iid} not found in tracked predictions.` });
       }
       setVerifying(false);
     }, 1200);
-  }, [verifyMrIid]);
+  }, [verifyMrIid, items, onVerify]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -225,13 +211,13 @@ export default function PredictionsTracker() {
             <span style={{ fontSize: 7, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>Live</span>
           </div>
           <div style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 12, maxWidth: "90%" }}>
-            Tracking prediction accuracy across <strong style={{ color: "var(--text-primary)" }}>{MOCK_PREDICTIONS.length} MRs</strong>.
+            Tracking prediction accuracy across <strong style={{ color: "var(--text-primary)" }}>{items.length} MRs</strong>.
             <span style={{ color: "#22c55e", fontWeight: 600 }}> {stats.verified} verified</span>,
             <span style={{ color: "#ef4444", fontWeight: 600 }}> {stats.failed} failed</span>.
             <span style={{ color: "#60a5fa", fontWeight: 600 }}> Accuracy: {stats.accuracy}%</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: 5 }}>
-            <AnimatedStatCard label="Total Tracked" value={String(MOCK_PREDICTIONS.length)} target={MOCK_PREDICTIONS.length} color="#60a5fa" />
+            <AnimatedStatCard label="Total Tracked" value={String(items.length)} target={items.length} color="#60a5fa" />
             <AnimatedStatCard label="Verified" value={String(stats.verified)} target={stats.verified} sub="Stayed shipped" color="#22c55e" />
             <AnimatedStatCard label="Failed" value={String(stats.failed)} target={stats.failed} sub="Reverted / hotfixed" color="#ef4444" />
             <AnimatedStatCard label="Accuracy" value={`${stats.accuracy}%`} suffix="%" color="#eab308" />
@@ -478,7 +464,7 @@ export default function PredictionsTracker() {
             }}>
               <div style={{ fontSize: 8, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 2 }}>Average Error Margin</div>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace" }}>
-                {stats.total > 0 ? `${Math.round(MOCK_PREDICTIONS.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / MOCK_PREDICTIONS.length * 100)}%` : "—"}
+                {stats.total > 0 ? `${Math.round(items.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / items.length * 100)}%` : "—"}
               </div>
               <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>Prediction vs actual risk score delta</div>
             </div>
@@ -488,7 +474,7 @@ export default function PredictionsTracker() {
             }}>
               <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", marginBottom: 2 }}>Failed MRs Caught</div>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>
-                {stats.failed > 0 ? `${Math.round((MOCK_PREDICTIONS.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
+                {stats.failed > 0 ? `${Math.round((items.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
               </div>
               <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk predictions that correctly flagged failures</div>
             </div>

@@ -233,7 +233,7 @@ app.get('/api/demo', (req, res) => {
         { id: 'mr:1', label: 'MR !1: test sentinel', type: 'MergeRequest', properties: {}, riskScore: 0.15 },
         { id: 'mr:2', label: 'MR !2: test sentinel', type: 'MergeRequest', properties: {}, riskScore: 0.4 },
         { id: 'mr:9', label: 'MR !9: test sentinel', type: 'MergeRequest', properties: {}, riskScore: 0.45 },
-        { id: 'pl:ecosystem', label: 'Pipeline Ecosystem (132k+)', type: 'Pipeline', properties: {}, riskScore: 0.5 },
+        { id: 'pl:ecosystem', label: 'Pipeline Ecosystem (Orbit)', type: 'Pipeline', properties: {}, riskScore: 0.5 },
         { id: 'pl:1', label: 'Pipeline #14878452199', type: 'Pipeline', properties: {}, riskScore: 0.1 },
         { id: 'c:1', label: '12eaea5', type: 'Commit', properties: {} },
         { id: 'c:2', label: 'b3a94728', type: 'Commit', properties: {} },

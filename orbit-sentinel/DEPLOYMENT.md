@@ -80,7 +80,7 @@ Deploy using the Render dashboard or CLI:
 ## Docker Compose (Local Production)
 
 ```bash
-docker compose up
+docker compose -f ../docker-compose.yml up
 ```
 
 Boots engine (port 3001) + visualizer (port 80 via nginx) with health checks. Uses multi-stage Dockerfiles for minimal images.

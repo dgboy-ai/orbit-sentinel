@@ -26,7 +26,7 @@ Final successful session. All four Orbit query types executed, results posted to
 ### Full Report
 
 The complete analysis was posted as a comment on MR !10 at:
-`gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/10#note_NNN`
+`gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/10`
 
 ---
 

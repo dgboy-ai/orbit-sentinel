@@ -14,7 +14,7 @@ Get from zero to running in one command.
 ## Quick Start (Docker)
 
 ```bash
-docker compose up
+docker compose -f ../docker-compose.yml up
 # → visualizer at http://localhost, engine at http://localhost:3001
 ```
 
