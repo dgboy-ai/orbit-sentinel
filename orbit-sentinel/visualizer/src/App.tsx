@@ -177,6 +177,13 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     if (presentMode && !demo) startDemo();
   }, [presentMode, demo, startDemo]);
 
+  useEffect(() => {
+    if (data && !demo && !currentScenario) {
+      const t = setTimeout(startDemo, 2000);
+      return () => clearTimeout(t);
+    }
+  }, [data, demo, currentScenario, startDemo]);
+
   useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]}${presentMode ? " (Presentation)" : ""} | Engineering Digital Twin`; }, [view, presentMode]);
 
   useEffect(() => {
@@ -272,11 +279,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
 
   const dismissTour = useCallback(() => {
     setShowTour(false);
-    // Auto-start demo after tour ends so judges see live auto-rotation
-    const p = new URLSearchParams(window.location.search);
-    if (p.get("judge") === "true" || p.get("tour") === "true") {
-      setTimeout(startDemo, 800);
-    }
+    setTimeout(startDemo, 800);
   }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
@@ -307,15 +310,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       case "overview":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-            <ErrorBoundary>
-              <MrAnalyzer
-                onSelectScenario={onSelectScenario}
-                apiAvailable={apiService.isApiAvailable()}
-                currentScenario={currentScenario}
-                onAnalyzeStart={onAnalyzeStart}
-              />
-            </ErrorBoundary>
-            {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} />}
             {showQueryLog ? (
               <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 8 : 12 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
@@ -329,35 +323,43 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               </div>
             ) : (
               <>
+                <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
+                  <ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary>
+                  {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
+                </div>
+                {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
                 <ErrorBoundary><ProblemSection /></ErrorBoundary>
-                <ErrorBoundary><ArchitectureDiagram /></ErrorBoundary>
+                <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
+                  <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
+                  <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
+                  <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} evidence={data.evidence} /></ErrorBoundary>
+                </div>
+                <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+                    <ErrorBoundary><OrbitEvidencePanel evidence={data.evidence} graph={data.graph} /></ErrorBoundary>
+                    <ErrorBoundary><IncidentIntelligence incidents={data.incidents} /></ErrorBoundary>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+                    <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><ErrorBoundary><Suspense fallback={<PanelFallback height={380} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary></div>
+                    <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
+                  </div>
+                </div>
                 <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary>
+                <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.4fr", gap: isMobile ? 8 : 12 }}>
+                  <ErrorBoundary><SimulateWebhook data={data} dataMode={dataMode} /></ErrorBoundary>
+                  <ErrorBoundary><RealityCheck /></ErrorBoundary>
+                </div>
+                <ErrorBoundary>
+                  <MrAnalyzer
+                    onSelectScenario={onSelectScenario}
+                    apiAvailable={apiService.isApiAvailable()}
+                    currentScenario={currentScenario}
+                    onAnalyzeStart={onAnalyzeStart}
+                  />
+                </ErrorBoundary>
+                {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} />}
               </>
             )}
-            <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
-              <ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary>
-              {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
-            </div>
-            {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
-            <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
-              <ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary>
-              <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
-              <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} evidence={data.evidence} /></ErrorBoundary>
-            </div>
-            <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <ErrorBoundary><OrbitEvidencePanel evidence={data.evidence} graph={data.graph} /></ErrorBoundary>
-                <ErrorBoundary><IncidentIntelligence incidents={data.incidents} /></ErrorBoundary>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><ErrorBoundary><Suspense fallback={<PanelFallback height={380} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary></div>
-                <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
-              </div>
-            </div>
-            <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.4fr", gap: isMobile ? 8 : 12 }}>
-              <ErrorBoundary><SimulateWebhook data={data} dataMode={dataMode} /></ErrorBoundary>
-              <ErrorBoundary><RealityCheck /></ErrorBoundary>
-            </div>
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
             <button onClick={() => setShowQueryInspector(!showQueryInspector)} style={{
               padding: "6px 12px", borderRadius: 6, fontSize: 10, fontWeight: 600,
