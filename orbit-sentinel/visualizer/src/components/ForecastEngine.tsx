@@ -274,62 +274,77 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               </div>
             ))}
           </div>
-          <div className="resp-stack" style={{ display: "flex", gap: "8px 14px", fontSize: 11, alignItems: "center", marginBottom: 12, flexWrap: "wrap" }}>
-            <div style={{ flex: 1, minWidth: 120 }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Current</div>
-              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                <StatusBadge label="MR Open" good />
-                {mrState.noChanges && <StatusBadge label="Empty Diff" />}
-                {!mrState.noChanges && mrState.hasChanges && <StatusBadge label={`${totalNodes} Nodes`} good />}
-                {!mrState.hasPipeline && <StatusBadge label="No Pipeline" />}
-                {mrState.hasPipeline && <StatusBadge label="Pipeline Ready" good />}
-                {historicalCount > 0 && <StatusBadge label={`${historicalCount} Historical`} />}
+          {/* THREE-DIMENSION RISK BREAKDOWN — separates code risk, process risk, and outcome */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12 }}>
+            {/* Row 1: Operational Risk (code/graph) */}
+            <div style={{
+              padding: "8px 12px", borderRadius: 8,
+              background: "linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.1))",
+              border: "1px solid rgba(255,255,255,0.05)",
+              display: "flex", alignItems: "center", gap: 10,
+            }}>
+              <div style={{ width: 110, flexShrink: 0 }}>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Operational Risk</div>
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>Code changes · Graph health</div>
+              </div>
+              <div style={{ flex: 1, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
+                <div style={{
+                  width: `${animRisk * 100}%`, height: "100%", borderRadius: 3,
+                  background: `linear-gradient(90deg, ${riskScoreToColor(Math.max(animRisk - 0.2, 0))}, ${gaugeColor})`,
+                  transition: "width 0.1s linear", boxShadow: `0 0 8px ${riskScoreToGlow(animRisk)}`,
+                }} />
+              </div>
+              <div style={{ fontSize: isMobile ? 14 : 16, fontWeight: 800, color: gaugeColor, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.1s linear", width: 38, textAlign: "right", flexShrink: 0, textShadow: `0 0 12px ${riskScoreToGlow(animRisk)}` }}>
+                {(animRisk * 100).toFixed(0)}%
               </div>
             </div>
-            <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4, flexShrink: 0 }}>→</div>
-            <div style={{ flex: 1, minWidth: 120 }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Predicted</div>
-              <div style={{ fontSize: isMobile ? 12 : 15, fontWeight: 700, color: curCol, transition: "color 0.4s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sel.outcome}</div>
+
+            {/* Row 2: Process Risk (pipeline/reviewer/draft) */}
+            <div style={{
+              padding: "8px 12px", borderRadius: 8,
+              background: "linear-gradient(135deg, rgba(239,68,68,0.05), rgba(0,0,0,0.1))",
+              border: "1px solid rgba(239,68,68,0.12)",
+              display: "flex", alignItems: "center", gap: 10,
+            }}>
+              <div style={{ width: 110, flexShrink: 0 }}>
+                <div style={{ fontSize: 7, color: "#ef4444", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Process Risk</div>
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>Workflow blockers</div>
+              </div>
+              <div style={{ flex: 1, display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
+                {!mrState.hasPipeline && (
+                  <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Pipeline</span>
+                )}
+                <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Reviewer</span>
+                {mrState.noChanges && (
+                  <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)", color: "#eab308", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>⚠ Empty Diff</span>
+                )}
+                <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ Draft Status</span>
+              </div>
+              <div style={{ fontSize: 7, color: "#ef4444", fontWeight: 700, flexShrink: 0 }}>HIGH</div>
             </div>
-            <div style={{ fontSize: 16, color: "var(--text-tertiary)", opacity: 0.4, flexShrink: 0 }}>→</div>
-            <div style={{ flex: 1, minWidth: 100 }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>Horizon</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>7 Days <span style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 400 }}>({sel.probability}% prob.)</span></div>
-            </div>
-          </div>
-          <div style={{
-            padding: "10px 14px", borderRadius: 8,
-            background: "linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.15))",
-            border: "1px solid rgba(255,255,255,0.04)",
-            display: "flex", alignItems: "center", gap: 12,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, width: 100, flexShrink: 0 }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: "50%",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
-                background: `${curCol}18`, border: `1px solid ${curCol}33`,
-                transition: "all 0.4s ease",
-              }}>{sel.icon}</div>
-              <div>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Risk</div>
-                <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 800, color: gaugeColor, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.1s linear", textShadow: `0 0 16px ${riskScoreToGlow(animRisk)}` }}>
-                  {(animRisk * 100).toFixed(0)}%
+
+            {/* Row 3: Outcome Prediction */}
+            <div style={{
+              padding: "8px 12px", borderRadius: 8,
+              background: `linear-gradient(135deg, ${curCol}08, rgba(0,0,0,0.15))`,
+              border: `1px solid ${curCol}22`,
+              display: "flex", alignItems: "center", gap: 10,
+              transition: "all 0.4s ease",
+            }}>
+              <div style={{ width: 110, flexShrink: 0 }}>
+                <div style={{ fontSize: 7, color: curCol, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1, transition: "color 0.4s ease" }}>Outcome Prediction</div>
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>7-day horizon · {sel.probability}% prob.</div>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 800, color: curCol, transition: "color 0.4s ease", display: "flex", alignItems: "center", gap: 6 }}>
+                  <span>{sel.icon}</span>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sel.outcome}</span>
                 </div>
               </div>
-            </div>
-            <div style={{ flex: 1, height: 8, borderRadius: 4, background: "rgba(255,255,255,0.05)", overflow: "hidden", position: "relative" }}>
-              <div style={{
-                width: `${animRisk * 100}%`, height: "100%", borderRadius: 4,
-                background: `linear-gradient(90deg, ${riskScoreToColor(Math.max(animRisk - 0.2, 0))}, ${gaugeColor})`,
-                transition: "width 0.1s linear", boxShadow: `0 0 12px ${riskScoreToGlow(animRisk)}`,
-                position: "relative",
-              }}>
-                <div style={{ position: "absolute", right: 0, top: 0, width: 20, height: "100%", background: `linear-gradient(90deg, transparent, ${gaugeColor}44)`, borderRadius: "0 4px 4px 0" }} />
+              <div style={{ textAlign: "right", flexShrink: 0 }}>
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>{evidence.length} queries</div>
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>4 types</div>
               </div>
-            </div>
-            <div style={{ textAlign: "right", flexShrink: 0 }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>4 query types</div>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>{evidence.length} queries</div>
             </div>
           </div>
         </div>
