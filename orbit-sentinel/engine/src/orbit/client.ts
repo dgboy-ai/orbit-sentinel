@@ -38,7 +38,7 @@ export class OrbitClient {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const response = await fetch(url, opts);
-        if (response.ok) return response;
+        if (response.ok) {return response;}
 
         // Handle rate limiting
         if (response.status === 429) {
@@ -72,7 +72,7 @@ export class OrbitClient {
 
         if (attempt === retries) {
           const body = await response.text().catch(() => '(no body)');
-          const preview = body.length > 200 ? body.slice(0, 200) + '...' : body;
+          const preview = body.length > 200 ? `${body.slice(0, 200)  }...` : body;
           throw new OrbitSentinelError(
             `Orbit API error: ${response.status} ${response.statusText} — ${preview}`,
             ErrorType.ORBIT_API_ERROR,

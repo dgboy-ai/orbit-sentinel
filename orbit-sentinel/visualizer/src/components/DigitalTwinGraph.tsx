@@ -56,6 +56,31 @@ export default function DigitalTwinGraph({ graph }: Props) {
   const [selected, setSelected] = useState<GraphNode | null>(null);
   const rafRef = useRef<number>(0);
   const settledRef = useRef(false);
+  const zoomBehaviorRef = useRef<any>(null);
+
+  const handleZoomIn = () => {
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    d3.select(svgRef.current)
+      .transition()
+      .duration(300)
+      .call(zoomBehaviorRef.current.scaleBy, 1.3);
+  };
+
+  const handleZoomOut = () => {
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    d3.select(svgRef.current)
+      .transition()
+      .duration(300)
+      .call(zoomBehaviorRef.current.scaleBy, 1 / 1.3);
+  };
+
+  const handleResetZoom = () => {
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
+    d3.select(svgRef.current)
+      .transition()
+      .duration(400)
+      .call(zoomBehaviorRef.current.transform, d3.zoomIdentity);
+  };
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -86,7 +111,13 @@ export default function DigitalTwinGraph({ graph }: Props) {
 
     const bg = svg.append("rect").attr("width","100%").attr("height","100%").attr("fill","url(#grid)");
     const g = svg.append("g");
-    svg.call(d3.zoom<SVGSVGElement,unknown>().scaleExtent([0.15,6]).on("zoom",e=>g.attr("transform",e.transform)));
+    
+    const zoomBehavior = d3.zoom<SVGSVGElement,unknown>()
+      .scaleExtent([0.15,6])
+      .on("zoom",e=>g.attr("transform",e.transform));
+      
+    zoomBehaviorRef.current = zoomBehavior;
+    svg.call(zoomBehavior);
 
     const ln = graph.links.map(l=>({...l})) as unknown as DL[];
     const nd = graph.nodes.map(n=>({...n})) as unknown as DN[];
@@ -209,6 +240,31 @@ export default function DigitalTwinGraph({ graph }: Props) {
         {[{c:"#22c55e",l:"Safe"},{c:"#eab308",l:"Medium"},{c:"#f97316",l:"High"},{c:"#ef4444",l:"Critical"}].map(x=>(
           <span key={x.l} style={{display:"flex",alignItems:"center",gap:3}}><span style={{width:4,height:4,borderRadius:"50%",background:x.c,display:"inline-block",boxShadow:`0 0 4px ${x.c}`}}/>{x.l}</span>
         ))}
+      </div>
+
+      {/* Floating zoom and pan controls */}
+      <div style={{
+        position: "absolute", bottom: 12, right: 12, zIndex: 10,
+        display: "flex", gap: 4,
+        background: "rgba(15,18,26,0.92)", backdropFilter: "blur(12px)",
+        border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8,
+        padding: "4px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+      }}>
+        <button onClick={handleZoomIn} title="Zoom In" style={{
+          background: "transparent", border: "none", color: "var(--text-primary)",
+          width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
+          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+        }}>➕</button>
+        <button onClick={handleZoomOut} title="Zoom Out" style={{
+          background: "transparent", border: "none", color: "var(--text-primary)",
+          width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
+          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+        }}>➖</button>
+        <button onClick={handleResetZoom} title="Reset View" style={{
+          background: "transparent", border: "none", color: "var(--text-primary)",
+          width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
+          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+        }}>🎯</button>
       </div>
 
       <div className="resp-graph-info" style={{

@@ -9,10 +9,10 @@ export class TestGenerator {
     const unitTests = changedFiles.map((f) => {
       const ext = f.split(".").pop();
       const base = f.replace(/\./g, "_");
-      if (ext === "ts" || ext === "tsx") return `__tests__/${base}.test.ts`;
-      if (ext === "py") return `tests/test_${base}.py`;
-      if (ext === "rb") return `spec/${base}_spec.rb`;
-      if (ext === "go") return `${f}_test.go`;
+      if (ext === "ts" || ext === "tsx") {return `__tests__/${base}.test.ts`;}
+      if (ext === "py") {return `tests/test_${base}.py`;}
+      if (ext === "rb") {return `spec/${base}_spec.rb`;}
+      if (ext === "go") {return `${f}_test.go`;}
       return `tests/test_${base}.${ext ?? "test"}`;
     });
 

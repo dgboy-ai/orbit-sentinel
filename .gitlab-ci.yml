@@ -26,13 +26,23 @@ test_engine:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
 
+test_visualizer:
+  stage: test
+  script:
+    - cd orbit-sentinel/visualizer
+    - npm ci
+    - npm run test
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
+
 lint_engine:
   stage: lint
   script:
     - cd orbit-sentinel/engine
     - npm ci
     - npx tsc --noEmit
-    - npx eslint src/ --ext .ts || true
+    - npx eslint src/ --ext .ts
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH
@@ -72,7 +82,7 @@ build_visualizer:
     paths:
       - orbit-sentinel/visualizer/dist/
     expire_in: 1 day
-  needs: [lint_visualizer]
+  needs: [test_visualizer, lint_visualizer]
   rules:
     - if: $CI_MERGE_REQUEST_ID
     - if: $CI_COMMIT_BRANCH == $PAGES_BRANCH

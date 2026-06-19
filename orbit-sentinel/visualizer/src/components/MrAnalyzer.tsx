@@ -1,10 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import type { VisualizationData } from "../types";
 import { SCENARIOS, type ScenarioOption } from "../data/scenarios";
+import { API_BASE_URL } from "../services/api";
 
 const MR_URL_REGEX = /gitlab\.com\/([\w.-]+\/[\w.-]+(?:\/[\w.-]+)*)\/-\/merge_requests\/(\d+)/i;
-
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || "";
 const FETCH_TIMEOUT = 120000;
 
 interface MrAnalyzerProps {
@@ -25,6 +24,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   const [showTokenInput, setShowTokenInput] = useState(false);
   const [analysisDone, setAnalysisDone] = useState<string | null>(null);
   const [demosHidden, setDemosHidden] = useState(false);
+  const [coldStartActive, setColdStartActive] = useState(false);
 
   // Reset demosHidden when currentScenario changes to null (page reload/reset)
   useEffect(() => {
@@ -55,7 +55,12 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     if (!parsed) return;
     setAnalyzing(true);
     setLiveError(null);
+    setColdStartActive(false);
     if (onAnalyzeStart) onAnalyzeStart();
+
+    const coldStartTimer = setTimeout(() => {
+      setColdStartActive(true);
+    }, 8000);
 
     try {
       const useCreds = !!token;
@@ -120,6 +125,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       const msg = err instanceof Error ? err.message : "Unknown error";
       setLiveError(msg);
     } finally {
+      clearTimeout(coldStartTimer);
+      setColdStartActive(false);
       setAnalyzing(false);
     }
   }, [parsed, token, apiAvailable, onSelectScenario, onAnalyzeStart]);
@@ -161,7 +168,12 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     setAnalyzing(true);
     setLiveError(null);
     setDemosHidden(true);
+    setColdStartActive(false);
     if (onAnalyzeStart) onAnalyzeStart();
+
+    const coldStartTimer = setTimeout(() => {
+      setColdStartActive(true);
+    }, 8000);
 
     try {
       const changedFiles = ["src/main.ts"];
@@ -204,6 +216,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       const msg = err instanceof Error ? err.message : "Unknown error";
       setLiveError(msg);
     } finally {
+      clearTimeout(coldStartTimer);
+      setColdStartActive(false);
       setAnalyzing(false);
     }
   }, [token, apiAvailable, onSelectScenario, onAnalyzeStart]);
@@ -407,6 +421,20 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           </div>
           <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 4 }}>
             Token is sent once to the engine and discarded after analysis. Requires <code>read_api</code> scope.
+          </div>
+        </div>
+      )}
+
+      {coldStartActive && analyzing && (
+        <div style={{
+          padding: "10px 14px", borderRadius: 8, fontSize: 11,
+          background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.2)",
+          color: "#c4b5fd", display: "flex", alignItems: "center", gap: 8,
+          animation: "pulseGlow 2s ease-in-out infinite",
+        }}>
+          <span style={{ fontSize: 14 }}>⏳</span>
+          <div>
+            <strong>Backend cold start:</strong> Render API is spinning up, please wait (takes ~30-50s when idle)...
           </div>
         </div>
       )}

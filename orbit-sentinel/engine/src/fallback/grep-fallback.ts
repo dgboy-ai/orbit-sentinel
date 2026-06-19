@@ -24,7 +24,7 @@ export class GrepFallback {
   }
 
   private async fetchFile(projectPath: string, filePath: string, branch?: string): Promise<string | null> {
-    if (!this.token) return null;
+    if (!this.token) {return null;}
     try {
       const encodedProject = encodeURIComponent(projectPath);
       const encodedFile = encodeURIComponent(filePath);
@@ -36,7 +36,7 @@ export class GrepFallback {
         signal: AbortSignal.timeout(5000),
       });
 
-      if (!response.ok) return null;
+      if (!response.ok) {return null;}
       return response.text();
     } catch {
       return null;

@@ -1,5 +1,5 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
-const FETCH_TIMEOUT = 15000;
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
+const FETCH_TIMEOUT = 90000; // 90 seconds to handle Render backend cold start
 
 export interface RequestValidationResult {
   isValid: boolean;

@@ -83,7 +83,8 @@ app.get('/health', (req, res) => {
 // Main analysis endpoint
 app.post('/api/analyze', gitLabTokenValidation, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    let { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch } = req.body;
+    const { projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch } = req.body;
+    let projectId = req.body.projectId;
 
     if (!projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
       return res.status(400).json({
@@ -156,7 +157,7 @@ app.post('/api/analyze', gitLabTokenValidation, async (req: express.Request, res
 app.get('/api/debug-orbit', async (_req, res) => {
   try {
     const endpoint = process.env.ORBIT_API_ENDPOINT || "https://gitlab.com/api/v4/orbit";
-    const token = (process.env.GITLAB_ACCESS_TOKEN || "").slice(0, 8) + "..." + (process.env.GITLAB_ACCESS_TOKEN || "").slice(-4);
+    const token = `${(process.env.GITLAB_ACCESS_TOKEN || "").slice(0, 8)  }...${  (process.env.GITLAB_ACCESS_TOKEN || "").slice(-4)}`;
     
     // Try a simple fetch to the Orbit schema endpoint
     const controller = new AbortController();
@@ -193,7 +194,8 @@ app.get('/api/debug-orbit', async (_req, res) => {
 // Live analysis with user-provided GitLab token
 app.post('/api/analyze-with-creds', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
-    let { projectId, projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch, gitlabToken } = req.body;
+    const { projectPath, mrIid, mrTitle, changedFiles, changeDescription, branch, gitlabToken } = req.body;
+    let projectId = req.body.projectId;
 
     if (!projectPath || !mrIid || !mrTitle || !changedFiles || !changeDescription) {
       return res.status(400).json({
@@ -440,7 +442,7 @@ app.post('/api/probe-mr-files', async (req, res) => {
 app.post('/api/raw-orbit', async (req, res) => {
   try {
     const { query, format } = req.body;
-    if (!query) return res.status(400).json({ error: 'query object required' });
+    if (!query) {return res.status(400).json({ error: 'query object required' });}
 
     const envelope = { query, format: format || "raw" };
     const response = await fetch("https://gitlab.com/api/v4/orbit/query", {

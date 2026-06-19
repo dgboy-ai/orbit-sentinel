@@ -133,10 +133,10 @@ export class GitLabErrorHandler {
       const { code, recovery } = this.mapError(statusCode, message, context);
       
       let type = ErrorType.ORBIT_API_ERROR;
-      if (code === GitLabErrorCode.RATE_LIMIT_EXCEEDED) type = ErrorType.RATE_LIMIT;
-      else if (code === GitLabErrorCode.TOKEN_INVALID) type = ErrorType.AUTHENTICATION_ERROR;
-      else if (code === GitLabErrorCode.INSUFFICIENT_PERMISSIONS) type = ErrorType.AUTHENTICATION_ERROR;
-      else if (code === GitLabErrorCode.NETWORK_TIMEOUT) type = ErrorType.NETWORK_ERROR;
+      if (code === GitLabErrorCode.RATE_LIMIT_EXCEEDED) {type = ErrorType.RATE_LIMIT;}
+      else if (code === GitLabErrorCode.TOKEN_INVALID) {type = ErrorType.AUTHENTICATION_ERROR;}
+      else if (code === GitLabErrorCode.INSUFFICIENT_PERMISSIONS) {type = ErrorType.AUTHENTICATION_ERROR;}
+      else if (code === GitLabErrorCode.NETWORK_TIMEOUT) {type = ErrorType.NETWORK_ERROR;}
 
       return {
         message,
@@ -314,14 +314,14 @@ export class ErrorHandler {
   isRateLimited(context?: string): boolean {
     const key = context || 'global';
     const resetTime = this.rateLimitResetTimes.get(key);
-    if (!resetTime) return false;
+    if (!resetTime) {return false;}
     return Date.now() < resetTime;
   }
 
   getRetryAfter(context?: string): number {
     const key = context || 'global';
     const resetTime = this.rateLimitResetTimes.get(key);
-    if (!resetTime) return 0;
+    if (!resetTime) {return 0;}
     return Math.ceil((resetTime - Date.now()) / 1000);
   }
 

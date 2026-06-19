@@ -42,9 +42,9 @@ export class RiskEngine {
 
   classifyRiskLevel(score: number): "low" | "medium" | "high" | "critical" {
     const thresholds = getConfig().riskThresholds;
-    if (score >= thresholds.high) return "critical";
-    if (score >= thresholds.medium) return "high";
-    if (score >= thresholds.low) return "medium";
+    if (score >= thresholds.high) {return "critical";}
+    if (score >= thresholds.medium) {return "high";}
+    if (score >= thresholds.low) {return "medium";}
     return "low";
   }
 

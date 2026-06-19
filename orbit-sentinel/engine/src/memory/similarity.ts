@@ -56,7 +56,7 @@ export class SimilarityEngine {
   }
 
   private jaccardSimilarity(a: Set<string>, b: Set<string>): number {
-    if (a.size === 0 && b.size === 0) return 0;
+    if (a.size === 0 && b.size === 0) {return 0;}
     const intersection = new Set([...a].filter((x) => b.has(x)));
     const union = new Set([...a, ...b]);
     return intersection.size / union.size;

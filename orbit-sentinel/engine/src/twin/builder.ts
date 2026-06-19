@@ -94,11 +94,11 @@ export class DigitalTwinBuilder {
   }
 
   private mergeGraph(nodes: Map<string, DigitalTwinNode>, edges: Map<string, DigitalTwinEdge>, result: { nodes?: unknown[], edges?: unknown[] }): void {
-    if (!result.nodes) return;
+    if (!result.nodes) {return;}
     const edgeKey = (s: string, t: string, type: string) => `${s}|${t}|${type}`;
     for (const raw of result.nodes as Array<Record<string, unknown>>) {
       const id = String(raw.id ?? '');
-      if (!id) continue;
+      if (!id) {continue;}
       const type = this.mapEntityType(String(raw.type ?? ''));
       const label = String(raw.label_field ? raw[raw.label_field as string] : (raw.name ?? raw.path ?? raw.title ?? raw.username ?? raw.id));
       if (!nodes.has(id)) {
