@@ -34,7 +34,7 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 - Left: Traditional manual analysis (slow, error-prone)
 - Right: Orbit Sentinel automated analysis (fast, evidence-based)
 
-**Callout**: "GitHub Copilot predicts code. Orbit Sentinel predicts consequences."
+**Callout**: "AI predicts code. Orbit Sentinel predicts consequences."
 
 ### [0:30-1:30] Live Demo: MR Analysis Workflow (1 minute)
 
