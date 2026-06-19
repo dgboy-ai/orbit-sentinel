@@ -62,7 +62,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 - MCP config at `.gitlab/duo/mcp.json` — HTTP connection to Orbit knowledge graph
 - 6 query recipes in `skills/orbit-sentinel/recipes/` — ready-to-use JSON for each query pattern
 
-**Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks)
+**Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks), CI/CD via `.gitlab-ci.yml` (6 jobs, 4 stages)
 
 **Testing** ✅ — 124 tests (95 engine + 29 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
 
