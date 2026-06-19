@@ -116,8 +116,9 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
         {/* Horizontal step strip */}
         <div ref={scrollRef} style={{
           display: "flex", gap: 0, alignItems: "stretch",
+          justifyContent: "center",
           overflowX: "auto", overflowY: "hidden",
-          paddingBottom: 4, paddingLeft: 8,
+          paddingBottom: 4,
           scrollBehavior: "smooth",
           WebkitOverflowScrolling: "touch",
           scrollbarWidth: "none", msOverflowStyle: "none",
