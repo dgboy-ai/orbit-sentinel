@@ -1,482 +1,154 @@
-# Orbit Sentinel — Devpost Submission Guide
+# Orbit Sentinel — Autonomous Engineering Digital Twin
 
-## Overview
+## Inspiration
 
-This guide provides comprehensive instructions for submitting Orbit Sentinel to the GitLab Transcend Hackathon on Devpost. It covers all requirements for both Contribute Track and Showcase Track, including project description, gallery materials, and technical documentation.
+Every developer knows the feeling: you hit merge, and then you hold your breath. Will this deploy break something? Did I miss a downstream dependency? Has this file caused incidents before? Is there a rollback plan?
 
-## Submission Requirements
+Existing tools tell you what changed, but nobody tells you what will *break*. Code review catches logic errors, but it can't trace blast radius through a dependency graph or find the MR from six months ago that silently failed on the same file. Engineers spend hours manually checking deployment chains, digging through incident history, and guessing at risk — because there's no digital twin of the software system to simulate the change before it lands.
 
-### Required Elements
+GitLab Orbit changes that. It exposes the entire SDLC as a queryable knowledge graph — code, MRs, pipelines, deployments, incidents, ownership — all connected. But Orbit is an API, not a tool. Someone needs to turn those four query types into something a developer can use without learning GraphQL.
 
-1. **Project Description** - Complete description of the problem, solution, and impact
-2. **Project Gallery** - Screenshots, demo video, and visual assets
-3. **Technical Documentation** - Installation guide, API reference, and usage instructions
-4. **Devpost Submission Form** - All required fields completed
+That's Orbit Sentinel.
 
-### Track Selection
+## What It Does
 
-**Contribute Track**:
-- Submit merge requests to GitLab Orbit codebase with `orbit::hackathon` label
-- Maximum 5 MRs per person
-- First 40 qualifying MRs receive prizes
+Orbit Sentinel is an autonomous engineering digital twin. Paste any GitLab MR URL and it builds a living model of the affected software system — discovering blast radius, historical incidents, deployment dependencies, reviewer ownership, and rollback strategies — all before the change reaches production.
 
-**Showcase Track**:
-- Build agent, flow, or skill on GitLab Duo Agent Platform
-- Must meaningfully use GitLab Orbit via API, CLI, or skill interface
-- At least one agent or flow must be published to AI Catalog
-- Submit demonstration video (≤3 minutes)
+**The 8-View Dashboard:**
 
-**Both Tracks**: Submit on Devpost with complete project documentation
+| View | What It Shows |
+|------|---------------|
+| **Setup Wizard** | 4-step guided journey — Mission → Architecture → Setup → Devpost checklist |
+| **Dashboard** | Impact calculator, architecture diagram, Orbit evidence, incident intelligence, counterfactual simulation |
+| **Blast Radius** | Interactive graph from Orbit NEIGHBORS query — click any node to inspect connections |
+| **Risk Investigation** | 5-dimension risk breakdown with AGGREGATION data — failure probability heatmap, pipeline correlation |
+| **Forecast Engine** | What-if simulator — adjust variables and see risk change in real-time |
+| **Historical Context** | Past incidents with Jaccard similarity scores from Orbit TRAVERSAL query |
+| **Impact Report** | Full formatted MR comment — export as Markdown or JSON with one click |
+| **Predictions Tracker** | Accuracy scoreboard with post-merge verification — proves the predictions work |
 
-## Project Description
+**The Duo Agent Platform Flow:**
 
-### Structure and Content
+When a merge request is opened or updated, the flow automatically:
+1. Calls `get_graph_schema()` to discover the Orbit ontology
+2. Executes all four query types: NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION
+3. Builds a unified digital twin from the combined evidence
+4. Composes a 9-section impact analysis: executive summary, blast radius, failure predictions, historical context, reviewer recommendations, rollback plan, test plan, remediation steps
+5. Posts the complete report as a note on the merge request
 
-**Required Sections**:
+The same analysis engine powers both the visual dashboard and the autonomous MR flow — one codebase, two interfaces.
 
-1. **Title and Tagline**
-   - Clear, descriptive project title
-   - Concise tagline summarizing the solution
+**Closed-Loop Accuracy:**
 
-2. **Problem Statement**
-   - Describe the developer pain point
-   - Explain why it matters
-   - Include specific examples
+Every prediction is tracked post-merge through a 7-day survival window. True positives, false positives — all recorded. The Predictions Tracker surfaces accuracy rate, risk trend charts, and a per-file vulnerability forecast. Orbit Sentinel doesn't just predict — it proves its predictions were right.
 
-3. **Solution**
-   - Overview of Orbit Sentinel's approach
-   - Technical architecture explanation
-   - Key features and capabilities
+## How We Built It
 
-4. **How It Works**
-   - Step-by-step workflow
-   - Technical implementation details
-   - GitLab Orbit integration specifics
+**Architecture:**
 
-5. **Impact**
-   - Benefits to developers
-   - Time and cost savings
-   - Risk reduction and quality improvements
-
-6. **Development Process**
-   - Challenges faced
-   - Solutions implemented
-   - Lessons learned
-
-7. **Future Enhancements**
-   - Planned features
-   - Research directions
-   - Community contributions
-
-### Writing Guidelines
-
-**Tone and Style**:
-- Professional and technical
-- Clear and concise
-- Evidence-based with specific examples
-- Engaging and compelling
-
-**Length**: 500-1000 words
-
-**Formatting**:
-- Use Markdown for readability
-- Include headings and subheadings
-- Use bullet points for key features
-- Add code snippets where relevant
-- Include screenshots and diagrams
-
-### Example Structure
-
-```markdown
-# Orbit Sentinel — Engineering Decision Intelligence
-
-> GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
-
-## The Problem
-
-Every merge request asks the same critical questions:
-
-- Who else will this break?
-- Has this failed before?
-- Who should review this?
-- What's the rollback plan?
-
-Most teams answer these manually, if at all. Orbit Sentinel answers them automatically...
-
-## The Solution
-
-Orbit Sentinel is an autonomous engineering digital twin powered by GitLab Orbit. When a developer opens a merge request, it builds a living model of the software system...
-
-## How It Works
-
-The GitLab Duo Agent Platform executes an 8-step workflow:
-
-1. Schema Discovery → discover ontology
-2. Blast Radius → NEIGHBORS query
-3. Dependency Chain → PATH_FINDING query
-4. Historical Match → TRAVERSAL query
-5. Pipeline Risk → AGGREGATION query
-6. Analysis & Prediction → synthesize results
-7. Post Report → create MR note
-8. Label MR → mark for review
-
-## Impact
-
-✅ 80% reduction in MR analysis time
-✅ 60% decrease in production incidents
-✅ Faster review cycles and better code quality
-✅ Full audit trail with specific query citations
-
-## Technical Architecture
-
-[Include architecture diagram]
-
-## Demo Video
-
-[Link to demo video]
-
-## Installation
-
-```bash
-.\setup.ps1
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  GitLab MR   │────▶│  Engine API  │────▶│  Visualizer  │
+│  (webhook)   │     │  (Node.js)   │     │  (React/D3)  │
+└──────────────┘     │  :3001       │     │  :5173       │
+                     └──────┬───────┘     └──────────────┘
+                            │
+                     ┌──────▼───────┐
+                     │  GitLab Orbit│
+                     │  Knowledge   │
+                     │  Graph       │
+                     └──────────────┘
 ```
 
-## Live Demo
+**Engine** (`orbit-sentinel/engine/`, TypeScript, 95 tests):
+- `DigitalTwinBuilder` — orchestrates all 4 Orbit query types via `orbitOrFallback()` wrappers, merges results into a unified graph
+- `Grep Fallback` — when Orbit is unavailable, fetches changed files via GitLab Repository Files API, parses JS/TS/Python imports, builds dependency graph without Orbit
+- `Risk Engine` — scores changes across 5 dimensions (functionality, code quality, security, alignment, improvement) using Orbit evidence
+- `Memory Store` — historical similarity engine with Jaccard scoring, surfaces past incidents on the same files
+- `Remediation Planner` — generates rollback strategies, test plans, and remediation steps prioritized by risk
+- Input validation on every endpoint (Zod), exponential backoff for rate limits, 8 classified error types
 
-[https://orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app)
+**Visualizer** (`orbit-sentinel/visualizer/`, React 18 + D3.js + Vite, 13 tests):
+- 40 components across 8 dashboard views — all inline-styled with zero CSS files
+- Responsive across 5 breakpoints (360px to 1600px+)
+- Design token system (`constants/tokens.ts`) — centralized colors, z-index tiers, animation presets, spacing scale
+- Judge's Tour mode (`?judge=true`) — auto-demo with keyboard navigation (Space, ← →, 1-8)
+- Theme toggle (light/dark) persisted to localStorage
+- Export system — Markdown clipboard copy and JSON file download from Impact Report
+- Agent Flow Progress — animated 8-step Duo workflow visualization
 
-## Contributing
+**Duo Agent Platform Integration:**
+- Flow YAML at `flow/orbit-sentinel-flow.yaml` — 8-step pipeline with all 4 Orbit query types
+- Skill definition at `.gitlab/duo/skill.yml` — category: code_review, 3 capabilities, agent orchestration
+- MCP server config at `.gitlab/duo/mcp.json` — connects to Orbit knowledge graph via HTTP
+- 6 query recipes in `skills/orbit-sentinel/recipes/` — ready-to-use JSON for blast radius, dependency chains, deployment impact, historical similarity, ownership discovery, pipeline risk
 
-[Contribution guidelines]
-```
+**Deployment:**
+- Visualizer on Vercel (`orbit-sentinel.vercel.app`) — instant deploys from main branch
+- Engine on Render — Node.js Express server with health checks
+- Docker Compose — boots full stack (engine + visualizer + nginx) with health checks
+- CI/CD via `.gitlab-ci.yml` — 6 jobs across 4 stages (build, lint, test, deploy)
 
-## Gallery Section
+**Testing:**
+- 108 tests total (95 engine + 13 visualizer)
+- Vitest for both engine (unit/integration) and visualizer (component/smoke)
+- Engine tests cover: Orbit client error handling, all 4 query types, similarity engine, risk thresholds, digital twin construction, remediation planning, rollback strategy, simulation edge cases
 
-### Required Assets
+## Challenges We Ran Into
 
-**Visual Assets**:
-1. Project logo/icon (512x512 PNG)
-2. Main dashboard screenshot (1920x1080)
-3. Interactive demo screenshot
-4. Architecture diagram
-5. Technology stack logo
+**1. Orbit API 2.1.0 Format Shift**
 
-**Video Assets**:
-1. Demo video (≤3 minutes)
-2. Video thumbnail
-3. Optional: Behind-the-scenes footage
+Mid-development, Orbit's API response format changed. `result.rows` became `result.nodes`/`result.edges`. The entire `DigitalTwinBuilder.mergeGraph()` had to be rewritten — went from returning empty results to 14 nodes and 13 edges per MR. Lesson: never hardcode GraphQL response shapes.
 
-### Image Guidelines
+**2. CORS Blocking GitLab File Fetches**
 
-**Quality Requirements**:
-- Resolution: 1920x1080 or higher
-- Format: PNG for screenshots, JPG for photos
-- File size: < 5MB per image
-- Naming: descriptive and consistent
+The browser couldn't fetch changed file contents directly from `gitlab.com` due to CORS. We built a CORS proxy at `/api/probe-mr-files` on the engine, proxying file content requests through the server. Now the visualizer fetches files through the engine, not the browser.
 
-**Content Requirements**:
-- Show the product in action
-- Include UI elements and interactions
-- Demonstrate key features
-- Professional and polished appearance
+**3. Rate Limit Amplification**
 
-**Technical Specifications**:
-- Include browser UI for context
-- Show error states and success messages
-- Use consistent branding
-- Optimize for web display
+Initial implementation hammered the Orbit API — 107 queries per MR analysis. Each changed file triggered redundant calls. We capped `MAX_CHANGED_FILES` at 5, added 500ms throttle between file iterations, and deduplicated query types. Result: 23 queries per MR, 78% reduction.
 
-### Video Guidelines
+**4. Dark Screen on GitLab Pages**
 
-**Technical Requirements**:
-- Length: 3 minutes maximum
-- Format: MP4 or MOV
-- Resolution: 1920x1080
-- Frame rate: 30 FPS
-- File size: < 50MB
+Visualizer deployed to GitLab Pages rendered a blank screen. Root cause: Pages access control was Private, requiring auth that the static site couldn't provide. Moved to Vercel (no access restrictions), kept Pages config for future use.
 
-**Content Requirements**:
-- Professional narration
-- Clear visuals of the product
-- Demonstrate all key features
-- Include call to action
-- No copyrighted music or trademarks
+**5. Fallback Without a Token**
 
-**Production Quality**:
-- High-quality recording
-- Good audio quality
-- Clear subtitles
-- Professional editing
+When no `GITLAB_ACCESS_TOKEN` was configured, the grep fallback hung on timeouts. Added a fast-path: if no token present, return empty immediately instead of attempting API calls. Reduced failure mode from 30-second timeout to instant "no data."
 
-## Technical Documentation
+**6. Duplicate Flow in AI Catalog**
 
-### Installation Guide
+An older version of the flow YAML was published alongside the active one. The stale entry had the same project ID, creating confusion. Had to hide the duplicate from Catalog.
 
-**Required Sections**:
-1. Quick start instructions
-2. System requirements
-3. Step-by-step setup
-4. Environment configuration
-5. Troubleshooting guide
+## Accomplishments We're Proud Of
 
-**Content Examples**:
+**108 tests passing** — 95 engine tests across 13 test files + 13 visualizer component tests. Every test is meaningful: Orbit client error handling, retry logic, all 4 query types, similarity engine edge cases, risk thresholds, digital twin construction, rollback strategies. No fluff.
 
-```markdown
-## Quick Start
+**Live Orbit data** — The engine queries a real GitLab Orbit knowledge graph and returns actual graph data: **14 nodes, 13 edges** per MR analysis across 7 node types. Not mocked, not simulated — live from GitLab's API. Full traversal results documented.
 
-```powershell
-.\setup.ps1        # One-click setup
-```
+**Closed-loop accuracy** — We don't just predict and walk away. Every prediction is tracked post-merge with a 7-day survival window. The Predictions Tracker computes accuracy rate, shows risk trend charts, and surfaces vulnerability-adjusted predictions. This is the difference between a demo and a tool.
 
-## Manual Setup
+**Fallback resilience** — When Orbit is unavailable, the engine degrades to grep-based file analysis. Changed files are fetched via GitLab API, imports are parsed, a dependency graph is built — and the visualizer shows a "Degraded" mode banner so the user knows. No crash. No blank screen. No "Orbit is down" error.
 
-### Prerequisites
+**40 React components, 8 views, 5 breakpoints** — Every component is inline-styled with zero CSS files. The design token system centralizes colors, z-index tiers, animations, and spacing. Theme toggle persists across sessions. Keyboard shortcuts (1-8 for views, Space for demo, D for theme) make it feel like a native app.
 
-- Node.js 18+
-- Git 2.0+
-- Windows, macOS, or Linux
+**Flow published to AI Catalog** — The 8-step Duo Agent Platform flow is live in the AI Catalog with 1 successful run. It's listed alongside GitLab's official flows (Code Review, Fix CI/CD Pipeline) and is publicly accessible.
 
-### Install Dependencies
+## What We Learned
 
-```bash
-cd engine
-npm install
+**Orbit is not just a graph database — it's a SDLC simulator.** The four query types (NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION) each reveal a different dimension of the software lifecycle. Combined, they paint a complete picture that no single query type can provide. NEIGHBORS shows what's connected; PATH_FINDING shows how breakage propagates; TRAVERSAL shows history repeating; AGGREGATION shows systemic fragility.
 
-cd ../visualizer
-npm install
-```
+**A digital twin is only as good as its fallback.** When Orbit is available, the twin is rich with graph evidence. When it's not, you can still analyze — but the quality difference motivates getting Orbit enabled. The fallback isn't a substitute; it's a safety net that proves the value of the real thing.
 
-### Build and Run
+**Visual feedback changes how developers trust predictions.** The same analysis that gets posted as an MR note feels different when rendered as an interactive dashboard. Being able to click a node, adjust a slider, or see accuracy trend over time builds confidence in the predictions. Text-only tools don't have this effect.
 
-```bash
-cd engine
-npm run build
+**Testing Orbit integrations requires real Orbit data.** Mock data gets you 80% of the way, but the last 20% — the actual GraphQL response shapes, the rate limiting behavior, the schema differences between indexed and non-indexed projects — only shows up against a real API. Our fallback system exists because we learned this the hard way.
 
-cd ../visualizer
-npm run dev
-```
+## What's Next
 
-## Environment Configuration
-
-Create a `.env` file:
-
-```env
-GITLAB_HOST=gitlab.com
-ORBIT_GROUP_PATH=your-group/your-project
-ORBIT_API_ENDPOINT=https://gitlab.com/api/v4/orbit
-GITLAB_ACCESS_TOKEN=your-token
-```
-```
-
-## API Reference
-
-**Required Sections**:
-1. Engine API documentation
-2. Visualizer API reference
-3. GitLab Orbit integration
-4. Configuration options
-5. Error handling
-
-**Example**:
-
-```typescript
-import { OrbitSentinel } from './engine';
-
-const sentinel = new OrbitSentinel();
-
-const report = await sentinel.analyzeChange({
-  projectId: 123,
-  projectPath: 'your-group/your-project',
-  mrIid: 42,
-  mrTitle: 'Add new feature',
-  changedFiles: ['src/feature.js', 'tests/feature.test.js'],
-  changeDescription: 'Implement new authentication flow',
-  branch: 'feature/new-auth'
-});
-```
-
-## Devpost Form Completion
-
-### Project Information
-
-**Title**: Orbit Sentinel — Engineering Decision Intelligence
-
-**Tagline**: GitHub Copilot predicts code. Orbit Sentinel predicts consequences.
-
-**Description**: Comprehensive project description (500-1000 words)
-
-**Short Description**: 2-3 sentence summary
-
-### Technical Details
-
-**Technologies Used**:
-- TypeScript
-- React 18
-- D3.js
-- GitLab Duo Agent Platform
-- GitLab Orbit
-- Node.js
-
-**Project Type**: Both Contribute and Showcase Track
-
-**Repository URL**: [GitLab repository link]
-
-**Live Demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app)
-
-### Submission Details
-
-**Track Selection**: Both Contribute and Showcase Track
-
-**Project Category**: AI/ML, DevOps, Developer Tools
-
-**Platform**: GitLab
-
-### Submission Assets
-
-**Gallery Images**:
-- [ ] Project logo/icon
-- [ ] Main dashboard screenshot
-- [ ] Interactive demo screenshot
-- [ ] Architecture diagram
-- [ ] Technology stack logo
-
-**Video**:
-- [ ] Demo video (≤3 minutes)
-- [ ] Video thumbnail
-
-**Documentation**:
-- [ ] Installation guide
-- [ ] API reference
-- [ ] Technical documentation
-- [ ] README.md
-
-### Additional Information
-
-**Team Members**: [Your names]
-
-**Contact Information**: [Your email]
-
-**Hackathon**: GitLab Transcend Hackathon
-
-## Review and Quality Assurance
-
-### Pre-Submission Checklist
-
-**Technical Review**:
-- [ ] All tests passing (Vitest)
-- [ ] TypeScript compilation successful
-- [ ] ESLint checks passing
-- [ ] Build artifacts created
-- [ ] Demo materials complete
-
-**Documentation Review**:
-- [ ] README.md comprehensive
-- [ ] Screenshots clear and relevant
-- [ ] Video quality acceptable
-- [ ] All links working
-- [ ] No broken references
-
-**Devpost Review**:
-- [ ] All required fields completed
-- [ ] Project description compelling
-- [ ] Gallery assets high quality
-- [ ] Video professional
-- [ ] Technical documentation complete
-
-### Common Issues and Solutions
-
-**Problem**: Incomplete project description
-**Solution**:
-- Use the provided template
-- Include specific examples
-- Highlight unique features
-- Explain technical approach clearly
-
-**Problem**: Low-quality screenshots
-**Solution**:
-- Use high-resolution capture
-- Include UI context
-- Show interactive elements
-- Professional appearance
-
-**Problem**: Poor video quality
-**Solution**:
-- Record in good lighting
-- Use quality microphone
-- Edit professionally
-- Include subtitles
-
-## Post-Submission
-
-### Follow-up Actions
-
-**Engagement**:
-- Monitor feedback and comments
-- Respond to judge questions
-- Share progress on social media
-- Network with other participants
-
-**Project Improvement**:
-- Incorporate feedback
-- Fix any issues
-- Add new features
-- Update documentation
-
-### Timeline
-
-**Before Submission**:
-- Complete all materials
-- Test all functionality
-- Review all documentation
-- Practice demo presentation
-
-**During Submission**:
-- Monitor feedback
-- Engage with community
-- Network with other participants
-
-**After Submission**:
-- Respond to judge feedback
-- Incorporate improvements
-- Continue development
-- Share updates
-
-## Success Metrics
-
-### Technical Metrics
-
-- **Test Coverage**: 105 tests passing (95 engine + 10 visualizer)
-- **Build Time**: < 2 minutes
-- **Response Time**: < 5 seconds
-- **Bundle Size**: < 500KB
-- **Performance**: 60 FPS animation
-
-### User Experience Metrics
-
-- **Installation Time**: < 5 minutes
-- **Setup Complexity**: Low
-- **Documentation Quality**: Comprehensive
-- **Demo Quality**: Professional
-- **Video Quality**: High
-
-### Business Impact Metrics
-
-- **Time Savings**: 80% reduction in MR analysis
-- **Risk Reduction**: 60% decrease in production incidents
-- **Productivity**: Faster review cycles
-- **Quality**: Better code with evidence-based decisions
-- **Compliance**: Full audit trail
-
-## Conclusion
-
-A successful Devpost submission requires comprehensive documentation, high-quality visual assets, and professional presentation. Follow this guide to create a compelling submission that stands out to judges and maximizes your chances of winning.
-
-**Key Success Factors**:
-1. Complete all required materials
-2. High-quality visual assets
-3. Professional presentation
-4. Clear and compelling documentation
-5. Evidence of functionality
-6. Strong technical implementation
-
-**Ready to submit?** Use this guide to create a complete, professional submission that showcases Orbit Sentinel's capabilities and maximizes your chances of winning the GitLab Transcend Hackathon!
+1. **Multi-project orbit traversal** — Extend the digital twin to trace dependencies across GitLab groups, not just within a single project
+2. **Natural language MR summaries** — Generate plain-English change descriptions from the digital twin, so non-technical stakeholders can understand impact
+3. **VSCode extension** — Inline blast radius hints while editing, before the MR is even opened
+4. **GitHub Orbit adapter** — If/when Orbit supports GitHub, adapt the digital twin to work with GitHub repos
+5. **Open source community** — Publish the skill recipes as a curated marketplace, invite contributions for new query patterns
+6. **Predictive CI/CD** — Use historical AGGREGATION data to predict pipeline failure probability before the pipeline runs
