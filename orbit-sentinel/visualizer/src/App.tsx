@@ -464,16 +464,16 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         display: screenshotMode || presentMode ? "none" : "flex",
         position: "relative", zIndex: Z.dropdown,
         borderBottom: `1px solid ${accentColor}22`,
-        padding: "6px 16px", alignItems: "center", gap: 10,
+        padding: "6px 16px", alignItems: "center", gap: 14,
         flexShrink: 0, background: "rgba(8,9,13,0.85)", backdropFilter: "blur(20px)",
         boxShadow: `0 1px 0 ${accentColor}11, 0 4px 24px ${accentGlow}08`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <div style={{ width: 26, height: 26, borderRadius: 7, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, boxShadow: `0 0 12px ${accentGlow}` }}>🛰️</div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: `0 0 16px ${accentGlow}` }}>🛰️</div>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
-        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 320, minWidth: 0, display: "flex", alignItems: "center", gap: 5 }}>
+        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 320, minWidth: 0, display: "flex", alignItems: "center", gap: 5, marginLeft: 4 }}>
           <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
           <EngineStatus />
         </div>
