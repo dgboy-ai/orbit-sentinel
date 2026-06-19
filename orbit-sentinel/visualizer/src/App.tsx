@@ -19,7 +19,7 @@ import RealityCheck from "./components/RealityCheck";
 import SimulateWebhook from "./components/SimulateWebhook";
 import LoadingSkeleton from "./components/LoadingSkeleton";
 import EngineStatus from "./components/EngineStatus";
-import LoadingNarrative from "./components/LoadingNarrative";
+
 import DataModeBanner from "./components/DataModeBanner";
 import type { DataMode } from "./components/DataModeBanner";
 import ProblemSection from "./components/ProblemSection";
@@ -89,9 +89,7 @@ export default function App() {
   const screenshotMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("screenshot") === "true";
   const presentMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("present") === "true";
   const noEngine = !apiService.isApiAvailable();
-  const [showNarrative, setShowNarrative] = useState(
-    import.meta.env?.MODE === "test" ? false : !noEngine
-  );
+  const [showNarrative, setShowNarrative] = useState(false);
   const [currentScenario, setCurrentScenario] = useState<string | null>(() => ssRead("scenario", null));
   const [analyzing, setAnalyzing] = useState(false);
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
@@ -109,17 +107,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch { console.warn("localStorage theme write blocked"); }
   }, [dark]);
   const toggleTheme = useCallback(() => setDark(prev => !prev), []);
-  const showNarrativeRef = useRef(showNarrative);
-  showNarrativeRef.current = showNarrative;
-  const onNarrativeDone = useCallback(() => {
-    setShowNarrative(false);
-    if (!data) {
-      setData(DEMO_DATA);
-      setDataMode("demo");
-      setLoading(false);
-    }
-  }, [data]);
-
   // Save prediction when new data arrives (from demo or live analysis)
   useEffect(() => {
     if (!data) return;
@@ -149,19 +136,17 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   useEffect(() => { ssWrite("scenario", currentScenario); }, [currentScenario]);
 
   const loadData = useCallback(async () => {
-    if (!apiService.isApiAvailable() && !showNarrativeRef.current) {
+    if (!apiService.isApiAvailable()) {
       setData(DEMO_DATA);
       setDataMode("demo");
+      setLoading(false);
       return;
     }
 
     setLoading(true);
     setError(null);
 
-    if (!apiService.isApiAvailable()) {
-      setDataMode("loading");
-      return;
-    }
+    setDataMode("connecting");
 
     // Engine configured: try live fetch during narrative
     setDataMode("connecting");
@@ -431,7 +416,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   if (!data) {
     return (
       <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "var(--bg-primary)" }}>
-        {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
         <header style={{
           position: "relative", zIndex: Z.dropdown,
           borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -496,7 +480,6 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-primary)", position: "relative" }}>
-      {showNarrative && <LoadingNarrative startTime={Date.now()} onDone={onNarrativeDone} />}
       {data && showOnboarding && <OnboardingOverlay onDismiss={dismissOnboarding} />}
       {showTour && <JudgesTour onDismiss={dismissTour} onNavigate={onTourNavigate} />}
       <BackgroundParticles />
