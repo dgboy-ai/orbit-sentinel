@@ -355,7 +355,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               </div>
             </div>
             <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.4fr", gap: isMobile ? 8 : 12 }}>
-              <ErrorBoundary><SimulateWebhook /></ErrorBoundary>
+              <ErrorBoundary><SimulateWebhook data={data} dataMode={dataMode} /></ErrorBoundary>
               <ErrorBoundary><RealityCheck /></ErrorBoundary>
             </div>
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>

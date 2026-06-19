@@ -1,15 +1,36 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import type { VisualizationData } from "../types";
 
-const WEBHOOK_STEPS = [
-  { icon: "🔀", label: "MR Opened", desc: "Merge Request !10 detected on test-sentinel branch", color: "#22c55e" },
-  { icon: "🛰️", label: "Orbit Queried", desc: "NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION dispatched", color: "#60a5fa" },
-  { icon: "🧠", label: "Digital Twin Built", desc: "23 nodes, 43 edges, 4 query types across ecosystem", color: "#a78bfa" },
-  { icon: "🔍", label: "Analysis Complete", desc: "Empty diff, no pipeline, 9/10 historical closures detected", color: "#eab308" },
-  { icon: "📋", label: "Report Posted", desc: "Full impact analysis with remediation steps generated", color: "#22c55e" },
-  { icon: "🎯", label: "Verdict: DO NOT DEPLOY", desc: "Risk score 55%, deployment path broken, 90% abandonment rate", color: "#ef4444" },
-];
+function buildSteps(data?: VisualizationData, dataMode?: string) {
+  if (data && dataMode === "live") {
+    const e = data.evidence;
+    const nodeMatch = e.map(x => x.result.match(/(\d+)\s*nodes?/i)).filter(Boolean).map(m => parseInt(m![1]));
+    const edgeMatch = e.map(x => x.result.match(/(\d+)\s*edges?/i)).filter(Boolean).map(m => parseInt(m![1]));
+    const nodes = nodeMatch[0] ?? 0;
+    const edges = edgeMatch[0] ?? 0;
+    const riskPct = Math.round(data.hero.riskScore * 100);
+    const outcomeShort = data.hero.predictedOutcome.slice(0, 60);
+    return [
+      { icon: "🔀", label: "MR Opened", desc: `Merge Request !${data.hero.mrIid} detected on ${data.summary.branch}`, color: "#22c55e" },
+      { icon: "🛰️", label: "Orbit Queried", desc: `${e.length} query type${e.length !== 1 ? "s" : ""} dispatched: ${e.map(x => x.queryType).join(", ")}`, color: "#60a5fa" },
+      { icon: "🧠", label: "Digital Twin Built", desc: `${nodes} nodes, ${edges} edges, ${e.length} query types across ecosystem`, color: "#a78bfa" },
+      { icon: "🔍", label: "Analysis Complete", desc: outcomeShort, color: "#eab308" },
+      { icon: "📋", label: "Report Posted", desc: "Full impact analysis with remediation steps generated", color: "#22c55e" },
+      { icon: "🎯", label: `Verdict: ${data.hero.riskLevel}`, desc: `Risk score ${riskPct}%, ${outcomeShort.toLowerCase()}`, color: "#ef4444" },
+    ];
+  }
+  return [
+    { icon: "🔀", label: "MR Opened", desc: "Merge Request !10 detected on test-sentinel branch", color: "#22c55e" },
+    { icon: "🛰️", label: "Orbit Queried", desc: "NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION dispatched", color: "#60a5fa" },
+    { icon: "🧠", label: "Digital Twin Built", desc: "23 nodes, 43 edges, 4 query types across ecosystem", color: "#a78bfa" },
+    { icon: "🔍", label: "Analysis Complete", desc: "Empty diff, no pipeline, 9/10 historical closures detected", color: "#eab308" },
+    { icon: "📋", label: "Report Posted", desc: "Full impact analysis with remediation steps generated", color: "#22c55e" },
+    { icon: "🎯", label: "Verdict: DO NOT DEPLOY", desc: "Risk score 55%, deployment path broken, 90% abandonment rate", color: "#ef4444" },
+  ];
+}
 
-export default function SimulateWebhook() {
+export default function SimulateWebhook({ data, dataMode }: { data?: VisualizationData; dataMode?: string }) {
+  const steps = useMemo(() => buildSteps(data, dataMode), [data, dataMode]);
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState(-1);
   const [completed, setCompleted] = useState(false);
@@ -25,7 +46,7 @@ export default function SimulateWebhook() {
     setCompleted(false);
     interval.current = window.setInterval(() => {
       setStep(prev => {
-        if (prev >= WEBHOOK_STEPS.length - 1) {
+        if (prev >= steps.length - 1) {
           if (interval.current) clearInterval(interval.current);
           setCompleted(true);
           return prev;
@@ -77,7 +98,7 @@ export default function SimulateWebhook() {
 
       {running || completed ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          {WEBHOOK_STEPS.map((s, i) => {
+          {steps.map((s, i) => {
             const status = i < step ? "done" : i === step ? "active" : "pending";
             return (
               <div key={s.label} style={{
@@ -125,7 +146,7 @@ export default function SimulateWebhook() {
           animation: "fadeSlideUp 0.3s ease",
         }}>
           <span style={{ fontSize: 13 }}>✅</span>
-          <span>Flow complete in <strong style={{ color: "#22c55e" }}>{(WEBHOOK_STEPS.length * 0.7).toFixed(1)}s</strong> — compared to <strong style={{ color: "#ef4444" }}>~45 min</strong> manual review. <strong style={{ color: "var(--accent-blue)" }}>Navigate the tabs above</strong> to explore the full analysis.</span>
+          <span>Flow complete in <strong style={{ color: "#22c55e" }}>{(steps.length * 0.7).toFixed(1)}s</strong> — compared to <strong style={{ color: "#ef4444" }}>~45 min</strong> manual review. <strong style={{ color: "var(--accent-blue)" }}>Navigate the tabs above</strong> to explore the full analysis.</span>
         </div>
       )}
     </div>
