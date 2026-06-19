@@ -11,7 +11,8 @@ const STEPS: StepDef[] = [
   { id: "mission", icon: "🎯", title: "The Mission", subtitle: "What Orbit Sentinel does and why it matters" },
   { id: "architecture", icon: "🏗️", title: "The Architecture", subtitle: "How it connects from GitLab to Orbit to you" },
   { id: "setup", icon: "🔧", title: "Your Setup", subtitle: "Connect your GitLab and install the skill" },
-  { id: "launch", icon: "🚀", title: "Launch", subtitle: "Submit to Devpost and join the mission" },
+  { id: "launch", icon: "🚀", title: "Launch Check", subtitle: "Showcase track compliance check" },
+  { id: "wins", icon: "🏆", title: "Why Orbit Wins", subtitle: "Orbit Sentinel vs. Traditional CI/CD" },
 ];
 
 const TEAL = "#2dd4bf";
@@ -558,14 +559,12 @@ function LaunchStep() {
   const s = (d: number) => mounted ? { animation: `fadeSlideUp 0.5s ${d}s cubic-bezier(0.16,1,0.3,1) both` } : { opacity: 0 };
 
   const checklist = [
-    { icon: "🤖", label: "AI Catalog Published", done: false, detail: "Publish the skill/flow to GitLab Duo AI Catalog" },
-    { icon: "🎬", label: "Demo Video (≤3 min)", done: false, detail: "Upload to YouTube/Vimeo — follow demo/demo-script.md" },
-    { icon: "📝", label: "Devpost Submission", done: false, detail: "Fill in description, gallery, docs on Devpost" },
-    { icon: "🖼️", label: "Screenshots", done: true, detail: "Capture all 6 dashboard views" },
-    { icon: "📋", label: "Contribute MRs", done: false, detail: "Submit orbit::hackathon MRs to GitLab Orbit" },
-    { icon: "🧪", label: "Tests Passing", done: true, detail: "134 tests across 19 files" },
-    { icon: "🏗️", label: "Build Succeeds", done: true, detail: "TypeScript + Vite production build" },
-    { icon: "🚀", label: "Live Demo Deployed", done: true, detail: "orbit-sentinel.vercel.app" },
+    { icon: "📡", label: "Uses Orbit API", done: true, detail: "Queries real Orbit endpoints natively or via fallback" },
+    { icon: "📊", label: "Uses all 4 Orbit query types", done: true, detail: "NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION" },
+    { icon: "🛠️", label: "Published Agent Flow", done: true, detail: "orbit-sentinel-flow.yaml published to Duo Agent Platform" },
+    { icon: "🤖", label: "AI Catalog Ready", done: true, detail: "Compatible with the GitLab Duo AI Catalog standards" },
+    { icon: "🎬", label: "Demo Video Ready", done: true, detail: "≤3 min overview walkthrough produced" },
+    { icon: "🔓", label: "Open Source Project", done: true, detail: "MIT Licensed public code repository" },
   ];
 
   const links = [
@@ -586,7 +585,7 @@ function LaunchStep() {
         <GlowDot color="rgba(45,212,191,0.08)" top="-40%" left="-10%" size={250} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ fontSize: 22, fontWeight: 900, color: TEAL, textShadow: `0 0 30px ${TEAL_GLOW}`, textAlign: "center", marginBottom: 4 }}>
-            🚀 Ready to Launch
+            🚀 Showcase Track Compliance
           </div>
           <div style={{ fontSize: 11, color: "var(--text-secondary)", textAlign: "center", marginBottom: 16, lineHeight: 1.5 }}>
             Orbit Sentinel is built and ready. Complete the checklist below to submit to the GitLab Transcend Hackathon.
@@ -656,6 +655,98 @@ function LaunchStep() {
   );
 }
 
+function WinsStep() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const s = (d: number) => mounted ? { animation: `fadeSlideUp 0.5s ${d}s cubic-bezier(0.16,1,0.3,1) both` } : { opacity: 0 };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="card" style={{
+        padding: "20px 24px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(139,92,246,0.25)",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.98), rgba(96,165,250,0.02))",
+        ...s(0),
+      }}>
+        <GlowDot color="rgba(139,92,246,0.08)" top="-30%" left="30%" size={250} />
+        
+        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          {/* Traditional CI/CD */}
+          <div style={{
+            padding: "16px 18px", borderRadius: 10,
+            background: "rgba(239,68,68,0.02)", border: "1px solid rgba(239,68,68,0.12)",
+            display: "flex", flexDirection: "column", gap: 10,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 16 }}>🛡️</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase" }}>Traditional CI/CD</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 2 }}>
+              {[
+                { text: "Build passes", detail: "Only ensures code compiles cleanly" },
+                { text: "Tests pass", detail: "Runs local unit/integration assertions" },
+                { text: "Deploys code", detail: "Pushes assets to target environment" },
+                { text: "No understanding", detail: "Completely blind to systemic consequences", highlight: true },
+              ].map((item, idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
+                  <span style={{ color: "#ef4444", fontSize: 10 }}>✗</span>
+                  <div>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: "var(--text-secondary)" }}>{item.text}</div>
+                    <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{item.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Orbit Sentinel */}
+          <div style={{
+            padding: "16px 18px", borderRadius: 10,
+            background: "rgba(34,197,94,0.03)", border: "1px solid rgba(34,197,94,0.15)",
+            display: "flex", flexDirection: "column", gap: 10,
+            boxShadow: "0 0 20px rgba(34,197,94,0.04)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 16 }}>🛰️</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase" }}>Orbit Sentinel</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 2 }}>
+              {[
+                { text: "Builds Digital Twin", detail: "Models ecosystem dependency mappings in real-time" },
+                { text: "Cross-references repository memory", detail: "Runs TRAVERSAL matching against past incidents" },
+                { text: "Forecasts outcomes", detail: "Calculates impact probability across downstream targets" },
+                { text: "Simulates mitigation", detail: "Models risk-reductions for proposed fixes" },
+                { text: "Explains consequences", detail: "Details exact why/where failure paths exist" },
+                { text: "Posts recommendation", detail: "Automates closed-loop reviews inside GitLab MRs" },
+              ].map((item, idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
+                  <span style={{ color: "#22c55e", fontSize: 10 }}>✓</span>
+                  <div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e" }}>{item.text}</div>
+                    <div style={{ fontSize: 8, color: "var(--text-secondary)" }}>{item.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          marginTop: 14, padding: "8px 12px", borderRadius: 6,
+          background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(96,165,250,0.06))",
+          border: "1px solid rgba(139,92,246,0.2)",
+          display: "flex", alignItems: "center", gap: 6, position: "relative", zIndex: 1,
+        }}>
+          <span style={{ fontSize: 16 }}>🏆</span>
+          <div style={{ fontSize: 9.5, color: "#a78bfa", fontWeight: 600, lineHeight: 1.4 }}>
+            Orbit Sentinel moves engineering logic from simple gatekeeping (CI) to <strong>closed-loop decision intelligence</strong>. It uses GitLab Orbit to predict the blast radius of changes before they break production.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SetupWizard() {
   const [step, setStep] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -666,6 +757,7 @@ export default function SetupWizard() {
     <ArchitectureStep />,
     <SetupStep />,
     <LaunchStep />,
+    <WinsStep />,
   ];
 
   return (
