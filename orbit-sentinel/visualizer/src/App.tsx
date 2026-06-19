@@ -464,26 +464,25 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         display: screenshotMode || presentMode ? "none" : "flex",
         position: "relative", zIndex: Z.dropdown,
         borderBottom: `1px solid ${accentColor}22`,
-        padding: "8px 20px", alignItems: "center", justifyContent: "space-between", gap: 8,
-        flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)",
-        boxShadow: `0 1px 0 ${accentColor}11`,
+        padding: "6px 16px", alignItems: "center", gap: 6,
+        flexShrink: 0, background: "rgba(8,9,13,0.85)", backdropFilter: "blur(20px)",
+        boxShadow: `0 1px 0 ${accentColor}11, 0 4px 24px ${accentGlow}08`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, boxShadow: `0 2px 8px ${accentGlow}` }}>🛰️</div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+          <div style={{ width: 26, height: 26, borderRadius: 7, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, boxShadow: `0 0 12px ${accentGlow}` }}>🛰️</div>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
-        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 420, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6 }}>
+        <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 320, minWidth: 0, display: "flex", alignItems: "center", gap: 5 }}>
           <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
           <EngineStatus />
-          <span style={{ fontSize: 8, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: "rgba(139,92,246,0.1)", color: COLORS.purple, border: "1px solid rgba(139,92,246,0.15)", whiteSpace: "nowrap", letterSpacing: "0.3px" }}>4 Queries</span>
         </div>
         {isMobile && (
           <div style={{ position: "relative" }}>
             <button onClick={() => setMobileViewOpen(!mobileViewOpen)}
               aria-label="Switch view" aria-expanded={mobileViewOpen}
               style={{
-                padding: "4px 10px", fontSize: 11, fontWeight: 600, cursor: "pointer",
+                padding: "3px 8px", fontSize: 10, fontWeight: 600, cursor: "pointer",
                 border: `1px solid ${accentColor}44`, borderRadius: 6,
                 background: `${accentColor}18`, color: accentColor, whiteSpace: "nowrap",
               }}
@@ -500,99 +499,93 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   return (
                   <button key={k} onClick={() => { setView(k); setMobileViewOpen(false); if (demo) stopDemo(); }}
                     style={{
-                      display: "flex", width: "100%", padding: "7px 14px", fontSize: 11, cursor: "pointer",
+                      display: "flex", width: "100%", padding: "6px 12px", fontSize: 10, cursor: "pointer",
                       border: "none", borderBottom: "1px solid var(--border)",
                       background: view === k ? `${accentColor}18` : "transparent",
                       color: view === k ? accentColor : "var(--text-secondary)", textAlign: "left",
-                      alignItems: "center", gap: 6,
+                      alignItems: "center", gap: 5,
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                     onMouseLeave={e => { e.currentTarget.style.background = view === k ? `${accentColor}18` : "transparent"; }}
-                  >{lbl}{qt && <span style={{ fontSize: 8, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}</button>
+                  >{lbl}{qt && <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}</button>
                   );
                 })}
               </div>
             )}
           </div>
         )}
-        <div className={`header-nav${isMobile ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0, flexWrap: "wrap", overflow: "auto" }} role="tablist" aria-label="Dashboard views">
-          {tabs.map(([k, lbl]) => {
-            const help = DEMO_STEPS.find(d => d.view === k)?.sublabel ?? "";
-            return (
-            <span key={k} style={{ display: "inline-flex", alignItems: "center" }}>
-              <button onClick={() => { if (demo) stopDemo(); navigate(k); }}
-                role="tab"
-                aria-selected={view === k}
-                aria-label={`${lbl} view: ${help}`}
-                className={VIEW_QUERY_TAG[k] ? "resp-hide-query-tag" : undefined}
-                style={{
-                padding: isMobile ? "3px 8px" : "4px 11px", fontSize: isMobile ? 10 : 11, fontWeight: view === k ? 600 : 400,
-                border: view === k ? `1px solid ${accentColor}44` : "1px solid transparent",
-                borderRadius: 6, cursor: "pointer",
-                background: view === k ? `${accentColor}18` : "transparent",
-                color: view === k ? accentColor : "var(--text-secondary)",
-                transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)", letterSpacing: "0.2px", whiteSpace: "nowrap",
-                display: "flex", alignItems: "center", gap: 3,
-                transform: view === k ? "translateY(-1px)" : "none",
-                boxShadow: view === k ? `0 2px 8px ${accentGlow}` : "none",
-              }}
-                onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.transform = "translateY(-1px)"; } }}
-                onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.transform = "none"; } }}
-              >{lbl}
-                {VIEW_QUERY_TAG[k] && (
-                  <span style={{ fontSize: 8, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${VIEW_QUERY_TAG[k].color}18`, color: VIEW_QUERY_TAG[k].color, lineHeight: 1.2 }}>
-                    {VIEW_QUERY_TAG[k].tag}
-                  </span>
-                )}
-              </button>
-              {help && <HelpTooltip text={help} />}
-            </span>
-          );})}
+        <div className={`header-nav${isMobile ? ' resp-hide-tabs' : ''}`} style={{ display: "flex", gap: 1, alignItems: "center", flexShrink: 0, overflow: "auto" }} role="tablist" aria-label="Dashboard views">
+          {tabs.map(([k, lbl]) => (
+            <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }}
+              role="tab"
+              aria-selected={view === k}
+              className={VIEW_QUERY_TAG[k] ? "resp-hide-query-tag" : undefined}
+              style={{
+              padding: "5px 10px", fontSize: 10.5, fontWeight: view === k ? 600 : 400,
+              border: view === k ? `1px solid ${accentColor}30` : "1px solid transparent",
+              borderRadius: 6, cursor: "pointer",
+              background: view === k ? `${accentColor}12` : "transparent",
+              color: view === k ? accentColor : "var(--text-tertiary)",
+              transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)", letterSpacing: "0.15px", whiteSpace: "nowrap",
+              display: "flex", alignItems: "center", gap: 3,
+              boxShadow: view === k ? `0 0 12px ${accentGlow}` : "none",
+            }}
+              onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+              onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)"; } }}
+            >{lbl}
+              {VIEW_QUERY_TAG[k] && (
+                <span style={{ fontSize: 7.5, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${VIEW_QUERY_TAG[k].color}15`, color: VIEW_QUERY_TAG[k].color, lineHeight: 1.2 }}>
+                  {VIEW_QUERY_TAG[k].tag}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
-        <div style={{ display: "flex", gap: 2, alignItems: "center", flexShrink: 0 }}>
-          <div style={{ width: 1, height: 20, background: "var(--border)", margin: "0 4px", flexShrink: 0 }} />
+        <div style={{ display: "flex", gap: 1, alignItems: "center", flexShrink: 0 }}>
+          <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 3px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
-              padding: isMobile ? "3px 7px" : "4px 8px", fontSize: isMobile ? 10 : 12, cursor: "pointer",
-              border: "1px solid rgba(167,139,250,0.25)", borderRadius: 6,
-              background: "rgba(167,139,250,0.08)", color: COLORS.purple,
-              transition: "all 0.15s ease", flexShrink: 0,
+              padding: "4px 7px", fontSize: 11, cursor: "pointer",
+              border: "1px solid rgba(167,139,250,0.2)", borderRadius: 6,
+              background: "rgba(167,139,250,0.06)", color: COLORS.purple,
+              transition: "all 0.15s ease", flexShrink: 0, lineHeight: 1,
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.16)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.08)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.25)"; }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.14)"; e.currentTarget.style.boxShadow = "0 0 12px rgba(167,139,250,0.15)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.06)"; e.currentTarget.style.boxShadow = "none"; }}
           >{isMobile ? "👑" : "👑 Tour"}</button>
           <button onClick={() => exportAsHtml(data)} title="Export as HTML" aria-label="Export report as HTML"
             style={{
-              padding: isMobile ? "3px 7px" : "5px 10px", fontSize: isMobile ? 10 : 13, cursor: "pointer",
-              border: "1px solid var(--border)", borderRadius: 6,
-              background: "transparent", color: "var(--text-secondary)",
-              transition: "all 0.15s ease", flexShrink: 0,
+              padding: "4px 7px", fontSize: 11, cursor: "pointer",
+              border: "1px solid transparent", borderRadius: 6,
+              background: "transparent", color: "var(--text-tertiary)",
+              transition: "all 0.15s ease", flexShrink: 0, lineHeight: 1,
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border)"; }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; }}
           >⬇</button>
           <button onClick={toggleTheme} title={dark ? "Switch to light theme" : "Switch to dark theme"} aria-label="Toggle theme"
             style={{
-              padding: isMobile ? "3px 7px" : "5px 10px", fontSize: isMobile ? 10 : 13, cursor: "pointer",
-              border: "1px solid var(--border)", borderRadius: 6,
-              background: "transparent", color: "var(--text-secondary)",
-              transition: "all 0.15s ease", flexShrink: 0,
+              padding: "4px 7px", fontSize: 11, cursor: "pointer",
+              border: "1px solid transparent", borderRadius: 6,
+              background: "transparent", color: "var(--text-tertiary)",
+              transition: "all 0.15s ease", flexShrink: 0, lineHeight: 1,
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--border)"; }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; }}
           >{dark ? "☀️" : "🌙"}</button>
           <button onClick={demo ? stopDemo : startDemo}
             aria-label={demo ? "Stop demo" : "Play demo"}
             style={{
-            padding: isMobile ? "3px 10px" : "5px 14px", fontSize: isMobile ? 10 : 11, fontWeight: 600, cursor: "pointer",
-            border: demo ? "1px solid rgba(239,68,68,0.4)" : `1px solid ${accentColor}44`,
+            padding: "4px 10px", fontSize: 10, fontWeight: 700, cursor: "pointer",
+            border: demo ? "1px solid rgba(239,68,68,0.35)" : `1px solid ${accentColor}35`,
             borderRadius: 6,
-            background: demo ? "rgba(239,68,68,0.12)" : `${accentColor}18`,
-            color: demo ? "var(--accent-red)" : accentColor,
-            transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap", flexShrink: 0,
+            background: demo ? "rgba(239,68,68,0.1)" : `${accentColor}10`,
+            color: demo ? "#ef4444" : accentColor,
+            transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap", flexShrink: 0, lineHeight: 1,
+            boxShadow: demo ? "0 0 10px rgba(239,68,68,0.1)" : `0 0 10px ${accentGlow}`,
           }}>
-            <span style={{ fontSize: 11 }}>{demo ? "■" : "▶"}</span>
-            {isMobile ? "" : (demo ? "Stop" : "Play")}
+            <span style={{ fontSize: 9 }}>{demo ? "■" : "▶"}</span>
+            {!isMobile && (demo ? "Stop" : "Play")}
           </button>
         </div>
       </header>
