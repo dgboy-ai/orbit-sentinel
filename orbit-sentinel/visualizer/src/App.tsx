@@ -354,7 +354,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
               </div>
             </div>
-            <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 8 : 12 }}>
+            <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.4fr", gap: isMobile ? 8 : 12 }}>
               <ErrorBoundary><SimulateWebhook /></ErrorBoundary>
               <ErrorBoundary><RealityCheck /></ErrorBoundary>
             </div>
