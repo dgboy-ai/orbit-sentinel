@@ -541,7 +541,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0, marginLeft: 12 }}>
+        <div style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0, marginLeft: 28 }}>
           <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
