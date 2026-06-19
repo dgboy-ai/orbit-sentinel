@@ -116,7 +116,8 @@ flowchart TD
         ORBIT --> E1
         FALLBACK --> E1
         E1["Risk Scoring"] --> E2["Remediation Planner"]
-        E2 --> E3["Markdown Reporter"]
+        E2 --> E3a["DataVisualizer\nDashboard JSON"]
+        E2 --> E3b["Markdown Reporter\nMR Note"]
     end
 
     subgraph VIZ["Visualizer (React · D3 · Vite · Vercel)"]
@@ -126,8 +127,8 @@ flowchart TD
         V3 --> V4["Post-Merge Verification"]
     end
 
-    VIZ --> ENGINE
-    ENGINE --> VIZ
+    VIZ -->|"MR to analyze"| ENGINE
+    ENGINE -->|"JSON report"| VIZ
 ```
 
 Every conclusion cites specific Orbit query evidence. No black box.
