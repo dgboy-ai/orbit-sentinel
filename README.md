@@ -215,7 +215,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 - 41 components, zero CSS files — design token system (colors, z-index tiers, animation presets, spacing scale)
 - 3 responsive breakpoints (360px–768px+), touch-friendly
 - Judge's Tour (`?judge=true`) — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
-- Keyboard shortcuts: **1–8** switch views, **D** toggle demo, **E** toggle editor
+- Keyboard shortcuts: **1–8** switch views, **D** toggle theme, **E** export report as HTML
 - Theme toggle (light/dark) persisted to localStorage
 - DataModeBanner: 6 modes — loading / connecting / live / demo / error / degraded
 - OrbitQueryInspector: expandable raw GraphQL results from all 4 query types
