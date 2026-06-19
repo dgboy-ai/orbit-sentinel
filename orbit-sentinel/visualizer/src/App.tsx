@@ -36,6 +36,12 @@ import PredictionsTracker from "./components/PredictionsTracker";
 import { exportAsHtml } from "./components/EnhancedExport";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "./utils/colors";
+import { apiService } from "./services/api";
+import { ssRead, ssWrite } from "./utils/session";
+import type { View } from "./constants/views";
+import { DEMO_STEPS, VIEW_LABELS, VIEW_QUERY_TAG, ALL_VIEWS } from "./constants/views";
+import PanelFallback from "./components/PanelFallback";
+import ScanLine from "./components/ScanLine";
 
 // Lazy-loaded heavy components (D3, large bundles)
 const DigitalTwinGraph = React.lazy(() => import("./components/DigitalTwinGraph"));
@@ -43,144 +49,13 @@ const BlastRadiusExplorer = React.lazy(() => import("./components/BlastRadiusExp
 const ForecastEngine = React.lazy(() => import("./components/ForecastEngine"));
 const HistoricalContext = React.lazy(() => import("./components/HistoricalContext"));
 
-function PanelFallback({ height = 200 }: { height?: number }) {
-  return (
-    <div className="card" style={{
-      height, display: "flex", flexDirection: "column", gap: 8,
-      padding: "14px 16px", overflow: "hidden",
-      background: "linear-gradient(180deg, rgba(139,92,246,0.02) 0%, transparent 100%)",
-    }}>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
-        <div style={{ width: 20, height: 20, borderRadius: 6, background: "rgba(139,92,246,0.08)", animation: "shimmer 1.5s ease-in-out infinite", backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, rgba(139,92,246,0.08) 25%, rgba(139,92,246,0.15) 50%, rgba(139,92,246,0.08) 75%)" }} />
-        <div style={{ width: 100, height: 10, borderRadius: 4, background: "rgba(139,92,246,0.06)", animation: "shimmer 1.8s ease-in-out infinite", backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, rgba(139,92,246,0.06) 25%, rgba(139,92,246,0.12) 50%, rgba(139,92,246,0.06) 75%)" }} />
-        <div style={{ marginLeft: "auto", width: 50, height: 8, borderRadius: 4, background: "rgba(139,92,246,0.04)", animation: "shimmer 2s ease-in-out infinite", backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, rgba(139,92,246,0.04) 25%, rgba(139,92,246,0.1) 50%, rgba(139,92,246,0.04) 75%)" }} />
-      </div>
-      {Array.from({ length: Math.max(1, Math.floor((height - 50) / 20)) }).map((_, i) => (
-        <div key={i} style={{
-          height: 8, borderRadius: 4, width: `${60 + Math.random() * 30}%`,
-          background: "rgba(139,92,246,0.04)",
-          animation: "shimmer 1.5s ease-in-out infinite",
-          backgroundSize: "200% 100%",
-          backgroundImage: "linear-gradient(90deg, rgba(139,92,246,0.04) 25%, rgba(139,92,246,0.1) 50%, rgba(139,92,246,0.04) 75%)",
-          animationDelay: `${i * 0.1}s`,
-        }} />
-      ))}
-    </div>
-  );
-}
-
-// API configuration — set VITE_API_BASE_URL as Vercel env var to point to live engine.
-// Falls back to same-origin (Vite dev server proxy) or demo mode if unreachable.
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
-
-type View = "overview" | "blast-radius" | "risk" | "simulation" | "historical" | "report" | "predictions" | "setup";
-
-type DemoStep = { view: View; label: string; sublabel: string; icon: string };
-
-const DEMO_STEPS: DemoStep[] = [
-  { view: "overview", label: "Orbit Sentinel Dashboard", sublabel: "Impact Calculator, architecture diagram, MR risk, Orbit evidence, and incident intelligence — all 4 query types", icon: "🛰️" },
-  { view: "setup", label: "Setup Wizard", sublabel: "4-step guided journey — Mission → Architecture → Setup → Launch. Copy commands, Devpost checklist.", icon: "⚡" },
-  { view: "blast-radius", label: "Orbit Graph", sublabel: "Visualize affected files, services, and downstream dependencies from Orbit NEIGHBORS query", icon: "💥" },
-  { view: "risk", label: "Risk Investigation", sublabel: "Orbit evidence cards showing why this MR cannot deploy — signals, findings, and verdict", icon: "🔍" },
-  { view: "simulation", label: "Forecast Engine", sublabel: "Digital twin forecast with interactive what-if scenarios — predicts outcomes before deployment", icon: "🧪" },
-  { view: "historical", label: "Historical Context", sublabel: "Past incidents and MRs with similarity scores from Orbit TRAVERSAL query", icon: "📜" },
-  { view: "report", label: "Impact Report", sublabel: "Full MR impact summary — deploy decisions, rollback strategy, and evidence chain", icon: "📋" },
-  { view: "predictions", label: "Predictions Tracker", sublabel: "Prediction accuracy scoreboard, post-merge verification, risk trend chart — proves Orbit Sentinel predictions work", icon: "🎯" },
-];
-
-const VIEW_LABELS: Record<View, string> = { overview: "Dashboard", "blast-radius": "Blast Radius", risk: "Risk Investigation", simulation: "Forecast Engine", historical: "Historical Context", report: "Impact Report", predictions: "Predictions", setup: "Setup Wizard" };
-
-const SS_KEY = "orbit-vs";
-function ssRead<T>(key: string, fallback: T): T {
-  try { const v = sessionStorage.getItem(`${SS_KEY}-${key}`); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
-}
-function ssWrite(key: string, value: unknown) { try { sessionStorage.setItem(`${SS_KEY}-${key}`, JSON.stringify(value)); } catch {} }
-
-// API service functions
-const FETCH_TIMEOUT = 15000;
-
-async function fetchWithTimeout(url: string, options: RequestInit = {}): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
-  try {
-    const response = await fetch(url, { ...options, signal: controller.signal });
-    return response;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-const apiService = {
-  async analyzeChange(params: {
-    projectId: number;
-    projectPath: string;
-    mrIid: number;
-    mrTitle: string;
-    changedFiles: string[];
-    changeDescription: string;
-    branch?: string;
-  }): Promise<any> {
-    const response = await fetchWithTimeout(`${API_BASE_URL}/api/analyze`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to analyze change');
-    }
-
-    return response.json();
-  },
-
-  async getDemoData(): Promise<any> {
-    const response = await fetchWithTimeout(`${API_BASE_URL}/api/demo`);
-    if (!response.ok) {
-      throw new Error('Engine demo endpoint unreachable');
-    }
-    return response.json();
-  },
-
-  isApiAvailable(): boolean {
-    return !!API_BASE_URL && API_BASE_URL !== 'https://your-engine-domain.com';
-  },
-};
-
-function ScanLine() {
-  const [active, setActive] = useState(false);
-  useEffect(() => {
-    const t = setInterval(() => {
-      setActive(true);
-      setTimeout(() => setActive(false), 1200);
-    }, 4000 + Math.random() * 3000);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <div style={{
-      position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, overflow: "hidden", opacity: active ? 1 : 0,
-      transition: "opacity 0.3s ease",
-    }}>
-      <div style={{
-        position: "absolute", left: 0, right: 0, height: "40%",
-        background: "linear-gradient(180deg, rgba(59,130,246,0.06) 0%, rgba(59,130,246,0.02) 40%, transparent 100%)",
-        animation: active ? "scanLine 1.2s ease-in-out forwards" : "none",
-      }} />
-    </div>
-  );
-}
-
-
-
-
 function getInitialView(): View {
-  if (typeof window === "undefined") return "overview";
+  if (typeof window === "undefined") return "setup";
   const p = new URLSearchParams(window.location.search);
   const v = p.get("view");
-  if (v && ["overview","blast-radius","risk","simulation","historical","report","predictions","setup"].includes(v)) return v as View;
-  return "overview";
+  if (v && (ALL_VIEWS as readonly string[]).includes(v)) return v as View;
+  const onboarded = localStorage.getItem("orbit-sentinel-onboarded");
+  return onboarded ? "overview" : "setup";
 }
 
 function getInitialDemo(): boolean {
@@ -210,9 +85,9 @@ export default function App() {
   const [firstLoad, setFirstLoad] = useState(true);
   const screenshotMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("screenshot") === "true";
   const presentMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("present") === "true";
-  const noEngine = !API_BASE_URL || API_BASE_URL === 'https://your-engine-domain.com';
+  const noEngine = !apiService.isApiAvailable();
   const [showNarrative, setShowNarrative] = useState(
-    typeof import.meta !== "undefined" && (import.meta as any).env?.MODE === "test" ? false : !noEngine
+    import.meta.env?.MODE === "test" ? false : !noEngine
   );
   const [currentScenario, setCurrentScenario] = useState<string | null>(() => ssRead("scenario", null));
   const [analyzing, setAnalyzing] = useState(false);
@@ -426,11 +301,6 @@ export default function App() {
   }, []);
 
   const tabs: [View, string][] = [["overview","Overview"],["setup","Setup"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"],["predictions","Predictions"]];
-  const VIEW_QUERY_TAG: Partial<Record<View, {tag: string; color: string}>> = {
-    "blast-radius": { tag: "NEIGHBORS", color: "#a78bfa" },
-    "historical": { tag: "TRAVERSAL", color: "#22d3ee" },
-    "risk": { tag: "AGGREGATION", color: "#f97316" },
-  };
   const [prevView, setPrevView] = useState<View>(view);
   const [transitioning, setTransitioning] = useState(false);
 
