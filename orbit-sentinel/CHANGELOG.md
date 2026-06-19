@@ -4,7 +4,45 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
-## Latest Session (June 19 — Batch 2: Vulnerability Prediction + Power UX)
+## Latest Session (June 19 — Batch 3: Architecture Cleanup + Style Tokens)
+
+### Added
+
+- **Shared Design Tokens** (`visualizer/src/constants/tokens.ts`) — Centralized `COLORS`, `Z` (z-index tiers), `ANIM` (animation presets), `FONT` (type scale), `SPACING`/`PAD` (spacing scale on 4px grid). Migrated App.tsx: all z-index values → `Z.*`, all animation strings → `ANIM.*`, direct hex colors → `COLORS.*`. Prevents layering bugs and keeps timing consistent.
+
+- **API Service Layer** (`visualizer/src/services/api.ts`) — Extracted from App.tsx. Dedicated `ApiService` class with `isApiAvailable()`, `analyzeChange()`, and config. Centralizes engine URL, auth token, and fetch logic.
+
+- **View Constants** (`visualizer/src/constants/views.ts`) — Extracted from App.tsx. All view-related types (`View`, `DemoStep`), arrays (`DEMO_STEPS`, `ALL_VIEWS`), and maps (`VIEW_LABELS`, `VIEW_QUERY_TAG`) live here.
+
+- **PanelFallback Component** (`visualizer/src/components/PanelFallback.tsx`) — Extracted lazy-loading fallback shimmer for suspended graph/forecast/history components. Replaces inline duplicate across 3 Suspense boundaries.
+
+- **ScanLine Component** (`visualizer/src/components/ScanLine.tsx`) — Extracted radar-sweep animation overlay from App.tsx.
+
+- **Session Utilities** (`visualizer/src/utils/session.ts`) — Extracted `ssRead`/`ssWrite` helpers for sessionStorage-backed state persistence.
+
+- **Smoke Tests** (`visualizer/src/__tests__/components.test.tsx`) — Added 3 new tests for `PredictionsTracker` (accuracy scoreboard + vuln section), `SetupWizard` (problem + mission text), `ImpactReport` (export dropdown button). Plus `IntersectionObserver` polyfill in setup. **10→13 tests**.
+
+### Changed
+
+- **App.tsx refactored** — 858 lines → 728 lines. Extracted 5 concerns into dedicated files (api service, view constants, PanelFallback, ScanLine, session utils). No behavioral changes.
+
+- **Default view** — First-time visitors (unboarded) now see **Setup Wizard** instead of Dashboard. Returning users still see Dashboard. Aligns with "setup before use" UX pattern.
+
+- **`(import.meta as any)` removed** — Replaced with `import.meta.env?.MODE` in test-conditional. Eliminates TS type coercion.
+
+- **Local `VIEW_QUERY_TAG` shadow removed** — Was shadowing the module import; consolidated to single source from `constants/views.ts`.
+
+- **`"cat"` icon removed from demo-script.md** — Was referencing a deleted icon.
+
+### Fixed
+
+- **SetupWizard test** — Was looking for `/Devpost/` text that appears only on step 4 (not initially rendered). Changed assertion to `The Problem` + `The Mission` visible on initial mount.
+
+- **ImpactReport test** — `IntersectionObserver is not defined` in jsdom. Added global polyfill in `__tests__/setup.ts`.
+
+---
+
+## Previous Session (June 19 — Batch 2: Vulnerability Prediction + Power UX)
 
 ### Added
 
@@ -173,7 +211,8 @@ Added a complete error classification and recovery system:
 ## Test Results
 
 ```
- ✓  95 tests passed (15 files)
+ Engine:   ✓  95 tests passed (15 files)
+ Visualizer: ✓ 13 tests passed (2 files)
 ```
 
 | Test File | Tests | What It Covers |
@@ -191,6 +230,8 @@ Added a complete error classification and recovery system:
 | `reporter.test.ts` | 4 | Report generation |
 | `config.test.ts` | 3 | Configuration validation |
 | `simulator.test.ts` | 3 | Change simulation |
+| `App.test.tsx` | 3 | App navigation, export button, onboarding dismiss |
+| `components.test.tsx` | 10 | ImpactCalculator, RealityCheck, SimulateWebhook, TaglineBanner, PredictionsTracker, SetupWizard, ImpactReport |
 
 ---
 
@@ -199,18 +240,23 @@ Added a complete error classification and recovery system:
 ### New Files
 
 | File | Purpose |
-|---|---|
+|---|---|---|
 | `engine/src/server.ts` | Express API server (analyze + demo endpoints) |
 | `engine/src/server-index.ts` | Server entry point |
 | `engine/src/errors.ts` | Error classification, retry logic, rate limiting |
 | `engine/src/validators.ts` | Input validation and sanitization |
 | `deploy.sh` | Vercel + Render deployment automation |
+| `visualizer/src/constants/tokens.ts` | Shared design tokens (colors, z-index, animations, spacing) |
+| `visualizer/src/constants/views.ts` | View types, labels, demo steps, query tags |
+| `visualizer/src/services/api.ts` | API service class for engine communication |
+| `visualizer/src/components/PanelFallback.tsx` | Lazy-load fallback shimmer |
+| `visualizer/src/components/ScanLine.tsx` | Radar-sweep animation overlay |
+| `visualizer/src/utils/session.ts` | SessionStorage-backed state persistence helpers |
 
 ### Modified Files
 
 | File | Change |
-|---|---|
-| `README.md` | Rewritten as professional storytelling document with architecture diagram |
+|---|---|---|
 | `AGENTS.md` | Rewritten as concise agent behavior specification |
 | `.gitlab-ci.yml` | Fixed syntax, added engine jobs, corrected paths |
 | `engine/package.json` | Added express, cors, zod dependencies |
@@ -219,9 +265,11 @@ Added a complete error classification and recovery system:
 | `engine/src/server.ts` | Uses DataVisualizer transform; demo endpoint returns VisualizationData shape |
 | `engine/src/types.ts` | Widened DigitalTwinNode.type to string; optional impact/recommendedTests |
 | `engine/src/config.ts` | Exported config const (was private) |
-| `visualizer/src/App.tsx` | Replaced hardcoded DATA with API service + demo fallback |
-| `visualizer/package.json` | Added repository, homepage, bugs fields |
 | `flow/orbit-sentinel-flow.yaml` | Dynamic `{{mr_iid}}` and `{{changed_files}}` placeholders |
+| `visualizer/src/App.tsx` | Refactored 858→728 lines: extracted api service, view constants, PanelFallback, ScanLine, session utils. Added shared tokens import, migrated z-index/animations/colors. Default view is now "setup" for unboarded. Removed `(import.meta as any)`. |
+| `visualizer/src/__tests__/components.test.tsx` | Added 3 smoke tests (PredictionsTracker, SetupWizard, ImpactReport) |
+| `visualizer/src/__tests__/setup.ts` | Added IntersectionObserver polyfill for jsdom |
+| `visualizer/src/utils/colors.ts` | No behavioral changes |
 
 ---
 
