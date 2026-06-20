@@ -29,13 +29,13 @@ function DigitalTwinStatus({ graph }: { graph: { nodes: GraphNode[]; links: Grap
   const animServices = useAnimatedValue(serviceCount, 1200, 300);
   const animFailures = useAnimatedValue(highRiskCount, 1200, 400);
   return (
-    <div className="resp-graph-status" style={{ display: "flex", gap: 6, padding: "6px 12px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+    <div className="resp-graph-status" style={{ display: "flex", gap: 6, padding: "6px 12px", background: "var(--overlay-02)", borderBottom: "1px solid var(--overlay-05)" }}>
       <Stat icon="🔗" label="Nodes" value={Math.round(animNodes)} />
-      <div style={{ width: 1, background: "rgba(255,255,255,0.06)" }} />
+      <div style={{ width: 1, background: "var(--overlay-06)" }} />
       <Stat icon="🔀" label="Relationships" value={Math.round(animLinks)} />
-      <div style={{ width: 1, background: "rgba(255,255,255,0.06)" }} />
+      <div style={{ width: 1, background: "var(--overlay-06)" }} />
       <Stat icon="⚙️" label="Systems" value={Math.round(animServices)} />
-      <div style={{ width: 1, background: "rgba(255,255,255,0.06)" }} />
+      <div style={{ width: 1, background: "var(--overlay-06)" }} />
       <Stat icon="🚨" label="Failures" value={Math.round(animFailures)} color="#ef4444" />
     </div>
   );
@@ -93,7 +93,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
 
     defs.append("marker").attr("id","a").attr("viewBox","0 -5 10 10").attr("refX",16).attr("refY",0)
       .attr("markerWidth",4).attr("markerHeight",4).attr("orient","auto")
-      .append("path").attr("d","M0,-5L10,0L0,5").attr("fill","rgba(255,255,255,0.12)");
+      .append("path").attr("d","M0,-5L10,0L0,5").attr("fill","var(--overlay-12)");
 
     const allColors = [...new Set(graph.nodes.map(n => {
       return n.riskLevel ? riskLevelToColor(n.riskLevel) : NODE_COLORS[n.type] ?? "#666";
@@ -107,7 +107,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
     });
 
     defs.append("pattern").attr("id","grid").attr("width",32).attr("height",32).attr("patternUnits","userSpaceOnUse")
-      .append("path").attr("d","M 32 0 L 0 0 0 32").attr("fill","none").attr("stroke","rgba(255,255,255,0.03)").attr("stroke-width",0.5);
+      .append("path").attr("d","M 32 0 L 0 0 0 32").attr("fill","none").attr("stroke","var(--overlay-03)").attr("stroke-width",0.5);
 
     const bg = svg.append("rect").attr("width","100%").attr("height","100%").attr("fill","url(#grid)");
     const g = svg.append("g");
@@ -133,7 +133,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
     const lg = g.append("g");
     const linkSel = lg.selectAll<SVGLineElement,DL>("line")
       .data(ln).join("line")
-      .attr("stroke","rgba(255,255,255,0.06)").attr("stroke-width",(d:DL)=>Math.max(0.5,(d.value??1)*1.2)).attr("marker-end","url(#a)");
+      .attr("stroke","var(--overlay-06)").attr("stroke-width",(d:DL)=>Math.max(0.5,(d.value??1)*1.2)).attr("marker-end","url(#a)");
 
     const ng = g.append("g");
 
@@ -188,14 +188,14 @@ export default function DigitalTwinGraph({ graph }: Props) {
       .attr("stroke-width",1.5)
       .style("cursor","pointer")
       .on("mouseenter",function(_e:any,d:DN){
-        d3.select(this).attr("stroke","rgba(255,255,255,0.6)").attr("stroke-width",3);
+        d3.select(this).attr("stroke","var(--overlay-60)").attr("stroke-width",3);
         d3.select(this.parentNode!.querySelector("text")!).attr("font-size",11).attr("fill","var(--text-primary)");
-        linkSel.attr("stroke",(ld:DL)=>{const src=(ld.source as DN).id;const tgt=(ld.target as DN).id;return (src===d.id||tgt===d.id)?"rgba(96,165,250,0.25)":"rgba(255,255,255,0.06)";});
+        linkSel.attr("stroke",(ld:DL)=>{const src=(ld.source as DN).id;const tgt=(ld.target as DN).id;return (src===d.id||tgt===d.id)?"rgba(96,165,250,0.25)":"var(--overlay-06)";});
       })
       .on("mouseleave",function(){
         d3.select(this).attr("stroke","rgba(0,0,0,0.5)").attr("stroke-width",1.5);
         d3.select(this.parentNode!.querySelector("text")!).attr("font-size",9).attr("fill","var(--text-secondary)");
-        linkSel.attr("stroke","rgba(255,255,255,0.06)");
+        linkSel.attr("stroke","var(--overlay-06)");
       });
 
     node.append("text").text(d=>d.label)
@@ -236,7 +236,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
   return (
     <div className="card" style={{ overflow:"hidden", position:"relative", height:"100%", minHeight:0, animation:"fadeSlideUp 0.5s 0.25s ease both", display:"flex", flexDirection:"column" }}>
       <DigitalTwinStatus graph={graph} />
-      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid rgba(255,255,255,0.06)", backdropFilter:"blur(4px)", fontSize:9, color:"var(--text-secondary)" }}>
+      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid var(--overlay-06)", backdropFilter:"blur(4px)", fontSize:9, color:"var(--text-secondary)" }}>
         {[{c:"#22c55e",l:"Safe"},{c:"#eab308",l:"Medium"},{c:"#f97316",l:"High"},{c:"#ef4444",l:"Critical"}].map(x=>(
           <span key={x.l} style={{display:"flex",alignItems:"center",gap:3}}><span style={{width:4,height:4,borderRadius:"50%",background:x.c,display:"inline-block",boxShadow:`0 0 4px ${x.c}`}}/>{x.l}</span>
         ))}
@@ -247,7 +247,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
         position: "absolute", bottom: 12, right: 12, zIndex: 10,
         display: "flex", gap: 4,
         background: "rgba(15,18,26,0.92)", backdropFilter: "blur(12px)",
-        border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8,
+        border: "1px solid var(--overlay-08)", borderRadius: 8,
         padding: "4px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
       }}>
         <button onClick={handleZoomIn} title="Zoom In" style={{
@@ -271,7 +271,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
         position:"absolute", top:8, right:8, zIndex:20, width: 210,
         padding: "8px 12px", borderRadius: 8,
         background: "rgba(8,9,13,0.92)", backdropFilter: "blur(16px)",
-        border: `1px solid ${selected ? nodeColor(selected) + "44" : "rgba(255,255,255,0.06)"}`,
+        border: `1px solid ${selected ? nodeColor(selected) + "44" : "var(--overlay-06)"}`,
         boxShadow: selected ? `0 4px 24px rgba(0,0,0,0.6), 0 0 12px ${nodeColor(selected)}11` : "none",
         animation: "fadeSlideDown 0.2s ease",
         transition: "border-color 0.3s ease, box-shadow 0.3s ease",

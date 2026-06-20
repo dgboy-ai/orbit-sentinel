@@ -89,7 +89,7 @@ export default function TiltCard({ children, style, className, maxTilt = 6, glar
           "--glare-opacity": "0",
           "--glare-x": "50%",
           "--glare-y": "50%",
-          backgroundImage: `radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255,255,255,0.06) 0%, transparent 60%)`,
+          backgroundImage: `radial-gradient(circle at var(--glare-x) var(--glare-y), var(--overlay-06) 0%, transparent 60%)`,
         } as React.CSSProperties : {}),
         ...style,
       }}

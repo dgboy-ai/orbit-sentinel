@@ -321,11 +321,11 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           style={{
             padding: analyzing ? "10px 20px" : "10px 20px", fontSize: 12, fontWeight: 700,
             cursor: canAnalyze && !analyzing ? "pointer" : "not-allowed",
-            border: canAnalyze && !analyzing ? "1px solid rgba(139,92,246,0.4)" : "1px solid rgba(255,255,255,0.05)",
+            border: canAnalyze && !analyzing ? "1px solid rgba(139,92,246,0.4)" : "1px solid var(--overlay-05)",
             borderRadius: 8,
             background: canAnalyze && !analyzing
               ? "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.08))"
-              : "rgba(255,255,255,0.03)",
+              : "var(--overlay-03)",
             color: canAnalyze && !analyzing ? "#c4b5fd" : "var(--text-tertiary)",
             whiteSpace: "nowrap", transition: "all 0.2s",
             display: "flex", alignItems: "center", gap: 6,
@@ -495,18 +495,18 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                       textAlign: "left",
                       border: active
                         ? `1.5px solid ${s.color}66`
-                        : "1px solid rgba(255,255,255,0.06)",
+                        : "1px solid var(--overlay-06)",
                       borderRadius: 8,
                       background: active
                         ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)`
-                        : "rgba(255,255,255,0.02)",
+                        : "var(--overlay-02)",
                       color: active ? s.color : "var(--text-primary)",
                       transition: "all 0.2s",
                       width: "100%",
                       boxShadow: active ? `0 0 20px ${s.color}10` : "none",
                     }}
-                    onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}}
-                    onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}}
+                    onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.borderColor = "var(--overlay-10)"; }}}
+                    onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "var(--overlay-02)"; e.currentTarget.style.borderColor = "var(--overlay-06)"; }}}
                   >
                     <span style={{ fontSize: 22, filter: active ? "none" : "grayscale(0.3)" }}>{s.icon}</span>
                     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>

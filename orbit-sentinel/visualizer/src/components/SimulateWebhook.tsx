@@ -66,7 +66,7 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
   return (
     <div className="card" style={{
       padding: "14px 18px", position: "relative", overflow: "hidden",
-      borderColor: running ? "rgba(96,165,250,0.2)" : "rgba(255,255,255,0.06)",
+      borderColor: running ? "rgba(96,165,250,0.2)" : "var(--overlay-06)",
       background: running ? "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(15,18,26,0.95))" : undefined,
       animation: "fadeSlideUp 0.5s 0.1s ease both",
     }}>
@@ -112,8 +112,8 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
                 <div style={{
                   width: 20, height: 20, borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9,
-                  background: status === "done" ? `${s.color}18` : status === "active" ? `${s.color}22` : "rgba(255,255,255,0.04)",
-                  border: `1px solid ${status === "done" ? s.color + "44" : status === "active" ? s.color + "66" : "rgba(255,255,255,0.08)"}`,
+                  background: status === "done" ? `${s.color}18` : status === "active" ? `${s.color}22` : "var(--overlay-04)",
+                  border: `1px solid ${status === "done" ? s.color + "44" : status === "active" ? s.color + "66" : "var(--overlay-08)"}`,
                   animation: status === "active" ? "pulseDot 1s ease-in-out infinite" : undefined,
                 }}>
                   {status === "done" ? "✓" : status === "active" ? "●" : "○"}

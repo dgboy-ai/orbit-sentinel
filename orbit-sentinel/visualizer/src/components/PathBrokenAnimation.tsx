@@ -26,8 +26,8 @@ function FlowArrow({ broken }: { broken?: boolean }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "4px 0", opacity: 0.6 }}>
       <svg width="16" height="24" viewBox="0 0 16 24">
-        <line x1="8" y1="0" x2="8" y2="18" stroke={broken ? "#ef4444" : "rgba(255,255,255,0.2)"} strokeWidth="2" strokeDasharray={broken ? "3,3" : "none"} />
-        <polygon points="8,22 4,14 12,14" fill={broken ? "#ef4444" : "rgba(255,255,255,0.2)"} />
+        <line x1="8" y1="0" x2="8" y2="18" stroke={broken ? "#ef4444" : "var(--overlay-20)"} strokeWidth="2" strokeDasharray={broken ? "3,3" : "none"} />
+        <polygon points="8,22 4,14 12,14" fill={broken ? "#ef4444" : "var(--overlay-20)"} />
       </svg>
     </div>
   );
@@ -84,8 +84,8 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
               opacity: visible > i ? 1 : 0,
               transform: visible > i ? "scale(1)" : "scale(0.9)",
               transition: `all 0.5s ${i * 0.15}s cubic-bezier(0.16,1,0.3,1)`,
-              background: step.broken && visible > i ? "rgba(239,68,68,0.08)" : visible > i ? "rgba(255,255,255,0.03)" : "transparent",
-              border: step.broken && visible > i ? "1px solid rgba(239,68,68,0.2)" : visible > i ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+              background: step.broken && visible > i ? "rgba(239,68,68,0.08)" : visible > i ? "var(--overlay-03)" : "transparent",
+              border: step.broken && visible > i ? "1px solid rgba(239,68,68,0.2)" : visible > i ? "1px solid var(--overlay-06)" : "1px solid transparent",
               width: "100%", maxWidth: 320,
               animation: step.broken && showBroken ? "shake 0.5s ease" : undefined,
             }}>

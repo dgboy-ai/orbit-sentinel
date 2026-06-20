@@ -52,7 +52,7 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
             </React.Fragment>
           ))}
           <linearGradient id="chart-bg-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.02)" />
+            <stop offset="0%" stopColor="var(--overlay-02)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
         </defs>
@@ -63,8 +63,8 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
         {/* horizontal grid lines */}
         {yLabels.map(v => (
           <g key={v}>
-            <line x1={pad.left} x2={w - pad.right} y1={yTick(v)} y2={yTick(v)} stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" strokeDasharray="3,3" />
-            <text x={pad.left - labelOff} y={yTick(v) + 3.5} textAnchor="end" fill="rgba(255,255,255,0.35)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{Math.round(v * 100)}%</text>
+            <line x1={pad.left} x2={w - pad.right} y1={yTick(v)} y2={yTick(v)} stroke="var(--overlay-06)" strokeWidth="0.5" strokeDasharray="3,3" />
+            <text x={pad.left - labelOff} y={yTick(v) + 3.5} textAnchor="end" fill="var(--overlay-35)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{Math.round(v * 100)}%</text>
           </g>
         ))}
 
@@ -86,7 +86,7 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
         {/* hover indicator */}
         {hoverX !== null && (
           <g>
-            <line x1={xTick(hoverX)} x2={xTick(hoverX)} y1={pad.top} y2={pad.top + plotH} stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="2,2" />
+            <line x1={xTick(hoverX)} x2={xTick(hoverX)} y1={pad.top} y2={pad.top + plotH} stroke="var(--overlay-12)" strokeWidth="1" strokeDasharray="2,2" />
             {series.map((s) => {
               const v = s.data[hoverX];
               if (v === undefined) return null;
@@ -98,8 +98,8 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
                 </g>
               );
             })}
-            <rect x={xTick(hoverX) - 48} y={pad.top - 4} width={96} height={26} rx={6} fill="rgba(8,9,13,0.94)" stroke="rgba(255,255,255,0.1)" />
-            <text x={xTick(hoverX)} y={pad.top + 10} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="8" fontWeight="600" fontFamily="'JetBrains Mono',monospace">
+            <rect x={xTick(hoverX) - 48} y={pad.top - 4} width={96} height={26} rx={6} fill="rgba(8,9,13,0.94)" stroke="var(--overlay-10)" />
+            <text x={xTick(hoverX)} y={pad.top + 10} textAnchor="middle" fill="var(--overlay-50)" fontSize="8" fontWeight="600" fontFamily="'JetBrains Mono',monospace">
               {labels?.[hoverX] ?? `!${hoverX + 1}`}
             </text>
             {series.map((s, si) => {
@@ -115,9 +115,9 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
         )}
 
         {/* x-axis labels — use real MR IIDs from labels prop */}
-        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[0] ?? `MR #1`}</text>
-        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.18)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[midIdx] ?? `MR #${midIdx + 1}`}</text>}
-        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[lastIdx] ?? `MR #${n}`}</text>
+        <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="var(--overlay-25)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[0] ?? `MR #1`}</text>
+        {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="var(--overlay-18)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[midIdx] ?? `MR #${midIdx + 1}`}</text>}
+        <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="var(--overlay-25)" fontSize="9" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[lastIdx] ?? `MR #${n}`}</text>
       </svg>
     </div>
   );
@@ -172,7 +172,7 @@ function OutcomeBadge({ outcome }: { outcome: string }) {
     verified: { bg: "rgba(34,197,94,0.1)", color: "#22c55e", label: "✓ Verified" },
     failed: { bg: "rgba(239,68,68,0.1)", color: "#ef4444", label: "✗ Failed" },
     pending: { bg: "rgba(234,179,8,0.1)", color: "#eab308", label: "⋯ Pending" },
-    unknown: { bg: "rgba(255,255,255,0.04)", color: "var(--text-tertiary)", label: "? Unknown" },
+    unknown: { bg: "var(--overlay-04)", color: "var(--text-tertiary)", label: "? Unknown" },
   };
   const c = colors[outcome] || colors.unknown;
   return (
@@ -347,7 +347,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <span style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px" }}>Prediction Outcomes</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
             {(["true_positive","true_negative","false_positive","false_negative"] as const).map(cat => {
               const count = items.filter(i => (i.category || i.actualOutcome === "pending" ? "pending" : "unknown") !== "pending" && i.category === cat).length + items.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === undefined && (
                 cat === "true_positive" ? i.predictedRisk >= 0.6 && i.actualOutcome === "failed" :
@@ -450,12 +450,12 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 70px",
                   gap: 6, alignItems: "center",
                   padding: "8px 12px", borderRadius: 6,
-                  background: `rgba(255,255,255,0.01)`, border: "1px solid rgba(255,255,255,0.04)",
+                  background: `rgba(255,255,255,0.01)`, border: "1px solid var(--overlay-04)",
                   animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s ease both`,
                   transition: "border-color 0.15s",
                 }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = `${sevColor}25`; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; }}
                 >
                   <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{v.mr}</div>
                   <div style={{ fontSize: 10, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.file}</div>
@@ -524,8 +524,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           {verifyResult && (
             <div style={{
               marginTop: 10, padding: "10px 14px", borderRadius: 8,
-              background: verifyResult.outcome === "verified" ? "rgba(34,197,94,0.06)" : verifyResult.outcome === "failed" ? "rgba(239,68,68,0.06)" : "rgba(255,255,255,0.02)",
-              border: `1px solid ${verifyResult.outcome === "verified" ? "rgba(34,197,94,0.15)" : verifyResult.outcome === "failed" ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.06)"}`,
+              background: verifyResult.outcome === "verified" ? "rgba(34,197,94,0.06)" : verifyResult.outcome === "failed" ? "rgba(239,68,68,0.06)" : "var(--overlay-02)",
+              border: `1px solid ${verifyResult.outcome === "verified" ? "rgba(34,197,94,0.15)" : verifyResult.outcome === "failed" ? "rgba(239,68,68,0.15)" : "var(--overlay-06)"}`,
               animation: "fadeSlideUp 0.3s ease",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -549,11 +549,11 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
             <span style={{ fontSize: 13 }}>📒</span>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>MR Predictions Ledger</span>
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
+            <div style={{ flex: 1, height: 1, background: "var(--overlay-06)" }} />
             <select value={filterOutcome} onChange={e => setFilterOutcome(e.target.value)}
               style={{
                 fontSize: 9, padding: "4px 10px", borderRadius: 6,
-                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--overlay-04)", border: "1px solid var(--overlay-10)",
                 color: "var(--text-secondary)", cursor: "pointer", outline: "none",
               }}>
               <option value="all">All Outcomes</option>
@@ -564,11 +564,11 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <button onClick={() => setSortAsc(!sortAsc)}
               style={{
                 fontSize: 9, padding: "4px 10px", borderRadius: 6, cursor: "pointer",
-                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--overlay-04)", border: "1px solid var(--overlay-10)",
                 color: "var(--text-secondary)", transition: "all 0.15s",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-08)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-04)"; }}
             >
               {sortAsc ? "↑ Oldest" : "↓ Newest"}
             </button>
@@ -589,7 +589,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                     gap: 6,
                     padding: "12px 14px", borderRadius: 8,
                     background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
-                    border: `1px solid ${isHovered ? `${outcomeColor}22` : "rgba(255,255,255,0.04)"}`,
+                    border: `1px solid ${isHovered ? `${outcomeColor}22` : "var(--overlay-04)"}`,
                     transition: "all 0.15s ease",
                     animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}
@@ -602,7 +602,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                     </div>
                     <div style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>{item.title}</div>
                     
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 4, borderTop: "1px solid rgba(255,255,255,0.03)", paddingTop: 6 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 4, borderTop: "1px solid var(--overlay-03)", paddingTop: 6 }}>
                       <div>
                         <div style={{ fontSize: 8, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 2 }}>Predicted Risk</div>
                         <RiskBadge score={item.predictedRisk} />
@@ -639,7 +639,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   gap: isMobile ? 4 : 10, alignItems: "center",
                   padding: "10px 14px", borderRadius: 8,
                   background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
-                  border: `1px solid ${isHovered ? `${outcomeColor}22` : "rgba(255,255,255,0.04)"}`,
+                  border: `1px solid ${isHovered ? `${outcomeColor}22` : "var(--overlay-04)"}`,
                   transition: "all 0.15s ease",
                   cursor: "default",
                   animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
@@ -739,8 +739,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* FOOTER */}
       <div style={{
         padding: "10px 16px", textAlign: "center",
-        background: "rgba(255,255,255,0.02)", borderRadius: 8,
-        border: "1px solid rgba(255,255,255,0.04)",
+        background: "var(--overlay-02)", borderRadius: 8,
+        border: "1px solid var(--overlay-04)",
         animation: "fadeSlideUp 0.4s 0.2s cubic-bezier(0.16,1,0.3,1) both",
       }}>
         <div style={{ fontSize: 9, color: "var(--text-tertiary)", lineHeight: 1.5 }}>

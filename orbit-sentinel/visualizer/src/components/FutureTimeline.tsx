@@ -5,8 +5,8 @@ function TimelineDot({ active }: { active: boolean }) {
   return (
     <div style={{
       width: 14, height: 14, borderRadius: "50%",
-      background: active ? "var(--accent-blue)" : "rgba(255,255,255,0.08)",
-      border: active ? "2px solid rgba(59,130,246,0.5)" : "2px solid rgba(255,255,255,0.1)",
+      background: active ? "var(--accent-blue)" : "var(--overlay-08)",
+      border: active ? "2px solid rgba(59,130,246,0.5)" : "2px solid var(--overlay-10)",
       display: "flex", alignItems: "center", justifyContent: "center",
       flexShrink: 0, transition: "all 0.3s ease",
     }}>
@@ -44,18 +44,18 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
               {i < events.length - 1 && (
                 <div style={{
                   width: 1, flex: 1, minHeight: 28,
-                  background: `linear-gradient(to bottom, ${i === 0 ? "var(--accent-blue)" : "rgba(255,255,255,0.08)"}, rgba(255,255,255,0.04))`,
+                  background: `linear-gradient(to bottom, ${i === 0 ? "var(--accent-blue)" : "var(--overlay-08)"}, var(--overlay-04))`,
                 }} />
               )}
             </div>
             <div style={{
               flex: 1, padding: "8px 12px", borderRadius: 8, marginBottom: 2,
-              background: i === 0 ? "rgba(59,130,246,0.06)" : "rgba(255,255,255,0.02)",
-              border: i === 0 ? "1px solid rgba(59,130,246,0.15)" : "1px solid rgba(255,255,255,0.04)",
+              background: i === 0 ? "rgba(59,130,246,0.06)" : "var(--overlay-02)",
+              border: i === 0 ? "1px solid rgba(59,130,246,0.15)" : "1px solid var(--overlay-04)",
               transition: "all 0.2s ease",
             }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(59,130,246,0.25)"; e.currentTarget.style.background = "rgba(59,130,246,0.08)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = i === 0 ? "rgba(59,130,246,0.15)" : "rgba(255,255,255,0.04)"; e.currentTarget.style.background = i === 0 ? "rgba(59,130,246,0.06)" : "rgba(255,255,255,0.02)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = i === 0 ? "rgba(59,130,246,0.15)" : "var(--overlay-04)"; e.currentTarget.style.background = i === 0 ? "rgba(59,130,246,0.06)" : "var(--overlay-02)"; }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
                 <span style={{ fontSize: 10, fontWeight: 700, color: i === 0 ? "var(--accent-blue)" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>D+{ev.day}</span>

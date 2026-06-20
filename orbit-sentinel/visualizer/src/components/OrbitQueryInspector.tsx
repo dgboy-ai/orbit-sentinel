@@ -41,7 +41,7 @@ export default function OrbitQueryInspector({ evidence, timings }: Props) {
 
   return (
     <div className="card" style={{ overflow: "hidden", animation: "fadeSlideUp 0.5s ease both" }}>
-      <div style={{ padding: 16, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ padding: 16, borderBottom: "1px solid var(--overlay-06)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 28, height: 28, borderRadius: 6, background: "rgba(96,165,250,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>🔍</div>
@@ -53,9 +53,9 @@ export default function OrbitQueryInspector({ evidence, timings }: Props) {
           <div style={{ display: "flex", gap: 4 }}>
             <button onClick={() => setShowRaw(!showRaw)} style={{
               padding: "3px 8px", borderRadius: 4, fontSize: 9, fontWeight: 600,
-              background: showRaw ? "rgba(96,165,250,0.15)" : "rgba(255,255,255,0.04)",
+              background: showRaw ? "rgba(96,165,250,0.15)" : "var(--overlay-04)",
               color: showRaw ? "#60a5fa" : "var(--text-secondary)",
-              border: `1px solid ${showRaw ? "rgba(96,165,250,0.3)" : "rgba(255,255,255,0.08)"}`,
+              border: `1px solid ${showRaw ? "rgba(96,165,250,0.3)" : "var(--overlay-08)"}`,
               cursor: "pointer", fontFamily: "inherit",
             }}>Raw JSON</button>
           </div>
@@ -71,7 +71,7 @@ export default function OrbitQueryInspector({ evidence, timings }: Props) {
 
           return (
             <div key={ev.queryType} style={{
-              borderBottom: i < evidence.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+              borderBottom: i < evidence.length - 1 ? "1px solid var(--overlay-04)" : "none",
             }}>
               <button onClick={() => setExpanded(isOpen ? null : ev.queryType)} style={{
                 width: "100%", display: "flex", alignItems: "center", gap: 10,
@@ -107,7 +107,7 @@ export default function OrbitQueryInspector({ evidence, timings }: Props) {
                 <div style={{ padding: "0 16px 12px" }}>
                   <div style={{
                     padding: 10, borderRadius: 6, background: "rgba(0,0,0,0.3)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    border: "1px solid var(--overlay-06)",
                     fontFamily: "'JetBrains Mono', monospace", fontSize: 10,
                     color: "var(--text-secondary)", lineHeight: 1.6,
                     whiteSpace: "pre-wrap", wordBreak: "break-word",

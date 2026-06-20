@@ -109,7 +109,7 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.05)", overflow: "hidden" }}>
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-05)", overflow: "hidden" }}>
             <div style={{
               width: `${card.confidence}%`, height: "100%", borderRadius: 2,
               background: `linear-gradient(90deg, ${c.dot}, ${c.dot}88)`,
@@ -313,7 +313,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, flexDirection: isSmall ? "column" : "row", gap: isSmall ? 6 : 0 }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>Orbit Forecast</span>
+                <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>Orbit Forecast</span>
                 <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
               </div>
               <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 900, color: config.color, textShadow: `0 0 40px ${config.glow}`, display: "flex", alignItems: "center", gap: 8 }}>
@@ -327,7 +327,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
-            <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)" }}>
               <div style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
               <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: config.color, textShadow: `0 0 12px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.predictedOutcome}</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
@@ -376,8 +376,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       {/* PREDICTED PATH TIMELINE */}
       <div className="card" style={{
         padding: isMobile ? "10px 14px" : "14px 20px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(255,255,255,0.06)",
-        background: "linear-gradient(135deg, rgba(255,255,255,0.02), rgba(15,18,26,0.95))",
+        borderColor: "var(--overlay-06)",
+        background: "linear-gradient(135deg, var(--overlay-02), rgba(15,18,26,0.95))",
         ...fadeIn(0.04),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4 }}>
@@ -432,7 +432,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 return (
                   <div key={e.queryType} style={{ display: "flex", alignItems: "center", gap: 6, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
                     <span style={{ fontSize: isSmall ? 8 : 9, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: isSmall ? 60 : 80 }}>{e.queryType}</span>
-                    <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 5, borderRadius: 3, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                    <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 5, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden" }}>
                       <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 8px ${color}33` }} />
                     </div>
                     <span style={{ width: 28, fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0 }}>{pct}%</span>
@@ -511,7 +511,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         <GlowOrb color={config.glow} top="-20%" right="-10%" size={isMobile ? 150 : 220} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.04)" }}>Orbit Verdict</span>
+            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)" }}>Orbit Verdict</span>
           </div>
 
           {/* Traditional CI/CD vs Orbit Sentinel Verdict Comparison */}

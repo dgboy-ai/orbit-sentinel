@@ -63,7 +63,7 @@ function RiskGauge({ score, size = 80 }: { score: number; size?: number }) {
           <stop offset="100%" stopColor="#ef4444" />
         </linearGradient>
       </defs>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={6} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--overlay-05)" strokeWidth={6} />
       <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="url(#gauge-grad)" strokeWidth={6}
         strokeDasharray={`${filled} ${circ - filled}`} strokeLinecap="round"
         strokeOpacity={0.4}
@@ -108,7 +108,7 @@ function RiskSparkline({ points }: { points: { label: string; value: number }[] 
       <path d={`${line} L${padX + (points.length - 1) * stepX},${padY + chartH} L${padX},${padY + chartH} Z`}
         fill="url(#spark-fill)" opacity={0.3} />
       {/* Line */}
-      <path d={line} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth={1.5}
+      <path d={line} fill="none" stroke="var(--overlay-50)" strokeWidth={1.5}
         strokeLinecap="round" strokeLinejoin="round" />
       {/* Dots */}
       {points.map((p, i) => {
@@ -120,7 +120,7 @@ function RiskSparkline({ points }: { points: { label: string; value: number }[] 
             <circle cx={x} cy={y} r={3} fill={dotColor} stroke="rgba(0,0,0,0.4)" strokeWidth={1}
               style={{ filter: `drop-shadow(0 0 3px ${dotColor}88)` }} />
             {i % 2 === 0 && (
-              <text x={x} y={y - 8} textAnchor="middle" fill="rgba(255,255,255,0.5)"
+              <text x={x} y={y - 8} textAnchor="middle" fill="var(--overlay-50)"
                 fontSize={7} fontFamily="'JetBrains Mono', monospace"
               >{p.label}</text>
             )}
@@ -156,14 +156,14 @@ function EvidenceMiniCard({ e, delay }: { e: OrbitQueryEvidence; delay: number }
     }}>
       <div onClick={() => setOpen(!open)} style={{
         padding: "12px 14px", cursor: "pointer",
-        background: open ? `${meta.color}08` : "rgba(255,255,255,0.015)",
+        background: open ? `${meta.color}08` : "var(--overlay-015)",
         borderBottom: open ? `1px solid ${meta.color}15` : "none",
         transition: "all 0.15s ease",
         display: "flex", alignItems: "center", gap: 10,
         userSelect: "none",
       }}
         onMouseEnter={e => { e.currentTarget.style.background = `${meta.color}10`; }}
-        onMouseLeave={e => { e.currentTarget.style.background = open ? `${meta.color}08` : "rgba(255,255,255,0.015)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = open ? `${meta.color}08` : "var(--overlay-015)"; }}
       >
         <span style={{ fontSize: 16, flexShrink: 0 }}>{meta.icon}</span>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -257,7 +257,7 @@ function IncidentBar({ incidents }: { incidents: { mrIid: number; similarity: nu
   return (
     <div style={{
       padding: "12px 14px", borderRadius: 8,
-      background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
+      background: "var(--overlay-015)", border: "1px solid var(--border)",
       marginBottom: 12,
     }}>
       <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 8 }}>
@@ -271,7 +271,7 @@ function IncidentBar({ incidents }: { incidents: { mrIid: number; similarity: nu
               flex: inc.similarity, height: 24, borderRadius: 4,
               background: `linear-gradient(90deg, ${simColor}, ${simColor}66)`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.9)",
+              fontSize: 8, fontWeight: 700, color: "var(--overlay-90)",
               minWidth: 30, maxWidth: 120,
               fontFamily: "'JetBrains Mono', monospace",
               position: "relative",
@@ -710,7 +710,7 @@ export default function ImpactReport({ data }: Props) {
                         {b.value}/{b.maxValue}
                       </div>
                     </div>
-                    <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                    <div style={{ height: 4, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                       <div style={{ height: "100%", borderRadius: 2, width: `${pct}%`, background: `linear-gradient(90deg, ${bc}, ${bc}77)`, boxShadow: `0 0 4px ${bc}33`, transition: "width 0.6s ease" }} />
                     </div>
                   </div>
@@ -738,7 +738,7 @@ export default function ImpactReport({ data }: Props) {
                     <div style={{ position: "absolute", left: -13, top: 2, width: 10, height: 10, borderRadius: "50%", background: `${col}15`, border: `1.5px solid ${col}`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 0 2px ${col}06` }}>
                       <div style={{ width: 2.5, height: 2.5, borderRadius: "50%", background: col }} />
                     </div>
-                    <div style={{ padding: "6px 10px", borderRadius: 5, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+                    <div style={{ padding: "6px 10px", borderRadius: 5, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
                         <span style={{ fontSize: 10 }}>{evt.icon}</span>
                         <span style={{ fontSize: 7, fontWeight: 700, color: col, letterSpacing: "0.2px", fontFamily: "'JetBrains Mono', monospace" }}>D+{evt.day}</span>
@@ -777,12 +777,12 @@ export default function ImpactReport({ data }: Props) {
                     return (
                       <div key={`${inc.mrIid}`} style={{
                         padding: "8px 12px", borderRadius: 6,
-                        background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)",
+                        background: "var(--overlay-015)", border: "1px solid var(--border)",
                         display: "flex", gap: 8,
                         animation: `fadeSlideUp 0.2s ${0.1 + i * 0.04}s ease both`,
                       }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor = `${simColor}33`; e.currentTarget.style.background = `${simColor}06`; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "rgba(255,255,255,0.015)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--overlay-015)"; }}
                       >
                         <div style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>⚠️</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -811,7 +811,7 @@ export default function ImpactReport({ data }: Props) {
                 { label: "Analysis Timestamp", value: new Date(summary.timestamp).toLocaleString() },
                 { label: "Historical Sample Size", value: `${incidents.length} repository precedents analysed` },
               ].map(item => (
-                <div key={item.label} style={{ padding: "5px 8px", borderRadius: 4, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)", wordBreak: "break-word" }}>
+                <div key={item.label} style={{ padding: "5px 8px", borderRadius: 4, background: "var(--overlay-015)", border: "1px solid var(--border)", wordBreak: "break-word" }}>
                   <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.2px", textTransform: "uppercase", marginBottom: 1 }}>{item.label}</div>
                   <div style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.3 }}>{item.value}</div>
                 </div>
@@ -843,10 +843,10 @@ export default function ImpactReport({ data }: Props) {
           {/* Left half: Risk bars + remediation flow */}
           <div>
             <div style={{ marginBottom: 10 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, marginBottom: 3, background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, marginBottom: 3, background: "var(--overlay-02)", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>Current Risk</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div style={{ width: 70, height: 5, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                  <div style={{ width: 70, height: 5, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                     <div style={{ height: "100%", borderRadius: 2, width: `${decisionCenter.riskReduction.current * 100}%`, background: grad, boxShadow: `0 0 4px ${glow}` }} />
                   </div>
                   <span style={{ fontSize: 12, fontWeight: 800, color: col, fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.current * 100).toFixed(0)}%</span>
@@ -855,14 +855,14 @@ export default function ImpactReport({ data }: Props) {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)" }}>
                 <div style={{ fontSize: 9, color: "#22c55e", fontWeight: 600 }}>After Full Remediation</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div style={{ width: 70, height: 5, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                  <div style={{ width: 70, height: 5, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                     <div style={{ height: "100%", borderRadius: 2, width: `${decisionCenter.riskReduction.afterRecommendation * 100}%`, background: "linear-gradient(90deg, #22c55e, #4ade80)", boxShadow: "0 0 4px rgba(34,197,94,0.3)" }} />
                   </div>
                   <span style={{ fontSize: 12, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.afterRecommendation * 100).toFixed(0)}%</span>
                 </div>
               </div>
             </div>
-            <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+            <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
               <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Remediation Pathway</div>
               <RemediationFlow current={decisionCenter.riskReduction.current} scenarios={counterfactuals} />
             </div>
@@ -871,7 +871,7 @@ export default function ImpactReport({ data }: Props) {
           {/* Right half: Reviewers + Tests + Rollback */}
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8 }}>
-              <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+              <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>👤 Reviewers</div>
                 {decisionCenter.reviewers.map(r => (
                   <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", fontSize: 9 }}>
@@ -881,7 +881,7 @@ export default function ImpactReport({ data }: Props) {
                   </div>
                 ))}
               </div>
-              <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+              <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>✅ Actions</div>
                 {decisionCenter.requiredTests.map((t, i) => (
                   <div key={t} style={{ display: "flex", alignItems: "flex-start", gap: 4, padding: "1.5px 0", fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3 }}>
@@ -891,7 +891,7 @@ export default function ImpactReport({ data }: Props) {
                 ))}
               </div>
             </div>
-            <div style={{ padding: "7px 12px", borderRadius: 6, background: "rgba(255,255,255,0.015)", border: "1px solid var(--border)" }}>
+            <div style={{ padding: "7px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
               <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 3 }}>🔄 Rollback Strategy</div>
               <div style={{ fontSize: 9, color: "var(--text-primary)", lineHeight: 1.4 }}>{decisionCenter.rollbackStrategy}</div>
             </div>

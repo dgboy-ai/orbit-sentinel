@@ -85,7 +85,7 @@ export default function ProblemSection() {
       </div>
 
       {/* 3 Column Grid */}
-      <div style={{
+      <div className="resp-grid-3" style={{
         padding: "14px 20px 16px 20px", position: "relative", zIndex: 1,
         display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10,
       }}>

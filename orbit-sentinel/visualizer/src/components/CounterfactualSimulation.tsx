@@ -123,7 +123,7 @@ export default function CounterfactualSimulation({
           </div>
         </div>
       ) : (
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 8 }}>
+      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: `repeat(${scenarios.length}, 1fr)`, gap: 8 }}>
         {scenarios.map((s, i) => {
           const isActive = active === i;
           const barPct = s.riskAfter * 100;
@@ -132,8 +132,8 @@ export default function CounterfactualSimulation({
               role="button" tabIndex={0}
               style={{
                 padding: "10px 12px", borderRadius: 7, cursor: "pointer",
-                background: isActive ? `${s.color}18` : "rgba(255,255,255,0.02)",
-                border: `1px solid ${isActive ? s.color + "55" : "rgba(255,255,255,0.06)"}`,
+                background: isActive ? `${s.color}18` : "var(--overlay-02)",
+                border: `1px solid ${isActive ? s.color + "55" : "var(--overlay-06)"}`,
                 transition: "all 0.2s cubic-bezier(0.16,1,0.3,1)",
                 position: "relative", overflow: "hidden",
                 userSelect: "none",
@@ -149,8 +149,8 @@ export default function CounterfactualSimulation({
               }}
               onMouseLeave={e => {
                 if (!isActive) {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.02)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                  e.currentTarget.style.background = "var(--overlay-02)";
+                  e.currentTarget.style.borderColor = "var(--overlay-06)";
                   e.currentTarget.style.transform = "none";
                   e.currentTarget.style.boxShadow = "none";
                 }
@@ -167,7 +167,7 @@ export default function CounterfactualSimulation({
                 fontSize: 18, fontWeight: 700, color: s.color,
                 fontFamily: "'JetBrains Mono', monospace", marginBottom: 8,
               }}>{barPct.toFixed(0)}%</div>
-              <div style={{ height: 5, borderRadius: 3, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+              <div style={{ height: 5, borderRadius: 3, background: "var(--overlay-06)", overflow: "hidden" }}>
                 <div style={{
                   height: "100%", borderRadius: 3,
                   width: `${barPct}%`,

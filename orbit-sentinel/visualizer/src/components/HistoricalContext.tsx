@@ -209,7 +209,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           {/* SVG connecting line background */}
           <div style={{ position: "relative", padding: "4px 0" }}>
             <svg style={{ position: "absolute", top: 0, left: "5%", width: "90%", height: "100%", pointerEvents: "none" }}>
-              <line x1="0" y1="16" x2="100%" y2="16" stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="0" y1="16" x2="100%" y2="16" stroke="var(--overlay-06)" strokeWidth="1" strokeDasharray="4 3" />
             </svg>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 0, position: "relative" }}>
               {timeline.map((t, i) => (
@@ -219,7 +219,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                     <div style={{ flex: "0 0 16px", display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 6 }}>
                       <div style={{
                         width: 10, height: 2, borderRadius: 1,
-                        background: `linear-gradient(90deg, ${t.outcome === "current" ? "rgba(59,130,246,0.3)" : "rgba(239,68,68,0.2)"}, ${timeline[i + 1]?.outcome === "current" ? "rgba(59,130,246,0.15)" : "rgba(255,255,255,0.08)"})`,
+                        background: `linear-gradient(90deg, ${t.outcome === "current" ? "rgba(59,130,246,0.3)" : "rgba(239,68,68,0.2)"}, ${timeline[i + 1]?.outcome === "current" ? "rgba(59,130,246,0.15)" : "var(--overlay-08)"})`,
                       }} />
                     </div>
                   )}
@@ -244,7 +244,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 2px" }}>
           <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Historical Case Files</span>
-          <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
+          <div style={{ flex: 1, height: 1, background: "var(--overlay-06)" }} />
           <span style={{ fontSize: 7, color: "var(--text-tertiary)" }}>{incidents.length} files</span>
         </div>
         {sorted.map((item, i) => {
@@ -291,7 +291,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 <div style={{
                   padding: "5px 8px", borderRadius: 4,
                   background: "rgba(0,0,0,0.15)", borderLeft: `2px solid ${caseColor}33`,
-                  border: "1px solid rgba(255,255,255,0.04)",
+                  border: "1px solid var(--overlay-04)",
                 }}>
                   <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Recommended Action</div>
                   <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.3 }}>{item.recommendedAction}</div>
@@ -370,13 +370,13 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: 5,
                 padding: "4px 8px", borderRadius: 4,
-                background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
+                background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
                 fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
                 animation: `fadeSlideUp 0.3s ${0.27 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
                 transition: "border-color 0.2s ease, background 0.2s ease",
               }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}22`; e.currentTarget.style.background = `${p.color}06`; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.04)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; e.currentTarget.style.background = "var(--overlay-02)"; }}
               >
                 <span style={{ fontSize: 10, flexShrink: 0, width: 16, textAlign: "center" }}>{p.icon}</span>
                 <span style={{ borderLeft: `1px solid ${p.color}22`, paddingLeft: 6 }}>{p.text}</span>
@@ -405,8 +405,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       }}>
         <div style={{
           padding: "7px 10px", borderRadius: 6, textAlign: "center",
-          background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 0 8px rgba(255,255,255,0.05)",
+          background: "var(--overlay-02)", border: "1px solid var(--overlay-08)",
+          boxShadow: "0 0 8px var(--overlay-05)",
           transition: "transform 0.2s ease",
         }}
           onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
@@ -497,7 +497,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         borderRadius: 12,
         border: `2px solid rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.4)`,
         background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.12), rgba(15,18,26,0.98), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.06))`,
-        boxShadow: `0 0 40px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2), inset 0 0 20px rgba(255,255,255,0.02)`,
+        boxShadow: `0 0 40px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2), inset 0 0 20px var(--overlay-02)`,
         opacity: verdictVisible ? 1 : 0,
         transform: verdictVisible ? "translateY(0)" : "translateY(12px)",
         transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)",
@@ -537,7 +537,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                   <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
                   <AnimatedCounter target={s.numVal} suffix={s.suffix} color={s.color} duration={1400} />
                   <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{s.note}</div>
-                  <div style={{ height: 2, borderRadius: 1, background: "rgba(255,255,255,0.04)", margin: "4px 0 0", overflow: "hidden" }}>
+                  <div style={{ height: 2, borderRadius: 1, background: "var(--overlay-04)", margin: "4px 0 0", overflow: "hidden" }}>
                     <div style={{ width: `${s.numVal}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}88, ${s.color})`, transition: "width 1.2s ease" }} />
                   </div>
                 </div>

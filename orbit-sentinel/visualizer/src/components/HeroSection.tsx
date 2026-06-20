@@ -37,14 +37,14 @@ export default function HeroSection({
         {/* LEFT: Narrative */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", background: "rgba(255,255,255,0.04)", borderRadius: 6, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", background: "var(--overlay-04)", borderRadius: 6, border: "1px solid var(--overlay-06)" }}>
               <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>MR</span>
               <span style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>!{mrIid}</span>
             </div>
             <div style={{ padding: "3px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", background: `${r.rgba}0.15)`, color: r.hex, border: `1px solid ${r.rgba}0.25)`, boxShadow: `0 0 12px ${r.glow}` }}>
               {riskLevel}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 6, fontSize: 11, color: "var(--text-secondary)", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 6, fontSize: 11, color: "var(--text-secondary)", background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>
               <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
               {confidence}
             </div>
@@ -106,7 +106,7 @@ export default function HeroSection({
         <div style={{
           width: 200, flexShrink: 0, display: "flex", flexDirection: "column", gap: 8,
           padding: "12px 14px", borderRadius: 10,
-          background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+          background: "var(--overlay-03)", border: "1px solid var(--overlay-06)",
           animation: "fadeSlideDown 0.5s 0.15s ease both",
           boxShadow: `0 0 20px ${r.glow}`,
         }}>
@@ -123,9 +123,9 @@ export default function HeroSection({
           </div>
 
           {/* Gauge */}
-          <div style={{ marginTop: "auto", textAlign: "center", paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <div style={{ marginTop: "auto", textAlign: "center", paddingTop: 6, borderTop: "1px solid var(--overlay-06)" }}>
             <svg width="100" height="60" viewBox="0 0 100 60">
-              <path d="M10,50 A40,40 0 0,1 90,50" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" strokeLinecap="round" />
+              <path d="M10,50 A40,40 0 0,1 90,50" fill="none" stroke="var(--overlay-06)" strokeWidth="8" strokeLinecap="round" />
               <path d="M10,50 A40,40 0 0,1 90,50" fill="none" stroke={r.hex} strokeWidth="8" strokeLinecap="round"
                 strokeDasharray={Math.PI * 40} strokeDashoffset={(Math.PI * 40) - (riskScore * Math.PI * 40)}
                 style={{ filter: `drop-shadow(0 0 6px ${r.glow})`, transition: "stroke-dashoffset 1.4s ease" }} />

@@ -9,7 +9,7 @@ function oc(outcome: string): { icon: string; color: string; bg: string } {
     Closed: { icon: "🔒", color: "#8b949e", bg: "rgba(139,148,158,0.1)" },
     Merged: { icon: "✅", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
   };
-  return m[outcome] ?? { icon: "❓", color: "#8b949e", bg: "rgba(255,255,255,0.04)" };
+  return m[outcome] ?? { icon: "❓", color: "#8b949e", bg: "var(--overlay-04)" };
 }
 
 export default function IncidentIntelligence({ incidents }: { incidents: HistoricalIncident[] }) {
@@ -35,9 +35,9 @@ export default function IncidentIntelligence({ incidents }: { incidents: Histori
           return (
             <div key={inc.mrIid}
             onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.color}44`; e.currentTarget.style.background = `${c.bg}`; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-06)"; e.currentTarget.style.background = "var(--overlay-03)"; }}
             style={{
-              padding: 12, borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: `3px solid ${c.color}`,
+              padding: 12, borderRadius: 10, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)", borderLeft: `3px solid ${c.color}`,
               animation: `fadeSlideUp 0.4s ${0.35 + i * 0.08}s ease both`, transition: "all 0.2s ease",
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
@@ -53,7 +53,7 @@ export default function IncidentIntelligence({ incidents }: { incidents: Histori
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 5 }}>
                 {inc.files.map(f => (
-                  <span key={f} style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", background: "rgba(255,255,255,0.04)", padding: "1px 6px", borderRadius: 3, border: "1px solid rgba(255,255,255,0.06)" }}>{f}</span>
+                  <span key={f} style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", background: "var(--overlay-04)", padding: "1px 6px", borderRadius: 3, border: "1px solid var(--overlay-06)" }}>{f}</span>
                 ))}
               </div>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 7px", borderRadius: 3, background: c.bg, color: c.color, fontSize: 10, fontWeight: 600, marginBottom: 4 }}>{c.icon} {inc.outcome}</div>

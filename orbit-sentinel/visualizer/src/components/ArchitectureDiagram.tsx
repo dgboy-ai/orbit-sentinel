@@ -50,12 +50,12 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
           ? `linear-gradient(135deg, ${node.color}22, ${node.color}0a, rgba(15,18,26,0.6))`
           : hovered
           ? `linear-gradient(135deg, ${node.color}0e, rgba(15,18,26,0.5))`
-          : "linear-gradient(135deg, rgba(255,255,255,0.03), rgba(15,18,26,0.4))",
+          : "linear-gradient(135deg, var(--overlay-03), rgba(15,18,26,0.4))",
         border: isOpen
           ? `1.5px solid ${node.color}55`
           : hovered
           ? `1px solid ${node.color}33`
-          : "1px solid rgba(255,255,255,0.05)",
+          : "1px solid var(--overlay-05)",
         display: "flex", alignItems: "center", justifyContent: "center",
         fontSize: 19, flexShrink: 0,
         transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
@@ -78,7 +78,7 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
         <div style={{
           position: "absolute", inset: 0, borderRadius: 14, overflow: "hidden", pointerEvents: "none",
           opacity: 0.3,
-          backgroundImage: "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(var(--overlay-04) 1px, transparent 1px)",
           backgroundSize: "8px 8px",
         }} />
         <span style={{ position: "relative", zIndex: 1 }}>{node.icon}</span>
@@ -101,7 +101,7 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
         <div style={{
           position: "absolute", top: 0, left: 2, right: 2, height: "40%",
           borderRadius: "14px 14px 0 0",
-          background: `linear-gradient(180deg, ${isOpen ? `${node.color}18` : "rgba(255,255,255,0.03)"}, transparent)`,
+          background: `linear-gradient(180deg, ${isOpen ? `${node.color}18` : "var(--overlay-03)"}, transparent)`,
           pointerEvents: "none",
         }} />
       </div>

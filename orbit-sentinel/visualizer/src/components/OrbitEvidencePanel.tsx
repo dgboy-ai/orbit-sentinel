@@ -34,10 +34,10 @@ export default function OrbitEvidencePanel({ evidence, graph }: { evidence: Orbi
           </div>
         )}
         {evidence.map((q, i) => {
-          const m = META[q.queryType] ?? { icon: "📌", label: q.queryType, color: "#8b949e", bg: "rgba(255,255,255,0.04)" };
+          const m = META[q.queryType] ?? { icon: "📌", label: q.queryType, color: "#8b949e", bg: "var(--overlay-04)" };
           return (
             <div key={q.queryName} style={{
-              padding: "8px 12px", borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderLeft: `3px solid ${m.color}`,
+              padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)", borderLeft: `3px solid ${m.color}`,
               animation: `fadeSlideUp 0.4s ${0.15 + i * 0.08}s ease both`,
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>

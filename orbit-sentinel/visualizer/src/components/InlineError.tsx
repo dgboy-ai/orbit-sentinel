@@ -45,12 +45,12 @@ export default function InlineError({ message, onRetry, height }: Props) {
         <button onClick={handleClearCache}
           style={{
             padding: "4px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer",
-            border: "1px solid rgba(255,255,255,0.08)", borderRadius: 5,
-            background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)",
+            border: "1px solid var(--overlay-08)", borderRadius: 5,
+            background: "var(--overlay-04)", color: "var(--text-secondary)",
             transition: "all 0.15s",
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "var(--text-primary)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+          onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-08)"; e.currentTarget.style.color = "var(--text-primary)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
         >Clear Cache & Reset</button>
       </div>
     </div>

@@ -155,12 +155,12 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
                       ? "rgba(34,197,94,0.15)"
                       : isActive
                       ? "rgba(139,92,246,0.2)"
-                      : "rgba(255,255,255,0.03)",
+                      : "var(--overlay-03)",
                     border: isDone
                       ? "1.5px solid #22c55e"
                       : isActive
                       ? "1.5px solid #a78bfa"
-                      : "1px solid rgba(255,255,255,0.08)",
+                      : "1px solid var(--overlay-08)",
                     color: isDone ? "#22c55e" : isActive ? "#a78bfa" : "var(--text-tertiary)",
                     boxShadow: isActive ? "0 0 12px rgba(139,92,246,0.35)" : "none",
                     transition: "all 0.35s",
@@ -208,7 +208,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
                       ? "#22c55e"
                       : isActive
                       ? "linear-gradient(90deg, #a78bfa, rgba(139,92,246,0.15))"
-                      : "rgba(255,255,255,0.04)",
+                      : "var(--overlay-04)",
                     transition: "background 0.4s",
                     margin: "0 1px", alignSelf: "flex-start", marginTop: 11,
                   }} />

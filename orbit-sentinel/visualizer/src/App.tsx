@@ -370,9 +370,9 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
             <button onClick={() => setShowQueryInspector(!showQueryInspector)} style={{
               padding: "6px 12px", borderRadius: 6, fontSize: 10, fontWeight: 600,
-              background: showQueryInspector ? "rgba(96,165,250,0.12)" : "rgba(255,255,255,0.04)",
+              background: showQueryInspector ? "rgba(96,165,250,0.12)" : "var(--overlay-04)",
               color: showQueryInspector ? "#60a5fa" : "var(--text-secondary)",
-              border: `1px solid ${showQueryInspector ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.08)"}`,
+              border: `1px solid ${showQueryInspector ? "rgba(96,165,250,0.25)" : "var(--overlay-08)"}`,
               cursor: "pointer", fontFamily: "inherit", alignSelf: "flex-end",
             }}>🔍 {showQueryInspector ? "Hide" : "Show"} Raw Query Data</button>
             {showQueryInspector && <ErrorBoundary><OrbitQueryInspector evidence={data.evidence} timings={data.queryTimings} /></ErrorBoundary>}
@@ -393,7 +393,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "var(--bg-primary)" }}>
         <header style={{
           position: "relative", zIndex: Z.dropdown,
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid var(--overlay-06)",
           padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
           flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)", overflowX: "hidden",
         }}>
@@ -408,7 +408,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           {/* Placeholder matching loaded header height to prevent CLS */}
           <div className="header-nav resp-hide-subtitle" style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
             {["Overview","Graph","Risk","Forecast","History","Report"].map(l => (
-              <div key={l} style={{ width: Math.max(l.length * 7.5 + 22, 50), height: 24, borderRadius: 6, background: "rgba(255,255,255,0.02)" }} />
+              <div key={l} style={{ width: Math.max(l.length * 7.5 + 22, 50), height: 24, borderRadius: 6, background: "var(--overlay-02)" }} />
             ))}
           </div>
         </header>
@@ -437,9 +437,9 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={loadData}
-                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, cursor: "pointer", background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)" }}
-                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "var(--text-primary)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
+                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid var(--overlay-10)", borderRadius: 6, cursor: "pointer", background: "var(--overlay-04)", color: "var(--text-secondary)" }}
+                onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-08)"; e.currentTarget.style.color = "var(--text-primary)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
               >Retry</button>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
                 style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, cursor: "pointer", background: "rgba(96,165,250,0.1)", color: COLORS.info }}
@@ -513,7 +513,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   <button key={k} onClick={() => { setView(k); setMobileViewOpen(false); if (demo) stopDemo(); }}
                     style={{
                       display: "flex", width: "100%", padding: "8px 14px", fontSize: 10.5, cursor: "pointer",
-                      border: "none", borderBottom: i < tabs.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                      border: "none", borderBottom: i < tabs.length - 1 ? "1px solid var(--overlay-04)" : "none",
                       background: isActive ? `${accentColor}15` : "transparent",
                       color: isActive ? accentColor : "var(--text-secondary)",
                       textAlign: "left", alignItems: "center", gap: 8,
@@ -521,7 +521,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                       transition: "all 0.15s",
                       position: "relative",
                     }}
-                    onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
+                    onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "var(--overlay-03)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
                     onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
                   >
                     {isActive && <div style={{ position: "absolute", left: 0, top: "20%", width: 2, height: "60%", borderRadius: 1, background: accentColor, boxShadow: `0 0 8px ${accentGlow}` }} />}
@@ -533,7 +533,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 })}
                 <div style={{
                   padding: "6px 14px", fontSize: 8, color: "var(--text-tertiary)",
-                  borderTop: "1px solid rgba(255,255,255,0.03)",
+                  borderTop: "1px solid var(--overlay-03)",
                   textAlign: "center", letterSpacing: "0.3px",
                 }}>
                   {tabs.findIndex(([k]) => k === view) < tabs.length - 1
@@ -560,7 +560,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               display: "flex", alignItems: "center", gap: 3,
               boxShadow: view === k ? `0 0 12px ${accentGlow}` : "none",
             }}
-              onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+              onMouseEnter={e => { if (view !== k) { e.currentTarget.style.background = "var(--overlay-03)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
               onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)"; } }}
             >{lbl}
               {VIEW_QUERY_TAG[k] && (
@@ -648,7 +648,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             {DEMO_STEPS.map((_, i) => (
               <div key={i} style={{
                 width: i === stepIndex ? 16 : 6, height: 4, borderRadius: 2,
-                background: i === stepIndex ? accentColor : "rgba(255,255,255,0.15)",
+                background: i === stepIndex ? accentColor : "var(--overlay-15)",
                 transition: "all 0.3s ease",
               }} />
             ))}
@@ -694,7 +694,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 <div key={s.key} style={{
                   display: "flex", alignItems: "center", gap: 8,
                   padding: "8px 10px", borderRadius: 6,
-                  background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
+                  background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
                 }}>
                   <div style={{
                     width: 24, height: 24, borderRadius: 5,
@@ -710,7 +710,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               ))}
             </div>
             <div style={{ marginTop: 10, fontSize: 8, color: "var(--text-tertiary)", textAlign: "center" }}>
-              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>?</kbd> or click anywhere to close
+              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "var(--overlay-06)", fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>?</kbd> or click anywhere to close
             </div>
           </div>
         </div>
@@ -747,7 +747,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         display: "flex", alignItems: "center", gap: 8,
         padding: "5px 14px", borderRadius: 8,
         background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        border: "1px solid var(--overlay-06)",
         fontSize: 9, color: "var(--text-tertiary)",
         opacity: showFooter && !screenshotMode ? 1 : 0, pointerEvents: showFooter && !screenshotMode ? "auto" : "none",
         transition: "opacity 0.6s ease",

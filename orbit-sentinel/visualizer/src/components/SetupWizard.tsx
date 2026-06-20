@@ -40,13 +40,13 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
   return (
     <div style={{
       position: "relative", background: "rgba(0,0,0,0.4)", borderRadius: 8,
-      border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden",
+      border: "1px solid var(--overlay-06)", overflow: "hidden",
     }}>
       {label && (
         <div style={{
           padding: "4px 10px", fontSize: 8, fontWeight: 700, letterSpacing: "0.5px",
           textTransform: "uppercase", color: "var(--text-tertiary)",
-          borderBottom: "1px solid rgba(255,255,255,0.04)", background: "rgba(0,0,0,0.2)",
+          borderBottom: "1px solid var(--overlay-04)", background: "rgba(0,0,0,0.2)",
         }}>{label}</div>
       )}
       <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
@@ -57,14 +57,14 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
         <button onClick={handleCopy}
           style={{
             padding: "4px 10px", fontSize: 9, fontWeight: 600, cursor: "pointer",
-            border: `1px solid ${copied ? "rgba(34,197,94,0.3)" : "rgba(255,255,255,0.1)"}`,
-            borderRadius: 5, background: copied ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)",
+            border: `1px solid ${copied ? "rgba(34,197,94,0.3)" : "var(--overlay-10)"}`,
+            borderRadius: 5, background: copied ? "rgba(34,197,94,0.1)" : "var(--overlay-04)",
             color: copied ? "#22c55e" : "var(--text-secondary)", whiteSpace: "nowrap",
             transition: "all 0.15s ease",
             flexShrink: 0,
           }}
-          onMouseEnter={e => { if (!copied) { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
-          onMouseLeave={e => { if (!copied) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+          onMouseEnter={e => { if (!copied) { e.currentTarget.style.background = "var(--overlay-08)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
+          onMouseLeave={e => { if (!copied) { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
         >{copied ? "✓ Copied" : "Copy"}</button>
       </div>
     </div>
@@ -78,7 +78,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
         <div key={i} style={{
           height: 3, borderRadius: 2,
           width: i === current ? 24 : i < current ? 12 : 12,
-          background: i <= current ? TEAL : "rgba(255,255,255,0.08)",
+          background: i <= current ? TEAL : "var(--overlay-08)",
           transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
         }} />
       ))}
@@ -327,7 +327,7 @@ function MissionStep() {
                 <div style={{ fontSize: 8, color: "var(--text-secondary)", marginTop: 2, lineHeight: 1.3 }}>{m.detail}</div>
                 <div style={{
                   fontSize: 7, color: "var(--text-tertiary)", marginTop: 3,
-                  paddingTop: 3, borderTop: "1px solid rgba(255,255,255,0.04)",
+                  paddingTop: 3, borderTop: "1px solid var(--overlay-04)",
                   fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.3px",
                 }}>{m.sub}</div>
               </div>
@@ -368,7 +368,7 @@ function ArchitectureStep() {
       <div style={{ ...s(0) }}>
         <div style={{
           flex: 1, padding: "16px 20px", borderRadius: 12,
-          background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.06)",
+          background: "rgba(0,0,0,0.3)", border: "1px solid var(--overlay-06)",
           fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.6,
         }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", marginBottom: 6 }}>🏗️ End-to-End Data Flow</div>
@@ -402,7 +402,7 @@ function ArchitectureStep() {
                 <div key={j} style={{
                   display: "flex", alignItems: "center", gap: 6,
                   padding: "5px 8px", borderRadius: 5,
-                  background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)",
+                  background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)",
                   fontSize: 9, color: "var(--text-primary)", lineHeight: 1.3,
                 }}>
                   <span style={{ width: 4, height: 4, borderRadius: "50%", background: layer.color, flexShrink: 0 }} />
@@ -431,7 +431,7 @@ function ArchitectureStep() {
           ].map((p, i) => (
             <div key={p.label} style={{
               padding: "8px 10px", borderRadius: 6, textAlign: "center",
-              background: "rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.04)",
+              background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)",
               animation: `fadeSlideUp 0.3s ${0.24 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
             }}>
               <div style={{ fontSize: 16, marginBottom: 2 }}>{p.icon}</div>
@@ -615,7 +615,7 @@ function LaunchStep() {
         </div>
       </div>
 
-      <div style={{
+      <div className="resp-grid-2" style={{
         display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, ...s(0.12),
       }}>
         {links.map((link, i) => (
@@ -670,7 +670,7 @@ function WinsStep() {
       }}>
         <GlowDot color="rgba(139,92,246,0.08)" top="-30%" left="30%" size={250} />
         
-        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="resp-grid-2" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {/* Traditional CI/CD */}
           <div style={{
             padding: "16px 18px", borderRadius: 10,
@@ -808,14 +808,14 @@ export default function SetupWizard() {
           disabled={step === 0}
           style={{
             padding: "8px 18px", fontSize: 11, fontWeight: 600, cursor: step === 0 ? "default" : "pointer",
-            border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6,
-            background: step === 0 ? "transparent" : "rgba(255,255,255,0.04)",
+            border: "1px solid var(--overlay-08)", borderRadius: 6,
+            background: step === 0 ? "transparent" : "var(--overlay-04)",
             color: step === 0 ? "var(--text-tertiary)" : "var(--text-secondary)",
             opacity: step === 0 ? 0.3 : 1,
             transition: "all 0.15s ease",
           }}
-          onMouseEnter={e => { if (step > 0) { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
-          onMouseLeave={e => { if (step > 0) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+          onMouseEnter={e => { if (step > 0) { e.currentTarget.style.background = "var(--overlay-08)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
+          onMouseLeave={e => { if (step > 0) { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
         >← Back</button>
 
         <div style={{ display: "flex", gap: 4 }}>
@@ -824,7 +824,7 @@ export default function SetupWizard() {
               style={{
                 width: 8, height: 8, borderRadius: "50%", cursor: "pointer", padding: 0,
                 border: "none",
-                background: i === step ? TEAL : "rgba(255,255,255,0.1)",
+                background: i === step ? TEAL : "var(--overlay-10)",
                 transition: "all 0.2s ease",
               }}
               aria-label={`Go to step ${i + 1}: ${s.title}`}

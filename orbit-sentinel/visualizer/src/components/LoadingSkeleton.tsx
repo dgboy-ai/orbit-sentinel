@@ -4,7 +4,7 @@ function SkeletonBlock({ width, height, borderRadius = 8, delay = 0 }: { width?:
   return (
     <div className="shimmer-loading" style={{
       width: width ?? "100%", height: height ?? "100%",
-      borderRadius, background: "rgba(255,255,255,0.03)",
+      borderRadius, background: "var(--overlay-03)",
       minHeight: height ? undefined : 20,
       animationDelay: `${delay}s`,
     }} />
@@ -15,7 +15,7 @@ function SkeletonCard({ height, children, delay = 0 }: { height?: string; childr
   return (
     <div className="card" style={{
       padding: "14px 18px", height: height ?? "auto",
-      borderColor: "rgba(255,255,255,0.04)",
+      borderColor: "var(--overlay-04)",
       display: "flex", flexDirection: "column", gap: 10,
       animation: `fadeSlideUp 0.4s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
     }}>
@@ -47,7 +47,7 @@ export default function LoadingSkeleton() {
             <SkeletonBlock height="10px" width="260px" delay={0.11} />
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 10 }}>
+        <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 10 }}>
           {Array.from({ length: 3 }, (_, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <SkeletonBlock height="11px" width="90px" delay={0.14 + i * 0.04} />

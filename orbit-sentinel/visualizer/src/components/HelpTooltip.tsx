@@ -36,13 +36,13 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
           width: 14, height: 14, borderRadius: "50%",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           fontSize: 9, fontWeight: 700, cursor: "help",
-          background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
+          background: "var(--overlay-06)", border: "1px solid var(--overlay-10)",
           color: "var(--text-tertiary)",
           transition: "all 0.15s ease",
           marginLeft: 4, lineHeight: 1,
         }}
         onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.15)"; e.currentTarget.style.color = "var(--accent-blue)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.3)"; }}
-        onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-06)"; e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "var(--overlay-10)"; }}
       >?</span>
       {show && (
         <div style={{
@@ -50,7 +50,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
           zIndex: 1000, width: wide ? 260 : 180,
           padding: "6px 10px", borderRadius: 6,
           background: "rgba(8,9,13,0.95)", backdropFilter: "blur(12px)",
-          border: "1px solid rgba(255,255,255,0.1)",
+          border: "1px solid var(--overlay-10)",
           boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
           fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
           textAlign: "left", fontWeight: 400,
@@ -60,7 +60,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
           <div style={{
             position: "absolute", top: "100%", left: 16,
             borderLeft: "5px solid transparent", borderRight: "5px solid transparent",
-            borderTop: "5px solid rgba(255,255,255,0.1)",
+            borderTop: "5px solid var(--overlay-10)",
           }} />
         </div>
       )}

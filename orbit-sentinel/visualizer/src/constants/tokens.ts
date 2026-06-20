@@ -60,6 +60,15 @@ export const ANIM = {
   },
   shimmer: "shimmer 1.5s ease-in-out infinite",
   spin: "spin 0.6s linear infinite",
+  /* Staggered entrance helpers — use: `${ANIM.fadeSlideUp.med} ${DELAY.stagger * i}s both` */
+  delay: {
+    fast: "0.05s",
+    med: "0.08s",
+    normal: "0.12s",
+    relaxed: "0.2s",
+    slow: "0.35s",
+    slowest: "0.5s",
+  },
 } as const;
 
 /* Font size scale (React inline style accepts number = px) */

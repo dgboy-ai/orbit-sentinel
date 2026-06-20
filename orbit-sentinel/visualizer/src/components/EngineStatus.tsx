@@ -76,7 +76,7 @@ export default function EngineStatus() {
       padding: "3px 8px", borderRadius: 6,
       background: state === "live" ? "rgba(34,197,94,0.06)" :
                  state === "cold" ? "rgba(249,115,22,0.08)" :
-                 "rgba(255,255,255,0.02)",
+                 "var(--overlay-02)",
       border: `1px solid ${state === "live" ? "rgba(34,197,94,0.15)" : state === "cold" ? "rgba(249,115,22,0.2)" : "transparent"}`,
       fontSize: 9, whiteSpace: "nowrap",
       transition: "all 0.3s ease",

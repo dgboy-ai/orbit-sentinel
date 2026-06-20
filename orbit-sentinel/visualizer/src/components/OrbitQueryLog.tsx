@@ -99,7 +99,7 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
 
       {/* Progress bar */}
       <div style={{
-        height: 2, borderRadius: 1, background: "rgba(255,255,255,0.06)", marginBottom: 10,
+        height: 2, borderRadius: 1, background: "var(--overlay-06)", marginBottom: 10,
         overflow: "hidden",
       }}>
         <div style={{
@@ -132,7 +132,7 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
                 fontSize: 9, fontWeight: 700,
                 background: q.status === "success" ? `${meta.color}18` :
                            q.status === "error" ? "rgba(239,68,68,0.15)" :
-                           isActive ? `${meta.color}12` : "rgba(255,255,255,0.03)",
+                           isActive ? `${meta.color}12` : "var(--overlay-03)",
                 color: q.status === "success" ? meta.color :
                        q.status === "error" ? "#ef4444" :
                        isActive ? meta.color : "var(--text-tertiary)",

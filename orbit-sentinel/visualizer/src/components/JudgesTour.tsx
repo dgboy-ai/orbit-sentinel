@@ -30,7 +30,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
       {Array.from({ length: total }, (_, i) => (
         <div key={i} style={{
           width: i === current ? 22 : 6, height: 4, borderRadius: 2,
-          background: i === current ? "#60a5fa" : "rgba(255,255,255,0.1)",
+          background: i === current ? "#60a5fa" : "var(--overlay-10)",
           transition: "all 0.3s ease",
         }} />
       ))}
@@ -127,10 +127,10 @@ export default function JudgesTour({ onDismiss, onNavigate }: { onDismiss: () =>
                 <button onClick={() => { setStep(s => s - 1); onNavigate(step - 1); }}
                   style={{
                     padding: "6px 16px", fontSize: 11, fontWeight: 600, cursor: "pointer",
-                    border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6,
+                    border: "1px solid var(--overlay-10)", borderRadius: 6,
                     background: "transparent", color: "var(--text-secondary)",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-04)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
                 >← Back</button>
               )}
@@ -155,12 +155,12 @@ export default function JudgesTour({ onDismiss, onNavigate }: { onDismiss: () =>
 
           <div style={{
             marginTop: 12, padding: "6px 12px", borderRadius: 5,
-            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
+            background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
             display: "flex", gap: 14, justifyContent: "center",
             fontSize: 9, color: "var(--text-tertiary)",
           }}>
-            <span><kbd style={{ padding: "1px 5px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontFamily: "'JetBrains Mono', monospace" }}>←</kbd> <kbd style={{ padding: "1px 5px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontFamily: "'JetBrains Mono', monospace" }}>→</kbd> Navigate</span>
-            <span><kbd style={{ padding: "1px 5px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontFamily: "'JetBrains Mono', monospace" }}>Esc</kbd> Exit</span>
+            <span><kbd style={{ padding: "1px 5px", borderRadius: 3, background: "var(--overlay-06)", fontFamily: "'JetBrains Mono', monospace" }}>←</kbd> <kbd style={{ padding: "1px 5px", borderRadius: 3, background: "var(--overlay-06)", fontFamily: "'JetBrains Mono', monospace" }}>→</kbd> Navigate</span>
+            <span><kbd style={{ padding: "1px 5px", borderRadius: 3, background: "var(--overlay-06)", fontFamily: "'JetBrains Mono', monospace" }}>Esc</kbd> Exit</span>
           </div>
         </div>
       </div>

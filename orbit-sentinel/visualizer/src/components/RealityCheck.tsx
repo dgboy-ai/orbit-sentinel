@@ -44,7 +44,7 @@ export default function RealityCheck() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+        <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
           <div style={{ padding: "8px 12px", borderRadius: 6, background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.1)" }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", marginBottom: 2, whiteSpace: "nowrap" }}>Traditional CI/CD Misses</div>
             <div style={{ fontSize: 22, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>{orbitOnly}/{CHECKS.length}</div>
@@ -58,7 +58,7 @@ export default function RealityCheck() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          <div style={{
+          <div className="resp-grid-2" style={{
             display: "grid", gridTemplateColumns: "1.8fr 70px 80px 1.5fr", gap: 8, alignItems: "center",
             padding: "2px 8px", marginBottom: 2,
           }}>
@@ -68,10 +68,10 @@ export default function RealityCheck() {
             <span style={{ fontSize: 7, fontWeight: 600, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Why It Matters</span>
           </div>
           {CHECKS.map((c, i) => (
-            <div key={c.signal} style={{
+            <div key={c.signal} className="resp-grid-2" style={{
               display: "grid", gridTemplateColumns: "1.8fr 70px 80px 1.5fr", gap: 8, alignItems: "center",
               padding: "5px 8px", borderRadius: 5,
-              background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
+              background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
               animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
             }}>
               <span style={{ fontSize: 10, fontWeight: 500, color: "var(--text-primary)", whiteSpace: "nowrap" }}>{c.signal}</span>

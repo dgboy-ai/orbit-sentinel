@@ -85,7 +85,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
     const defs = svg.append("defs");
 
     defs.append("pattern").attr("id","br-grid").attr("width",24).attr("height",24).attr("patternUnits","userSpaceOnUse")
-      .append("path").attr("d","M 24 0 L 0 0 0 24").attr("fill","none").attr("stroke","rgba(255,255,255,0.03)").attr("stroke-width",0.5);
+      .append("path").attr("d","M 24 0 L 0 0 0 24").attr("fill","none").attr("stroke","var(--overlay-03)").attr("stroke-width",0.5);
 
     const colors = [...new Set(nodes.map(n => {
       return n.riskLevel ? riskLevelToColor(n.riskLevel) : NODE_COLORS[n.type] ?? "#666";
@@ -133,7 +133,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
         const srcId = typeof d.source === "string" ? d.source : (d.source as DN).id;
         const tgtId = typeof d.target === "string" ? d.target : (d.target as DN).id;
         const isHl = highlight && (srcId === highlight || tgtId === highlight);
-        return isHl ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.06)";
+        return isHl ? "rgba(96,165,250,0.25)" : "var(--overlay-06)";
       })
       .attr("stroke-width",(d:DL)=>Math.max(0.5,(d.value??1)*1.5))
       .attr("stroke-dasharray",(d:DL)=>{
@@ -180,11 +180,11 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
       .on("click",(_e:any,d:DN)=>{onClickRef.current(d.id);})
       .on("mouseenter",function(_e:any,d:DN){
         const isRoot = d.id === selectedId;
-        d3.select(this).attr("stroke","rgba(255,255,255,0.5)").attr("stroke-width",2.5);
+        d3.select(this).attr("stroke","var(--overlay-50)").attr("stroke-width",2.5);
         d3.select(this.parentNode!.querySelector("text")!).attr("font-size",10).attr("fill","var(--text-primary)");
         linkSel.attr("stroke",(ld:DL)=>{
           const src=(ld.source as DN).id;const tgt=(ld.target as DN).id;
-          return (src===d.id||tgt===d.id)?"rgba(96,165,250,0.3)":"rgba(255,255,255,0.04)";
+          return (src===d.id||tgt===d.id)?"rgba(96,165,250,0.3)":"var(--overlay-04)";
         }).attr("stroke-dasharray",(ld:DL)=>{
           const src=(ld.source as DN).id;const tgt=(ld.target as DN).id;
           return (src===d.id||tgt===d.id)?"none":"3,3";
@@ -205,7 +205,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
           d3.select(this.parentNode!.querySelector(".br-glow")!).attr("opacity",0.3);
           d3.select(this.parentNode!.querySelector(".br-rim")!).attr("stroke-width",0.5).attr("opacity",0.2);
         }
-        linkSel.attr("stroke","rgba(255,255,255,0.06)")
+        linkSel.attr("stroke","var(--overlay-06)")
           .attr("stroke-dasharray","3,3")
           .attr("stroke-width",(d:DL)=>Math.max(0.5,(d.value??1)*1.5));
       });
@@ -236,7 +236,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
         const srcId = typeof d.source === "string" ? d.source : (d.source as DN).id;
         const tgtId = typeof d.target === "string" ? d.target : (d.target as DN).id;
         const isHl = highlight && (srcId === highlight || tgtId === highlight);
-        return isHl ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.06)";
+        return isHl ? "rgba(96,165,250,0.25)" : "var(--overlay-06)";
       })
       .attr("stroke-dasharray",(d:DL)=>{
         const srcId = typeof d.source === "string" ? d.source : (d.source as DN).id;
@@ -253,7 +253,7 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
         position: "absolute", bottom: 12, right: 12, zIndex: 10,
         display: "flex", gap: 4,
         background: "rgba(15,18,26,0.92)", backdropFilter: "blur(12px)",
-        border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8,
+        border: "1px solid var(--overlay-08)", borderRadius: 8,
         padding: "4px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
       }}>
         <button onClick={handleZoomIn} title="Zoom In" style={{
@@ -312,12 +312,12 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
           <div key={`${c.from}-${c.to}-${c.type}`} style={{
             display: "flex", alignItems: "center", gap: 4,
             padding: "4px 8px", borderRadius: 5,
-            background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)",
+            background: "var(--overlay-02)", border: "1px solid var(--overlay-05)",
             animation: `fadeSlideUp 0.3s ${i * 0.03}s ease both`,
             transition: "all 0.15s ease",
           }}
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.06)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.15)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-02)"; e.currentTarget.style.borderColor = "var(--overlay-05)"; }}
           >
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: NODE_COLORS[fromNode?.type ?? ""] ?? "#666", flexShrink: 0 }} />
             <span style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500 }}>{fromNode?.label ?? c.from}</span>
@@ -421,14 +421,14 @@ export default function BlastRadiusExplorer({ graph }: Props) {
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
-                padding: "5px 8px", borderRadius: 6, fontSize: 10, border: "1px solid rgba(255,255,255,0.08)",
+                padding: "5px 8px", borderRadius: 6, fontSize: 10, border: "1px solid var(--overlay-08)",
                 background: "rgba(0,0,0,0.2)", color: "var(--text-primary)", outline: "none", width: "100%",
               }}
             />
             <div style={{
               display: "flex", alignItems: "center", gap: 4,
               padding: "4px 8px", borderRadius: 6, flexShrink: 0,
-              background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+              background: "var(--overlay-03)", border: "1px solid var(--overlay-06)",
             }}>
               <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600 }}>Depth</span>
               <input type="range" min={1} max={5} value={depth} onChange={e => setDepth(Number(e.target.value))}

@@ -21,7 +21,7 @@ function Slider({ label, value, min, max, step, unit, onChange, color }: {
         <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: "'JetBrains Mono', monospace" }}>{value}{unit}</span>
       </div>
       <div style={{ position: "relative", height: 6 }}>
-        <div style={{ position: "absolute", inset: 0, borderRadius: 3, background: "rgba(255,255,255,0.06)" }} />
+        <div style={{ position: "absolute", inset: 0, borderRadius: 3, background: "var(--overlay-06)" }} />
         <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 0.15s ease", boxShadow: `0 0 6px ${color}33` }} />
         <input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(parseFloat(e.target.value))}
           style={{

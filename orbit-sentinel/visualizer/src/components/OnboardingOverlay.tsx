@@ -20,7 +20,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
       {Array.from({ length: total }, (_, i) => (
         <div key={i} style={{
           width: i === current ? 24 : 8, height: 5, borderRadius: 3,
-          background: i === current ? "var(--accent-blue)" : "rgba(255,255,255,0.1)",
+          background: i === current ? "var(--accent-blue)" : "var(--overlay-10)",
           transition: "all 0.3s ease",
         }} />
       ))}
@@ -103,10 +103,10 @@ export default function OnboardingOverlay({ onDismiss }: { onDismiss: () => void
                 <button onClick={() => setStep(s => s - 1)}
                   style={{
                     padding: "6px 16px", fontSize: 11, fontWeight: 600, cursor: "pointer",
-                    border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6,
+                    border: "1px solid var(--overlay-10)", borderRadius: 6,
                     background: "transparent", color: "var(--text-secondary)",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-04)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
                 >← Back</button>
               )}

@@ -31,12 +31,12 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-        <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)" }}>
           <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 3, textTransform: "uppercase" }}>Reason</div>
           <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.4 }}>{deploymentStrategy}</div>
         </div>
 
-        <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)" }}>
           <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 4, textTransform: "uppercase" }}>Actions Required</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {requiredTests.map((t, i) => (
@@ -48,7 +48,7 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
           </div>
         </div>
 
-        <div style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", marginTop: "auto" }}>
+        <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)", marginTop: "auto" }}>
           <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 4, textTransform: "uppercase" }}>Expected Risk After Mitigation</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: aftCol, fontFamily: "'JetBrains Mono', monospace" }}>{(riskReduction.afterRecommendation * 100).toFixed(0)}%</div>

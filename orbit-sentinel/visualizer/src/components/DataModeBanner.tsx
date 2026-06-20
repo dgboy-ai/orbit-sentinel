@@ -28,7 +28,7 @@ export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
                  mode === "demo" ? "rgba(96,165,250,0.06)" :
                  mode === "error" ? "rgba(239,68,68,0.06)" :
                  mode === "connecting" || mode === "degraded" ? "rgba(234,179,8,0.06)" :
-                 "rgba(255,255,255,0.03)",
+                 "var(--overlay-03)",
       border: `1px solid ${cfg.color}18`,
       fontSize: 9,
       opacity: mode === "loading" ? 0.5 : 1,

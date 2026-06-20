@@ -33,7 +33,7 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
   }
 
   const current = ordered[activeQuery];
-  const meta = QUERY_META[current.queryType] ?? { icon: "📌", label: current.queryType, color: "#8b949e", bg: "rgba(255,255,255,0.04)" };
+  const meta = QUERY_META[current.queryType] ?? { icon: "📌", label: current.queryType, color: "#8b949e", bg: "var(--overlay-04)" };
 
   return (
     <div className="card" style={{
@@ -118,7 +118,7 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
                 return (
                   <span key={qt} style={{
                     fontSize: 8, padding: "1px 5px", borderRadius: 3,
-                    background: exists ? (isActive ? m.color + "22" : "rgba(255,255,255,0.03)") : "rgba(255,255,255,0.02)",
+                    background: exists ? (isActive ? m.color + "22" : "var(--overlay-03)") : "var(--overlay-02)",
                     color: exists ? (isActive ? m.color : "var(--text-tertiary)") : "var(--text-tertiary)",
                     border: isActive ? `1px solid ${m.color}44` : "1px solid transparent",
                     fontWeight: isActive ? 600 : 400,
