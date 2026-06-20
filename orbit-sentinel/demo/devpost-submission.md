@@ -19,13 +19,13 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 | View | What It Shows | Orbit Query |
 |---|---|---|
 | 🖥️ **Dashboard** | Impact calculator, architecture diagram, evidence panel, incident intelligence, counterfactuals | All 4 |
-| ⚡ **Setup Wizard** | 4-step guided journey — first-time visitors see this, not a blank graph | — |
+| 🎯 **Predictions Tracker** | Accuracy scoreboard, post-merge verification, vulnerability-adjusted forecasts | Closed-loop |
 | 💥 **Blast Radius** | Interactive dependency explorer — click any node to drill into connections | NEIGHBORS |
 | 🔍 **Risk Investigation** | 5-dimension risk breakdown, pipeline failure heatmap, correlation coefficient | AGGREGATION |
 | 🧪 **Forecast Engine** | What-if simulator — toggle variables, watch risk animate in real-time | Simulation |
 | 📜 **Historical Context** | Past incidents ranked by Jaccard similarity — "has this failed before?" | TRAVERSAL |
 | 📋 **Impact Report** | Full MR comment with one-click Markdown copy or JSON export | All 4 |
-| 🎯 **Predictions Tracker** | Accuracy scoreboard, post-merge verification, vulnerability-adjusted forecasts | Closed-loop |
+| ⚡ **Setup Wizard** | 4-step guided journey — first-time visitors see this, not a blank graph | — |
 
 **The autonomous flow** 🤖 triggers automatically on MR open or commit push — executes all 4 Orbit queries, composes a 9-section report (executive summary, blast radius, failure predictions, historical context, reviewer recommendations, rollback plan, test plan, remediation steps), and posts it as an MR note.
 
