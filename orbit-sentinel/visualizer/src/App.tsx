@@ -575,45 +575,53 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
-              padding: "4px 7px", fontSize: 11, cursor: "pointer",
-              border: "1px solid rgba(167,139,250,0.2)", borderRadius: 6,
-              background: "rgba(167,139,250,0.06)", color: COLORS.purple,
+              padding: "4px 10px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+              border: "1px solid rgba(167,139,250,0.3)", borderRadius: 6,
+              background: "rgba(167,139,250,0.1)", color: COLORS.purple,
+              boxShadow: "0 0 10px rgba(167,139,250,0.1)",
               transition: "all 0.15s ease", flexShrink: 0, lineHeight: 1,
+              letterSpacing: "0.3px",
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.14)"; e.currentTarget.style.boxShadow = "0 0 12px rgba(167,139,250,0.15)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.06)"; e.currentTarget.style.boxShadow = "none"; }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(167,139,250,0.18)"; e.currentTarget.style.boxShadow = "0 0 18px rgba(167,139,250,0.25)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(167,139,250,0.1)"; e.currentTarget.style.boxShadow = "0 0 10px rgba(167,139,250,0.1)"; e.currentTarget.style.borderColor = "rgba(167,139,250,0.3)"; }}
           >{isMobile ? "👑" : "👑 Tour"}</button>
           <button onClick={() => exportAsHtml(data)} title="Export as HTML" aria-label="Export report as HTML"
             style={{
-              padding: "4px 7px", fontSize: 11, cursor: "pointer",
-              border: "1px solid transparent", borderRadius: 6,
-              background: "transparent", color: "var(--text-tertiary)",
+              padding: "4px 8px", fontSize: 12, cursor: "pointer",
+              border: "1px solid var(--overlay-12)", borderRadius: 6,
+              background: "var(--overlay-04)", color: "var(--text-secondary)",
+              boxShadow: "0 0 6px var(--overlay-06)",
               transition: "all 0.15s ease", flexShrink: 0, lineHeight: 1,
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; }}
+            onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-08)"; e.currentTarget.style.boxShadow = "0 0 12px var(--overlay-10)"; e.currentTarget.style.color = "var(--text-primary)"; e.currentTarget.style.borderColor = "var(--border-hover)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.boxShadow = "0 0 6px var(--overlay-06)"; e.currentTarget.style.color = "var(--text-secondary)"; e.currentTarget.style.borderColor = "var(--overlay-12)"; }}
           >⬇</button>
           <button onClick={toggleTheme} title={dark ? "Switch to light theme" : "Switch to dark theme"} aria-label="Toggle theme"
             style={{
-              padding: "4px 7px", fontSize: 11, cursor: "pointer",
-              border: "1px solid transparent", borderRadius: 6,
-              background: "transparent", color: "var(--text-tertiary)",
+              padding: "4px 8px", fontSize: 13, cursor: "pointer",
+              border: `1px solid ${dark ? "rgba(251,191,36,0.3)" : "rgba(96,165,250,0.3)"}`, borderRadius: 6,
+              background: dark ? "rgba(251,191,36,0.08)" : "rgba(96,165,250,0.08)",
+              color: dark ? "#fbbf24" : "#60a5fa",
+              boxShadow: dark ? "0 0 10px rgba(251,191,36,0.1)" : "0 0 10px rgba(96,165,250,0.1)",
               transition: "all 0.15s ease", flexShrink: 0, lineHeight: 1,
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--text-secondary)"; }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; }}
+            onMouseEnter={e => { e.currentTarget.style.background = dark ? "rgba(251,191,36,0.15)" : "rgba(96,165,250,0.15)"; e.currentTarget.style.boxShadow = dark ? "0 0 18px rgba(251,191,36,0.25)" : "0 0 18px rgba(96,165,250,0.25)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = dark ? "rgba(251,191,36,0.08)" : "rgba(96,165,250,0.08)"; e.currentTarget.style.boxShadow = dark ? "0 0 10px rgba(251,191,36,0.1)" : "0 0 10px rgba(96,165,250,0.1)"; }}
           >{dark ? "☀️" : "🌙"}</button>
           <button onClick={demo ? stopDemo : startDemo}
             aria-label={demo ? "Stop demo" : "Play demo"}
             style={{
-            padding: "4px 10px", fontSize: 10, fontWeight: 700, cursor: "pointer",
-            border: demo ? "1px solid rgba(239,68,68,0.35)" : `1px solid ${accentColor}35`,
-            borderRadius: 6,
-            background: demo ? "rgba(239,68,68,0.1)" : `${accentColor}10`,
+            padding: "4px 12px", fontSize: 10, fontWeight: 700, cursor: "pointer",
+            border: demo ? "1px solid rgba(239,68,68,0.45)" : `1px solid ${accentColor}45`,
+            borderRadius: 6, letterSpacing: "0.3px",
+            background: demo ? "rgba(239,68,68,0.12)" : `${accentColor}15`,
             color: demo ? "#ef4444" : accentColor,
             transition: "all 0.15s ease", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap", flexShrink: 0, lineHeight: 1,
-            boxShadow: demo ? "0 0 10px rgba(239,68,68,0.1)" : `0 0 10px ${accentGlow}`,
-          }}>
+            boxShadow: demo ? "0 0 14px rgba(239,68,68,0.15)" : `0 0 14px ${accentGlow}`,
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = demo ? "rgba(239,68,68,0.2)" : `${accentColor}22`; e.currentTarget.style.boxShadow = demo ? "0 0 22px rgba(239,68,68,0.25)" : `0 0 22px ${accentGlow}`; e.currentTarget.style.borderColor = demo ? "rgba(239,68,68,0.6)" : `${accentColor}60`; }}
+            onMouseLeave={e => { e.currentTarget.style.background = demo ? "rgba(239,68,68,0.12)" : `${accentColor}15`; e.currentTarget.style.boxShadow = demo ? "0 0 14px rgba(239,68,68,0.15)" : `0 0 14px ${accentGlow}`; e.currentTarget.style.borderColor = demo ? "rgba(239,68,68,0.45)" : `${accentColor}45`; }}
+          >
             <span style={{ fontSize: 9 }}>{demo ? "■" : "▶"}</span>
             {!isMobile && (demo ? "Stop" : "Play")}
           </button>
