@@ -356,7 +356,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                     <ErrorBoundary><IncidentIntelligence incidents={data.incidents} /></ErrorBoundary>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                    <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 380, flex: isMobile ? "none" : 1 }}><ErrorBoundary><Suspense fallback={<PanelFallback height={380} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary></div>
+                    <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 580, flex: isMobile ? "none" : 1 }}><ErrorBoundary><Suspense fallback={<PanelFallback height={580} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary></div>
                     <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
                   </div>
                 </div>
