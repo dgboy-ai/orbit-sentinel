@@ -338,7 +338,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       <div className="card" style={{
         padding: isMobile ? "14px 14px" : "16px 18px", position: "relative", overflow: "hidden",
         background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(96,165,250,0.1)",
+        border: "1px solid rgba(96,165,250,0.12)",
+        boxShadow: "0 0 20px rgba(96,165,250,0.04)",
         animation: "fadeSlideUp 0.4s 0.035s cubic-bezier(0.16,1,0.3,1) both",
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
@@ -347,14 +348,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <span style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px" }}>Prediction Outcomes</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
           </div>
-          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
             {(["true_positive","true_negative","false_positive","false_negative"] as const).map(cat => {
-              const count = items.filter(i => (i.category || i.actualOutcome === "pending" ? "pending" : "unknown") !== "pending" && i.category === cat).length + items.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === undefined && (
-                cat === "true_positive" ? i.predictedRisk >= 0.6 && i.actualOutcome === "failed" :
-                cat === "true_negative" ? i.predictedRisk < 0.6 && i.actualOutcome === "verified" :
-                cat === "false_positive" ? i.predictedRisk >= 0.6 && i.actualOutcome === "verified" :
-                i.predictedRisk < 0.6 && i.actualOutcome === "failed"
-              )).length;
+              const count = items.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === cat).length;
               const labels: Record<string, { label: string; short: string; color: string; desc: string }> = {
                 true_positive: { label: "True Positive", short: "TP", color: "#22c55e", desc: "High risk → failed" },
                 true_negative: { label: "True Negative", short: "TN", color: "#60a5fa", desc: "Low risk → shipped" },
@@ -364,17 +360,18 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               const info = labels[cat];
               return (
                 <div key={cat} style={{
-                  padding: "10px 8px", borderRadius: 8, textAlign: "center",
-                  background: `${info.color}06`, border: `1px solid ${info.color}18`,
+                  padding: "12px 10px", borderRadius: 8, textAlign: "center",
+                  background: `${info.color}06`, border: `1px solid ${info.color}20`,
+                  boxShadow: `0 0 12px ${info.color}08`,
                   animation: "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) both",
-                  transition: "border-color 0.15s",
+                  transition: "all 0.15s ease",
                 }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${info.color}35`; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = `${info.color}18`; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${info.color}45`; e.currentTarget.style.boxShadow = `0 0 16px ${info.color}15`; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = `${info.color}20`; e.currentTarget.style.boxShadow = `0 0 12px ${info.color}08`; }}
                 >
-                  <div style={{ fontSize: 9, fontWeight: 700, color: info.color, marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.5px" }}>{info.short}</div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: info.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${info.color}30` }}>{count}</div>
-                  <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 1 }}>{info.desc}</div>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: info.color, marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.5px" }}>{info.short}</div>
+                  <div style={{ fontSize: 24, fontWeight: 900, color: info.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${info.color}40`, lineHeight: 1.1 }}>{count}</div>
+                  <div style={{ fontSize: 8.5, color: "var(--text-tertiary)", marginTop: 2 }}>{info.desc}</div>
                 </div>
               );
             })}
