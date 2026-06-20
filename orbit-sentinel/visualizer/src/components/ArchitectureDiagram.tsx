@@ -88,12 +88,12 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
             <div style={{
               position: "absolute", inset: -3, borderRadius: 17,
               border: `1px solid ${node.color}28`,
-              animation: "pulseGlow 2.5s ease-in-out infinite",
+              animation: "pulseGlow 4s ease-in-out infinite",
             }} />
             <div style={{
               position: "absolute", inset: -7, borderRadius: 21,
               border: `1px solid ${node.color}0c`,
-              animation: "pulseGlow 2.5s ease-in-out infinite 0.3s",
+              animation: "pulseGlow 4s ease-in-out infinite 0.3s",
             }} />
           </>
         )}

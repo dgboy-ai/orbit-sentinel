@@ -118,7 +118,7 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
           opacity: showBroken ? 1 : 0, transform: showBroken ? "scale(1)" : "scale(0.8)",
           transition: "all 0.6s cubic-bezier(0.16,1,0.3,1)",
           textAlign: "center",
-          animation: showBroken ? "fadeSlideUp 0.5s ease, pulseGlow 2s ease-in-out infinite" : undefined,
+          animation: showBroken ? "fadeSlideUp 0.5s ease, pulseGlow 4s ease-in-out infinite" : undefined,
         }}>
           <div style={{ fontSize: 24, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "3px", textShadow: "0 0 30px rgba(239,68,68,0.6)" }}>
             ⚠ PATH BROKEN

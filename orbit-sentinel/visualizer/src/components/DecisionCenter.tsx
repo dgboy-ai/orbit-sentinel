@@ -21,7 +21,7 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
       <div style={{
         display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 8,
         background: verdict.bg, border: `1px solid ${verdict.border}`, marginBottom: 10,
-        animation: verdict.color === "#ef4444" ? "pulseGlow 2s ease-in-out infinite" : undefined,
+        animation: verdict.color === "#ef4444" ? "pulseGlow 4s ease-in-out infinite" : undefined,
         boxShadow: verdict.color === "#ef4444" ? "0 0 24px rgba(239,68,68,0.15)" : "none",
       }}>
         <span style={{ fontSize: 18 }}>{verdict.icon}</span>

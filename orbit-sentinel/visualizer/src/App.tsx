@@ -276,13 +276,13 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
-    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "overview", "setup", "overview"];
+    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "predictions", "overview", "setup", "overview"];
     if (stepIndex < tourViews.length) {
       setView(tourViews[stepIndex]);
     }
   }, []);
 
-  const tabs: [View, string][] = [["overview","Overview"],["setup","Setup"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"],["predictions","Predictions"]];
+  const tabs: [View, string][] = [["overview","Overview"],["predictions","Predictions"],["blast-radius","Graph"],["risk","Risk"],["simulation","Forecast"],["historical","History"],["report","Report"],["setup","Setup"]];
   const [prevView, setPrevView] = useState<View>(view);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -482,34 +482,64 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             <button onClick={() => setMobileViewOpen(!mobileViewOpen)}
               aria-label="Switch view" aria-expanded={mobileViewOpen}
               style={{
-                padding: "3px 8px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                padding: "4px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer",
                 border: `1px solid ${accentColor}44`, borderRadius: 6,
-                background: `${accentColor}18`, color: accentColor, whiteSpace: "nowrap",
+                background: `${accentColor}15`, color: accentColor, whiteSpace: "nowrap",
+                display: "flex", alignItems: "center", gap: 6,
+                transition: "all 0.2s ease",
+                boxShadow: mobileViewOpen ? `0 0 12px ${accentGlow}` : "none",
               }}
-            >{tabs.find(([k]) => k === view)?.[1] ?? "Overview"} ▾</button>
+            >
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: accentColor, boxShadow: `0 0 8px ${accentGlow}` }} />
+              {tabs.find(([k]) => k === view)?.[1] ?? "Overview"}
+              <span style={{
+                fontSize: 8, opacity: mobileViewOpen ? 1 : 0.5,
+                transform: mobileViewOpen ? "rotate(180deg)" : "none",
+                transition: "transform 0.25s ease",
+              }}>▾</span>
+            </button>
             {mobileViewOpen && (
               <div style={{
-                position: "absolute", top: "100%", right: 0, zIndex: Z.modal, marginTop: 4,
-                background: "rgba(15,18,26,0.96)", backdropFilter: "blur(12px)",
-                border: "1px solid var(--border)", borderRadius: 6, overflow: "hidden",
-                minWidth: 140, boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                position: "absolute", top: "100%", right: 0, zIndex: Z.modal, marginTop: 6,
+                background: "rgba(15,18,26,0.97)", backdropFilter: "blur(16px)",
+                border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden",
+                minWidth: 160, boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
+                animation: "fadeSlideUp 0.2s cubic-bezier(0.16,1,0.3,1)",
               }}>
-                {tabs.map(([k, lbl]) => {
+                {tabs.map(([k, lbl], i) => {
                   const qt = VIEW_QUERY_TAG[k];
+                  const isActive = view === k;
                   return (
                   <button key={k} onClick={() => { setView(k); setMobileViewOpen(false); if (demo) stopDemo(); }}
                     style={{
-                      display: "flex", width: "100%", padding: "6px 12px", fontSize: 10, cursor: "pointer",
-                      border: "none", borderBottom: "1px solid var(--border)",
-                      background: view === k ? `${accentColor}18` : "transparent",
-                      color: view === k ? accentColor : "var(--text-secondary)", textAlign: "left",
-                      alignItems: "center", gap: 5,
+                      display: "flex", width: "100%", padding: "8px 14px", fontSize: 10.5, cursor: "pointer",
+                      border: "none", borderBottom: i < tabs.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                      background: isActive ? `${accentColor}15` : "transparent",
+                      color: isActive ? accentColor : "var(--text-secondary)",
+                      textAlign: "left", alignItems: "center", gap: 8,
+                      fontWeight: isActive ? 600 : 400,
+                      transition: "all 0.15s",
+                      position: "relative",
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = view === k ? `${accentColor}18` : "transparent"; }}
-                  >{lbl}{qt && <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}</button>
+                    onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "var(--text-primary)"; } }}
+                    onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
+                  >
+                    {isActive && <div style={{ position: "absolute", left: 0, top: "20%", width: 2, height: "60%", borderRadius: 1, background: accentColor, boxShadow: `0 0 8px ${accentGlow}` }} />}
+                    <span style={{ fontSize: 12 }}>{qt?.tag === "NEIGHBORS" ? "💥" : qt?.tag === "TRAVERSAL" ? "📜" : qt?.tag === "AGGREGATION" ? "⚠️" : lbl === "Predictions" ? "🎯" : lbl === "Setup" ? "⚡" : lbl === "Overview" ? "🛰️" : lbl === "Report" ? "📋" : lbl === "Forecast" ? "🧪" : "📊"}</span>
+                    {lbl}
+                    {qt && <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}
+                  </button>
                   );
                 })}
+                <div style={{
+                  padding: "6px 14px", fontSize: 8, color: "var(--text-tertiary)",
+                  borderTop: "1px solid rgba(255,255,255,0.03)",
+                  textAlign: "center", letterSpacing: "0.3px",
+                }}>
+                  {tabs.findIndex(([k]) => k === view) < tabs.length - 1
+                    ? `Next: ${tabs[tabs.findIndex(([k]) => k === view) + 1][1]}`
+                    : "All views shown"}
+                </div>
               </div>
             )}
           </div>
@@ -636,34 +666,51 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           animation: ANIM.fadeSlideUp.xfast,
         }} onClick={() => setShowShortcuts(false)}>
           <div className="card" style={{
-            padding: "24px 28px", maxWidth: 400, width: "90%",
+            padding: "20px 24px", maxWidth: 420, width: "90%",
           }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 16 }}>⌨️ Keyboard Shortcuts</div>
-            {[
-              { key: "Space", desc: "Start / Stop demo" },
-              { key: "← →", desc: "Navigate between views" },
-              { key: "1-8", desc: "Jump to view by number" },
-              { key: "D", desc: "Toggle dark/light theme" },
-              { key: "E", desc: "Export report as HTML" },
-              { key: "P", desc: "Toggle presentation mode" },
-              { key: "?", desc: "Toggle this overlay" },
-              { key: "Esc", desc: "Close overlays" },
-            ].map(s => (
-              <div key={s.key} style={{
-                display: "flex", alignItems: "center", gap: 12, padding: "6px 0",
-                borderBottom: "1px solid var(--border)",
-              }}>
-                <kbd style={{
-                  padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 700,
-                  background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-                  color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace",
-                  minWidth: 50, textAlign: "center",
-                }}>{s.key}</kbd>
-                <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>{s.desc}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(139,92,246,0.1))",
+                border: "1px solid rgba(139,92,246,0.2)",
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
+              }}>⌨️</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Keyboard Shortcuts</div>
+                <div style={{ fontSize: 9, color: "var(--text-tertiary)" }}>Navigate Orbit Sentinel without touching a mouse</div>
               </div>
-            ))}
-            <div style={{ marginTop: 12, fontSize: 9, color: "var(--text-tertiary)", textAlign: "center" }}>
-              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontSize: 9 }}>?</kbd> to close
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+              {[
+                { key: "Space", icon: "▶", desc: "Start / Stop demo" },
+                { key: "← →", icon: "⇄", desc: "Navigate views" },
+                { key: "1–8", icon: "🔢", desc: "Jump to view" },
+                { key: "D", icon: "🌓", desc: "Toggle theme" },
+                { key: "E", icon: "⬇", desc: "Export report" },
+                { key: "P", icon: "🎬", desc: "Presentation mode" },
+                { key: "?", icon: "⌨️", desc: "Show shortcuts" },
+                { key: "Esc", icon: "✕", desc: "Close overlays" },
+              ].map(s => (
+                <div key={s.key} style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "8px 10px", borderRadius: 6,
+                  background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)",
+                }}>
+                  <div style={{
+                    width: 24, height: 24, borderRadius: 5,
+                    background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 11, flexShrink: 0,
+                  }}>{s.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>{s.key}</div>
+                    <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{s.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10, fontSize: 8, color: "var(--text-tertiary)", textAlign: "center" }}>
+              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "rgba(255,255,255,0.06)", fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>?</kbd> or click anywhere to close
             </div>
           </div>
         </div>

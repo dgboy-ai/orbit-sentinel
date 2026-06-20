@@ -102,7 +102,7 @@ export default function EngineStatus() {
             background: warming ? "rgba(249,115,22,0.15)" : "rgba(249,115,22,0.1)",
             color: "#fb923c", lineHeight: 1.4,
             transition: "all 0.15s",
-            animation: warming ? "pulseGlow 1s ease-in-out infinite" : "none",
+            animation: warming ? "pulseGlow 2.5s ease-in-out infinite" : "none",
           }}
           onMouseEnter={e => { if (!warming) e.currentTarget.style.background = "rgba(249,115,22,0.2)"; }}
           onMouseLeave={e => { if (!warming) e.currentTarget.style.background = "rgba(249,115,22,0.1)"; }}

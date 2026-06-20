@@ -422,7 +422,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11,
           flexShrink: 0,
           boxShadow: "0 0 10px rgba(96,165,250,0.15)",
-          animation: "pulseGlow 2s ease-in-out infinite",
+          animation: "pulseGlow 4s ease-in-out infinite",
         }}>→</div>
         <div style={{
           padding: "7px 10px", borderRadius: 6, textAlign: "center",

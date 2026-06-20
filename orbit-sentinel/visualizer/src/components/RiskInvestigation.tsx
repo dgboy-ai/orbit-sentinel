@@ -591,7 +591,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             padding: isMobile ? "8px 16px" : "12px 28px", borderRadius: 10, marginBottom: 12, maxWidth: "100%", boxSizing: "border-box",
             background: `linear-gradient(135deg, ${config.color}15, ${config.color}05)`,
             border: `1px solid ${config.color}25`,
-            animation: mounted ? "pulseGlow 2s ease-in-out infinite" : "none",
+            animation: mounted ? "pulseGlow 4s ease-in-out infinite" : "none",
           }}>
             <span style={{ fontSize: isMobile ? 18 : 24, flexShrink: 0 }}>{config.verdictIcon}</span>
             <span style={{ fontSize: isMobile ? 16 : 22, fontWeight: 900, color: config.color, letterSpacing: "0.8px", textShadow: `0 0 20px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.verdictLabel}</span>

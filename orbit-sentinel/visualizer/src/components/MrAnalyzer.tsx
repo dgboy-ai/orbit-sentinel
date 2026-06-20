@@ -251,7 +251,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           position: "absolute", inset: 0, pointerEvents: "none",
           border: "1px solid rgba(139,92,246,0.08)",
           borderRadius: 12,
-          animation: "pulseGlow 3s ease-in-out infinite",
+          animation: "pulseGlow 4s ease-in-out infinite",
         }} />
       )}
 
@@ -430,7 +430,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           padding: "10px 14px", borderRadius: 8, fontSize: 11,
           background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.18)",
           color: "#93c5fd", display: "flex", alignItems: "center", gap: 10,
-          animation: "pulseGlow 2s ease-in-out infinite",
+          animation: "pulseGlow 4s ease-in-out infinite",
         }}>
           <span style={{ fontSize: 16, flexShrink: 0 }}>🔍</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>

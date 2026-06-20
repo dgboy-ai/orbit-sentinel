@@ -52,7 +52,7 @@ export const ANIM = {
     slow: "float 6s ease-in-out infinite",
     medium: "float 8s ease-in-out infinite",
   },
-  pulseGlow: "pulseGlow 2s ease-in-out infinite",
+  pulseGlow: "pulseGlow 4s ease-in-out infinite",
   pulseDot: {
     fast: "pulseDot 0.8s ease-in-out infinite",
     medium: "pulseDot 1s ease-in-out infinite",
