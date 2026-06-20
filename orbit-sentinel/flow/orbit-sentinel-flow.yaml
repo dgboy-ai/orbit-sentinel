@@ -31,20 +31,20 @@ prompts:
         - create_merge_request_note(content)
 
         Steps:
-        1. get_graph_schema() to discover the schema.
+        1. get_graph_schema() to discover the schema
         2. query_graph({"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":{{mr_iid}}}},"neighbors":{"direction":"both","max_depth":1},"limit":5}})
         3. query_graph({"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"in","value":{{changed_files}}}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}})
         4. query_graph({"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"in","value":{{changed_files}}}}},{"id":"mr","entity":"MergeRequest"}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":5}})
         5. query_graph({"query":{"query_type":"aggregation","nodes":[{"id":"pl","entity":"Pipeline","filters":{"status":"failed"}},{"id":"p","entity":"Project"}],"relationships":[{"type":"IN_PROJECT","from":"pl","to":"p"}],"group_by":[{"kind":"node","node":"p"}],"aggregations":[{"function":"count","target":"pl","alias":"failed_count"}],"limit":5}})
-        6. Compose a markdown report from the results.
-        7. Post the report as a note on this merge request using create_merge_request_note.
+        6. Compose a markdown report from the results
+        7. Post the report as a note on this merge request using create_merge_request_note
         8. Stop. The analysis note on the MR is the final output.
 
-        CRITICAL EXECUTION RULES (TO PREVENT LOOPS):
-        * Execute each query step EXACTLY ONCE.
-        * If a query returns empty, null, or an error, do NOT retry. Proceed immediately to the next step.
-        * After executing Step 5, you are STRICTLY FORBIDDEN from calling get_graph_schema or query_graph.
-        * You MUST proceed directly to Step 6, Step 7 (post the note), and Step 8 (terminate).
+        CRITICAL EXECUTION RULES:
+        - Execute each query step exactly once. Do NOT repeat or retry queries.
+        - If results are empty, proceed to the next step. Do not retry or run get_graph_schema again.
+        - After step 5, you are strictly forbidden from calling get_graph_schema or query_graph.
+        - Proceed directly to compose the report, call create_merge_request_note, and stop.
 
         The user can only see your output through the note you post on the merge request.
       user: "{{goal}}"
