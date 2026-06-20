@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import type { CounterfactualScenario } from "../types";
+import React, { useState, useEffect, useMemo } from "react";
+import type { CounterfactualScenario, PredictionRecord, ROIMetrics } from "../types";
+import { computeROI } from "../utils/predictions";
 
 interface Props {
   riskScore: number;
   evidenceCount: number;
   counterfactuals: CounterfactualScenario[];
+  predictions?: PredictionRecord[];
 }
 
 function Slider({ label, value, min, max, step, unit, onChange, color }: {
@@ -13,7 +15,7 @@ function Slider({ label, value, min, max, step, unit, onChange, color }: {
 }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div style={{ flex: 1, minWidth: 160 }}>
+    <div style={{ flex: 1, minWidth: 140 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
         <span style={{ fontSize: 9, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px" }}>{label}</span>
         <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: "'JetBrains Mono', monospace" }}>{value}{unit}</span>
@@ -32,7 +34,7 @@ function Slider({ label, value, min, max, step, unit, onChange, color }: {
   );
 }
 
-function AnimatedValue({ value, suffix, color, delay = 0 }: { value: number; suffix?: string; color: string; delay?: number }) {
+function AnimatedValue({ value, prefix, suffix, color, delay = 0, decimals = 0 }: { value: number; prefix?: string; suffix?: string; color: string; delay?: number; decimals?: number }) {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     const t0 = performance.now() + delay;
@@ -46,17 +48,21 @@ function AnimatedValue({ value, suffix, color, delay = 0 }: { value: number; suf
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [value, delay]);
-  const fmt = value >= 1000 ? display.toLocaleString("en-US", { maximumFractionDigits: 0 }) : display.toFixed(1);
+  const fmt = value >= 10000
+    ? "$" + (display / 1000).toFixed(1) + "k"
+    : value >= 1000
+      ? (display).toLocaleString("en-US", { maximumFractionDigits: decimals })
+      : display.toFixed(decimals);
   return (
     <span style={{ fontSize: 20, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${color}33` }}>
-      {fmt}{suffix}
+      {prefix}{fmt}{suffix}
     </span>
   );
 }
 
 const TEAL = "#2dd4bf";
 
-export default function ImpactCalculator({ riskScore, evidenceCount, counterfactuals }: Props) {
+export default function ImpactCalculator({ riskScore, evidenceCount, counterfactuals, predictions = [] }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   const s = (d: number) => mounted ? { animation: `fadeSlideUp 0.5s ${d}s cubic-bezier(0.16,1,0.3,1) both` } : { opacity: 0 };
@@ -64,114 +70,239 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
   const [mrsPerWeek, setMrsPerWeek] = useState(15);
   const [hourlyRate, setHourlyRate] = useState(80);
   const [manualHours, setManualHours] = useState(2.5);
+  const [incidentCost, setIncidentCost] = useState(15000);
+
+  const roi: ROIMetrics = useMemo(() => computeROI(predictions, mrsPerWeek, hourlyRate, manualHours, incidentCost), [predictions, mrsPerWeek, hourlyRate, manualHours, incidentCost]);
 
   const WEEKS_PER_YEAR = 48;
   const sentinelHours = 0.08;
-
   const hoursPerMR = manualHours - sentinelHours;
   const hoursPerYear = hoursPerMR * mrsPerWeek * WEEKS_PER_YEAR;
   const costPerYear = hoursPerYear * hourlyRate;
   const mrsPerYear = mrsPerWeek * WEEKS_PER_YEAR;
 
   const incidentRate = riskScore * 0.42;
-  const incidentsPrevented = Math.round(incidentRate * mrsPerYear * 0.78);
+  const incidentsPreventedExtrapolated = Math.round(incidentRate * mrsPerYear * 0.78);
+
   const successRate = counterfactuals.length > 0 ? Math.round((1 - Math.min(...counterfactuals.map(c => c.riskAfter))) * 100) : 72;
 
-  const metrics = [
-    { icon: "⏱️", value: hoursPerMR, suffix: "h", label: "Saved per MR", detail: `${manualHours}h manual → ${(sentinelHours * 60).toFixed(0)}m auto`, color: "#60a5fa" },
-    { icon: "📅", value: hoursPerYear, suffix: "h", label: "Saved per Year", detail: `Based on ${mrsPerWeek} MRs/week × ${WEEKS_PER_YEAR} weeks`, color: TEAL },
-    { icon: "💰", value: costPerYear, suffix: "", label: "Cost Savings / Year", detail: `At $${hourlyRate}/h developer rate`, color: "#22c55e" },
-    { icon: "🛡️", value: incidentsPrevented, suffix: "", label: "Incidents Prevented", detail: `${(incidentRate * 100).toFixed(0)}% incident rate × ${(mrsPerYear * 0.78).toFixed(0)} flagged MRs`, color: "#a78bfa" },
-    { icon: "🎯", value: successRate, suffix: "%", label: "Mitigation Success", detail: `When ${evidenceCount} query recommendations followed`, color: "#f97316" },
-    { icon: "📊", value: evidenceCount * 4, suffix: "×", label: "Cross-Reference", detail: `${evidenceCount} query types validate each finding`, color: "#22d3ee" },
+  const confusion = [
+    { label: "True Positive", key: "truePositives" as const, value: roi.truePositives, color: "#22c55e", desc: "High risk → failed (caught)" },
+    { label: "True Negative", key: "trueNegatives" as const, value: roi.trueNegatives, color: "#60a5fa", desc: "Low risk → shipped (all clear)" },
+    { label: "False Positive", key: "falsePositives" as const, value: roi.falsePositives, color: "#eab308", desc: "High risk → shipped (overcautious)" },
+    { label: "False Negative", key: "falseNegatives" as const, value: roi.falseNegatives, color: "#ef4444", desc: "Low risk → failed (missed)" },
   ];
 
   return (
-    <div className="card" style={{
-      padding: "18px 22px", position: "relative", overflow: "hidden",
-      borderColor: "rgba(45,212,191,0.18)",
-      background: "linear-gradient(135deg, rgba(45,212,191,0.04), rgba(15,18,26,0.95), rgba(96,165,250,0.03))",
-      ...s(0),
-    }}>
-      <div style={{ position: "absolute", top: "-30%", right: "-5%", width: 280, height: 280, borderRadius: "50%", background: "rgba(45,212,191,0.05)", filter: "blur(80px)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <div className="card-header-icon" style={{ background: "rgba(45,212,191,0.12)" }}>🧮</div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: TEAL }}>Impact Calculator</div>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Adjust parameters to see your team's savings with Orbit Sentinel</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {/* Closed-Loop ROI Header */}
+      <div className="card" style={{
+        padding: "18px 22px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(45,212,191,0.18)",
+        background: "linear-gradient(135deg, rgba(45,212,191,0.04), rgba(15,18,26,0.95), rgba(96,165,250,0.03))",
+        ...s(0),
+      }}>
+        <div style={{ position: "absolute", top: "-30%", right: "-5%", width: 280, height: 280, borderRadius: "50%", background: "rgba(45,212,191,0.05)", filter: "blur(80px)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <div className="card-header-icon" style={{ background: "rgba(45,212,191,0.12)" }}>🧮</div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: TEAL }}>Closed-Loop ROI Calculator</div>
+              <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Dollar impact based on real prediction accuracy</div>
+            </div>
           </div>
-        </div>
 
-        {/* Sliders */}
-        <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 14, ...s(0.04) }}>
-          <Slider label="MRs per Week" value={mrsPerWeek} min={2} max={80} step={1} unit="" onChange={setMrsPerWeek} color="#60a5fa" />
-          <Slider label="Developer $/hr" value={hourlyRate} min={30} max={250} step={5} unit="" onChange={setHourlyRate} color="#22c55e" />
-          <Slider label="Manual Analysis (h)" value={manualHours} min={0.5} max={8} step={0.25} unit="h" onChange={setManualHours} color="#a78bfa" />
-        </div>
-
-        {/* Bottom divider */}
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(45,212,191,0.15), transparent)", marginBottom: 12 }} />
-
-        {/* Results */}
-        <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
-          {metrics.slice(0, 3).map((m, i) => (
-            <div key={m.label} style={{
-              padding: "10px 12px", borderRadius: 8, textAlign: "center",
-              background: `${m.color}06`, border: `1px solid ${m.color}15`,
-              animation: `fadeSlideUp 0.3s ${0.08 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
-            }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>{m.icon}</div>
-              <AnimatedValue value={m.value} suffix={m.suffix} color={m.color} delay={100 + i * 60} />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>{m.label}</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{m.detail}</div>
-            </div>
-          ))}
-        </div>
-        <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
-          {metrics.slice(3).map((m, i) => (
-            <div key={m.label} style={{
-              padding: "10px 12px", borderRadius: 8, textAlign: "center",
-              background: `${m.color}06`, border: `1px solid ${m.color}15`,
-              animation: `fadeSlideUp 0.3s ${0.12 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
-            }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>{m.icon}</div>
-              <AnimatedValue value={m.value} suffix={m.suffix} color={m.color} delay={200 + i * 60} />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>{m.label}</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{m.detail}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Summary bar */}
-        <div style={{
-          padding: "8px 14px", borderRadius: 6,
-          background: "linear-gradient(135deg, rgba(45,212,191,0.08), rgba(96,165,250,0.04))",
-          border: "1px solid rgba(45,212,191,0.12)",
-          display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8,
-          animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 14 }}>📈</span>
-            <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
-              <strong style={{ color: TEAL }}>Your Team:</strong>{" "}
-              {mrsPerWeek} MRs/wk × {WEEKS_PER_YEAR} wks = <strong style={{ color: "var(--text-primary)" }}>{mrsPerYear} MRs/year</strong>
+          <div style={{
+            padding: "10px 14px", borderRadius: 8, marginBottom: 14,
+            background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(59,130,246,0.04))",
+            border: "1px solid rgba(139,92,246,0.12)",
+            display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
+            ...s(0.02),
+          }}>
+            <span style={{ fontSize: 16 }}>🔄</span>
+            <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5, flex: 1 }}>
+              <strong style={{ color: "#a78bfa" }}>Other tools predict</strong> — they tell you risk before merge and stop there.{" "}
+              <strong style={{ color: TEAL }}>Orbit Sentinel verifies and learns</strong> — every prediction is tracked through a{" "}
+              <strong style={{ color: "var(--text-primary)" }}>7-day survival window</strong> post-merge. Actual outcomes update the model, making every future prediction smarter.
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
-              <span style={{ color: "#ef4444" }}>Manual</span>: {(manualHours * mrsPerYear).toLocaleString("en-US", { maximumFractionDigits: 0 })}h
-            </span>
-            <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>→</span>
-            <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
-              <span style={{ color: TEAL }}>Orbit</span>: {(sentinelHours * mrsPerYear).toLocaleString("en-US", { maximumFractionDigits: 0 })}h
+
+          {/* Sliders */}
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10, marginBottom: 14, ...s(0.04) }}>
+            <Slider label="MRs per Week" value={mrsPerWeek} min={2} max={80} step={1} unit="" onChange={setMrsPerWeek} color="#60a5fa" />
+            <Slider label="Developer $/hr" value={hourlyRate} min={30} max={250} step={5} unit="" onChange={setHourlyRate} color="#22c55e" />
+            <Slider label="Manual Analysis (h)" value={manualHours} min={0.5} max={8} step={0.25} unit="h" onChange={setManualHours} color="#a78bfa" />
+            <Slider label="Avg Incident Cost" value={incidentCost / 1000} min={2} max={100} step={1} unit="k" onChange={v => setIncidentCost(v * 1000)} color="#ef4444" />
+          </div>
+
+          {/* Bottom divider */}
+          <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(45,212,191,0.15), transparent)", marginBottom: 12 }} />
+
+          {/* Primary metrics: 3 columns */}
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+            <div style={{
+              padding: "10px 12px", borderRadius: 8, textAlign: "center",
+              background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)",
+              animation: "fadeSlideUp 0.3s 0.08s cubic-bezier(0.16,1,0.3,1) both",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 1 }}>⏱️</div>
+              <AnimatedValue value={hoursPerMR} prefix="" suffix="h" color="#60a5fa" decimals={1} />
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Saved per MR</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{manualHours}h manual → 5m auto</div>
+            </div>
+            <div style={{
+              padding: "10px 12px", borderRadius: 8, textAlign: "center",
+              background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)",
+              animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 1 }}>💰</div>
+              <AnimatedValue value={costPerYear} prefix="$" suffix="" color="#22c55e" />
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Time Cost Saved / Year</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{hoursPerYear.toLocaleString()}h at ${hourlyRate}/h</div>
+            </div>
+            <div style={{
+              padding: "10px 12px", borderRadius: 8, textAlign: "center",
+              background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.15)",
+              animation: "fadeSlideUp 0.3s 0.12s cubic-bezier(0.16,1,0.3,1) both",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 1 }}>📈</div>
+              <AnimatedValue value={roi.netROI} prefix="" suffix="%" color="#a78bfa" />
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Net ROI</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{roi.totalPredictions} verified predictions</div>
+            </div>
+          </div>
+
+          {/* Second row: incident avoidance */}
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+            <div style={{
+              padding: "10px 12px", borderRadius: 8, textAlign: "center",
+              background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 1 }}>🛡️</div>
+              <AnimatedValue value={roi.incidentsPrevented} prefix="" suffix="" color="#22c55e" />
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Incidents Prevented (TP)</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk caught before failure</div>
+            </div>
+            <div style={{
+              padding: "10px 12px", borderRadius: 8, textAlign: "center",
+              background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 1 }}>⚠️</div>
+              <AnimatedValue value={roi.falseNegativeCost} prefix="$" suffix="" color="#ef4444" />
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Missed Incident Cost (FN)</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{roi.falseNegatives} missed × ${incidentCost.toLocaleString()}</div>
+            </div>
+            <div style={{
+              padding: "10px 12px", borderRadius: 8, textAlign: "center",
+              background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)",
+            }}>
+              <div style={{ fontSize: 18, marginBottom: 1 }}>🎯</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(96,165,250,0.2)" }}>{roi.accuracyPercent}%</div>
+              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Prediction Accuracy</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>From {roi.totalPredictions} verified MRs</div>
+            </div>
+          </div>
+
+          {/* Summary bar */}
+          <div style={{
+            padding: "8px 14px", borderRadius: 6,
+            background: "linear-gradient(135deg, rgba(45,212,191,0.08), rgba(96,165,250,0.04))",
+            border: "1px solid rgba(45,212,191,0.12)",
+            display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8,
+            animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 14 }}>📈</span>
+              <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
+                <strong style={{ color: TEAL }}>Your Team:</strong>{" "}
+                {mrsPerWeek} MRs/wk × {WEEKS_PER_YEAR} wks = <strong style={{ color: "var(--text-primary)" }}>{mrsPerYear} MRs/year</strong>
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
+                <span style={{ color: "#ef4444" }}>Manual</span>: {(manualHours * mrsPerYear).toLocaleString("en-US", { maximumFractionDigits: 0 })}h
+              </span>
+              <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>→</span>
+              <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
+                <span style={{ color: TEAL }}>Orbit</span>: {(sentinelHours * mrsPerYear).toLocaleString("en-US", { maximumFractionDigits: 0 })}h
+              </span>
+              <div style={{
+                padding: "2px 10px", borderRadius: 4,
+                background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.2)",
+                fontSize: 9, fontWeight: 700, color: TEAL, whiteSpace: "nowrap",
+              }}>
+                {(hoursPerYear / (manualHours * mrsPerYear) * 100).toFixed(0)}% faster
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Confusion Matrix */}
+      <div className="card" style={{
+        padding: "18px 22px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(96,165,250,0.15)",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
+        ...s(0.06),
+      }}>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <span style={{ fontSize: 14 }}>📊</span>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#60a5fa" }}>Prediction Confusion Matrix</div>
+              <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Every verified MR is categorized — the model learns from each outcome</div>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+            {confusion.map(c => (
+              <div key={c.key} style={{
+                padding: "12px 14px", borderRadius: 8, textAlign: "center",
+                background: `${c.color}06`, border: `1px solid ${c.color}18`,
+                animation: "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) both",
+                transition: "border-color 0.15s",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${c.color}35`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${c.color}18`; }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 4 }}>
+                  <div style={{
+                    fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                    color: c.color,
+                  }}>{c.label}</div>
+                  <div style={{
+                    fontSize: 9, padding: "2px 6px", borderRadius: 4, fontWeight: 700,
+                    background: `${c.color}15`, color: c.color,
+                  }}>{c.key === "truePositives" ? "TP" : c.key === "trueNegatives" ? "TN" : c.key === "falsePositives" ? "FP" : "FN"}</div>
+                </div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: c.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${c.color}30` }}>
+                  {c.value}
+                </div>
+                <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 2 }}>{c.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Closed-loop explanation */}
+          <div style={{
+            padding: "10px 14px", borderRadius: 8, marginTop: 2,
+            background: "rgba(45,212,191,0.04)", border: "1px solid rgba(45,212,191,0.1)",
+            display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+          }}>
+            <span style={{ fontSize: 16 }}>🔄</span>
+            <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+              <strong style={{ color: TEAL }}>The closed loop:</strong> Predicted risk → shipped → 7-day survival check →
+              {roi.truePositives + roi.trueNegatives > 0 ? ` ${roi.accuracyPercent}% accurate so far` : " waiting for verification"} →
+              every result sharpens the next prediction.
             </span>
             <div style={{
-              padding: "2px 10px", borderRadius: 4,
-              background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.2)",
-              fontSize: 9, fontWeight: 700, color: TEAL, whiteSpace: "nowrap",
+              marginLeft: "auto", padding: "4px 12px", borderRadius: 6, fontSize: 9, fontWeight: 700,
+              background: roi.accuracyPercent >= 80 ? "rgba(34,197,94,0.1)" : "rgba(234,179,8,0.1)",
+              color: roi.accuracyPercent >= 80 ? "#22c55e" : "#eab308",
+              border: `1px solid ${roi.accuracyPercent >= 80 ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)"}`,
+              whiteSpace: "nowrap",
             }}>
-              {(hoursPerYear / (manualHours * mrsPerYear) * 100).toFixed(0)}% faster
+              {roi.accuracyPercent >= 80 ? "✓ Learning" : "⋯ Training"}
             </div>
           </div>
         </div>

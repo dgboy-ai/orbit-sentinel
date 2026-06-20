@@ -94,6 +94,8 @@ export interface QueryTimingInfo {
   status: "success" | "error";
 }
 
+export type PredictionCategory = "true_positive" | "true_negative" | "false_positive" | "false_negative" | "pending";
+
 export interface PredictionRecord {
   mrIid: number;
   title: string;
@@ -104,6 +106,25 @@ export interface PredictionRecord {
   mergedAt: string;
   verifiedAt?: string;
   evidence?: string;
+  category?: PredictionCategory;
+}
+
+export interface ROIMetrics {
+  hoursPerMR: number;
+  hoursPerYear: number;
+  costPerYear: number;
+  costPerMR: number;
+  incidentsPrevented: number;
+  falsePositiveCost: number;
+  falseNegativeCost: number;
+  netROI: number;
+  accuracyPercent: number;
+  totalPredictions: number;
+  truePositives: number;
+  trueNegatives: number;
+  falsePositives: number;
+  falseNegatives: number;
+  avgIncidentCost: number;
 }
 
 export interface VisualizationData {

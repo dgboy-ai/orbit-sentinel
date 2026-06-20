@@ -307,6 +307,81 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         </div>
       </div>
 
+      {/* CLOSED-LOOP NARRATIVE */}
+      <div className="card" style={{
+        padding: "14px 18px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.96))",
+        border: "1px solid rgba(139,92,246,0.12)",
+        animation: "fadeSlideUp 0.4s 0.03s cubic-bezier(0.16,1,0.3,1) both",
+      }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 20 }}>🔄</span>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#a78bfa", marginBottom: 2 }}>Closed-Loop Prediction Engine</div>
+            <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+              <strong style={{ color: "#60a5fa" }}>Predict</strong> → <strong style={{ color: "#eab308" }}>Ship</strong> → <strong style={{ color: "#22c55e" }}>Verify (7-day window)</strong> → <strong style={{ color: "#a78bfa" }}>Learn</strong>.
+              Every prediction feeds back into the model — accuracy improves with every MR.
+            </div>
+          </div>
+          <div style={{
+            padding: "4px 14px", borderRadius: 20, fontSize: 9, fontWeight: 700,
+            background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.06))",
+            border: "1px solid rgba(139,92,246,0.15)",
+            color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.5px",
+          }}>
+            {stats.accuracy}% Accuracy
+          </div>
+        </div>
+      </div>
+
+      {/* CONFUSION MATRIX */}
+      <div className="card" style={{
+        padding: isMobile ? "14px 14px" : "16px 18px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
+        border: "1px solid rgba(96,165,250,0.1)",
+        animation: "fadeSlideUp 0.4s 0.035s cubic-bezier(0.16,1,0.3,1) both",
+      }}>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <span style={{ fontSize: 13 }}>📊</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px" }}>Prediction Outcomes</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6 }}>
+            {(["true_positive","true_negative","false_positive","false_negative"] as const).map(cat => {
+              const count = items.filter(i => (i.category || i.actualOutcome === "pending" ? "pending" : "unknown") !== "pending" && i.category === cat).length + items.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === undefined && (
+                cat === "true_positive" ? i.predictedRisk >= 0.6 && i.actualOutcome === "failed" :
+                cat === "true_negative" ? i.predictedRisk < 0.6 && i.actualOutcome === "verified" :
+                cat === "false_positive" ? i.predictedRisk >= 0.6 && i.actualOutcome === "verified" :
+                i.predictedRisk < 0.6 && i.actualOutcome === "failed"
+              )).length;
+              const labels: Record<string, { label: string; short: string; color: string; desc: string }> = {
+                true_positive: { label: "True Positive", short: "TP", color: "#22c55e", desc: "High risk → failed" },
+                true_negative: { label: "True Negative", short: "TN", color: "#60a5fa", desc: "Low risk → shipped" },
+                false_positive: { label: "False Positive", short: "FP", color: "#eab308", desc: "High risk → shipped" },
+                false_negative: { label: "False Negative", short: "FN", color: "#ef4444", desc: "Low risk → failed" },
+              };
+              const info = labels[cat];
+              return (
+                <div key={cat} style={{
+                  padding: "10px 8px", borderRadius: 8, textAlign: "center",
+                  background: `${info.color}06`, border: `1px solid ${info.color}18`,
+                  animation: "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) both",
+                  transition: "border-color 0.15s",
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${info.color}35`; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = `${info.color}18`; }}
+                >
+                  <div style={{ fontSize: 9, fontWeight: 700, color: info.color, marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.5px" }}>{info.short}</div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: info.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${info.color}30` }}>{count}</div>
+                  <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 1 }}>{info.desc}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* TREND CHART */}
       <div className="card" style={{
         padding: isMobile ? "16px 16px" : "18px 20px", position: "relative", overflow: "hidden",

@@ -16,7 +16,7 @@ import { DEMO_DATA } from "../data/demoData";
 describe("ImpactCalculator", () => {
   it("renders calculator header and sliders", () => {
     render(<ImpactCalculator riskScore={0.55} evidenceCount={4} counterfactuals={[]} />);
-    expect(screen.getByText("Impact Calculator")).toBeInTheDocument();
+    expect(screen.getByText("Closed-Loop ROI Calculator")).toBeInTheDocument();
     expect(screen.getByText("MRs per Week")).toBeInTheDocument();
     expect(screen.getByText("Developer $/hr")).toBeInTheDocument();
     expect(screen.getByText("Manual Analysis (h)")).toBeInTheDocument();
@@ -25,7 +25,7 @@ describe("ImpactCalculator", () => {
   it("renders animated metric cards", () => {
     render(<ImpactCalculator riskScore={0.55} evidenceCount={4} counterfactuals={[]} />);
     expect(screen.getByText("Saved per MR")).toBeInTheDocument();
-    expect(screen.getByText("Saved per Year")).toBeInTheDocument();
+    expect(screen.getByText("Time Cost Saved / Year")).toBeInTheDocument();
   });
 });
 

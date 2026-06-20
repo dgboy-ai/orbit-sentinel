@@ -311,7 +311,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><ProblemSection /></ErrorBoundary>
-                <div className="section-accent section-accent-roi" style={{ position: "relative" }}><ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary></div>
+                <div className="section-accent section-accent-roi" style={{ position: "relative" }}><ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} predictions={predictions} /></ErrorBoundary></div>
                 </div>
               </div>
             ) : (
@@ -360,7 +360,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                     <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
                   </div>
                 </div>
-                <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} /></ErrorBoundary>
+                <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} predictions={predictions} /></ErrorBoundary>
                 <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.4fr", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><SimulateWebhook data={data} dataMode={dataMode} /></ErrorBoundary>
                   <ErrorBoundary><RealityCheck /></ErrorBoundary>
