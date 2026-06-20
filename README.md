@@ -130,15 +130,15 @@ If the GitLab Orbit graph database becomes unreachable or lacks authorization, t
 
 ```mermaid
 graph TD
-    A[GitLab MR Opened] --> B{Try Orbit API}
-    B -- Success --> C[Build Graph Twin via Orbit Database]
-    B -- Auth/Network Failure --> D[Activate Grep Fallback]
-    D --> E[Fetch Changed Files via Repository API]
-    E --> F[Parse Imports/Requires JS/TS/Python]
-    F --> G[Build Static Dependency Graph]
-    C --> H[Assemble Unified Sentinel Report]
+    A["GitLab MR Opened"] --> B{"Try Orbit API"}
+    B -- Success --> C["Build Graph Twin<br>(Orbit API)"]
+    B -- Failure --> D["Activate Fallback"]
+    D --> E["Fetch Changed Files<br>(GitLab API)"]
+    E --> F["Parse Imports &<br>Dependencies"]
+    F --> G["Build Static<br>Dependency Graph"]
+    C --> H["Assemble Unified<br>Sentinel Report"]
     G --> H
-    H --> I[Dashboard Populates with Live/Degraded Status]
+    H --> I["Populate Dashboard<br>(Live/Degraded)"]
 ```
 
 ### ⚙️ Graceful Degradation Details
