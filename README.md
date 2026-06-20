@@ -213,4 +213,4 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 
 ## Built For
 
-[GitLab Transcend Hackathon](https://gitlab-transcend.devpost.com/) — Showcase Track · MIT License
+[GitLab Transcend Hackathon](https://gitlab-transcend.devpost.com/) — Showcase Track · Created by **Givyansh Gupta** (Devpost: [trueboy1123](https://devpost.com/trueboy1123)) · MIT License
