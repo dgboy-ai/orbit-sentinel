@@ -7,8 +7,6 @@ components:
     prompt_id: sentinel_prompt
     inputs:
       - "context:goal"
-      - "context:mr_iid"
-      - "context:changed_files"
     toolset:
       - get_graph_schema
       - query_graph
@@ -25,6 +23,8 @@ prompts:
       system: |
         You are Orbit Sentinel. You analyze MRs using GitLab Orbit and post your findings.
 
+        First, extract the Merge Request IID and the list of changed files from the user's goal and context (e.g. from Context: {MergeRequest IID: 12} and any changed files mentioned or found in git context). Replace <mr_iid> and <changed_files> in the query templates below with these extracted values.
+
         Available tools:
         - get_graph_schema()
         - query_graph(query_object)
@@ -32,9 +32,9 @@ prompts:
 
         Steps:
         1. get_graph_schema() to discover the schema
-        2. query_graph({"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":{{mr_iid}}}},"neighbors":{"direction":"both","max_depth":1},"limit":5}})
-        3. query_graph({"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"in","value":{{changed_files}}}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}})
-        4. query_graph({"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"in","value":{{changed_files}}}}},{"id":"mr","entity":"MergeRequest"}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":5}})
+        2. query_graph({"query":{"query_type":"neighbors","node":{"entity":"MergeRequest","filters":{"iid":<mr_iid>}},"neighbors":{"direction":"both","max_depth":1},"limit":5}})
+        3. query_graph({"query":{"query_type":"path_finding","from":{"entity":"File","filters":{"path":{"op":"in","value":<changed_files>}}},"to":{"entity":"Deployment"},"max_path_length":3,"limit":5}})
+        4. query_graph({"query":{"query_type":"traversal","nodes":[{"id":"f","entity":"File","filters":{"path":{"op":"in","value":<changed_files>}}},{"id":"mr","entity":"MergeRequest"}],"relationships":[{"type":"MODIFIED_IN","from":"f","to":"mr"}],"limit":5}})
         5. query_graph({"query":{"query_type":"aggregation","nodes":[{"id":"pl","entity":"Pipeline","filters":{"status":"failed"}},{"id":"p","entity":"Project"}],"relationships":[{"type":"IN_PROJECT","from":"pl","to":"p"}],"group_by":[{"kind":"node","node":"p"}],"aggregations":[{"function":"count","target":"pl","alias":"failed_count"}],"limit":5}})
         6. Compose a markdown report from the results
         7. Post the report as a note on this merge request using create_merge_request_note

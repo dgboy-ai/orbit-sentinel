@@ -97,7 +97,6 @@ describe("Duo flow YAML", () => {
     const components = flow.components as Array<Record<string, unknown>>;
     const inputs = components[0].inputs as string[];
     expect(inputs).toContain("context:goal");
-    expect(inputs).toContain("context:mr_iid");
-    expect(inputs).toContain("context:changed_files");
+    expect(inputs.length).toBe(1);
   });
 });
