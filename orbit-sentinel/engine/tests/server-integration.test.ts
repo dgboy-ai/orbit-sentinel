@@ -37,7 +37,7 @@ describe("Server API integration", () => {
     const res = await request(app)
       .post("/api/analyze")
       .send({
-        projectId: 83381762,
+        projectId: 39251857,
         projectPath: "gitlab-ai-hackathon/transcend/39251857",
         mrIid: 10,
         mrTitle: "MR !10: test-sentinel-analysis",
