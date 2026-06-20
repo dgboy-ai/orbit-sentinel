@@ -120,10 +120,27 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
     }
 
     const sim = d3.forceSimulation<DN>(nd)
-      .force("link", d3.forceLink<DN,DL>(ln).id(d=>d.id).distance(d=>200/(d.value??1)).strength(0.25))
-      .force("charge", d3.forceManyBody().strength(d=>-(NODE_SIZES[(d as DN).type]??6) * 30))
+      .force("link", d3.forceLink<DN,DL>(ln).id(d=>d.id)
+        .distance((d: any) => {
+          const srcType = typeof d.source === "object" ? d.source.type : "";
+          const tgtType = typeof d.target === "object" ? d.target.type : "";
+          if (srcType === "Project" || tgtType === "Project") {
+            return 320;
+          }
+          return 140;
+        })
+        .strength((d: any) => {
+          const srcType = typeof d.source === "object" ? d.source.type : "";
+          const tgtType = typeof d.target === "object" ? d.target.type : "";
+          if (srcType === "Project" || tgtType === "Project") {
+            return 0.02;
+          }
+          return 0.22;
+        })
+      )
+      .force("charge", d3.forceManyBody().strength(d=>-(NODE_SIZES[(d as DN).type]??6) * 55))
       .force("center", d3.forceCenter(w/2,h/2))
-      .force("collision", d3.forceCollide().radius(d=>(NODE_SIZES[(d as DN).type]??6) + 30))
+      .force("collision", d3.forceCollide().radius(d=>(NODE_SIZES[(d as DN).type]??6) + 38))
       .alphaDecay(0.08)
       .velocityDecay(0.6);
 
