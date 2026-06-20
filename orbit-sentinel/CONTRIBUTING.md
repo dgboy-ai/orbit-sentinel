@@ -14,7 +14,7 @@ This installs dependencies for both `engine/` and `visualizer/`, builds both, an
 
 ```
 orbit-sentinel/
-├── engine/          # Node.js/TypeScript backend (95 tests)
+├── engine/          # Node.js/TypeScript backend (105 tests)
 │   ├── src/
 │   │   ├── orbit/           # GitLab Orbit API client
 │   │   ├── twin/            # Digital twin builder + simulator (orbitOrFallback)

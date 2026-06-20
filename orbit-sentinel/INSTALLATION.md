@@ -104,7 +104,7 @@ To enable the autonomous agent on merge requests:
 
 | Check | Expected |
 |---|---|---|
-| `npm test` in `engine/` | 95 tests passed |
+| `npm test` in `engine/` | 105 tests passed |
 | `npx vitest run` in `visualizer/` | 29 tests passed |
 | `npm run dev` in `visualizer/` | Server starts on port 5173 |
 | Browser at `http://localhost:5173` | Interactive dashboard loads |

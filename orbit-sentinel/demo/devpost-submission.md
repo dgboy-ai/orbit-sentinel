@@ -34,7 +34,7 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 ## How We Built It 🏗️
 
 ```
-GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3, 29 tests)
+GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D3, 29 tests)
                    │                                     │
                    ▼                                     │
           GitLab Orbit Knowledge Graph ◀─────────────────┘
@@ -49,7 +49,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 - `Remediation Planner` — rollback strategies, test plans, remediation steps by risk priority
 - Rate-limited to 28 queries per MR (was 107 — 74% reduction via dedup + file cap)
 
-**Visualizer** 🎨 — React 18, D3.js, Vite, 41 components, zero CSS files:
+**Visualizer** 🎨 — React 18, D3.js, Vite, 40 components, zero CSS files:
 - 8 interactive views, responsive across 3 breakpoints (360px to 768px)
 - Design token system: centralized colors, z-index tiers, animation presets, spacing scale
 - Judge's Tour (`?judge=true`) 🧑‍⚖️ — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
@@ -88,7 +88,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 95 tests) ──▶ Visualizer (React/D3
 
 **Fallback resilience.** When Orbit is unavailable, the engine degrades to grep-based file analysis. The visualizer shows a "Degraded" mode banner. No crash. No blank screen. No "Orbit is down" error.
 
-**41 components, 8 views, 3 breakpoints, zero CSS files.** Design token system. Theme toggle. Keyboard shortcuts. Judge's Tour. Everything inline-styled. 📱
+**40 components, 8 views, 3 breakpoints, zero CSS files.** Design token system. Theme toggle. Keyboard shortcuts. Judge's Tour. Everything inline-styled. 📱
 
 **Flow published to AI Catalog** alongside GitLab's official flows — the only one with a fully interactive visual dashboard.
 

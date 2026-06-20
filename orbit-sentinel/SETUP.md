@@ -51,7 +51,7 @@ Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8
 | Check | Command (PowerShell) | Expected |
 |-------|----------------------|----------|
 | Engine compiles | `cd engine; if ($?) { npx tsc --noEmit }` | No errors |
-| Engine tests pass | `cd engine; if ($?) { npm test }` | 95 tests passed |
+| Engine tests pass | `cd engine; if ($?) { npm test }` | 105 tests passed |
 | Visualizer tests pass | `cd visualizer; if ($?) { npx vitest run }` | 29 tests passed |
 | Visualizer builds | `cd visualizer; if ($?) { npm run build }` | `dist/` created |
 | Dev server | `cd visualizer; if ($?) { npm run dev }` | Opens at :5173 |
