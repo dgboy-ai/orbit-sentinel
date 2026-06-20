@@ -1,5 +1,11 @@
 # Orbit Sentinel — Autonomous Engineering Digital Twin
 
+> [!IMPORTANT]  
+> ### 🧑‍⚖️ Quick Links for Judges
+> - **Live Demo**: [orbit-sentinel.vercel.app](https://orbit-sentinel.vercel.app)
+> - **Judge's Tour**: [orbit-sentinel.vercel.app/?judge=true](https://orbit-sentinel.vercel.app/?judge=true) — *Crucial: First-time visitors are guided by a Setup Wizard. To skip onboarding and run the automated step-by-step demo of all 8 views, open this link. Press Space to toggle auto-play, or use Left/Right arrow keys to navigate.*
+> - **Live Orbit Traversal Proof**: [Read the Traversal Results Doc on GitLab](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/blob/main/orbit-sentinel/docs/orbit-traversal-results.md) — *Direct proof of real Orbit query execution containing 213 nodes + 185 edges mapped from our GitLab repo.*
+
 ## Inspiration
 
 > AI predicts code. Orbit Sentinel predicts **consequences**.
