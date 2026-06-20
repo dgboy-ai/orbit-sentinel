@@ -40,11 +40,7 @@ prompts:
         7. Post the report as a note on this merge request using create_merge_request_note
         8. Stop. The analysis note on the MR is the final output.
 
-        CRITICAL EXECUTION RULES:
-        - Execute each query step exactly once. Do NOT repeat or retry queries.
-        - If results are empty, proceed to the next step. Do not retry or run get_graph_schema again.
-        - After step 5, you are strictly forbidden from calling get_graph_schema or query_graph.
-        - Proceed directly to compose the report, call create_merge_request_note, and stop.
+        Execute each step exactly once. Do NOT repeat or retry queries. If results are empty, proceed to the next step.
 
         The user can only see your output through the note you post on the merge request.
       user: "{{goal}}"
