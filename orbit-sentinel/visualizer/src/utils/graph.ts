@@ -39,10 +39,13 @@ export function findConnectedComponents(
   nodeId: string,
   maxDepth = 3,
 ): { nodes: GraphNode[]; links: GraphLink[] } {
-  const visited = new Set<string>();
-  const seenLinks = new Set<string>();
-  const resultNodes: GraphNode[] = [];
+  const minDepth = new Map<string, number>();
+  minDepth.set(nodeId, 0);
+
+  const queue: { id: string; depth: number }[] = [{ id: nodeId, depth: 0 }];
+  const resultNodes = new Map<string, GraphNode>();
   const resultLinks: GraphLink[] = [];
+  const seenLinks = new Set<string>();
 
   function linkKey(sourceId: string, targetId: string, type: string) {
     const a = sourceId < targetId ? sourceId : targetId;
@@ -50,42 +53,52 @@ export function findConnectedComponents(
     return `${a}|${b}|${type}`;
   }
 
-  const queue: { id: string; depth: number }[] = [{ id: nodeId, depth: 0 }];
   while (queue.length > 0) {
     const { id: currentId, depth } = queue.shift()!;
-    if (depth > maxDepth || visited.has(currentId)) continue;
-    visited.add(currentId);
+    if (depth > maxDepth) continue;
 
     const node = nodes.find((n) => n.id === currentId);
-    if (node) resultNodes.push(node);
+    if (node) {
+      resultNodes.set(currentId, node);
+    }
 
     for (const link of links) {
       const sourceId = typeof link.source === "string" ? link.source : link.source.id;
       const targetId = typeof link.target === "string" ? link.target : link.target.id;
 
       if (sourceId === currentId) {
-        if (!seenLinks.has(linkKey(sourceId, targetId, link.type))) {
-          seenLinks.add(linkKey(sourceId, targetId, link.type));
-          resultLinks.push(link);
-        }
-        if (!visited.has(targetId)) {
-          queue.push({ id: targetId, depth: depth + 1 });
+        const nextDepth = depth + 1;
+        if (nextDepth <= maxDepth) {
+          const prev = minDepth.get(targetId);
+          if (prev === undefined || nextDepth < prev) {
+            minDepth.set(targetId, nextDepth);
+            queue.push({ id: targetId, depth: nextDepth });
+          }
+          if (!seenLinks.has(linkKey(sourceId, targetId, link.type))) {
+            seenLinks.add(linkKey(sourceId, targetId, link.type));
+            resultLinks.push(link);
+          }
         }
       } else if (targetId === currentId) {
-        if (!seenLinks.has(linkKey(sourceId, targetId, link.type))) {
-          seenLinks.add(linkKey(sourceId, targetId, link.type));
-          resultLinks.push(link);
-        }
-        if (!visited.has(sourceId)) {
-          queue.push({ id: sourceId, depth: depth + 1 });
+        const nextDepth = depth + 1;
+        if (nextDepth <= maxDepth) {
+          const prev = minDepth.get(sourceId);
+          if (prev === undefined || nextDepth < prev) {
+            minDepth.set(sourceId, nextDepth);
+            queue.push({ id: sourceId, depth: nextDepth });
+          }
+          if (!seenLinks.has(linkKey(sourceId, targetId, link.type))) {
+            seenLinks.add(linkKey(sourceId, targetId, link.type));
+            resultLinks.push(link);
+          }
         }
       }
     }
   }
 
-  const nodeIds = new Set(resultNodes.map(n => n.id));
+  const nodeIds = new Set(resultNodes.keys());
   return {
-    nodes: resultNodes,
+    nodes: Array.from(resultNodes.values()),
     links: resultLinks.filter(l => {
       const src = typeof l.source === "string" ? l.source : l.source.id;
       const tgt = typeof l.target === "string" ? l.target : l.target.id;
@@ -93,3 +106,4 @@ export function findConnectedComponents(
     }),
   };
 }
+
