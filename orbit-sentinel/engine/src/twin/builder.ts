@@ -136,80 +136,75 @@ export class DigitalTwinBuilder {
     );
     this.mergeGraph(nodes, edges, (projSum.data as OrbitQueryResult).result);
 
-    const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
+    // Run all file-specific queries, deployment path query, and pipeline failures query in parallel
+    const [fileResults, deploy, pipe] = await Promise.all([
+      Promise.all(changedFiles.map(async (filePath) => {
+        return Promise.all([
+          this.orbitOrFallback(
+            "NEIGHBORS", "Blast Radius",
+            () => this.timedQuery("NEIGHBORS", "Blast Radius (Orbit)", () =>
+              queryEngine.findBlastRadius(filePath)),
+            () => this.timedQuery("NEIGHBORS", "Blast Radius (Fallback)", () =>
+              grepFallback.neighborsFile(params.projectPath, filePath, params.branch)),
+          ),
+          this.orbitOrFallback(
+            "PATH_FINDING", "Dependency Chain",
+            () => this.timedQuery("PATH_FINDING", "Dependency Chain (Orbit)", () =>
+              queryEngine.findDependentProjects(filePath)),
+            () => this.timedQuery("PATH_FINDING", "Dependency Chain (Fallback)", () =>
+              grepFallback.pathFindingFiles(params.projectPath, [filePath], params.branch)),
+          ),
+          this.orbitOrFallback(
+            "TRAVERSAL", "Historical MRs",
+            () => this.timedQuery("TRAVERSAL", "Historical MRs (Orbit)", () =>
+              queryEngine.findHistoricalMRs(params.projectPath, filePath)),
+            () => this.timedQuery("TRAVERSAL", "Historical MRs (Fallback)", () =>
+              grepFallback.traversalFiles(params.projectPath, [filePath], params.branch)),
+          ),
+          this.orbitOrFallback(
+            "TRAVERSAL", "File Incidents",
+            () => this.timedQuery("TRAVERSAL", "File Incidents (Orbit)", () =>
+              queryEngine.findIncidentsConnectedToFile(filePath)),
+            () => this.timedQuery("TRAVERSAL", "File Incidents (Fallback)", () =>
+              grepFallback.traversalFiles(params.projectPath, [filePath], params.branch)),
+          ),
+          this.orbitOrFallback(
+            "TRAVERSAL", "Security Findings",
+            () => this.timedQuery("TRAVERSAL", "Security Findings (Orbit)", () =>
+              queryEngine.findSecurityFindings(filePath)),
+            () => this.timedQuery("TRAVERSAL", "Security Findings (Fallback)", async () =>
+              grepFallback.emptyResult("traversal")),
+          )
+        ]);
+      })),
+      this.orbitOrFallback(
+        "PATH_FINDING", "Deployment Path",
+        () => this.timedQuery("PATH_FINDING", "Deployment Path (Orbit)", () =>
+          queryEngine.findDeploymentPath(params.projectId)),
+        () => this.timedQuery("PATH_FINDING", "Deployment Path (Fallback)", () =>
+          grepFallback.pathFindingFiles(params.projectPath, changedFiles, params.branch)),
+      ),
+      this.orbitOrFallback(
+        "AGGREGATION", "Pipeline Failures",
+        () => this.timedQuery("AGGREGATION", "Pipeline Failures (Orbit)", () =>
+          queryEngine.findPipelineFailures([params.projectId])),
+        () => this.timedQuery("AGGREGATION", "Pipeline Failures (Fallback)", async () =>
+          grepFallback.emptyResult("aggregation")),
+      )
+    ]);
 
-    for (const filePath of changedFiles) {
-      // Blast Radius (NEIGHBORS) with grep fallback
-      const blast = await this.orbitOrFallback(
-        "NEIGHBORS", "Blast Radius",
-        () => this.timedQuery("NEIGHBORS", "Blast Radius (Orbit)", () =>
-          queryEngine.findBlastRadius(filePath)),
-        () => this.timedQuery("NEIGHBORS", "Blast Radius (Fallback)", () =>
-          grepFallback.neighborsFile(params.projectPath, filePath, params.branch)),
-      );
+    // Merge file query results into the graph
+    for (const fileResult of fileResults) {
+      const [blast, dep, hist, inc, sec] = fileResult;
       this.mergeGraph(nodes, edges, (blast.data as OrbitQueryResult).result);
-
-      // Dependency Chain (PATH_FINDING) with grep fallback
-      const dep = await this.orbitOrFallback(
-        "PATH_FINDING", "Dependency Chain",
-        () => this.timedQuery("PATH_FINDING", "Dependency Chain (Orbit)", () =>
-          queryEngine.findDependentProjects(filePath)),
-        () => this.timedQuery("PATH_FINDING", "Dependency Chain (Fallback)", () =>
-          grepFallback.pathFindingFiles(params.projectPath, [filePath], params.branch)),
-      );
       this.mergeGraph(nodes, edges, (dep.data as OrbitQueryResult).result);
-
-      // Historical MRs (TRAVERSAL) with grep fallback
-      const hist = await this.orbitOrFallback(
-        "TRAVERSAL", "Historical MRs",
-        () => this.timedQuery("TRAVERSAL", "Historical MRs (Orbit)", () =>
-          queryEngine.findHistoricalMRs(params.projectPath, filePath)),
-        () => this.timedQuery("TRAVERSAL", "Historical MRs (Fallback)", () =>
-          grepFallback.traversalFiles(params.projectPath, [filePath], params.branch)),
-      );
       this.mergeGraph(nodes, edges, (hist.data as OrbitQueryResult).result);
-
-      // File Incidents (TRAVERSAL) with grep fallback
-      const inc = await this.orbitOrFallback(
-        "TRAVERSAL", "File Incidents",
-        () => this.timedQuery("TRAVERSAL", "File Incidents (Orbit)", () =>
-          queryEngine.findIncidentsConnectedToFile(filePath)),
-        () => this.timedQuery("TRAVERSAL", "File Incidents (Fallback)", () =>
-          grepFallback.traversalFiles(params.projectPath, [filePath], params.branch)),
-      );
       this.mergeGraph(nodes, edges, (inc.data as OrbitQueryResult).result);
-
-      // Security Findings (TRAVERSAL) - query for vulnerabilities/findings on changed files
-      const sec = await this.orbitOrFallback(
-        "TRAVERSAL", "Security Findings",
-        () => this.timedQuery("TRAVERSAL", "Security Findings (Orbit)", () =>
-          queryEngine.findSecurityFindings(filePath)),
-        () => this.timedQuery("TRAVERSAL", "Security Findings (Fallback)", async () =>
-          grepFallback.emptyResult("traversal")),
-      );
       this.mergeGraph(nodes, edges, (sec.data as OrbitQueryResult).result);
-
-      await delay(500);
     }
 
-    // Deployment Path (PATH_FINDING) with grep fallback
-    const deploy = await this.orbitOrFallback(
-      "PATH_FINDING", "Deployment Path",
-      () => this.timedQuery("PATH_FINDING", "Deployment Path (Orbit)", () =>
-        queryEngine.findDeploymentPath(params.projectId)),
-      () => this.timedQuery("PATH_FINDING", "Deployment Path (Fallback)", () =>
-        grepFallback.pathFindingFiles(params.projectPath, changedFiles, params.branch)),
-    );
+    // Merge deployment and pipeline queries
     this.mergeGraph(nodes, edges, (deploy.data as OrbitQueryResult).result);
-
-    // Pipeline Failures (AGGREGATION) with fallback
-    const pipe = await this.orbitOrFallback(
-      "AGGREGATION", "Pipeline Failures",
-      () => this.timedQuery("AGGREGATION", "Pipeline Failures (Orbit)", () =>
-        queryEngine.findPipelineFailures([params.projectId])),
-      () => this.timedQuery("AGGREGATION", "Pipeline Failures (Fallback)", async () =>
-        grepFallback.emptyResult("aggregation")),
-    );
     const pipelineResult = pipe.data as OrbitQueryResult;
     if (pipelineResult.result.rows) {
       for (const row of pipelineResult.result.rows as Array<Record<string, unknown>>) {
