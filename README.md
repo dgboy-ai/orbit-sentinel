@@ -41,8 +41,9 @@
 | Differentiator | Orbit Sentinel | Traditional CI/CD |
 |----------------|---------------|------------------|
 | **Visual analysis** | 40 components, 8 views, interactive D3 graphs | Text-only output |
+| **Live graph scale** | **213 nodes + 185 edges** confirmed on MR !12 — real Orbit data, not mocks | Static file diff only |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
-| **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION cross-referenced | Single-query or no graph data |
+| **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION — all 4 cross-referenced per MR | Single-query or no graph data |
 | **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
 | **Test coverage** | **134 tests** (105 engine + 29 visualizer) — zero `as any` in production code | Minimal or no test suite |
 | **Deployment** | Vercel + Render, Docker Compose, CI/CD (6 jobs, 4 stages) | Manual setup |

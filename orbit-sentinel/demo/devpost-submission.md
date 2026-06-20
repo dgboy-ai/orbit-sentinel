@@ -35,10 +35,10 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 
 ```
 GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D3, 29 tests)
-                   │                                     │
-                   ▼                                     │
-          GitLab Orbit Knowledge Graph ◀─────────────────┘
-          (4 query types, 14 nodes/13 edges per MR)
+               │                                     │
+               ▼                                     │
+      GitLab Orbit Knowledge Graph ◀─────────────────◘
+      (4 query types; 213 nodes + 185 edges confirmed live)
 ```
 
 **Engine** ⚙️ — TypeScript, Express, custom validation, 8 classified error types with exponential backoff:
@@ -82,13 +82,13 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **134 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
-**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph and returns actual graph data: 14 nodes, 13 edges per MR across 7 node types. Full traversal results documented. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live: 51 nodes, 29 edges, all 4 query types executed, report posted as MR !12 note.
+**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The MR !12 digital twin discovered **213 nodes + 185 edges** across 7 node types with all 4 query types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
 
 **Closed-loop accuracy.** We don't predict and disappear. Every prediction is tracked post-merge with a 7-day survival window. Accuracy rate, risk trends, vulnerability-adjusted forecasts — all surfaced in the Predictions Tracker. This is the difference between a demo and a tool. 🎯
 
 **Fallback resilience.** When Orbit is unavailable, the engine degrades to grep-based file analysis. The visualizer shows a "Degraded" mode banner. No crash. No blank screen. No "Orbit is down" error.
 
-**40 components, 8 views, 3 breakpoints, zero CSS files.** Design token system. Theme toggle. Keyboard shortcuts. Judge's Tour. Everything inline-styled. 📱
+**40 components, 8 views, 3 breakpoints, zero CSS files.** Design token system. Theme toggle. Keyboard shortcuts. Judge's Tour. Dynamic risk verdicts. Everything inline-styled. 📱
 
 **Flow published to AI Catalog** alongside GitLab's official flows — the only one with a fully interactive visual dashboard.
 

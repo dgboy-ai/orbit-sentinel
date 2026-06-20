@@ -2,7 +2,7 @@
 
 | Document | Contents |
 |----------|----------|
-| [orbit-traversal-results.md](orbit-traversal-results.md) | Raw results from live Orbit queries on the hackathon project (23 nodes, 43 edges, 18 schema types) |
+| [orbit-traversal-results.md](orbit-traversal-results.md) | Raw results from live Orbit queries on the hackathon project (213+ nodes, 185+ edges, 18 schema types) |
 | [screenshots/](screenshots/) | Reference UI screenshots of the visualizer dashboard (8 views) |
 | [skill.yml](../.gitlab/duo/skill.yml) | Duo Chat skill definition (install via `glab skills install`) |
 | [MCP config](../.gitlab/duo/mcp.json) | MCP server configuration for Duo Agent Platform |

@@ -215,6 +215,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
   const failureCount = fc ?? Math.round(pipelinesTotal * 0.18);
   const failureRate = pipelinesTotal > 0 ? ((failureCount / pipelinesTotal) * 100).toFixed(1) : "N/A";
 
+  const cfAll = useMemo(() => scenarios.find(s => s.label.toLowerCase().includes("all mitigations") || s.key === "cf-3") || scenarios[scenarios.length - 1], [scenarios]);
+  const minCfRisk = useMemo(() => Math.min(...scenarios.map(s => s.riskAfter)), [scenarios]);
+  const currentSuccessProb = useMemo(() => isLow ? Math.round((1 - riskScore) * 100) : (100 - scenarios[0].probability), [isLow, riskScore, scenarios]);
+  const targetSuccessProb = useMemo(() => isLow ? Math.round((1 - minCfRisk) * 100) : cfAll.probability, [isLow, minCfRisk, cfAll]);
+  const outcomeLeap = useMemo(() => Math.max(targetSuccessProb - currentSuccessProb, 0), [targetSuccessProb, currentSuccessProb]);
+  const riskReduction = useMemo(() => riskScore > 0 ? Math.round(((riskScore - minCfRisk) / riskScore) * 100) : 0, [riskScore, minCfRisk]);
+
   const curCol = riskScoreToColor(sel.riskAfter);
   const gaugeColor = riskScoreToColor(animRisk);
 
@@ -717,9 +724,9 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 10, alignItems: "center", marginBottom: 14 }}>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))", border: "1px solid rgba(239,68,68,0.1)" }}>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 4 }}>If Nothing Changes</div>
-              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>MR Closed</div>
-              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>Without merge · 78% probability</div>
-              <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.1)", fontSize: 9, color: "var(--text-tertiary)" }}>Based on 9 historical matches</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>{scenarios[0].outcome}</div>
+              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>Risk {Math.round(riskScore * 100)}% · {scenarios[0].probability}% probability</div>
+              <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.1)", fontSize: 9, color: "var(--text-tertiary)" }}>Based on {historicalCount} historical match{historicalCount !== 1 ? "es" : ""}</div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
               <div style={{
@@ -733,8 +740,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             </div>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))", border: "1px solid rgba(34,197,94,0.1)" }}>
               <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>If Recommendations Followed</div>
-              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", marginBottom: 2 }}>Successfully Merged</div>
-              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>88% probability · Risk 55% → 10%</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", marginBottom: 2 }}>{isLow ? "Successfully Merged" : cfAll.outcome}</div>
+              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>{targetSuccessProb}% probability · Risk {Math.round(riskScore * 100)}% → {Math.round(minCfRisk * 100)}%</div>
               
               {/* Why This Changed (Causality reinforcement) */}
               <div style={{
@@ -765,18 +772,18 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.1)", textAlign: "center" }}>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Success Prob.</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#ef4444" }}>22%</div>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>Failure Expected</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#ef4444" }}>{currentSuccessProb}%</div>
+                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{currentSuccessProb < 50 ? "Failure Expected" : "Marginal State"}</div>
               </div>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)", textAlign: "center" }}>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Target Success Prob.</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#22c55e" }}>88%</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#22c55e" }}>{targetSuccessProb}%</div>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>With Mitigations</div>
               </div>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "linear-gradient(135deg, rgba(96,165,250,0.08), rgba(139,92,246,0.04))", border: "1px solid rgba(96,165,250,0.15)", textAlign: "center" }}>
                 <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Leap</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>+66% pp</div>
-                <div style={{ fontSize: 7, color: "var(--text-secondary)", marginTop: 1 }}>82% Risk Reduction</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>+{outcomeLeap}% pp</div>
+                <div style={{ fontSize: 7, color: "var(--text-secondary)", marginTop: 1 }}>{riskReduction}% Risk Reduction</div>
               </div>
             </div>
           </div>

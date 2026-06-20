@@ -214,7 +214,16 @@ function EvidenceMiniCard({ e, delay }: { e: OrbitQueryEvidence; delay: number }
 function RemediationFlow({ current, scenarios }: { current: number; scenarios: { label: string; riskAfter: number; color: string }[] }) {
   const steps = [
     { label: "Current", value: current, color: riskScoreToColor(current) },
-    ...scenarios.map(s => ({ label: s.label.replace(/^(Add|Trigger|Assign|All)\s*/g, "").slice(0, 6), value: s.riskAfter, color: s.color })),
+    ...scenarios.map(s => {
+      const clean = s.label.replace(/^(Add|Trigger|Assign|All)\s*/g, "");
+      let label = clean.slice(0, 10);
+      if (clean.toLowerCase().includes("regression") || clean.toLowerCase().includes("test")) label = "Tests";
+      else if (clean.toLowerCase().includes("file")) label = "Files";
+      else if (clean.toLowerCase().includes("pipeline")) label = "Pipeline";
+      else if (clean.toLowerCase().includes("reviewer")) label = "Reviewers";
+      else if (clean.toLowerCase().includes("mitigation")) label = "Mitigated";
+      return { label, value: s.riskAfter, color: s.color };
+    }),
   ];
   const totalDots = steps.length;
   const vbW = Math.max(300, totalDots * 70);
@@ -446,18 +455,20 @@ export default function ImpactReport({ data }: Props) {
         <div style={{
           position: "fixed", top: isMobile ? 46 : 54, left: "50%", transform: "translateX(-50%)", zIndex: 150,
           padding: isMobile ? "4px 12px" : "6px 18px", borderRadius: 20,
-          background: `linear-gradient(135deg, ${col}22, ${col}11)`,
+          background: `linear-gradient(135deg, ${score < 0.3 ? "#22c55e" : col}22, ${score < 0.3 ? "#22c55e" : col}11)`,
           backdropFilter: "blur(16px)",
-          border: `1px solid ${col}33`,
+          border: `1px solid ${score < 0.3 ? "#22c55e" : col}33`,
           boxShadow: `0 4px 20px rgba(0,0,0,0.3)`,
           display: "flex", alignItems: "center", gap: 10,
-          fontSize: isMobile ? 9 : 11, fontWeight: 600, color: col,
+          fontSize: isMobile ? 9 : 11, fontWeight: 600, color: score < 0.3 ? "#22c55e" : col,
           animation: "fadeSlideDown 0.2s ease",
           whiteSpace: "nowrap",
         }}>
           <span>🛰️</span> MR !{summary.mrIid} · Risk: {summary.riskScore} ({summary.riskLevel})
-          <span style={{ width: 1, height: 12, background: `${col}33`, margin: "0 4px" }} />
-          <span style={{ color: "var(--text-secondary)", fontWeight: 400 }}>DO NOT DEPLOY</span>
+          <span style={{ width: 1, height: 12, background: `${score < 0.3 ? "#22c55e" : col}33`, margin: "0 4px" }} />
+          <span style={{ color: "var(--text-secondary)", fontWeight: 400 }}>
+            {score < 0.3 ? "APPROVED" : "DO NOT DEPLOY"}
+          </span>
         </div>
       )}
 
@@ -586,17 +597,17 @@ export default function ImpactReport({ data }: Props) {
               <div style={{
                 display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
                 padding: "5px 14px", borderRadius: 6, marginTop: 4,
-                background: `${col}18`, border: `1px solid ${col}30`,
+                background: `${score < 0.3 ? "#22c55e" : col}18`, border: `1px solid ${score < 0.3 ? "#22c55e" : col}30`,
               }}>
                 <span style={{
                   width: 8, height: 8, borderRadius: "50%",
-                  background: col, boxShadow: `0 0 8px ${glow}`,
+                  background: score < 0.3 ? "#22c55e" : col, boxShadow: `0 0 8px ${score < 0.3 ? "rgba(34,197,94,0.4)" : glow}`,
                   animation: "pulseDot 1.5s ease-in-out infinite", flexShrink: 0,
                 }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: col, letterSpacing: "0.3px", textTransform: "uppercase", flexShrink: 0 }}>
-                  DO NOT DEPLOY
+                <span style={{ fontSize: 11, fontWeight: 700, color: score < 0.3 ? "#22c55e" : col, letterSpacing: "0.3px", textTransform: "uppercase", flexShrink: 0 }}>
+                  {score < 0.3 ? "APPROVED" : "DO NOT DEPLOY"}
                 </span>
-                <span style={{ width: 1, height: 12, background: `${col}33`, margin: "0 4px", flexShrink: 0 }} />
+                <span style={{ width: 1, height: 12, background: `${score < 0.3 ? "#22c55e" : col}33`, margin: "0 4px", flexShrink: 0 }} />
                 <span style={{ fontSize: 10, color: "var(--text-secondary)", wordBreak: "break-word", minWidth: 0 }}>
                   {hero.predictedOutcome.split("—")[0]?.trim() || hero.predictedOutcome}
                 </span>
@@ -828,13 +839,17 @@ export default function ImpactReport({ data }: Props) {
         {/* Verdict banner */}
         <div style={{
           padding: "12px 16px", borderRadius: 8, marginBottom: 10,
-          background: `linear-gradient(135deg, ${col}15, ${col}05)`,
-          border: `1px solid ${col}28`,
+          background: `linear-gradient(135deg, ${score < 0.3 ? "#22c55e" : col}15, ${score < 0.3 ? "#22c55e" : col}05)`,
+          border: `1px solid ${score < 0.3 ? "#22c55e" : col}28`,
           display: "flex", alignItems: "center", gap: 12,
         }}>
-          <div style={{ width: 36, height: 36, borderRadius: 9, background: `${col}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>🚫</div>
+          <div style={{ width: 36, height: 36, borderRadius: 9, background: `${score < 0.3 ? "#22c55e" : col}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>
+            {score < 0.3 ? "✅" : "🚫"}
+          </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: col, letterSpacing: "0.4px", textTransform: "uppercase", marginBottom: 1 }}>DO NOT DEPLOY — Remediation Required</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: score < 0.3 ? "#22c55e" : col, letterSpacing: "0.4px", textTransform: "uppercase", marginBottom: 1 }}>
+              {score < 0.3 ? "APPROVED — Standard Rollout" : "DO NOT DEPLOY — Remediation Required"}
+            </div>
             <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.3 }}>{decisionCenter.deploymentStrategy}</div>
           </div>
         </div>

@@ -32,7 +32,7 @@ Boots engine (port 3001) + visualizer (port 80 via nginx) with health checks.
 cd engine
 npm install
 npm run build    # compiles TypeScript → dist/
-npm test         # runs 95 engine tests
+npm test         # runs 105 engine tests
 ```
 
 ### Visualizer

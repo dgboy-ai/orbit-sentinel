@@ -6,6 +6,7 @@ interface Props {
   incidents: HistoricalIncident[];
   totalAnalyzed: number;
   mrIid?: number;
+  riskScore?: number;
 }
 
 function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top?: string; left?: string; right?: string; bottom?: string; size: number }) {
@@ -67,7 +68,7 @@ function OutcomeBadge({ outcome }: { outcome: string }) {
   );
 }
 
-function TimelineDot({ status, delay }: { status: string; delay: number }) {
+function TimelineDot({ status, delay, label }: { status: string; delay: number; label: string }) {
   const col = status === "current" ? "#3b82f6" : status === "Merged" ? "#22c55e" : "#ef4444";
   const [pulse, setPulse] = useState(false);
   useEffect(() => {
@@ -95,7 +96,7 @@ function TimelineDot({ status, delay }: { status: string; delay: number }) {
         }} />}
       </div>
       <span style={{ fontSize: 7, fontWeight: 700, color: status === "current" ? col : "var(--text-secondary)", letterSpacing: "0.3px" }}>
-        {status === "current" ? `MR #${10}` : status === "Merged" ? "✓ MR #1" : "✗"}
+        {status === "current" ? label : status === "Merged" ? `✓ ${label}` : `✗ ${label}`}
       </span>
       <span style={{ fontSize: 6, color: col, fontWeight: 600 }}>
         {status === "current" ? "CURRENT" : status.toUpperCase()}
@@ -111,7 +112,7 @@ function formatOrdinal(n: number): string {
   return `${n}th`;
 }
 
-export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10 }: Props) {
+export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10, riskScore = 0.55 }: Props) {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 480px)");
   const sorted = useMemo(() => [...incidents].sort((a, b) => a.mrIid - b.mrIid), [incidents]);
@@ -153,10 +154,10 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
     { text: "Missing pipeline strongly predicts closure — CI validation is a strong signal", icon: "🔄", color: "#a78bfa" },
     { text: "No reviewer assignment increases abandonment probability significantly", icon: "👤", color: "#22c55e" },
     { text: closedCount > 0
-      ? `Same branch showed repeated failure — ${closedCount} of ${totalAnalyzed} MRs from this branch were closed without merge`
+      ? `Same branch showed repeated failure — ${closedCount} of ${totalCount} MRs from this branch were closed without merge`
       : `No branch failures yet — confidence is driven by graph signals (deployment path, pipeline, ownership)`,
       icon: "🔀", color: "#f97316" },
-  ], [closedCount, mergedCount, totalAnalyzed]);
+  ], [closedCount, mergedCount, totalCount]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "0 2px" }}>
@@ -176,17 +177,17 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           </div>
           <div style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 12, maxWidth: "90%" }}>
             Orbit analysed{" "}
-            <strong style={{ color: "var(--text-primary)" }}>{totalAnalyzed} historical repository precedents</strong>.
+            <strong style={{ color: "var(--text-primary)" }}>{totalCount} historical repository precedents</strong>.
             {closedCount > 0 && <span style={{ color: "#ef4444", fontWeight: 600 }}> {closedCount} closed without merge</span>}
             {closedCount > 0 && mergedCount > 0 && <span style={{ color: "var(--text-tertiary)" }}>,</span>}
             {mergedCount > 0 && <span style={{ color: "#22c55e", fontWeight: 600 }}> {mergedCount} successfully merged</span>}
-            {closedCount === 0 && mergedCount === 0 && totalAnalyzed > 0 && <span style={{ color: "var(--text-tertiary)" }}> — verdict driven by graph signals, not historical failures</span>}
-            {totalAnalyzed === 0 && <span style={{ color: "var(--text-tertiary)" }}> — no prior history found, prediction based on graph signals only</span>}
+            {closedCount === 0 && mergedCount === 0 && totalCount > 0 && <span style={{ color: "var(--text-tertiary)" }}> — verdict driven by graph signals, not historical failures</span>}
+            {totalCount === 0 && <span style={{ color: "var(--text-tertiary)" }}> — no prior history found, prediction based on graph signals only</span>}
             .
           </div>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 5 }}>
-            <AnimatedStatCard label="MRs Analyzed" value={String(totalAnalyzed)} target={totalAnalyzed} sub="From same branch" color="#60a5fa" />
-            <AnimatedStatCard label="Closed Without Merge" value={String(closedCount)} target={closedCount} sub={`Out of ${totalAnalyzed}`} color="#ef4444" />
+            <AnimatedStatCard label="MRs Analyzed" value={String(totalCount)} target={totalCount} sub="From same branch" color="#60a5fa" />
+            <AnimatedStatCard label="Closed Without Merge" value={String(closedCount)} target={closedCount} sub={`Out of ${totalCount}`} color="#ef4444" />
             <AnimatedStatCard label="Abandonment Rate" value={`${closeRate}%`} suffix="%" color="#f97316" />
             <AnimatedStatCard label="Forecast Confidence" value="HIGH" sub="4 query types" color="#22c55e" />
           </div>
@@ -214,7 +215,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             <div style={{ display: "flex", alignItems: "flex-start", gap: 0, position: "relative" }}>
               {timeline.map((t, i) => (
                 <React.Fragment key={t.key}>
-                  <TimelineDot status={t.outcome} delay={0.06 + i * 0.05} />
+                  <TimelineDot status={t.outcome} delay={0.06 + i * 0.05} label={t.label} />
                   {i < timeline.length - 1 && (
                     <div style={{ flex: "0 0 16px", display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 6 }}>
                       <div style={{
@@ -653,7 +654,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>With Mitigations</div>
               <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>88% Merged</div>
               <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 3 }}>with CI + reviewer + changes</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>Risk: 55% → 10%</div>
+              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>Risk: {Math.round(riskScore * 100)}% → {Math.max(2, Math.round(Math.round(riskScore * 100) * 0.18))}%</div>
             </div>
           </div>
           

@@ -137,10 +137,12 @@ export class DataVisualizer {
     const remediations = report?.remediations ?? [];
 
     const currentRisk = simulation.riskScore;
-    const afterRisk = Math.max(0.1, currentRisk - remediations.reduce((acc, r) => {
-      const impactMap: Record<string, number> = { critical: 0.3, high: 0.15, medium: 0.08, low: 0.03 };
-      return acc + (impactMap[r.impact ?? "medium"] ?? 0.05);
-    }, 0));
+    const afterRisk = remediations.length > 0
+      ? Math.min(currentRisk, Math.max(0.05, currentRisk - remediations.reduce((acc, r) => {
+          const impactMap: Record<string, number> = { critical: 0.3, high: 0.15, medium: 0.08, low: 0.03 };
+          return acc + (impactMap[r.impact ?? "medium"] ?? 0.05);
+        }, 0)))
+      : Math.min(currentRisk, Math.max(0.05, currentRisk - 0.45));
 
     const outcome = buildOutcome(simulation, matches);
 
