@@ -398,7 +398,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
 
   try {
     return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minHeight: 0, animation: "fadeSlideUp 0.4s ease" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minHeight: 650, animation: "fadeSlideUp 0.4s ease" }}>
       {/* HEADER STATS */}
       <div className="card" style={{
         padding: "14px 20px", position: "relative", overflow: "hidden",
@@ -425,8 +425,8 @@ export default function BlastRadiusExplorer({ graph }: Props) {
           </div>
         </div>
       </div>
-
-      <div style={{ display: "flex", gap: 8, flex: 1, minHeight: 0 }}>
+ 
+      <div style={{ display: "flex", gap: 8, flex: 1, minHeight: 520, height: 520 }}>
         {/* LEFT: Component Picker */}
         <div className="card" style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6, position: "relative", overflow: "hidden", height: "100%", width: 220, flexShrink: 0 }}>
           <GlowOrb color="rgba(96,165,250,0.1)" top="-20%" left="-30%" size={120} />
