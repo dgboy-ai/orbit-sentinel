@@ -72,12 +72,12 @@ export default function ProblemSection() {
             <div style={{
               width: 32, height: 32, borderRadius: 8,
               background: "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.05))",
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
               border: "1px solid rgba(139,92,246,0.15)",
             }}>🎯</div>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.3px" }}>From Problem to Solution</div>
-              <div style={{ fontSize: 10, color: "var(--text-tertiary)", marginTop: 1 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.3px" }}>From Problem to Solution</div>
+              <div style={{ fontSize: 14, color: "var(--text-tertiary)", marginTop: 1 }}>
                 4 Orbit queries · 8-step Duo flow · Digital twin in seconds
               </div>
             </div>
@@ -90,8 +90,8 @@ export default function ProblemSection() {
           border: "1px solid rgba(139,92,246,0.15)",
           flexShrink: 0,
         }}>
-          <span style={{ fontSize: 12 }}>🏆</span>
-          <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.3px", textTransform: "uppercase", whiteSpace: "nowrap" }}>GitLab Transcend Hackathon</span>
+          <span style={{ fontSize: 16 }}>🏆</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.3px", textTransform: "uppercase", whiteSpace: "nowrap" }}>GitLab Transcend Hackathon</span>
         </div>
       </div>
 
@@ -133,7 +133,7 @@ export default function ProblemSection() {
                   position: "absolute", top: -8, right: 12,
                   padding: "2px 8px", borderRadius: 10,
                   background: "var(--accent-purple)", color: "#111827",
-                  fontSize: 7.5, fontWeight: 800, textTransform: "uppercase",
+                  fontSize: 11.5, fontWeight: 800, textTransform: "uppercase",
                   letterSpacing: "0.5px", boxShadow: "0 2px 10px rgba(167,139,250,0.4)"
                 }}>
                   Recommended Solution
@@ -143,14 +143,14 @@ export default function ProblemSection() {
                 <div style={{
                   width: 28, height: 28, borderRadius: 7,
                   background: `${col.color}12`, border: `1px solid ${col.color}18`,
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
                 }}>{col.icon}</div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: col.color, letterSpacing: "0.3px", textTransform: "uppercase" }}>{col.title}</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: col.color, letterSpacing: "0.3px", textTransform: "uppercase" }}>{col.title}</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {col.items.map((item, j) => (
                   <div key={j} style={{
-                    fontSize: 11,
+                    fontSize: 15,
                     color: isHero ? "rgba(255,255,255,0.85)" : "var(--text-secondary)",
                     lineHeight: 1.45,
                     padding: "4px 0 4px 10px",
@@ -179,11 +179,11 @@ export default function ProblemSection() {
           { label: "Time per MR", value: "~5m", color: "#fbbf24" },
         ].map(stat => (
           <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>{stat.value}</span>
-            <span style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 500 }}>{stat.label}</span>
+            <span style={{ fontSize: 16, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>{stat.value}</span>
+            <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500 }}>{stat.label}</span>
           </div>
         ))}
-        <div style={{ marginLeft: "auto", fontSize: 9, color: "var(--text-tertiary)" }}>
+        <div style={{ marginLeft: "auto", fontSize: 13, color: "var(--text-tertiary)" }}>
           Built with TypeScript · React · Express · GitLab Orbit API
         </div>
       </div>

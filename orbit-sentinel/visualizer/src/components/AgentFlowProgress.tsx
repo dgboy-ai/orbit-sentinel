@@ -82,11 +82,11 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
           <span style={{
-            fontSize: 15, display: "inline-block",
+            fontSize: 20, display: "inline-block",
             animation: isComplete ? "none" : "spin 2s linear infinite",
           }}>{isComplete ? "✅" : "🔄"}</span>
           <span style={{
-            fontSize: 13, fontWeight: 700,
+            fontSize: 18, fontWeight: 700,
             color: isComplete ? "#22c55e" : "var(--text-primary)",
             letterSpacing: "0.2px",
             transition: "color 0.5s",
@@ -96,7 +96,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
 
           {/* Status badge */}
           <span style={{
-            marginLeft: "auto", fontSize: 9, fontWeight: 700, letterSpacing: "0.3px",
+            marginLeft: "auto", fontSize: 13, fontWeight: 700, letterSpacing: "0.3px",
             padding: "3px 12px", borderRadius: 20, whiteSpace: "nowrap",
             background: isComplete
               ? "rgba(34,197,94,0.12)"
@@ -150,7 +150,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
                   <div style={{
                     width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 9, fontWeight: 700,
+                    fontSize: 13, fontWeight: 700,
                     background: isDone
                       ? "rgba(34,197,94,0.15)"
                       : isActive
@@ -170,7 +170,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
 
                   {/* Icon */}
                   <span style={{
-                    fontSize: 13, lineHeight: 1,
+                    fontSize: 18, lineHeight: 1,
                     opacity: isPending ? 0.25 : 1,
                     filter: isPending ? "grayscale(1)" : "none",
                     transition: "all 0.3s",
@@ -178,7 +178,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
 
                   {/* Short label */}
                   <span style={{
-                    fontSize: 8, fontWeight: isActive || isDone ? 700 : 500,
+                    fontSize: 12, fontWeight: isActive || isDone ? 700 : 500,
                     color: isDone ? "#22c55e" : isActive ? "#c4b5fd" : "var(--text-tertiary)",
                     textAlign: "center", lineHeight: 1.15,
                     letterSpacing: "0.2px",
@@ -233,12 +233,12 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
             animation: "fadeSlideUp 0.25s ease",
           }}>
             <span style={{
-              fontSize: 16, flexShrink: 0,
+              fontSize: 22, flexShrink: 0,
               filter: isComplete ? "none" : "none",
             }}>{FLOW_STEPS[currentStep].icon}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 1, flex: 1, minWidth: 0 }}>
               <span style={{
-                fontSize: 12, fontWeight: 700,
+                fontSize: 16, fontWeight: 700,
                 fontFamily: "'JetBrains Mono', monospace",
                 color: isComplete ? "#22c55e" : "#c4b5fd",
                 letterSpacing: "0.2px",
@@ -246,7 +246,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
                 {isComplete ? "Analysis Complete" : FLOW_STEPS[currentStep].full}
               </span>
               <span style={{
-                fontSize: 10, color: "var(--text-secondary)",
+                fontSize: 14, color: "var(--text-secondary)",
                 fontWeight: 500,
               }}>
                 {isComplete
@@ -264,7 +264,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
             )}
             {isComplete && (
               <span style={{
-                fontSize: 9, fontWeight: 700, color: "#22c55e",
+                fontSize: 13, fontWeight: 700, color: "#22c55e",
                 padding: "2px 8px", borderRadius: 10,
                 background: "rgba(34,197,94,0.1)",
                 whiteSpace: "nowrap", flexShrink: 0,

@@ -36,9 +36,9 @@ function StatPill({ label, value, color, sub }: { label: string; value: string; 
       boxShadow: `0 0 12px ${color}10`,
       animation: "fadeSlideUp 0.4s ease both",
     }}>
-      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{label}</div>
-      <div style={{ fontSize: 22, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${color}30`, lineHeight: 1.1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 1 }}>{sub}</div>}
+      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${color}30`, lineHeight: 1.1 }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 1 }}>{sub}</div>}
     </div>
   );
 }
@@ -276,17 +276,17 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
         <button onClick={handleZoomIn} title="Zoom In" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",
           width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
-          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+          justifyContent: "center", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
         }}>➕</button>
         <button onClick={handleZoomOut} title="Zoom Out" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",
           width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
-          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+          justifyContent: "center", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
         }}>➖</button>
         <button onClick={handleResetZoom} title="Reset View" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",
           width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
-          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+          justifyContent: "center", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
         }}>🎯</button>
       </div>
     </div>
@@ -320,7 +320,7 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {chains.length === 0 && (
-        <div style={{ fontSize: 10, color: "var(--text-tertiary)", textAlign: "center", padding: 6 }}>No dependencies found</div>
+        <div style={{ fontSize: 14, color: "var(--text-tertiary)", textAlign: "center", padding: 6 }}>No dependencies found</div>
       )}
       {chains.slice(0, 15).map((c, i) => {
         const fromNode = getNode(c.from);
@@ -337,16 +337,16 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
             onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-02)"; e.currentTarget.style.borderColor = "var(--overlay-05)"; }}
           >
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: NODE_COLORS[fromNode?.type ?? ""] ?? "#666", flexShrink: 0 }} />
-            <span style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500 }}>{fromNode?.label ?? c.from}</span>
-            <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>→</span>
+            <span style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{fromNode?.label ?? c.from}</span>
+            <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>→</span>
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: NODE_COLORS[toNode?.type ?? ""] ?? "#666", flexShrink: 0 }} />
-            <span style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500 }}>{toNode?.label ?? c.to}</span>
-            <span style={{ marginLeft: "auto", fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{c.type}</span>
+            <span style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>{toNode?.label ?? c.to}</span>
+            <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{c.type}</span>
           </div>
         );
       })}
       {chains.length > 15 && (
-        <div style={{ fontSize: 9, color: "var(--text-tertiary)", padding: "2px 4px" }}>... and {chains.length - 15} more</div>
+        <div style={{ fontSize: 13, color: "var(--text-tertiary)", padding: "2px 4px" }}>... and {chains.length - 15} more</div>
       )}
     </div>
   );
@@ -388,10 +388,10 @@ export default function BlastRadiusExplorer({ graph }: Props) {
 
   if (renderErr) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-secondary)", fontSize: 12, flexDirection: "column", gap: 8 }}>
-        <span style={{ fontSize: 24 }}>⚠️</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-secondary)", fontSize: 16, flexDirection: "column", gap: 8 }}>
+        <span style={{ fontSize: 30 }}>⚠️</span>
         <span>Something went wrong: {renderErr}</span>
-        <button onClick={() => setRenderErr(null)} style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontSize: 11 }}>Retry</button>
+        <button onClick={() => setRenderErr(null)} style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontSize: 15 }}>Retry</button>
       </div>
     );
   }
@@ -412,8 +412,8 @@ export default function BlastRadiusExplorer({ graph }: Props) {
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <div className="card-header-icon" style={{ background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.2)" }}>💥</div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Graph</div>
-              <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>NEIGHBORS query — digital twin impact analysis</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Graph</div>
+              <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>NEIGHBORS query — digital twin impact analysis</div>
             </div>
           </div>
           <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
@@ -431,14 +431,14 @@ export default function BlastRadiusExplorer({ graph }: Props) {
         <div className="card" style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6, position: "relative", overflow: "hidden", height: "100%", width: 220, flexShrink: 0 }}>
           <GlowOrb color="rgba(96,165,250,0.1)" top="-20%" left="-30%" size={120} />
           <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 6, height: "100%" }}>
-            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Components</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Components</div>
             <input
               placeholder="Search..."
               aria-label="Search components"
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
-                padding: "5px 8px", borderRadius: 6, fontSize: 10, border: "1px solid var(--overlay-08)",
+                padding: "5px 8px", borderRadius: 6, fontSize: 14, border: "1px solid var(--overlay-08)",
                 background: "rgba(0,0,0,0.2)", color: "var(--text-primary)", outline: "none", width: "100%",
               }}
             />
@@ -447,10 +447,10 @@ export default function BlastRadiusExplorer({ graph }: Props) {
               padding: "4px 8px", borderRadius: 6, flexShrink: 0,
               background: "var(--overlay-03)", border: "1px solid var(--overlay-06)",
             }}>
-              <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600 }}>Depth</span>
+              <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600 }}>Depth</span>
               <input type="range" min={1} max={5} value={depth} onChange={e => setDepth(Number(e.target.value))}
                 style={{ flex: 1, accentColor: "#f97316", height: 2 }} />
-              <span style={{ fontSize: 9, color: "#f97316", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{depth}</span>
+              <span style={{ fontSize: 13, color: "#f97316", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{depth}</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, overflow: "auto" }}>
               {filteredServices.map(n => {
@@ -470,7 +470,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                     onMouseEnter={e => { setHighlight(n.id); if (!isActive) { e.currentTarget.style.background = "rgba(96,165,250,0.08)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.2)"; } }}
                     onMouseLeave={e => { setHighlight(null); if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "transparent"; } }}
                     style={{
-                      padding: "5px 8px", borderRadius: 6, cursor: "pointer", textAlign: "left", fontSize: 10,
+                      padding: "5px 8px", borderRadius: 6, cursor: "pointer", textAlign: "left", fontSize: 14,
                       background: isActive ? "rgba(249,115,22,0.1)" : "transparent",
                       border: isActive ? "1px solid rgba(249,115,22,0.25)" : hasVulns ? `1px solid ${vulnColor}40` : "1px solid transparent",
                       color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 5,
@@ -483,7 +483,7 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                     <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.label}</span>
                     {hasVulns && (
                       <span style={{
-                        fontSize: 6, padding: "1px 4px", borderRadius: 3,
+                        fontSize: 10, padding: "1px 4px", borderRadius: 3,
                         background: `${vulnColor}20`, color: vulnColor,
                         border: `1px solid ${vulnColor}40`, fontWeight: 700,
                         fontFamily: "'JetBrains Mono', monospace",
@@ -492,12 +492,12 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                         {fileVulns.length} vuln{fileVulns.length > 1 ? "s" : ""}
                       </span>
                     )}
-                    <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{n.type === "Service" ? "⚙️" : n.type === "File" ? "📄" : n.type === "Pipeline" ? "🔄" : "📦"}</span>
+                    <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{n.type === "Service" ? "⚙️" : n.type === "File" ? "📄" : n.type === "Pipeline" ? "🔄" : "📦"}</span>
                   </button>
                 );
               })}
               {filteredServices.length === 0 && (
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)", textAlign: "center", padding: 8 }}>No matches</div>
+                <div style={{ fontSize: 14, color: "var(--text-tertiary)", textAlign: "center", padding: 8 }}>No matches</div>
               )}
             </div>
           </div>
@@ -516,11 +516,11 @@ export default function BlastRadiusExplorer({ graph }: Props) {
           ) : (
             <div style={{
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 8,
-              color: "var(--text-secondary)", fontSize: 12,
+              color: "var(--text-secondary)", fontSize: 16,
             }}>
-              <span style={{ fontSize: 28, opacity: 0.3 }}>💥</span>
+              <span style={{ fontSize: 34, opacity: 0.3 }}>💥</span>
               <span>Select a component to explore blast radius</span>
-              <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Click any node in the sidebar or graph</span>
+              <span style={{ fontSize: 14, color: "var(--text-tertiary)" }}>Click any node in the sidebar or graph</span>
             </div>
           )}
         </div>
@@ -539,24 +539,24 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                       background: riskLevelToColor(sel.riskLevel ?? "low"),
                       boxShadow: sel.riskLevel ? `0 0 8px ${riskLevelToGlow(sel.riskLevel)}` : undefined,
                     }} />
-                    <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)" }}>{sel.type}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)" }}>{sel.type}</span>
                     {sel.riskLevel && (
                       <span style={{
-                        marginLeft: "auto", fontSize: 8, padding: "1px 5px", borderRadius: 3,
+                        marginLeft: "auto", fontSize: 12, padding: "1px 5px", borderRadius: 3,
                         background: `${riskLevelToColor(sel.riskLevel)}18`, color: riskLevelToColor(sel.riskLevel),
                         border: `1px solid ${riskLevelToColor(sel.riskLevel)}22`,
                         fontWeight: 700,
                       }}>{sel.riskLevel}</span>
                     )}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", marginBottom: 2 }}>{sel.label}</div>
-                  <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>{br.nodes.length} nodes in blast radius</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", marginBottom: 2 }}>{sel.label}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>{br.nodes.length} nodes in blast radius</div>
                 </div>
               </div>
 
               {/* Risk Breakdown */}
               <div className="card" style={{ padding: "10px 12px", flexShrink: 0 }}>
-                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 6 }}>Impact Summary</div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 6 }}>Impact Summary</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                   {[
                     { label: "Services Affected", value: serviceCount, color: "#fb923c" },
@@ -567,8 +567,8 @@ export default function BlastRadiusExplorer({ graph }: Props) {
                     { label: "Low Risk", value: br.nodes.filter(n => n.riskLevel === "low").length, color: "#22c55e" },
                   ].map(s => (
                     <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "2px 4px" }}>
-                      <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>{s.label}</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
+                      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{s.label}</span>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
                     </div>
                   ))}
                 </div>
@@ -576,18 +576,18 @@ export default function BlastRadiusExplorer({ graph }: Props) {
 
               {/* Dependency Chain */}
               <div className="card" style={{ padding: "10px 12px", flex: 1, overflow: "auto", minHeight: 0 }}>
-                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 6 }}>Dependency Chain</div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 6 }}>Dependency Chain</div>
                 <DependencyChain links={br.links} allNodes={graph.nodes} rootId={selectedNode} />
               </div>
             </>
           ) : (
             <div className="card" style={{
               padding: 20, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, flex: 1,
-              color: "var(--text-secondary)", fontSize: 11,
+              color: "var(--text-secondary)", fontSize: 15,
             }}>
-              <span style={{ fontSize: 24, opacity: 0.2 }}>🔍</span>
+              <span style={{ fontSize: 30, opacity: 0.2 }}>🔍</span>
               <span>No component selected</span>
-              <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>Click a component in the sidebar or use the depth slider</span>
+              <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>Click a component in the sidebar or use the depth slider</span>
             </div>
           )}
         </div>
@@ -598,10 +598,10 @@ export default function BlastRadiusExplorer({ graph }: Props) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("[BlastRadiusExplorer]", e);
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-secondary)", fontSize: 12, flexDirection: "column", gap: 8 }}>
-        <span style={{ fontSize: 24, opacity: 0.5 }}>⚠️</span>
-        <span style={{ fontSize: 11, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>{msg}</span>
-        <button onClick={() => window.location.reload()} style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontSize: 11 }}>Reload</button>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--text-secondary)", fontSize: 16, flexDirection: "column", gap: 8 }}>
+        <span style={{ fontSize: 30, opacity: 0.5 }}>⚠️</span>
+        <span style={{ fontSize: 15, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace" }}>{msg}</span>
+        <button onClick={() => window.location.reload()} style={{ padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "transparent", color: "var(--text-primary)", cursor: "pointer", fontSize: 15 }}>Reload</button>
       </div>
     );
   }

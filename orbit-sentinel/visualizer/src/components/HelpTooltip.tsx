@@ -35,7 +35,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
         style={{
           width: 14, height: 14, borderRadius: "50%",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
-          fontSize: 9, fontWeight: 700, cursor: "help",
+          fontSize: 13, fontWeight: 700, cursor: "help",
           background: "var(--overlay-06)", border: "1px solid var(--overlay-10)",
           color: "var(--text-tertiary)",
           transition: "all 0.15s ease",
@@ -52,7 +52,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
           background: "rgba(8,9,13,0.95)", backdropFilter: "blur(12px)",
           border: "1px solid var(--overlay-10)",
           boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
-          fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
+          fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,
           textAlign: "left", fontWeight: 400,
           animation: "fadeSlideUp 0.15s ease",
         }}>

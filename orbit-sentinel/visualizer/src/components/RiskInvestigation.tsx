@@ -59,20 +59,20 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
           <span style={{
             width: 28, height: 28, borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
             background: `${c.dot}18`, border: `1px solid ${c.dot}33`,
           }}>
             {card.severity === "critical" ? "🔴" : card.severity === "high" ? "🟠" : "🟡"}
           </span>
           <div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: c.dot, marginBottom: 1 }}>{c.label}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: c.dot, marginBottom: 1 }}>{c.label}</div>
             <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: "var(--text-primary)" }}>{card.title}</div>
           </div>
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 6 }}>
           <span style={{
-            fontSize: 9, padding: "2px 8px", borderRadius: 4,
+            fontSize: 13, padding: "2px 8px", borderRadius: 4,
             background: "rgba(96,165,250,0.1)", color: "var(--accent-blue)",
             border: "1px solid rgba(96,165,250,0.15)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
           }}>
@@ -80,7 +80,7 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
           </span>
           {q && (
             <span style={{
-              fontSize: 9, padding: "2px 8px", borderRadius: 4,
+              fontSize: 13, padding: "2px 8px", borderRadius: 4,
               background: `${c.dot}12`, color: c.dot,
               border: `1px solid ${c.dot}22`, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
             }}>
@@ -90,11 +90,11 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "3px 8px", fontSize: isMobile ? 10 : 11, lineHeight: 1.5 }}>
-          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 9 }}>Finding</span>
+          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 13 }}>Finding</span>
           <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{card.finding}</span>
-          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 9 }}>Orbit Evidence</span>
-          <span style={{ color: "var(--accent-blue)", fontWeight: 500, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>{card.orbitEvidence}</span>
-          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 9 }}>Impact</span>
+          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 13 }}>Orbit Evidence</span>
+          <span style={{ color: "var(--accent-blue)", fontWeight: 500, fontFamily: "'JetBrains Mono', monospace", fontSize: 14 }}>{card.orbitEvidence}</span>
+          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 13 }}>Impact</span>
           <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{card.impact}</span>
         </div>
 
@@ -102,7 +102,7 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
           <div style={{
             padding: "5px 10px", borderRadius: 5, marginTop: 4,
             background: "rgba(0,0,0,0.2)", borderLeft: `2px solid ${c.dot}33`,
-            fontSize: 9, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.4, whiteSpace: "pre-line",
+            fontSize: 13, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.4, whiteSpace: "pre-line",
           }}>
             {q.result}
           </div>
@@ -117,7 +117,7 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
               boxShadow: `0 0 6px ${c.dot}44`,
             }} />
           </div>
-          <span style={{ fontSize: 11, fontWeight: 700, color: c.dot, fontFamily: "'JetBrains Mono', monospace" }}>{card.confidence}%</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: c.dot, fontFamily: "'JetBrains Mono', monospace" }}>{card.confidence}%</span>
         </div>
       </div>
     </div>
@@ -368,45 +368,45 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, flexDirection: isSmall ? "column" : "row", gap: isSmall ? 6 : 0 }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>Orbit Forecast</span>
-                <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>Orbit Forecast</span>
+                <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
               </div>
               <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 900, color: config.color, textShadow: `0 0 40px ${config.glow}`, display: "flex", alignItems: "center", gap: 8 }}>
                 🔮 ORBIT FORECAST
               </div>
             </div>
             <div style={{ textAlign: isSmall ? "left" : "right" }}>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 0 }}>Orbit Confidence</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 0 }}>Orbit Confidence</div>
               <div style={{ fontSize: isMobile ? 16 : 22, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{cleanConfidence}</div>
             </div>
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
             <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)" }}>
-              <div style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
+              <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
               <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: config.color, textShadow: `0 0 12px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.predictedOutcome}</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
-                <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>{isLow ? "96%" : isMedium ? "90%" : "91%"}</span></div>
-                <div><span style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Horizon </span><span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>7 Days</span></div>
+                <div><span style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 15, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>{isLow ? "96%" : isMedium ? "90%" : "91%"}</span></div>
+                <div><span style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Horizon </span><span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>7 Days</span></div>
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <div style={{
                 padding: "6px 10px", borderRadius: 6,
                 background: `linear-gradient(135deg, ${config.primaryColor}10, ${config.primaryColor}03)`,
-                border: `1px solid ${config.primaryColor}25`, fontSize: 11, color: config.primaryColor,
+                border: `1px solid ${config.primaryColor}25`, fontSize: 15, color: config.primaryColor,
                 display: "flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ fontSize: 12, flexShrink: 0 }}>{isLow ? "✓" : "⚠"}</span>
+                <span style={{ fontSize: 16, flexShrink: 0 }}>{isLow ? "✓" : "⚠"}</span>
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.primaryWarn}</span>
               </div>
               <div style={{
                 padding: "6px 10px", borderRadius: 6,
                 background: `linear-gradient(135deg, ${config.secondaryColor}10, ${config.secondaryColor}03)`,
-                border: `1px solid ${config.secondaryColor}25`, fontSize: 11, color: config.secondaryColor,
+                border: `1px solid ${config.secondaryColor}25`, fontSize: 15, color: config.secondaryColor,
                 display: "flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ fontSize: 12, flexShrink: 0 }}>{isLow ? "✓" : "⚠"}</span>
+                <span style={{ fontSize: 16, flexShrink: 0 }}>{isLow ? "✓" : "⚠"}</span>
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.secondaryWarn}</span>
               </div>
             </div>
@@ -415,7 +415,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {evidence.map((e, i) => (
               <span key={e.queryType} style={{
-                fontSize: 9, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 13, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
                 padding: "3px 10px", borderRadius: 5, letterSpacing: "0.3px",
                 background: "rgba(96,165,250,0.1)", color: "var(--accent-blue)", border: "1px solid rgba(96,165,250,0.2)",
                 animation: `fadeSlideUp 0.3s ${0.05 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
@@ -444,10 +444,10 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15,
                   background: `${step.color}12`, border: `1px solid ${step.color}33`,
                 }}>{step.icon}</div>
-                <span style={{ fontSize: 7, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
               </div>
               {i < timelineSteps.length - 1 && <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${step.color}66, transparent)`, marginTop: -14 }} />}
             </React.Fragment>
@@ -459,8 +459,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             background: `${timelinePredicted.color}12`, border: `1px solid ${timelinePredicted.color}25`,
             animation: "fadeSlideUp 0.3s 0.3s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap" }}>Predicted</span>
-            <span style={{ fontSize: 10, fontWeight: 800, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace" }}>{timelinePredicted.label}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap" }}>Predicted</span>
+            <span style={{ fontSize: 14, fontWeight: 800, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace" }}>{timelinePredicted.label}</span>
           </div>
         </div>
       </div>
@@ -475,7 +475,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         <GlowOrb color="rgba(96,165,250,0.08)" top="-50%" left="-15%" size={180} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Cross-Query Verification (Independent Consensus)</span>
+            <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Cross-Query Verification (Independent Consensus)</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {(() => {
@@ -490,7 +490,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                     <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 5, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden" }}>
                       <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 8px ${color}33` }} />
                     </div>
-                    <span style={{ width: 28, fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0 }}>{pct}%</span>
+                    <span style={{ width: 28, fontSize: 14, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0 }}>{pct}%</span>
                   </div>
                 );
               });
@@ -503,7 +503,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             display: "flex", alignItems: "center", justifyContent: "space-between",
             animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+            <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
               <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
             </span>
             <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.3)" : isMedium ? "rgba(234,179,8,0.3)" : "rgba(34,197,94,0.3)"}` }}>{isLow ? "STRONG CONSENSUS" : isMedium ? "WEAK CONSENSUS" : "STRONG CONSENSUS"}</span>
@@ -515,16 +515,16 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             background: "rgba(0, 0, 0, 0.25)", border: "1px solid rgba(255, 255, 255, 0.05)",
             animation: "fadeSlideUp 0.3s 0.25s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", marginBottom: 6, letterSpacing: "0.5px", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-secondary)", marginBottom: 6, letterSpacing: "0.5px", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
               <span>⚖️</span> Orbit Evidence Sources
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "4px 12px", fontSize: 11 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "4px 12px", fontSize: 15 }}>
               <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Historical MR Matches</div>
               <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Deployment Graph</div>
               <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Pipeline Ecosystem</div>
               <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Ownership Chain</div>
             </div>
-            <div style={{ marginTop: 8, fontSize: 10, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", borderTop: "1px solid rgba(255, 255, 255, 0.04)", paddingTop: 6, display: "flex", justifyContent: "space-between" }}>
+            <div style={{ marginTop: 8, fontSize: 14, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", borderTop: "1px solid rgba(255, 255, 255, 0.04)", paddingTop: 6, display: "flex", justifyContent: "space-between" }}>
               <span>STATUS: VALIDATED</span>
               <span>4 / 4 EVIDENCE SOURCES</span>
             </div>
@@ -549,8 +549,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         display: "flex", alignItems: "center", gap: 8,
         ...fadeIn(0.18),
       }}>
-        <span style={{ fontSize: 16 }}>🎯</span>
-        <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+        <span style={{ fontSize: 22 }}>🎯</span>
+        <span style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.4 }}>
           <strong style={{ color: "var(--accent-blue)" }}>Orbit Conclusion:</strong> All {evidence.length} query types independently support the same outcome.
         </span>
       </div>
@@ -566,7 +566,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         <GlowOrb color={config.glow} top="-20%" right="-10%" size={isMobile ? 150 : 220} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)" }}>Orbit Verdict</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)" }}>Orbit Verdict</span>
           </div>
 
           {/* Traditional CI/CD vs Orbit Sentinel Verdict Comparison */}
@@ -577,17 +577,17 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           }}>
             {/* Traditional CI/CD */}
             <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: 4 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 4 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 4 }}>
                 <span>⚙️</span> Traditional CI/CD
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 11 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 15 }}>
                 <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Build Passed</div>
                 <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Tests Passed</div>
                 <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Lint Passed</div>
               </div>
               <div style={{
                 marginTop: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34, 197, 94, 0.1)",
-                border: "1px solid rgba(34, 197, 94, 0.2)", fontSize: 9, fontWeight: 700, color: "#22c55e",
+                border: "1px solid rgba(34, 197, 94, 0.2)", fontSize: 13, fontWeight: 700, color: "#22c55e",
                 display: "inline-block", alignSelf: "flex-start"
               }}>
                 Verdict: ✓ DEPLOYABLE
@@ -602,10 +602,10 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               paddingTop: isMobile ? 12 : 4,
               paddingLeft: isMobile ? 4 : 12
             }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", display: "flex", alignItems: "center", gap: 4 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", display: "flex", alignItems: "center", gap: 4 }}>
                 <span>🔮</span> Orbit Sentinel
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 11 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 15 }}>
                 {isLow ? (
                   <>
                     <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Isolated Change Scope</div>
@@ -633,7 +633,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 marginTop: 6, padding: "4px 8px", borderRadius: 4,
                 background: isLow ? "rgba(34, 197, 94, 0.1)" : isMedium ? "rgba(234, 179, 8, 0.1)" : "rgba(239, 68, 68, 0.1)",
                 border: `1px solid ${isLow ? "rgba(34, 197, 94, 0.2)" : isMedium ? "rgba(234, 179, 8, 0.2)" : "rgba(239, 68, 68, 0.2)"}`,
-                fontSize: 9, fontWeight: 700, color: config.color,
+                fontSize: 13, fontWeight: 700, color: config.color,
                 display: "inline-block", alignSelf: "flex-start"
               }}>
                 Verdict: {config.verdictLabel}
@@ -660,18 +660,18 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             animation: "fadeSlideUp 0.3s 0.22s cubic-bezier(0.16,1,0.3,1) both",
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span style={{ fontSize: 11, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+              <span style={{ fontSize: 15, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase" }}>
                 {isLow ? "Why Orbit Approved This MR" : isMedium ? "Why Orbit Flagged This MR" : "Why Orbit Rejected This MR"}
               </span>
               <span style={{
-                fontSize: 9, padding: "2px 8px", borderRadius: 10,
+                fontSize: 13, padding: "2px 8px", borderRadius: 10,
                 background: isLow ? "rgba(34,197,94,0.1)" : isMedium ? "rgba(234,179,8,0.1)" : "rgba(239,68,68,0.1)",
                 color: config.color, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace"
               }}>
                 {isLow ? "Closure Prob: 0%" : isMedium ? "Closure Prob: 78%" : "Closure Prob: 95%"}
               </span>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 11, color: "var(--text-primary)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 15, color: "var(--text-primary)" }}>
               {isLow ? (
                 <>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>1.</span> Change scope is fully isolated in graph</div>
@@ -699,34 +699,34 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 10 : 16 }}>
             <div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {config.reasoning.map((r, i) => (
                   <div key={r} style={{
                     display: "flex", alignItems: "center", gap: 6,
                     padding: "5px 8px", borderRadius: 5,
                     background: `${config.color}04`, border: `1px solid ${config.color}08`,
-                    fontSize: 11, color: "var(--text-primary)",
+                    fontSize: 15, color: "var(--text-primary)",
                     animation: `fadeSlideUp 0.3s ${0.25 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}>
-                    <span style={{ fontSize: 9, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{i + 1}.</span>
+                    <span style={{ fontSize: 13, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{i + 1}.</span>
                     {r}
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Recommended Actions</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Recommended Actions</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
                 {actions.map((a, i) => (
                   <div key={a} style={{
                     display: "flex", alignItems: "center", gap: 6,
                     padding: "5px 8px", borderRadius: 5,
                     background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)",
-                    fontSize: 11, color: "var(--text-primary)",
+                    fontSize: 15, color: "var(--text-primary)",
                     animation: `fadeSlideUp 0.3s ${0.35 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}>
-                    <span style={{ fontSize: 11, color: "#22c55e", fontWeight: 700 }}>✓</span>
+                    <span style={{ fontSize: 15, color: "#22c55e", fontWeight: 700 }}>✓</span>
                     {a}
                   </div>
                 ))}
@@ -738,7 +738,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both",
               }}>
-                <span style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500 }}>Expected Risk After Mitigation</span>
+                <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>Expected Risk After Mitigation</span>
                 <span style={{ fontSize: isMobile ? 15 : 18, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
                   {(afterRisk * 100).toFixed(0)}%
                 </span>

@@ -17,8 +17,8 @@ function Slider({ label, value, min, max, step, unit, onChange, color }: {
   return (
     <div style={{ flex: 1, minWidth: 140 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-        <span style={{ fontSize: 9, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px" }}>{label}</span>
-        <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: "'JetBrains Mono', monospace" }}>{value}{unit}</span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px" }}>{label}</span>
+        <span style={{ fontSize: 15, fontWeight: 700, color, fontFamily: "'JetBrains Mono', monospace" }}>{value}{unit}</span>
       </div>
       <div style={{ position: "relative", height: 6 }}>
         <div style={{ position: "absolute", inset: 0, borderRadius: 3, background: "var(--overlay-06)" }} />
@@ -54,7 +54,7 @@ function AnimatedValue({ value, prefix, suffix, color, delay = 0, decimals = 0 }
       ? (display).toLocaleString("en-US", { maximumFractionDigits: decimals })
       : display.toFixed(decimals);
   return (
-    <span style={{ fontSize: 20, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${color}33` }}>
+    <span style={{ fontSize: 26, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${color}33` }}>
       {prefix}{fmt}{suffix}
     </span>
   );
@@ -107,8 +107,8 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <div className="card-header-icon" style={{ background: "rgba(45,212,191,0.12)" }}>🧮</div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: TEAL }}>Closed-Loop ROI Calculator</div>
-              <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Dollar impact based on real prediction accuracy</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: TEAL }}>Closed-Loop ROI Calculator</div>
+              <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>Dollar impact based on real prediction accuracy</div>
             </div>
           </div>
 
@@ -119,8 +119,8 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
             display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
             ...s(0.02),
           }}>
-            <span style={{ fontSize: 16 }}>🔄</span>
-            <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5, flex: 1 }}>
+            <span style={{ fontSize: 22 }}>🔄</span>
+            <span style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5, flex: 1 }}>
               <strong style={{ color: "#a78bfa" }}>Other tools predict</strong> — they tell you risk before merge and stop there.{" "}
               <strong style={{ color: TEAL }}>Orbit Sentinel verifies and learns</strong> — every prediction is tracked through a{" "}
               <strong style={{ color: "var(--text-primary)" }}>7-day survival window</strong> post-merge. Actual outcomes update the model, making every future prediction smarter.
@@ -145,30 +145,30 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
               background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)",
               animation: "fadeSlideUp 0.3s 0.08s cubic-bezier(0.16,1,0.3,1) both",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>⏱️</div>
+              <div style={{ fontSize: 24, marginBottom: 1 }}>⏱️</div>
               <AnimatedValue value={hoursPerMR} prefix="" suffix="h" color="#60a5fa" decimals={1} />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Saved per MR</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{manualHours}h manual → 5m auto</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Saved per MR</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{manualHours}h manual → 5m auto</div>
             </div>
             <div style={{
               padding: "10px 12px", borderRadius: 8, textAlign: "center",
               background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)",
               animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>💰</div>
+              <div style={{ fontSize: 24, marginBottom: 1 }}>💰</div>
               <AnimatedValue value={costPerYear} prefix="$" suffix="" color="#22c55e" />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Time Cost Saved / Year</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{hoursPerYear.toLocaleString()}h at ${hourlyRate}/h</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Time Cost Saved / Year</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{hoursPerYear.toLocaleString()}h at ${hourlyRate}/h</div>
             </div>
             <div style={{
               padding: "10px 12px", borderRadius: 8, textAlign: "center",
               background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.15)",
               animation: "fadeSlideUp 0.3s 0.12s cubic-bezier(0.16,1,0.3,1) both",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>📈</div>
+              <div style={{ fontSize: 24, marginBottom: 1 }}>📈</div>
               <AnimatedValue value={roi.netROI} prefix="" suffix="%" color="#a78bfa" />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Net ROI</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{roi.totalPredictions} verified predictions</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Net ROI</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{roi.totalPredictions} verified predictions</div>
             </div>
           </div>
 
@@ -178,28 +178,28 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
               padding: "10px 12px", borderRadius: 8, textAlign: "center",
               background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>🛡️</div>
+              <div style={{ fontSize: 24, marginBottom: 1 }}>🛡️</div>
               <AnimatedValue value={roi.incidentsPrevented} prefix="" suffix="" color="#22c55e" />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Incidents Prevented (TP)</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk caught before failure</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Incidents Prevented (TP)</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk caught before failure</div>
             </div>
             <div style={{
               padding: "10px 12px", borderRadius: 8, textAlign: "center",
               background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>⚠️</div>
+              <div style={{ fontSize: 24, marginBottom: 1 }}>⚠️</div>
               <AnimatedValue value={roi.falseNegativeCost} prefix="$" suffix="" color="#ef4444" />
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Missed Incident Cost (FN)</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{roi.falseNegatives} missed × ${incidentCost.toLocaleString()}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Missed Incident Cost (FN)</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{roi.falseNegatives} missed × ${incidentCost.toLocaleString()}</div>
             </div>
             <div style={{
               padding: "10px 12px", borderRadius: 8, textAlign: "center",
               background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)",
             }}>
-              <div style={{ fontSize: 18, marginBottom: 1 }}>🎯</div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(96,165,250,0.2)" }}>{roi.accuracyPercent}%</div>
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Prediction Accuracy</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>From {roi.totalPredictions} verified MRs</div>
+              <div style={{ fontSize: 24, marginBottom: 1 }}>🎯</div>
+              <div style={{ fontSize: 26, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(96,165,250,0.2)" }}>{roi.accuracyPercent}%</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Prediction Accuracy</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>From {roi.totalPredictions} verified MRs</div>
             </div>
           </div>
 
@@ -212,24 +212,24 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
             animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 14 }}>📈</span>
-              <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
+              <span style={{ fontSize: 19 }}>📈</span>
+              <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
                 <strong style={{ color: TEAL }}>Your Team:</strong>{" "}
                 {mrsPerWeek} MRs/wk × {WEEKS_PER_YEAR} wks = <strong style={{ color: "var(--text-primary)" }}>{mrsPerYear} MRs/year</strong>
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
+              <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
                 <span style={{ color: "#ef4444" }}>Manual</span>: {(manualHours * mrsPerYear).toLocaleString("en-US", { maximumFractionDigits: 0 })}h
               </span>
-              <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>→</span>
-              <span style={{ fontSize: 9, color: "var(--text-secondary)" }}>
+              <span style={{ fontSize: 14, color: "var(--text-tertiary)" }}>→</span>
+              <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
                 <span style={{ color: TEAL }}>Orbit</span>: {(sentinelHours * mrsPerYear).toLocaleString("en-US", { maximumFractionDigits: 0 })}h
               </span>
               <div style={{
                 padding: "2px 10px", borderRadius: 4,
                 background: "rgba(45,212,191,0.12)", border: "1px solid rgba(45,212,191,0.2)",
-                fontSize: 9, fontWeight: 700, color: TEAL, whiteSpace: "nowrap",
+                fontSize: 13, fontWeight: 700, color: TEAL, whiteSpace: "nowrap",
               }}>
                 {(hoursPerYear / (manualHours * mrsPerYear) * 100).toFixed(0)}% faster
               </div>
@@ -247,10 +247,10 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <span style={{ fontSize: 14 }}>📊</span>
+            <span style={{ fontSize: 19 }}>📊</span>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#60a5fa" }}>Prediction Confusion Matrix</div>
-              <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>Every verified MR is categorized — the model learns from each outcome</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#60a5fa" }}>Prediction Confusion Matrix</div>
+              <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>Every verified MR is categorized — the model learns from each outcome</div>
             </div>
           </div>
 
@@ -267,18 +267,18 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 4 }}>
                   <div style={{
-                    fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 15, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
                     color: c.color,
                   }}>{c.label}</div>
                   <div style={{
-                    fontSize: 9, padding: "2px 6px", borderRadius: 4, fontWeight: 700,
+                    fontSize: 13, padding: "2px 6px", borderRadius: 4, fontWeight: 700,
                     background: `${c.color}15`, color: c.color,
                   }}>{c.key === "truePositives" ? "TP" : c.key === "trueNegatives" ? "TN" : c.key === "falsePositives" ? "FP" : "FN"}</div>
                 </div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: c.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${c.color}30` }}>
+                <div style={{ fontSize: 34, fontWeight: 900, color: c.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${c.color}30` }}>
                   {c.value}
                 </div>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 2 }}>{c.desc}</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>{c.desc}</div>
               </div>
             ))}
           </div>
@@ -289,14 +289,14 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
             background: "rgba(45,212,191,0.04)", border: "1px solid rgba(45,212,191,0.1)",
             display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
           }}>
-            <span style={{ fontSize: 16 }}>🔄</span>
-            <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+            <span style={{ fontSize: 22 }}>🔄</span>
+            <span style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
               <strong style={{ color: TEAL }}>The closed loop:</strong> Predicted risk → shipped → 7-day survival check →
               {roi.truePositives + roi.trueNegatives > 0 ? ` ${roi.accuracyPercent}% accurate so far` : " waiting for verification"} →
               every result sharpens the next prediction.
             </span>
             <div style={{
-              marginLeft: "auto", padding: "4px 12px", borderRadius: 6, fontSize: 9, fontWeight: 700,
+              marginLeft: "auto", padding: "4px 12px", borderRadius: 6, fontSize: 13, fontWeight: 700,
               background: roi.accuracyPercent >= 80 ? "rgba(34,197,94,0.1)" : "rgba(234,179,8,0.1)",
               color: roi.accuracyPercent >= 80 ? "#22c55e" : "#eab308",
               border: `1px solid ${roi.accuracyPercent >= 80 ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)"}`,

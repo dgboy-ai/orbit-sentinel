@@ -121,7 +121,7 @@ function RiskSparkline({ points }: { points: { label: string; value: number }[] 
               style={{ filter: `drop-shadow(0 0 3px ${dotColor}88)` }} />
             {i % 2 === 0 && (
               <text x={x} y={y - 8} textAnchor="middle" fill="var(--overlay-50)"
-                fontSize={7} fontFamily="'JetBrains Mono', monospace"
+                fontSize={11} fontFamily="'JetBrains Mono', monospace"
               >{p.label}</text>
             )}
           </g>
@@ -165,24 +165,24 @@ function EvidenceMiniCard({ e, delay }: { e: OrbitQueryEvidence; delay: number }
         onMouseEnter={e => { e.currentTarget.style.background = `${meta.color}10`; }}
         onMouseLeave={e => { e.currentTarget.style.background = open ? `${meta.color}08` : "var(--overlay-015)"; }}
       >
-        <span style={{ fontSize: 16, flexShrink: 0 }}>{meta.icon}</span>
+        <span style={{ fontSize: 22, flexShrink: 0 }}>{meta.icon}</span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
             <span style={{
-              fontSize: 8, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
+              fontSize: 12, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
               background: `${meta.color}18`, color: meta.color,
               letterSpacing: "0.5px", fontFamily: "'JetBrains Mono', monospace",
             }}>{e.queryType}</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>{e.queryName}</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>{e.queryName}</span>
           </div>
           {findings.length > 0 && (
-            <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {findings[0]}
             </div>
           )}
         </div>
         <span style={{
-          fontSize: 10, color: meta.color, transition: "transform 0.2s ease", flexShrink: 0,
+          fontSize: 14, color: meta.color, transition: "transform 0.2s ease", flexShrink: 0,
           transform: open ? "rotate(180deg)" : "none",
         }}>▾</span>
       </div>
@@ -195,7 +195,7 @@ function EvidenceMiniCard({ e, delay }: { e: OrbitQueryEvidence; delay: number }
             const isKey = l.startsWith("→");
             return (
               <div key={i} style={{
-                padding: "2px 0", fontSize: 10, lineHeight: 1.5,
+                padding: "2px 0", fontSize: 14, lineHeight: 1.5,
                 color: isKey ? "var(--text-primary)" : "var(--text-secondary)",
                 display: "flex", gap: 6,
               }}>
@@ -249,10 +249,10 @@ function RemediationFlow({ current, scenarios }: { current: number; scenarios: {
             <circle cx={x} cy={30} r={5} fill={s.color}
               style={{ filter: `drop-shadow(0 0 3px ${s.color}88)` }} />
             <text x={x} y={19} textAnchor="middle" fill={s.color}
-              fontSize={9} fontWeight={700} fontFamily="'JetBrains Mono', monospace"
+              fontSize={13} fontWeight={700} fontFamily="'JetBrains Mono', monospace"
             >{(s.value * 100).toFixed(0)}%</text>
             <text x={x} y={44} textAnchor="middle" fill="var(--text-tertiary)"
-              fontSize={7} fontFamily="'Inter', sans-serif">{s.label}</text>
+              fontSize={11} fontFamily="'Inter', sans-serif">{s.label}</text>
           </g>
         );
       })}
@@ -269,7 +269,7 @@ function IncidentBar({ incidents }: { incidents: { mrIid: number; similarity: nu
       background: "var(--overlay-015)", border: "1px solid var(--border)",
       marginBottom: 12,
     }}>
-      <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 8 }}>
+      <div style={{ fontSize: 13, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 8 }}>
         Incident Similarity Spectrum
       </div>
       <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -280,7 +280,7 @@ function IncidentBar({ incidents }: { incidents: { mrIid: number; similarity: nu
               flex: inc.similarity, height: 24, borderRadius: 4,
               background: `linear-gradient(90deg, ${simColor}, ${simColor}66)`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 8, fontWeight: 700, color: "var(--overlay-90)",
+              fontSize: 12, fontWeight: 700, color: "var(--overlay-90)",
               minWidth: 30, maxWidth: 120,
               fontFamily: "'JetBrains Mono', monospace",
               position: "relative",
@@ -294,7 +294,7 @@ function IncidentBar({ incidents }: { incidents: { mrIid: number; similarity: nu
           );
         })}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8, color: "var(--text-tertiary)", marginTop: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--text-tertiary)", marginTop: 4 }}>
         <span>Low match</span>
         <span>High match</span>
       </div>
@@ -315,9 +315,9 @@ const SectionCard = React.memo(function SectionCard({
         <div style={{
           width: 30, height: 30, borderRadius: 7,
           background: `${col}15`, display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 15, flexShrink: 0,
+          fontSize: 20, flexShrink: 0,
         }}>{icon}</div>
-        <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", margin: 0 }}>{title}</h3>
+        <h3 style={{ fontSize: 19, fontWeight: 600, color: "var(--text-primary)", margin: 0 }}>{title}</h3>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${col}22, transparent)`, marginLeft: 4 }} />
       </div>
       {children}
@@ -487,7 +487,7 @@ export default function ImpactReport({ data }: Props) {
                 document.getElementById(`sec-${s.key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
                 style={{
-                  padding: "3px 9px", fontSize: 9, fontWeight: 500, cursor: "pointer",
+                  padding: "3px 9px", fontSize: 13, fontWeight: 500, cursor: "pointer",
                   border: "1px solid transparent", borderRadius: 4,
                   background: "transparent", color: "var(--text-secondary)",
                   transition: "all 0.12s ease",
@@ -500,7 +500,7 @@ export default function ImpactReport({ data }: Props) {
           <div style={{ display: "flex", gap: 4, position: "relative" }} ref={exportRef}>
             <button onClick={handlePrint} aria-label="Print report" title="Print report"
               style={{
-                padding: "3px 8px", fontSize: 10, cursor: "pointer",
+                padding: "3px 8px", fontSize: 14, cursor: "pointer",
                 border: "1px solid var(--border)", borderRadius: 4,
                 background: "transparent", color: "var(--text-secondary)",
                 transition: "all 0.12s ease",
@@ -510,7 +510,7 @@ export default function ImpactReport({ data }: Props) {
             >🖨️</button>
             <button onClick={() => setExportOpen(!exportOpen)} aria-label="Export report" title="Export report"
               style={{
-                padding: "3px 8px", fontSize: 10, cursor: "pointer",
+                padding: "3px 8px", fontSize: 14, cursor: "pointer",
                 border: "1px solid var(--border)", borderRadius: 4,
                 background: exportOpen ? `${col}15` : "transparent",
                 color: exportOpen ? col : "var(--text-secondary)",
@@ -529,19 +529,19 @@ export default function ImpactReport({ data }: Props) {
                 animation: "fadeSlideDown 0.12s ease",
               }}>
                 <button onClick={handleExportMarkdown}
-                  style={{ display: "block", width: "100%", padding: "6px 12px", fontSize: 10, cursor: "pointer", border: "none", borderRadius: 4, background: "transparent", color: "var(--text-secondary)", textAlign: "left", transition: "all 0.1s ease" }}
+                  style={{ display: "block", width: "100%", padding: "6px 12px", fontSize: 14, cursor: "pointer", border: "none", borderRadius: 4, background: "transparent", color: "var(--text-secondary)", textAlign: "left", transition: "all 0.1s ease" }}
                   onMouseEnter={e => { e.currentTarget.style.background = `${col}12`; e.currentTarget.style.color = "var(--text-primary)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; }}
                 >📝 Copy Markdown</button>
                 <button onClick={handleExportJSON}
-                  style={{ display: "block", width: "100%", padding: "6px 12px", fontSize: 10, cursor: "pointer", border: "none", borderRadius: 4, background: "transparent", color: "var(--text-secondary)", textAlign: "left", transition: "all 0.1s ease" }}
+                  style={{ display: "block", width: "100%", padding: "6px 12px", fontSize: 14, cursor: "pointer", border: "none", borderRadius: 4, background: "transparent", color: "var(--text-secondary)", textAlign: "left", transition: "all 0.1s ease" }}
                   onMouseEnter={e => { e.currentTarget.style.background = `${col}12`; e.currentTarget.style.color = "var(--text-primary)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; }}
                 >📦 Download JSON</button>
               </div>
             )}
             <span style={{
-              fontSize: 8, color: "var(--text-tertiary)", padding: "4px 6px",
+              fontSize: 12, color: "var(--text-tertiary)", padding: "4px 6px",
               fontFamily: "'JetBrains Mono', monospace",
             }}>
               v{summary.timestamp ? new Date(summary.timestamp).toISOString().slice(0, 10) : "1.0"}
@@ -565,7 +565,7 @@ export default function ImpactReport({ data }: Props) {
             <div style={{ flexShrink: 0, textAlign: "center" }}>
               <RiskGauge score={score} size={88} />
               <div style={{
-                fontSize: 14, fontWeight: 800, color: col,
+                fontSize: 19, fontWeight: 800, color: col,
                 fontFamily: "'JetBrains Mono', monospace",
                 textShadow: `0 0 16px ${glow}`,
                 marginTop: -52, position: "relative", pointerEvents: "none",
@@ -573,7 +573,7 @@ export default function ImpactReport({ data }: Props) {
                 <AnimatedCounter value={score * 100} />
               </div>
               <div style={{
-                fontSize: 7, fontWeight: 700, color: col, letterSpacing: "1px", marginTop: 1,
+                fontSize: 11, fontWeight: 700, color: col, letterSpacing: "1px", marginTop: 1,
                 textTransform: "uppercase", opacity: 0.85,
               }}>{summary.riskLevel}</div>
             </div>
@@ -582,13 +582,13 @@ export default function ImpactReport({ data }: Props) {
                 <div style={{
                   width: 38, height: 38, borderRadius: 10,
                   background: grad, display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 18,
+                  fontSize: 24,
                 }}>🛰️</div>
                 <div>
-                  <div style={{ fontSize: 19, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.3px" }}>
+                  <div style={{ fontSize: 25, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.3px" }}>
                     Engineering Impact Report
                   </div>
-                  <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <div style={{ fontSize: 15, color: "var(--text-secondary)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {summary.project} · MR !{summary.mrIid} · {summary.branch}
                   </div>
                 </div>
@@ -604,11 +604,11 @@ export default function ImpactReport({ data }: Props) {
                   background: score < 0.3 ? "#22c55e" : col, boxShadow: `0 0 8px ${score < 0.3 ? "rgba(34,197,94,0.4)" : glow}`,
                   animation: "pulseDot 1.5s ease-in-out infinite", flexShrink: 0,
                 }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: score < 0.3 ? "#22c55e" : col, letterSpacing: "0.3px", textTransform: "uppercase", flexShrink: 0 }}>
+                <span style={{ fontSize: 15, fontWeight: 700, color: score < 0.3 ? "#22c55e" : col, letterSpacing: "0.3px", textTransform: "uppercase", flexShrink: 0 }}>
                   {score < 0.3 ? "APPROVED" : "DO NOT DEPLOY"}
                 </span>
                 <span style={{ width: 1, height: 12, background: `${score < 0.3 ? "#22c55e" : col}33`, margin: "0 4px", flexShrink: 0 }} />
-                <span style={{ fontSize: 10, color: "var(--text-secondary)", wordBreak: "break-word", minWidth: 0 }}>
+                <span style={{ fontSize: 14, color: "var(--text-secondary)", wordBreak: "break-word", minWidth: 0 }}>
                   {hero.predictedOutcome.split("—")[0]?.trim() || hero.predictedOutcome}
                 </span>
               </div>
@@ -634,14 +634,14 @@ export default function ImpactReport({ data }: Props) {
               borderRight: i < 3 && !isSmall ? `1px solid var(--border)` : "none",
               borderBottom: isSmall && i < 2 ? `1px solid var(--border)` : "none",
             }}>
-              <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>
+              <div style={{ fontSize: 13, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>
                 {stat.icon} {stat.label}
               </div>
-              <div style={{ fontSize: 21, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>
+              <div style={{ fontSize: 27, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} decimals={0} />
               </div>
               {"sub" in stat && stat.sub && (
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 2 }}>{stat.sub}</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>{stat.sub}</div>
               )}
             </div>
           ))}
@@ -662,12 +662,12 @@ export default function ImpactReport({ data }: Props) {
               marginBottom: 10,
             }}>
               <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: grad, borderRadius: "0 2px 2px 0" }} />
-              <div style={{ fontSize: 18, color: col, marginBottom: 4, lineHeight: 1, opacity: 0.35 }}>"</div>
-              <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.6, fontStyle: "italic" }}>
+              <div style={{ fontSize: 24, color: col, marginBottom: 4, lineHeight: 1, opacity: 0.35 }}>"</div>
+              <div style={{ fontSize: 16, color: "var(--text-primary)", lineHeight: 1.6, fontStyle: "italic" }}>
                 {hero.predictedOutcome}
               </div>
             </div>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4 }}>
+            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4 }}>
               <strong style={{ color: "var(--text-primary)" }}>Action:</strong> {hero.recommendedAction}
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -676,7 +676,7 @@ export default function ImpactReport({ data }: Props) {
                 return (
                   <div key={f.label} style={{
                     display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 5,
-                    background: `${dotColor}08`, border: `1px solid ${dotColor}18`, fontSize: 9, color: "var(--text-secondary)",
+                    background: `${dotColor}08`, border: `1px solid ${dotColor}18`, fontSize: 13, color: "var(--text-secondary)",
                   }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: dotColor, boxShadow: `0 0 4px ${dotColor}66`, flexShrink: 0 }} />
                     <span style={{ fontWeight: 600, color: "var(--text-primary)" }}>{f.label}:</span> {f.value}
@@ -699,13 +699,13 @@ export default function ImpactReport({ data }: Props) {
                   border: `1px solid ${topColor}25`,
                   display: "flex", alignItems: "center", gap: 8,
                 }}>
-                  <span style={{ fontSize: 14, flexShrink: 0 }}>🔺</span>
+                  <span style={{ fontSize: 19, flexShrink: 0 }}>🔺</span>
                   <div>
-                    <div style={{ fontSize: 7, color: topColor, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Top Risk Driver</div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)" }}>{top.category}</div>
-                    <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>{topPct}% severity — largest contributor to current risk score</div>
+                    <div style={{ fontSize: 11, color: topColor, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Top Risk Driver</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>{top.category}</div>
+                    <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>{topPct}% severity — largest contributor to current risk score</div>
                   </div>
-                  <div style={{ marginLeft: "auto", fontSize: 16, fontWeight: 900, color: topColor, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>{top.value}/{top.maxValue}</div>
+                  <div style={{ marginLeft: "auto", fontSize: 22, fontWeight: 900, color: topColor, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>{top.value}/{top.maxValue}</div>
                 </div>
               );
             })()}
@@ -716,8 +716,8 @@ export default function ImpactReport({ data }: Props) {
                 return (
                   <div key={b.category} style={{ animation: `fadeSlideUp 0.25s ${0.1 + i * 0.03}s ease both` }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-                      <div style={{ fontSize: 9, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.2 }}>{b.category}</div>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: bc, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 6 }}>
+                      <div style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)", lineHeight: 1.2 }}>{b.category}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: bc, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginLeft: 6 }}>
                         {b.value}/{b.maxValue}
                       </div>
                     </div>
@@ -751,11 +751,11 @@ export default function ImpactReport({ data }: Props) {
                     </div>
                     <div style={{ padding: "6px 10px", borderRadius: 5, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
-                        <span style={{ fontSize: 10 }}>{evt.icon}</span>
-                        <span style={{ fontSize: 7, fontWeight: 700, color: col, letterSpacing: "0.2px", fontFamily: "'JetBrains Mono', monospace" }}>D+{evt.day}</span>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>{evt.label}</span>
+                        <span style={{ fontSize: 14 }}>{evt.icon}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: col, letterSpacing: "0.2px", fontFamily: "'JetBrains Mono', monospace" }}>D+{evt.day}</span>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{evt.label}</span>
                       </div>
-                      <div style={{ fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3, marginLeft: 14 }}>{evt.description}</div>
+                      <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.3, marginLeft: 14 }}>{evt.description}</div>
                     </div>
                   </div>
                 ))}
@@ -778,7 +778,7 @@ export default function ImpactReport({ data }: Props) {
           {/* ── Historical Incidents ── */}
           <SectionCard id="sec-incidents" icon="⚠️" title="Incident Analysis" col={col}>
             {incidents.length === 0 ? (
-              <div style={{ padding: 12, textAlign: "center", color: "var(--text-secondary)", fontSize: 11 }}>No similar historical incidents found.</div>
+              <div style={{ padding: 12, textAlign: "center", color: "var(--text-secondary)", fontSize: 15 }}>No similar historical incidents found.</div>
             ) : (
               <>
                 <IncidentBar incidents={incidents} />
@@ -795,14 +795,14 @@ export default function ImpactReport({ data }: Props) {
                         onMouseEnter={e => { e.currentTarget.style.borderColor = `${simColor}33`; e.currentTarget.style.background = `${simColor}06`; }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--overlay-015)"; }}
                       >
-                        <div style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>⚠️</div>
+                        <div style={{ fontSize: 19, flexShrink: 0, marginTop: 1 }}>⚠️</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap", marginBottom: 2 }}>
-                            <span style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>!{inc.mrIid}</span>
-                            <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${simColor}15`, color: simColor, border: `1px solid ${simColor}25` }}>{inc.similarity}%</span>
-                            <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: inc.outcome === "Merged" ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)", color: inc.outcome === "Merged" ? "#22c55e" : "#ef4444", border: `1px solid ${inc.outcome === "Merged" ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}` }}>{inc.outcome.toUpperCase()}</span>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>!{inc.mrIid}</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${simColor}15`, color: simColor, border: `1px solid ${simColor}25` }}>{inc.similarity}%</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: inc.outcome === "Merged" ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)", color: inc.outcome === "Merged" ? "#22c55e" : "#ef4444", border: `1px solid ${inc.outcome === "Merged" ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}` }}>{inc.outcome.toUpperCase()}</span>
                           </div>
-                          <div style={{ fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3 }}>{inc.rootCause}</div>
+                          <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.3 }}>{inc.rootCause}</div>
                         </div>
                       </div>
                     );
@@ -823,8 +823,8 @@ export default function ImpactReport({ data }: Props) {
                 { label: "Historical Sample Size", value: `${incidents.length} repository precedents analysed` },
               ].map(item => (
                 <div key={item.label} style={{ padding: "5px 8px", borderRadius: 4, background: "var(--overlay-015)", border: "1px solid var(--border)", wordBreak: "break-word" }}>
-                  <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.2px", textTransform: "uppercase", marginBottom: 1 }}>{item.label}</div>
-                  <div style={{ fontSize: 9, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.3 }}>{item.value}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.2px", textTransform: "uppercase", marginBottom: 1 }}>{item.label}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.3 }}>{item.value}</div>
                 </div>
               ))}
             </div>
@@ -843,14 +843,14 @@ export default function ImpactReport({ data }: Props) {
           border: `1px solid ${score < 0.3 ? "#22c55e" : col}28`,
           display: "flex", alignItems: "center", gap: 12,
         }}>
-          <div style={{ width: 36, height: 36, borderRadius: 9, background: `${score < 0.3 ? "#22c55e" : col}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 9, background: `${score < 0.3 ? "#22c55e" : col}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 23, flexShrink: 0 }}>
             {score < 0.3 ? "✅" : "🚫"}
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: score < 0.3 ? "#22c55e" : col, letterSpacing: "0.4px", textTransform: "uppercase", marginBottom: 1 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: score < 0.3 ? "#22c55e" : col, letterSpacing: "0.4px", textTransform: "uppercase", marginBottom: 1 }}>
               {score < 0.3 ? "APPROVED — Standard Rollout" : "DO NOT DEPLOY — Remediation Required"}
             </div>
-            <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.3 }}>{decisionCenter.deploymentStrategy}</div>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.3 }}>{decisionCenter.deploymentStrategy}</div>
           </div>
         </div>
 
@@ -859,26 +859,26 @@ export default function ImpactReport({ data }: Props) {
           <div>
             <div style={{ marginBottom: 10 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, marginBottom: 3, background: "var(--overlay-02)", border: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>Current Risk</div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>Current Risk</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ width: 70, height: 5, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                     <div style={{ height: "100%", borderRadius: 2, width: `${decisionCenter.riskReduction.current * 100}%`, background: grad, boxShadow: `0 0 4px ${glow}` }} />
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: col, fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.current * 100).toFixed(0)}%</span>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: col, fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.current * 100).toFixed(0)}%</span>
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 12px", borderRadius: 5, background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.15)" }}>
-                <div style={{ fontSize: 9, color: "#22c55e", fontWeight: 600 }}>After Full Remediation</div>
+                <div style={{ fontSize: 13, color: "#22c55e", fontWeight: 600 }}>After Full Remediation</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ width: 70, height: 5, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                     <div style={{ height: "100%", borderRadius: 2, width: `${decisionCenter.riskReduction.afterRecommendation * 100}%`, background: "linear-gradient(90deg, #22c55e, #4ade80)", boxShadow: "0 0 4px rgba(34,197,94,0.3)" }} />
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.afterRecommendation * 100).toFixed(0)}%</span>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>{(decisionCenter.riskReduction.afterRecommendation * 100).toFixed(0)}%</span>
                 </div>
               </div>
             </div>
             <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Remediation Pathway</div>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Remediation Pathway</div>
               <RemediationFlow current={decisionCenter.riskReduction.current} scenarios={counterfactuals} />
             </div>
           </div>
@@ -887,28 +887,28 @@ export default function ImpactReport({ data }: Props) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8 }}>
               <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>👤 Reviewers</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>👤 Reviewers</div>
                 {decisionCenter.reviewers.map(r => (
-                  <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", fontSize: 9 }}>
+                  <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", fontSize: 13 }}>
                     <span style={{ width: 4, height: 4, borderRadius: "50%", background: r.role.includes("Needed") ? "#eab308" : "#22c55e", flexShrink: 0 }} />
                     <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{r.name}</span>
-                    <span style={{ color: "var(--text-tertiary)", marginLeft: "auto", fontSize: 7 }}>{r.role}</span>
+                    <span style={{ color: "var(--text-tertiary)", marginLeft: "auto", fontSize: 11 }}>{r.role}</span>
                   </div>
                 ))}
               </div>
               <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>✅ Actions</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>✅ Actions</div>
                 {decisionCenter.requiredTests.map((t, i) => (
-                  <div key={t} style={{ display: "flex", alignItems: "flex-start", gap: 4, padding: "1.5px 0", fontSize: 8, color: "var(--text-secondary)", lineHeight: 1.3 }}>
-                    <span style={{ fontSize: 6, fontWeight: 700, color: col, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginTop: 1 }}>{i + 1}.</span>
+                  <div key={t} style={{ display: "flex", alignItems: "flex-start", gap: 4, padding: "1.5px 0", fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.3 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: col, fontFamily: "'JetBrains Mono', monospace", flexShrink: 0, marginTop: 1 }}>{i + 1}.</span>
                     {t}
                   </div>
                 ))}
               </div>
             </div>
             <div style={{ padding: "7px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
-              <div style={{ fontSize: 8, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 3 }}>🔄 Rollback Strategy</div>
-              <div style={{ fontSize: 9, color: "var(--text-primary)", lineHeight: 1.4 }}>{decisionCenter.rollbackStrategy}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 3 }}>🔄 Rollback Strategy</div>
+              <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.4 }}>{decisionCenter.rollbackStrategy}</div>
             </div>
           </div>
         </div>
@@ -918,7 +918,7 @@ export default function ImpactReport({ data }: Props) {
       {/* ── Footer ── */}
       <div style={{
         textAlign: "center", padding: "24px 0 16px",
-        color: "var(--text-tertiary)", fontSize: 11, fontWeight: 500, letterSpacing: "0.5px",
+        color: "var(--text-tertiary)", fontSize: 15, fontWeight: 500, letterSpacing: "0.5px",
         opacity: 0.5, position: "relative",
       }}>
         <div style={{
@@ -926,7 +926,7 @@ export default function ImpactReport({ data }: Props) {
           background: `linear-gradient(90deg, transparent, ${col}22, transparent)`,
         }} />
         <div style={{ marginBottom: 2 }}>Predicted before merge. Prevented before production.</div>
-        <div style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", marginTop: 4 }}>
+        <div style={{ fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 4 }}>
           Orbit Sentinel · v{new Date(summary.timestamp).toISOString().slice(0, 10).replace(/-/g, ".")} · {summary.project.split("/")[0]}/{summary.project.split("/")[1]}
         </div>
       </div>

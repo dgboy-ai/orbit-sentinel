@@ -66,7 +66,7 @@ function CircularGauge({ pct, color, size = 32, strokeWidth = 3, label, value }:
 function StatusBadge({ label, good }: { label: string; good?: boolean }) {
   return (
     <span style={{
-      fontSize: 9, padding: "2px 8px", borderRadius: 4, fontWeight: 600,
+      fontSize: 13, padding: "2px 8px", borderRadius: 4, fontWeight: 600,
       background: good ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
       border: `1px solid ${good ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
       color: good ? "#22c55e" : "#ef4444",
@@ -98,19 +98,19 @@ function ScenarioCard({ s, active, onClick, touched, onTouch }: { s: ScenarioDet
       {active && <div style={{ position: "absolute", inset: 0, borderRadius: 10, padding: 1, background: `linear-gradient(135deg, ${s.color}33, transparent 60%)`, mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", WebkitMaskComposite: "xor", maskComposite: "exclude", pointerEvents: "none" }} />}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 5, minWidth: 0 }}>
-          <span style={{ fontSize: 13, opacity: active ? 1 : 0.5, flexShrink: 0 }}>{s.icon}</span>
-          <span style={{ fontSize: 10, fontWeight: 600, color: active ? s.color : "var(--text-secondary)", letterSpacing: "0.2px", transition: "color 0.2s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.label}</span>
+          <span style={{ fontSize: 18, opacity: active ? 1 : 0.5, flexShrink: 0 }}>{s.icon}</span>
+          <span style={{ fontSize: 14, fontWeight: 600, color: active ? s.color : "var(--text-secondary)", letterSpacing: "0.2px", transition: "color 0.2s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.label}</span>
         </div>
         <span style={{
-          fontSize: 9, padding: "2px 8px", borderRadius: 4, flexShrink: 0,
+          fontSize: 13, padding: "2px 8px", borderRadius: 4, flexShrink: 0,
           background: `${s.color}15`, color: s.color, fontWeight: 700,
           fontFamily: "'JetBrains Mono', monospace", border: `1px solid ${s.color}22`,
           boxShadow: active ? `0 0 8px ${s.color}22` : "none", transition: "box-shadow 0.3s ease",
         }}>{s.probability}%</span>
       </div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: active ? s.color : "var(--text-primary)", marginBottom: 6, transition: "color 0.2s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.outcome}</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color: active ? s.color : "var(--text-primary)", marginBottom: 6, transition: "color 0.2s ease", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.outcome}</div>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", width: 28, flexShrink: 0 }}>Risk</span>
+        <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", width: 28, flexShrink: 0 }}>Risk</span>
         <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-05)", overflow: "hidden" }}>
           <div style={{
             width: `${s.riskAfter * 100}%`, height: "100%", borderRadius: 2,
@@ -118,7 +118,7 @@ function ScenarioCard({ s, active, onClick, touched, onTouch }: { s: ScenarioDet
             transition: "width 0.6s ease", boxShadow: `0 0 6px ${riskScoreToGlow(s.riskAfter)}`,
           }} />
         </div>
-        <span style={{ fontSize: 10, fontWeight: 700, color: curCol, fontFamily: "'JetBrains Mono', monospace", width: 30, textAlign: "right", flexShrink: 0, transition: "color 0.3s ease" }}>{(s.riskAfter * 100).toFixed(0)}%</span>
+        <span style={{ fontSize: 14, fontWeight: 700, color: curCol, fontFamily: "'JetBrains Mono', monospace", width: 30, textAlign: "right", flexShrink: 0, transition: "color 0.3s ease" }}>{(s.riskAfter * 100).toFixed(0)}%</span>
       </div>
     </div>
   );
@@ -252,18 +252,18 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Forecast Engine</span>
-                <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>v2.0</span>
-                <span style={{ fontSize: 8, padding: "1px 7px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>● Live</span>
+                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Forecast Engine</span>
+                <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>v2.0</span>
+                <span style={{ fontSize: 12, padding: "1px 7px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>● Live</span>
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 10, letterSpacing: "-0.3px" }}>
+              <div style={{ fontSize: 28, fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 10, letterSpacing: "-0.3px" }}>
                 🧪 Digital Twin Forecast
-                <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0", marginLeft: 4 }}>MR !{mrIid}</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0", marginLeft: 4 }}>MR !{mrIid}</span>
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Confidence</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{confidence.split(" ")[0]}</div>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Confidence</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{confidence.split(" ")[0]}</div>
             </div>
           </div>
           <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${curCol}22, transparent)`, margin: "0 0 10px 0" }} />
@@ -276,8 +276,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               { label: "Pipelines", value: pipelinesTotal.toLocaleString("en-US"), color: "#f97316" },
             ].map(d => (
               <div key={d.label} style={{ padding: "4px 10px", borderRadius: 5, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)", display: "flex", alignItems: "center", gap: 5 }}>
-                <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px" }}>{d.label}</span>
-                <span style={{ fontSize: 13, fontWeight: 800, color: d.color, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
+                <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px" }}>{d.label}</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: d.color, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
               </div>
             ))}
           </div>
@@ -291,8 +291,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               display: "flex", alignItems: "center", gap: 10,
             }}>
               <div style={{ width: 110, flexShrink: 0 }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Operational Risk</div>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>Code changes · Graph health</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Operational Risk</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>Code changes · Graph health</div>
               </div>
               <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--overlay-05)", overflow: "hidden" }}>
                 <div style={{
@@ -314,20 +314,20 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               display: "flex", alignItems: "center", gap: 10,
             }}>
               <div style={{ width: 110, flexShrink: 0 }}>
-                <div style={{ fontSize: 7, color: "#ef4444", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Process Risk</div>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>Workflow blockers</div>
+                <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Process Risk</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>Workflow blockers</div>
               </div>
               <div style={{ flex: 1, display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
                 {!mrState.hasPipeline && (
-                  <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Pipeline</span>
+                  <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Pipeline</span>
                 )}
-                <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Reviewer</span>
+                <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Reviewer</span>
                 {mrState.noChanges && (
-                  <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)", color: "#eab308", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>⚠ Empty Diff</span>
+                  <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)", color: "#eab308", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>⚠ Empty Diff</span>
                 )}
-                <span style={{ fontSize: 8, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ Draft Status</span>
+                <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ Draft Status</span>
               </div>
-              <div style={{ fontSize: 7, color: "#ef4444", fontWeight: 700, flexShrink: 0 }}>HIGH</div>
+              <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, flexShrink: 0 }}>HIGH</div>
             </div>
 
             {/* Row 3: Outcome Prediction */}
@@ -339,8 +339,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               transition: "all 0.4s ease",
             }}>
               <div style={{ width: 110, flexShrink: 0 }}>
-                <div style={{ fontSize: 7, color: curCol, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1, transition: "color 0.4s ease" }}>Outcome Prediction</div>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", fontStyle: "italic" }}>7-day horizon · {sel.probability}% prob.</div>
+                <div style={{ fontSize: 11, color: curCol, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1, transition: "color 0.4s ease" }}>Outcome Prediction</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>7-day horizon · {sel.probability}% prob.</div>
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 800, color: curCol, transition: "color 0.4s ease", display: "flex", alignItems: "center", gap: 6 }}>
@@ -349,8 +349,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 </div>
               </div>
               <div style={{ textAlign: "right", flexShrink: 0 }}>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>{evidence.length} queries</div>
-                <div style={{ fontSize: 8, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>4 types</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>{evidence.length} queries</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>4 types</div>
               </div>
             </div>
           </div>
@@ -367,7 +367,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       }}>
         <GlowOrb color="rgba(96,165,250,0.05)" top="-30%" left="-10%" size={180} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 10 }}>Orbit Lifecycle Prediction</div>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 10 }}>Orbit Lifecycle Prediction</div>
           <div style={{ display: "flex", gap: 0, alignItems: "center", justifyContent: "space-between", overflowX: isMobile ? "auto" : "visible", WebkitOverflowScrolling: "touch", paddingBottom: isMobile ? 4 : 0 }}>
             {[
               { label: "MR Open", icon: "📝", status: "active", color: "#22c55e", desc: "Current" },
@@ -380,7 +380,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: isMobile ? "0 0 70px" : 1, minWidth: isMobile ? 70 : 0, position: "relative" }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
+                    display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
                     background: stage.status === "active" ? "rgba(34,197,94,0.15)"
                       : stage.status === "blocked" ? "rgba(239,68,68,0.12)"
                       : stage.status === "predicted" ? `${curCol}18`
@@ -397,7 +397,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                     {stage.status === "blocked" ? "✗" : stage.icon}
                   </div>
                   <span style={{
-                    fontSize: 8, fontWeight: 700, letterSpacing: "0.2px",
+                    fontSize: 12, fontWeight: 700, letterSpacing: "0.2px",
                     color: stage.status === "active" ? "#22c55e"
                       : stage.status === "blocked" ? "#ef4444"
                       : stage.status === "predicted" ? curCol
@@ -405,7 +405,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                     whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%",
                     transition: "color 0.3s ease",
                   }}>{stage.label}</span>
-                  <span style={{ fontSize: 7, color: "var(--text-tertiary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{stage.desc}</span>
+                  <span style={{ fontSize: 11, color: "var(--text-tertiary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{stage.desc}</span>
                 </div>
                 {i < 4 && (
                   <div style={{ flex: "0 0 16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -421,10 +421,10 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             display: "flex", alignItems: "center", justifyContent: "space-between",
             animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 8, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px" }}>
+            <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px" }}>
               <span style={{ color: "#22c55e" }}>●</span> Current: Open · <span style={{ color: "#ef4444" }}>●</span> Blocked ({["No Pipeline", "Empty Diff", "No Reviewer"].filter(Boolean).length}) · <span style={{ color: curCol }}>●</span> Orbit Prediction: {sel.outcome}
             </span>
-            <span style={{ fontSize: 11, fontWeight: 700, color: curCol, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 8px ${riskScoreToGlow(animRisk)}` }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: curCol, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 8px ${riskScoreToGlow(animRisk)}` }}>
               {(animRisk * 100).toFixed(0)}% risk
             </span>
           </div>
@@ -474,14 +474,14 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               {/* Header */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ fontSize: 14 }}>{signal.icon}</span>
+                  <span style={{ fontSize: 19 }}>{signal.icon}</span>
                   <span style={{
-                    fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: signal.color,
+                    fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: signal.color,
                     padding: "1px 6px", borderRadius: 3, background: `${signal.color}14`, border: `1px solid ${signal.color}22`,
                   }}>{signal.type}</span>
                 </div>
                 <span style={{
-                  fontSize: 7, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase",
+                  fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase",
                   padding: "2px 7px", borderRadius: 3,
                   background: signal.severity === "critical" ? "rgba(239,68,68,0.15)"
                     : signal.severity === "high" ? "rgba(249,115,22,0.12)"
@@ -502,14 +502,14 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               {/* Title */}
               <div style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3 }}>{signal.title}</div>
               {/* Finding */}
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4, fontStyle: "italic", borderLeft: `2px solid ${signal.color}33`, paddingLeft: 8 }}>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4, fontStyle: "italic", borderLeft: `2px solid ${signal.color}33`, paddingLeft: 8 }}>
                 {signal.finding}
               </div>
               {/* Detail */}
-              <div style={{ fontSize: 9, color: "var(--text-tertiary)", marginBottom: 8, lineHeight: 1.4 }}>{signal.detail}</div>
+              <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginBottom: 8, lineHeight: 1.4 }}>{signal.detail}</div>
               {/* Confidence bar */}
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", width: 50, flexShrink: 0 }}>Orbit Confidence</span>
+                <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", width: 50, flexShrink: 0 }}>Orbit Confidence</span>
                 <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                   <div style={{
                     width: `${signal.pct}%`, height: "100%", borderRadius: 2,
@@ -518,14 +518,14 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                     transition: "width 1s ease",
                   }} />
                 </div>
-                <span style={{ fontSize: 10, fontWeight: 700, color: signal.color, fontFamily: "'JetBrains Mono', monospace", width: 28, textAlign: "right", flexShrink: 0 }}>{signal.pct}%</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: signal.color, fontFamily: "'JetBrains Mono', monospace", width: 28, textAlign: "right", flexShrink: 0 }}>{signal.pct}%</span>
               </div>
               {/* Divider + Action */}
               <div style={{ marginTop: 8, paddingTop: 6, borderTop: "1px solid var(--overlay-04)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <span style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Signal</span>
+                  <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Signal</span>
                   <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${signal.color}33, transparent)` }} />
-                  <span style={{ fontSize: 8, fontWeight: 600, color: signal.color }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: signal.color }}>
                     {signal.severity === "critical" ? "Blocking deployment" : signal.severity === "high" ? "Requires attention" : signal.severity === "medium" ? "Monitor trend" : "Graph health OK"}
                   </span>
                 </div>
@@ -544,15 +544,15 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         }}>
           <GlowOrb color="rgba(96,165,250,0.06)" top="-40%" left="-30%" size={isMobile ? 100 : 160} />
           <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 10 }}>Digital Twin State Transition</div>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 10 }}>Digital Twin State Transition</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0, alignItems: "center" }}>
               {/* Current State */}
               <div style={{ width: "100%", padding: "8px 12px", borderRadius: 8, background: "var(--overlay-02)", border: "1px solid var(--overlay-05)", marginBottom: 6 }}>
-                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>CURRENT STATE</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>MR Open</div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>CURRENT STATE</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>MR Open</div>
                 <div style={{ marginTop: 3, display: "flex", flexDirection: "column", gap: 2, paddingLeft: 10, borderLeft: "1px solid var(--overlay-06)" }}>
                   {["Empty Diff", "No Pipeline", "No Reviewer", "Draft Status"].map(f => (
-                    <div key={f} style={{ fontSize: 9, color: "var(--text-secondary)", display: "flex", gap: 4 }}>
+                    <div key={f} style={{ fontSize: 13, color: "var(--text-secondary)", display: "flex", gap: 4 }}>
                       <span style={{ color: "#ef4444" }}>✗</span> {f}
                     </div>
                   ))}
@@ -562,7 +562,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               {/* Arrow */}
               <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "2px 0" }}>
                 <div style={{ width: 60, height: 1.5, background: `linear-gradient(90deg, var(--overlay-10), ${curCol}44)` }} />
-                <span style={{ fontSize: 9, fontWeight: 600, color: curCol, fontFamily: "'JetBrains Mono', monospace" }}>ORBIT SIMULATION</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: curCol, fontFamily: "'JetBrains Mono', monospace" }}>ORBIT SIMULATION</span>
                 <div style={{ width: 60, height: 1.5, background: `linear-gradient(90deg, ${curCol}44, var(--overlay-10))` }} />
               </div>
 
@@ -572,9 +572,9 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 background: `${futureStateColor}08`, border: `1px solid ${futureStateColor}22`,
                 transition: "all 0.4s ease",
               }}>
-                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: futureStateColor, marginBottom: 4 }}>FUTURE STATE</div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: futureStateColor, transition: "color 0.4s ease" }}>{futureStateIcon} {futureStateLabel}</div>
-                <div style={{ fontSize: 9, color: "var(--text-tertiary)", marginTop: 2 }}>{activeScenario === "current" ? "Based on current trajectory" : "Scenario simulation applied"}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: futureStateColor, marginBottom: 4 }}>FUTURE STATE</div>
+                <div style={{ fontSize: 19, fontWeight: 800, color: futureStateColor, transition: "color 0.4s ease" }}>{futureStateIcon} {futureStateLabel}</div>
+                <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 2 }}>{activeScenario === "current" ? "Based on current trajectory" : "Scenario simulation applied"}</div>
               </div>
             </div>
           </div>
@@ -587,8 +587,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         }}>
           <GlowOrb color={`${curCol}08`} top="-30%" right="-20%" size={isMobile ? 100 : 160} />
           <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 2 }}>What-If Scenarios</div>
-            <div style={{ fontSize: 9, color: "var(--text-tertiary)", marginBottom: 10, lineHeight: 1.4 }}>Click to simulate a different future.</div>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 2 }}>What-If Scenarios</div>
+            <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginBottom: 10, lineHeight: 1.4 }}>Click to simulate a different future.</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {scenarios.map((s, i) => (
                 <div key={s.key} style={{ animation: `fadeSlideUp 0.4s ${0.12 + i * 0.06}s cubic-bezier(0.16,1,0.3,1) both` }}>
@@ -611,8 +611,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <div>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Forecast Confidence</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", fontStyle: "italic" }}>All 4 Orbit query types independently support this prediction</div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Forecast Confidence</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontStyle: "italic" }}>All 4 Orbit query types independently support this prediction</div>
             </div>
             <CircularGauge pct={91} color="#22c55e" size={52} strokeWidth={4} value="91%" label="HIGH" />
           </div>
@@ -633,18 +633,18 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 <div style={{
                   position: "absolute", width: 32, height: 32,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 11, pointerEvents: "none",
+                  fontSize: 15, pointerEvents: "none",
                 }}>{q.icon}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
-                    <span style={{ fontSize: 8, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: q.color }}>{q.type}</span>
-                    <span style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{q.label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: q.color }}>{q.type}</span>
+                    <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{q.label}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                     <div style={{ flex: 1, height: 3, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
                       <div style={{ width: `${q.pct}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${q.color}, ${q.color}88)`, transition: "width 1s ease" }} />
                     </div>
-                    <span style={{ fontSize: 8, fontWeight: 700, color: q.color, fontFamily: "'JetBrains Mono', monospace", width: 24, textAlign: "right", flexShrink: 0 }}>{q.pct}%</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: q.color, fontFamily: "'JetBrains Mono', monospace", width: 24, textAlign: "right", flexShrink: 0 }}>{q.pct}%</span>
                   </div>
                 </div>
               </div>
@@ -657,10 +657,10 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             background: "rgba(0, 0, 0, 0.25)", border: "1px solid rgba(255, 255, 255, 0.05)",
             animation: "fadeSlideUp 0.3s 0.12s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 6, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 6, letterSpacing: "0.5px", textTransform: "uppercase" }}>
               Why {confidence.split(" ")[0]}? (Explainable Confidence)
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "4px 12px", fontSize: 11, color: "var(--text-primary)" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "4px 12px", fontSize: 15, color: "var(--text-primary)" }}>
               {isLow ? (
                 <>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>✓</span> Deployment path verified</div>
@@ -694,13 +694,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 12 }}>🎯</span>
+              <span style={{ fontSize: 16 }}>🎯</span>
               <div>
-                <span style={{ fontSize: 8, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px" }}>Orbit Conclusion: </span>
-                <span style={{ fontSize: 8, color: "#22c55e", fontWeight: 700 }}>All 4 query types independently support the same outcome</span>
+                <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px" }}>Orbit Conclusion: </span>
+                <span style={{ fontSize: 12, color: "#22c55e", fontWeight: 700 }}>All 4 query types independently support the same outcome</span>
               </div>
             </div>
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
+            <span style={{ fontSize: 15, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
               {(animRisk * 100).toFixed(0)}% risk
             </span>
           </div>
@@ -718,38 +718,38 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         <GlowOrb color="rgba(34,197,94,0.08)" top="-30%" right="-10%" size={isMobile ? 120 : 200} />
         <GlowOrb color="rgba(239,68,68,0.05)" top="50%" left="-10%" size={isMobile ? 100 : 150} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#22c55e", marginBottom: 12 }}>Engineering Futures</div>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#22c55e", marginBottom: 12 }}>Engineering Futures</div>
 
           {/* Before/After Comparison */}
           <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 10, alignItems: "center", marginBottom: 14 }}>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02))", border: "1px solid rgba(239,68,68,0.1)" }}>
-              <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 4 }}>If Nothing Changes</div>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 4 }}>If Nothing Changes</div>
               <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#ef4444", marginBottom: 2 }}>{scenarios[0].outcome}</div>
-              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>Risk {Math.round(riskScore * 100)}% · {scenarios[0].probability}% probability</div>
-              <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.1)", fontSize: 9, color: "var(--text-tertiary)" }}>Based on {historicalCount} historical match{historicalCount !== 1 ? "es" : ""}</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 }}>Risk {Math.round(riskScore * 100)}% · {scenarios[0].probability}% probability</div>
+              <div style={{ padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.1)", fontSize: 13, color: "var(--text-tertiary)" }}>Based on {historicalCount} historical match{historicalCount !== 1 ? "es" : ""}</div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
               <div style={{
                 width: 32, height: 32, borderRadius: "50%",
                 background: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(59,130,246,0.1))",
                 border: "1px solid rgba(34,197,94,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
                 boxShadow: "0 0 16px rgba(34,197,94,0.15)",
               }}>→</div>
-              <span style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase" }}>vs</span>
+              <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.5px", textTransform: "uppercase" }}>vs</span>
             </div>
             <div style={{ padding: "12px 16px", borderRadius: 8, background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(34,197,94,0.02))", border: "1px solid rgba(34,197,94,0.1)" }}>
-              <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>If Recommendations Followed</div>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#22c55e", marginBottom: 4 }}>If Recommendations Followed</div>
               <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", marginBottom: 2 }}>{isLow ? "Successfully Merged" : cfAll.outcome}</div>
-              <div style={{ fontSize: 8, color: "var(--text-secondary)", marginBottom: 4 }}>{targetSuccessProb}% probability · Risk {Math.round(riskScore * 100)}% → {Math.round(minCfRisk * 100)}%</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 4 }}>{targetSuccessProb}% probability · Risk {Math.round(riskScore * 100)}% → {Math.round(minCfRisk * 100)}%</div>
               
               {/* Why This Changed (Causality reinforcement) */}
               <div style={{
                 marginTop: 6, padding: "6px 10px", borderRadius: 6,
                 background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)"
               }}>
-                <div style={{ fontSize: 7, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Why This Changed</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 9, color: "#22c55e", fontWeight: 500 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Why This Changed</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 13, color: "#22c55e", fontWeight: 500 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Pipeline Triggered</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Reviewer Assigned</div>
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>✓ Meaningful Code Change</div>
@@ -766,24 +766,24 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             border: "1px solid rgba(96,165,250,0.12)",
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Delta</span>
-              <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34, 197, 94, 0.1)", padding: "1px 6px", borderRadius: 4 }}>Forecast Shift: Closed ➔ Merged</span>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Delta</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", background: "rgba(34, 197, 94, 0.1)", padding: "1px 6px", borderRadius: 4 }}>Forecast Shift: Closed ➔ Merged</span>
             </div>
             <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.1)", textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Success Prob.</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#ef4444" }}>{currentSuccessProb}%</div>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{currentSuccessProb < 50 ? "Failure Expected" : "Marginal State"}</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Success Prob.</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#ef4444" }}>{currentSuccessProb}%</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{currentSuccessProb < 50 ? "Failure Expected" : "Marginal State"}</div>
               </div>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)", textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Target Success Prob.</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#22c55e" }}>{targetSuccessProb}%</div>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>With Mitigations</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Target Success Prob.</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#22c55e" }}>{targetSuccessProb}%</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>With Mitigations</div>
               </div>
               <div style={{ padding: "6px 10px", borderRadius: 6, background: "linear-gradient(135deg, rgba(96,165,250,0.08), rgba(139,92,246,0.04))", border: "1px solid rgba(96,165,250,0.15)", textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Leap</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--accent-blue)" }}>+{outcomeLeap}% pp</div>
-                <div style={{ fontSize: 7, color: "var(--text-secondary)", marginTop: 1 }}>{riskReduction}% Risk Reduction</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Leap</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "var(--accent-blue)" }}>+{outcomeLeap}% pp</div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1 }}>{riskReduction}% Risk Reduction</div>
               </div>
             </div>
           </div>
@@ -794,7 +794,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             background: "linear-gradient(135deg, rgba(239,68,68,0.04), rgba(0,0,0,0.15))",
             border: "1px solid rgba(239,68,68,0.1)",
           }}>
-            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 6 }}>Impact of Doing Nothing</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 6 }}>Impact of Doing Nothing</div>
             <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", gap: 8 }}>
               {[
                 { label: "Dev Time Lost", value: "6-8 days", color: "#ef4444" },
@@ -804,8 +804,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 { label: "Production Impact", value: "Never ships", color: "#ef4444" },
               ].map(d => (
                 <div key={d.label} style={{ padding: "5px 8px", borderRadius: 5, background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)", textAlign: "center" }}>
-                  <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>{d.label}</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: d.color, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>{d.label}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: d.color, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</div>
                 </div>
               ))}
             </div>
@@ -816,7 +816,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
       {/* FOOTNOTE */}
       <div style={{
-        fontSize: 8, color: "var(--text-tertiary)", textAlign: "center", padding: "6px 0",
+        fontSize: 12, color: "var(--text-tertiary)", textAlign: "center", padding: "6px 0",
         animation: `fadeSlideUp 0.5s 0.3s cubic-bezier(0.16,1,0.3,1) both`,
         letterSpacing: "0.2px",
       }}>

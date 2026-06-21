@@ -44,19 +44,19 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
     }}>
       {label && (
         <div style={{
-          padding: "4px 10px", fontSize: 8, fontWeight: 700, letterSpacing: "0.5px",
+          padding: "4px 10px", fontSize: 12, fontWeight: 700, letterSpacing: "0.5px",
           textTransform: "uppercase", color: "var(--text-tertiary)",
           borderBottom: "1px solid var(--overlay-04)", background: "rgba(0,0,0,0.2)",
         }}>{label}</div>
       )}
       <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
         <code style={{
-          flex: 1, fontSize: 11, fontFamily: "'JetBrains Mono', monospace",
+          flex: 1, fontSize: 15, fontFamily: "'JetBrains Mono', monospace",
           color: TEAL, lineHeight: 1.5, overflowX: "auto", whiteSpace: "nowrap",
         }}>{code}</code>
         <button onClick={handleCopy}
           style={{
-            padding: "4px 10px", fontSize: 9, fontWeight: 600, cursor: "pointer",
+            padding: "4px 10px", fontSize: 13, fontWeight: 600, cursor: "pointer",
             border: `1px solid ${copied ? "rgba(34,197,94,0.3)" : "var(--overlay-10)"}`,
             borderRadius: 5, background: copied ? "rgba(34,197,94,0.1)" : "var(--overlay-04)",
             color: copied ? "#22c55e" : "var(--text-secondary)", whiteSpace: "nowrap",
@@ -161,13 +161,13 @@ function MissionStep() {
             width: 44, height: 44, borderRadius: 12, flexShrink: 0,
             background: "linear-gradient(135deg, rgba(139,92,246,0.2), rgba(45,212,191,0.1))",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 22, border: "1px solid rgba(139,92,246,0.15)",
+            fontSize: 28, border: "1px solid rgba(139,92,246,0.15)",
           }}>🎯</div>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 900, color: "var(--text-primary)" }}>
+            <div style={{ fontSize: 22, fontWeight: 900, color: "var(--text-primary)" }}>
               Orbit Sentinel — Engineering Digital Twin
             </div>
-            <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 2, lineHeight: 1.4, maxWidth: 500 }}>
+            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 2, lineHeight: 1.4, maxWidth: 500 }}>
             Orbit Sentinel builds a living model of the affected system from GitLab Orbit graph data — discovering blast radius, historical incidents, ownership chains, and deployment dependencies. Runs in under 60 seconds on a live MR.
           </div>
           </div>
@@ -178,7 +178,7 @@ function MissionStep() {
           display: "flex", alignItems: "center", gap: 4,
           padding: "2px 8px", borderRadius: 4,
           background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.1)",
-          fontSize: 8, fontWeight: 700, color: "#22c55e",
+          fontSize: 12, fontWeight: 700, color: "#22c55e",
         }}>
           <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)" }} />
           Live Orbit API · 23 nodes · 43 edges
@@ -202,11 +202,11 @@ function MissionStep() {
             <div style={{
               width: 28, height: 28, borderRadius: 8,
               background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.12)",
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
             }}>⚠️</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#ef4444" }}>The Problem</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 1 }}>Every MR hides unknown risks — here's what goes wrong</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#ef4444" }}>The Problem</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 1 }}>Every MR hides unknown risks — here's what goes wrong</div>
             </div>
           </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -221,8 +221,8 @@ function MissionStep() {
                 onMouseEnter={e => { e.currentTarget.style.background = `${p.accent}0C`; e.currentTarget.style.borderColor = `${p.accent}18`; }}
                 onMouseLeave={e => { e.currentTarget.style.background = `${p.accent}06`; e.currentTarget.style.borderColor = `${p.accent}10`; }}
               >
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{p.icon}</span>
-                <span style={{ fontSize: 10, color: "var(--text-primary)", lineHeight: 1.4 }}>{p.text}</span>
+                <span style={{ fontSize: 24, flexShrink: 0 }}>{p.icon}</span>
+                <span style={{ fontSize: 14, color: "var(--text-primary)", lineHeight: 1.4 }}>{p.text}</span>
               </div>
             ))}
           </div>
@@ -246,11 +246,11 @@ function MissionStep() {
             <div style={{
               width: 28, height: 28, borderRadius: 8,
               background: `${TEAL}14`, border: `1px solid ${TEAL}18`,
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
             }}>🛰️</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: TEAL }}>The Solution: Orbit Sentinel</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 1 }}>A digital twin powered by all 4 GitLab Orbit query types</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>The Solution: Orbit Sentinel</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 1 }}>A digital twin powered by all 4 GitLab Orbit query types</div>
             </div>
           </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -265,15 +265,15 @@ function MissionStep() {
                 onMouseLeave={e => { e.currentTarget.style.background = `${q.color}06`; e.currentTarget.style.borderColor = `${q.color}14`; e.currentTarget.style.boxShadow = "none"; }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                  <span style={{ fontSize: 14 }}>{q.icon}</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: q.color }}>{q.label}</span>
+                  <span style={{ fontSize: 19 }}>{q.icon}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: q.color }}>{q.label}</span>
                   <span style={{
-                    marginLeft: "auto", fontSize: 8, fontWeight: 700,
+                    marginLeft: "auto", fontSize: 12, fontWeight: 700,
                     padding: "1px 6px", borderRadius: 4,
                     background: `${q.color}12`, color: q.color, fontFamily: "'JetBrains Mono', monospace",
                   }}>{q.nodes}</span>
                 </div>
-                <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4, marginLeft: 20 }}>{q.desc}</div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4, marginLeft: 20 }}>{q.desc}</div>
               </div>
             ))}
           </div>
@@ -297,11 +297,11 @@ function MissionStep() {
             <div style={{
               width: 28, height: 28, borderRadius: 8,
               background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.1)",
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
             }}>📈</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e" }}>The Impact</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 1 }}>What changes for developers — quantified with real Orbit data</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#22c55e" }}>The Impact</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 1 }}>What changes for developers — quantified with real Orbit data</div>
             </div>
           </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
@@ -316,17 +316,17 @@ function MissionStep() {
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(34,197,94,0.03)"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.08)"; }}
               >
                 <div style={{
-                  fontSize: 22, fontWeight: 900,
+                  fontSize: 28, fontWeight: 900,
                   color: "#22c55e", fontFamily: "'JetBrains Mono', monospace",
                   textShadow: "0 0 16px rgba(34,197,94,0.25)",
                   letterSpacing: "-0.5px",
                 }}>
                   <AnimatedCounter value={m.value} suffix={m.suffix} delay={0.3 + i * 0.08} />
                 </div>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text-primary)", marginTop: 4, lineHeight: 1.3 }}>{m.label}</div>
-                <div style={{ fontSize: 8, color: "var(--text-secondary)", marginTop: 2, lineHeight: 1.3 }}>{m.detail}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", marginTop: 4, lineHeight: 1.3 }}>{m.label}</div>
+                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2, lineHeight: 1.3 }}>{m.detail}</div>
                 <div style={{
-                  fontSize: 7, color: "var(--text-tertiary)", marginTop: 3,
+                  fontSize: 11, color: "var(--text-tertiary)", marginTop: 3,
                   paddingTop: 3, borderTop: "1px solid var(--overlay-04)",
                   fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.3px",
                 }}>{m.sub}</div>
@@ -369,9 +369,9 @@ function ArchitectureStep() {
         <div style={{
           flex: 1, padding: "16px 20px", borderRadius: 12,
           background: "rgba(0,0,0,0.3)", border: "1px solid var(--overlay-06)",
-          fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.6,
+          fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6,
         }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", marginBottom: 6 }}>🏗️ End-to-End Data Flow</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", marginBottom: 6 }}>🏗️ End-to-End Data Flow</div>
           <div style={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
             <span style={{ color: "#fc6d26", fontWeight: 700 }}>MR Opened</span>
             <span style={{ color: "var(--text-tertiary)" }}> → </span>
@@ -394,8 +394,8 @@ function ArchitectureStep() {
             ...s(0.06 + i * 0.04),
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-              <span style={{ fontSize: 14 }}>{layer.icon}</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: layer.color }}>{layer.title}</span>
+              <span style={{ fontSize: 19 }}>{layer.icon}</span>
+              <span style={{ fontSize: 16, fontWeight: 700, color: layer.color }}>{layer.title}</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {layer.items.map((item, j) => (
@@ -403,7 +403,7 @@ function ArchitectureStep() {
                   display: "flex", alignItems: "center", gap: 6,
                   padding: "5px 8px", borderRadius: 5,
                   background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)",
-                  fontSize: 9, color: "var(--text-primary)", lineHeight: 1.3,
+                  fontSize: 13, color: "var(--text-primary)", lineHeight: 1.3,
                 }}>
                   <span style={{ width: 4, height: 4, borderRadius: "50%", background: layer.color, flexShrink: 0 }} />
                   {item}
@@ -420,8 +420,8 @@ function ArchitectureStep() {
         ...s(0.2),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-          <span style={{ fontSize: 14 }}>🧩</span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--accent-blue)" }}>GitLab Duo Integration Points</span>
+          <span style={{ fontSize: 19 }}>🧩</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "var(--accent-blue)" }}>GitLab Duo Integration Points</span>
         </div>
         <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
           {[
@@ -434,9 +434,9 @@ function ArchitectureStep() {
               background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)",
               animation: `fadeSlideUp 0.3s ${0.24 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
             }}>
-              <div style={{ fontSize: 16, marginBottom: 2 }}>{p.icon}</div>
-              <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text-primary)" }}>{p.label}</div>
-              <div style={{ fontSize: 8, color: "var(--text-tertiary)", marginTop: 1 }}>{p.desc}</div>
+              <div style={{ fontSize: 22, marginBottom: 2 }}>{p.icon}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>{p.label}</div>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 1 }}>{p.desc}</div>
             </div>
           ))}
         </div>
@@ -487,8 +487,8 @@ function SetupStep() {
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
           <div className="card-header-icon" style={{ background: `${TEAL}18` }}>⚡</div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: TEAL }}>Quick Start</div>
-            <div style={{ fontSize: 9, color: "var(--text-secondary)" }}>Get running in under 5 minutes</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>Quick Start</div>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>Get running in under 5 minutes</div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -501,7 +501,7 @@ function SetupStep() {
         <div style={{
           marginTop: 8, padding: "8px 12px", borderRadius: 6,
           background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.12)",
-          fontSize: 9, color: "#f97316", lineHeight: 1.4,
+          fontSize: 13, color: "#f97316", lineHeight: 1.4,
         }}>
           💡 <strong>No GitLab Orbit access?</strong> The visualizer runs fully in demo mode with realistic data — no token required. You can explore every feature immediately.
         </div>
@@ -516,16 +516,16 @@ function SetupStep() {
             <div style={{
               width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
               background: `${TEAL}18`, border: `1px solid ${TEAL}33`,
-              fontSize: 10, fontWeight: 800, color: TEAL, marginBottom: 6,
+              fontSize: 14, fontWeight: 800, color: TEAL, marginBottom: 6,
             }}>{t.icon}</div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-primary)", marginBottom: 6 }}>{t.title}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", marginBottom: 6 }}>{t.title}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {t.steps.map((step, j) => (
                 <div key={j} style={{
                   display: "flex", alignItems: "flex-start", gap: 5,
-                  fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
+                  fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,
                 }}>
-                  <span style={{ color: TEAL, flexShrink: 0, fontSize: 8 }}>▸</span>
+                  <span style={{ color: TEAL, flexShrink: 0, fontSize: 12 }}>▸</span>
                   {step}
                 </div>
               ))}
@@ -540,8 +540,8 @@ function SetupStep() {
         ...s(0.16),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ fontSize: 14 }}>✅</span>
-          <span style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+          <span style={{ fontSize: 19 }}>✅</span>
+          <span style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.4 }}>
             <strong style={{ color: "#22c55e" }}>Already deployed:</strong>{" "}
             Live at <a href="https://orbit-sentinel.vercel.app" target="_blank" rel="noopener noreferrer"
               style={{ color: TEAL, textDecoration: "underline", textUnderlineOffset: 2 }}>orbit-sentinel.vercel.app</a>
@@ -584,10 +584,10 @@ function LaunchStep() {
       }}>
         <GlowDot color="rgba(45,212,191,0.08)" top="-40%" left="-10%" size={250} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 22, fontWeight: 900, color: TEAL, textShadow: `0 0 30px ${TEAL_GLOW}`, textAlign: "center", marginBottom: 4 }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: TEAL, textShadow: `0 0 30px ${TEAL_GLOW}`, textAlign: "center", marginBottom: 4 }}>
             🚀 Showcase Track Compliance
           </div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)", textAlign: "center", marginBottom: 16, lineHeight: 1.5 }}>
+          <div style={{ fontSize: 15, color: "var(--text-secondary)", textAlign: "center", marginBottom: 16, lineHeight: 1.5 }}>
             Orbit Sentinel is built and ready. Complete the checklist below to submit to the GitLab Transcend Hackathon.
           </div>
 
@@ -600,14 +600,14 @@ function LaunchStep() {
                 border: `1px solid ${item.done ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)"}`,
                 animation: `fadeSlideUp 0.3s ${0.06 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
               }}>
-                <span style={{ fontSize: 14 }}>{item.done ? "✅" : "⬜"}</span>
+                <span style={{ fontSize: 19 }}>{item.done ? "✅" : "⬜"}</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontSize: 10, fontWeight: 600,
+                    fontSize: 14, fontWeight: 600,
                     color: item.done ? "#22c55e" : "#ef4444",
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   }}>{item.label}</div>
-                  <div style={{ fontSize: 8, color: "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.detail}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.detail}</div>
                 </div>
               </div>
             ))}
@@ -630,8 +630,8 @@ function LaunchStep() {
             onMouseEnter={e => { e.currentTarget.style.background = `${link.color}14`; e.currentTarget.style.borderColor = `${link.color}33`; }}
             onMouseLeave={e => { e.currentTarget.style.background = `${link.color}08`; e.currentTarget.style.borderColor = `${link.color}18`; }}
           >
-            <span style={{ fontSize: 14 }}>{link.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: link.color }}>{link.label}</span>
+            <span style={{ fontSize: 19 }}>{link.icon}</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: link.color }}>{link.label}</span>
           </a>
         ))}
       </div>
@@ -642,8 +642,8 @@ function LaunchStep() {
         ...s(0.16),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 18 }}>🏆</span>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+          <span style={{ fontSize: 24 }}>🏆</span>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
             <strong style={{ color: "#22c55e" }}>Both tracks eligible:</strong>{" "}
             Showcase Track (agent/flow on Duo Platform) +{" "}
             <strong style={{ color: "#f97316" }}>Contribute Track</strong>{" "}
@@ -678,8 +678,8 @@ function WinsStep() {
             display: "flex", flexDirection: "column", gap: 10,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 16 }}>🛡️</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase" }}>Traditional CI/CD</span>
+              <span style={{ fontSize: 22 }}>🛡️</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase" }}>Traditional CI/CD</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 2 }}>
               {[
@@ -689,10 +689,10 @@ function WinsStep() {
                 { text: "No understanding", detail: "Completely blind to systemic consequences", highlight: true },
               ].map((item, idx) => (
                 <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
-                  <span style={{ color: "#ef4444", fontSize: 10 }}>✗</span>
+                  <span style={{ color: "#ef4444", fontSize: 14 }}>✗</span>
                   <div>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: "var(--text-secondary)" }}>{item.text}</div>
-                    <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{item.detail}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-secondary)" }}>{item.text}</div>
+                    <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{item.detail}</div>
                   </div>
                 </div>
               ))}
@@ -707,8 +707,8 @@ function WinsStep() {
             boxShadow: "0 0 20px rgba(34,197,94,0.04)",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 16 }}>🛰️</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase" }}>Orbit Sentinel</span>
+              <span style={{ fontSize: 22 }}>🛰️</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase" }}>Orbit Sentinel</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 2 }}>
               {[
@@ -720,10 +720,10 @@ function WinsStep() {
                 { text: "Posts recommendation", detail: "Automates closed-loop reviews inside GitLab MRs" },
               ].map((item, idx) => (
                 <div key={idx} style={{ display: "flex", alignItems: "flex-start", gap: 5 }}>
-                  <span style={{ color: "#22c55e", fontSize: 10 }}>✓</span>
+                  <span style={{ color: "#22c55e", fontSize: 14 }}>✓</span>
                   <div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e" }}>{item.text}</div>
-                    <div style={{ fontSize: 8, color: "var(--text-secondary)" }}>{item.detail}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>{item.text}</div>
+                    <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>{item.detail}</div>
                   </div>
                 </div>
               ))}
@@ -737,8 +737,8 @@ function WinsStep() {
           border: "1px solid rgba(139,92,246,0.2)",
           display: "flex", alignItems: "center", gap: 6, position: "relative", zIndex: 1,
         }}>
-          <span style={{ fontSize: 16 }}>🏆</span>
-          <div style={{ fontSize: 9.5, color: "#a78bfa", fontWeight: 600, lineHeight: 1.4 }}>
+          <span style={{ fontSize: 22 }}>🏆</span>
+          <div style={{ fontSize: 13.5, color: "#a78bfa", fontWeight: 600, lineHeight: 1.4 }}>
             Orbit Sentinel moves engineering logic from simple gatekeeping (CI) to <strong>closed-loop decision intelligence</strong>. It uses GitLab Orbit to predict the blast radius of changes before they break production.
           </div>
         </div>
@@ -774,16 +774,16 @@ export default function SetupWizard() {
         animation: "fadeSlideUp 0.4s ease both",
       }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 900, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 20 }}>{STEPS[step].icon}</span>
+          <div style={{ fontSize: 24, fontWeight: 900, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 26 }}>{STEPS[step].icon}</span>
             {STEPS[step].title}
           </div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 1 }}>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 1 }}>
             {STEPS[step].subtitle}
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-          <div style={{ fontSize: 9, fontWeight: 600, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>
             Step {step + 1} / {STEPS.length}
           </div>
           <StepIndicator current={step} total={STEPS.length} />
@@ -794,7 +794,7 @@ export default function SetupWizard() {
       <div style={{
         animation: "fadeSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) both",
       }}>
-        <ErrorBoundary fallback={<div style={{ padding: 20, color: "#ef4444", fontSize: 12 }}>Failed to render step content.</div>}>
+        <ErrorBoundary fallback={<div style={{ padding: 20, color: "#ef4444", fontSize: 16 }}>Failed to render step content.</div>}>
           {stepContent[step]}
         </ErrorBoundary>
       </div>
@@ -807,7 +807,7 @@ export default function SetupWizard() {
         <button onClick={() => setStep(Math.max(0, step - 1))}
           disabled={step === 0}
           style={{
-            padding: "8px 18px", fontSize: 11, fontWeight: 600, cursor: step === 0 ? "default" : "pointer",
+            padding: "8px 18px", fontSize: 15, fontWeight: 600, cursor: step === 0 ? "default" : "pointer",
             border: "1px solid var(--overlay-08)", borderRadius: 6,
             background: step === 0 ? "transparent" : "var(--overlay-04)",
             color: step === 0 ? "var(--text-tertiary)" : "var(--text-secondary)",
@@ -835,7 +835,7 @@ export default function SetupWizard() {
         <button onClick={() => setStep(Math.min(STEPS.length - 1, step + 1))}
           disabled={step === STEPS.length - 1}
           style={{
-            padding: "8px 18px", fontSize: 11, fontWeight: 600, cursor: step === STEPS.length - 1 ? "default" : "pointer",
+            padding: "8px 18px", fontSize: 15, fontWeight: 600, cursor: step === STEPS.length - 1 ? "default" : "pointer",
             border: `1px solid ${TEAL}33`, borderRadius: 6,
             background: `${TEAL}12`, color: TEAL,
             opacity: step === STEPS.length - 1 ? 0.3 : 1,

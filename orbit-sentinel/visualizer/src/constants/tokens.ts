@@ -73,18 +73,18 @@ export const ANIM = {
 
 /* Font size scale (React inline style accepts number = px) */
 export const FONT = {
-  xs: 7,
-  sm: 8,
-  base: 9,
-  md: 10,
-  lg: 11,
-  xl: 12,
-  "2xl": 13,
-  "3xl": 14,
-  "4xl": 16,
-  "5xl": 22,
-  "6xl": 24,
-  hero: 36,
+  xs: 11,
+  sm: 12,
+  base: 13,
+  md: 14,
+  lg: 15,
+  xl: 16,
+  "2xl": 18,
+  "3xl": 19,
+  "4xl": 22,
+  "5xl": 28,
+  "6xl": 30,
+  hero: 42,
 } as const;
 
 /* Spacing scale (4px grid) */

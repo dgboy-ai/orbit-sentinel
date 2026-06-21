@@ -18,14 +18,14 @@ function formatResultLine(text: string, color: string) {
     const isWarn = /No linked pipeline|cannot deploy|no deployment path/i.test(part);
     if (isNum) {
       return (
-        <strong key={idx} style={{ color, textShadow: `0 0 8px ${color}60`, fontSize: 13, fontWeight: 800 }}>
+        <strong key={idx} style={{ color, textShadow: `0 0 8px ${color}60`, fontSize: 18, fontWeight: 800 }}>
           {part}
         </strong>
       );
     }
     if (isWarn) {
       return (
-        <strong key={idx} style={{ color: "#ef4444", textShadow: "0 0 8px rgba(239,68,68,0.5)", fontSize: 12, fontWeight: 700 }}>
+        <strong key={idx} style={{ color: "#ef4444", textShadow: "0 0 8px rgba(239,68,68,0.5)", fontSize: 16, fontWeight: 700 }}>
           {part}
         </strong>
       );
@@ -61,19 +61,19 @@ export default function OrbitEvidencePanel({ evidence, graph }: { evidence: Orbi
         <div className="card-header-icon" style={{
           background: isAlert ? "rgba(239,68,68,0.15)" : "rgba(96,165,250,0.12)",
           border: `1px solid ${isAlert ? "rgba(239,68,68,0.25)" : "rgba(96,165,250,0.2)"}`,
-          fontSize: 15,
+          fontSize: 20,
         }}>🛰️</div>
         <div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.2px" }}>Orbit Evidence</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>{evidence.length} queries · no black box</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.2px" }}>Orbit Evidence</div>
+          <div style={{ fontSize: 15, color: "var(--text-secondary)" }}>{evidence.length} queries · no black box</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         {evidence.length === 0 && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 8, padding: 20, textAlign: "center" }}>
-            <span style={{ fontSize: 24, animation: "float 6s ease-in-out infinite" }}>🛰️</span>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)" }}>No evidence available</div>
-            <div style={{ fontSize: 10, color: "var(--text-tertiary)", lineHeight: 1.4, maxWidth: 220 }}>Orbit query results have not been loaded yet. Select a component or trigger a demo to see evidence.</div>
+            <span style={{ fontSize: 30, animation: "float 6s ease-in-out infinite" }}>🛰️</span>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-secondary)" }}>No evidence available</div>
+            <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.4, maxWidth: 220 }}>Orbit query results have not been loaded yet. Select a component or trigger a demo to see evidence.</div>
           </div>
         )}
         {evidence.map((q, i) => {
@@ -89,14 +89,14 @@ export default function OrbitEvidencePanel({ evidence, graph }: { evidence: Orbi
               animation: `fadeSlideUp 0.4s ${0.15 + i * 0.08}s ease both`,
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-                <span style={{ fontSize: 14 }}>{m.icon}</span>
-                <span style={{ fontSize: 11, fontWeight: 800, color: m.color, padding: "2px 8px", borderRadius: 4, background: m.bg, letterSpacing: "0.5px", textTransform: "uppercase" }}>{m.label}</span>
+                <span style={{ fontSize: 19 }}>{m.icon}</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: m.color, padding: "2px 8px", borderRadius: 4, background: m.bg, letterSpacing: "0.5px", textTransform: "uppercase" }}>{m.label}</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {lines.map((line, idx) => (
                   <div key={idx} style={{
                     display: "flex", alignItems: "flex-start", gap: 6,
-                    fontSize: 11.5, color: "var(--text-secondary)",
+                    fontSize: 15.5, color: "var(--text-secondary)",
                     fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.5,
                   }}>
                     <span style={{ color: m.color, fontWeight: 700, userSelect: "none", marginTop: 2 }}>→</span>
@@ -125,8 +125,8 @@ export default function OrbitEvidencePanel({ evidence, graph }: { evidence: Orbi
             boxShadow: `0 0 10px ${conclusionColor}`,
             animation: "pulseGlow 2s infinite",
           }} />
-          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: conclusionColor, marginBottom: 4 }}>Conclusion</div>
-          <div style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 700, lineHeight: 1.4, letterSpacing: "-0.1px" }}>
+          <div style={{ fontSize: 14, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: conclusionColor, marginBottom: 4 }}>Conclusion</div>
+          <div style={{ fontSize: 18, color: "var(--text-primary)", fontWeight: 700, lineHeight: 1.4, letterSpacing: "-0.1px" }}>
             {conclusion}
           </div>
         </div>

@@ -14,8 +14,8 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
         <div className="card-header-icon" style={{ background: "rgba(249,115,22,0.12)" }}>🎯</div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Decision Center</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Engineering recommendation</div>
+          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Decision Center</div>
+          <div style={{ fontSize: 15, color: "var(--text-secondary)" }}>Engineering recommendation</div>
         </div>
       </div>
       <div style={{
@@ -24,24 +24,24 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
         animation: verdict.color === "#ef4444" ? "pulseGlow 4s ease-in-out infinite" : undefined,
         boxShadow: verdict.color === "#ef4444" ? "0 0 24px rgba(239,68,68,0.15)" : "none",
       }}>
-        <span style={{ fontSize: 18 }}>{verdict.icon}</span>
+        <span style={{ fontSize: 24 }}>{verdict.icon}</span>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: verdict.color }}>Recommendation</div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: verdict.color }}>{verdict.label}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: verdict.color }}>Recommendation</div>
+          <div style={{ fontSize: 19, fontWeight: 800, color: verdict.color }}>{verdict.label}</div>
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
         <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)" }}>
-          <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 3, textTransform: "uppercase" }}>Reason</div>
-          <div style={{ fontSize: 12, color: "var(--text-primary)", lineHeight: 1.4 }}>{deploymentStrategy}</div>
+          <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 3, textTransform: "uppercase" }}>Reason</div>
+          <div style={{ fontSize: 16, color: "var(--text-primary)", lineHeight: 1.4 }}>{deploymentStrategy}</div>
         </div>
 
         <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)" }}>
-          <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 4, textTransform: "uppercase" }}>Actions Required</div>
+          <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 4, textTransform: "uppercase" }}>Actions Required</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {requiredTests.map((t, i) => (
-              <div key={t} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "var(--text-primary)" }}>
-                <span style={{ fontSize: 9, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{i + 1}.</span>
+              <div key={t} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 15, color: "var(--text-primary)" }}>
+                <span style={{ fontSize: 13, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{i + 1}.</span>
                 {t}
               </div>
             ))}
@@ -49,10 +49,10 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
         </div>
 
         <div style={{ padding: "8px 12px", borderRadius: 8, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)", marginTop: "auto" }}>
-          <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 4, textTransform: "uppercase" }}>Expected Risk After Mitigation</div>
+          <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 4, textTransform: "uppercase" }}>Expected Risk After Mitigation</div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: aftCol, fontFamily: "'JetBrains Mono', monospace" }}>{(riskReduction.afterRecommendation * 100).toFixed(0)}%</div>
-            <div style={{ padding: "2px 8px", borderRadius: 5, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)", fontSize: 12, fontWeight: 700, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: aftCol, fontFamily: "'JetBrains Mono', monospace" }}>{(riskReduction.afterRecommendation * 100).toFixed(0)}%</div>
+            <div style={{ padding: "2px 8px", borderRadius: 5, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)", fontSize: 16, fontWeight: 700, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>
               -{((riskReduction.current - riskReduction.afterRecommendation) * 100).toFixed(0)}% from current
             </div>
           </div>

@@ -33,7 +33,7 @@ function AnimatedCounter({ target, suffix = "", duration = 1200, color }: { targ
     }
     requestAnimationFrame(tick);
   }, [target, duration]);
-  return <span style={{ fontSize: 18, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${color}40` }}>{val}{suffix}</span>;
+  return <span style={{ fontSize: 24, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${color}40` }}>{val}{suffix}</span>;
 }
 
 function AnimatedStatCard({ label, value, sub, color, target, suffix = "" }: { label: string; value: string; sub?: string; color: string; target?: number; suffix?: string }) {
@@ -47,9 +47,9 @@ function AnimatedStatCard({ label, value, sub, color, target, suffix = "" }: { l
     }}>
       {target !== undefined
         ? <AnimatedCounter target={target} suffix={suffix} color={color} />
-        : <div style={{ fontSize: 18, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 8px ${color}30` }}>{value}</div>}
-      <div style={{ fontSize: 8, color: "var(--text-secondary)", fontWeight: 500, marginTop: 1 }}>{label}</div>
-      {sub && <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 0 }}>{sub}</div>}
+        : <div style={{ fontSize: 24, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 8px ${color}30` }}>{value}</div>}
+      <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500, marginTop: 1 }}>{label}</div>
+      {sub && <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 0 }}>{sub}</div>}
     </div>
   );
 }
@@ -58,7 +58,7 @@ function OutcomeBadge({ outcome }: { outcome: string }) {
   const isClosed = outcome === "Closed";
   return (
     <span style={{
-      fontSize: 8, padding: "2px 8px", borderRadius: 3, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3,
+      fontSize: 12, padding: "2px 8px", borderRadius: 3, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3,
       background: isClosed ? "rgba(239,68,68,0.12)" : "rgba(34,197,94,0.1)",
       color: isClosed ? "#ef4444" : "#22c55e",
       border: `1px solid ${isClosed ? "rgba(239,68,68,0.22)" : "rgba(34,197,94,0.2)"}`,
@@ -81,7 +81,7 @@ function TimelineDot({ status, delay, label }: { status: string; delay: number; 
     }}>
       <div style={{
         width: 22, height: 22, borderRadius: "50%",
-        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9,
+        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
         background: status === "current" ? "rgba(59,130,246,0.18)" : status === "Merged" ? "rgba(34,197,94,0.18)" : "rgba(239,68,68,0.15)",
         border: status === "current" ? `2px solid ${col}` : `1px solid ${col}55`,
         boxShadow: pulse ? `0 0 20px ${col}44` : `0 0 8px ${col}22`,
@@ -95,10 +95,10 @@ function TimelineDot({ status, delay, label }: { status: string; delay: number; 
           animation: "ripple 1.5s ease-out infinite",
         }} />}
       </div>
-      <span style={{ fontSize: 7, fontWeight: 700, color: status === "current" ? col : "var(--text-secondary)", letterSpacing: "0.3px" }}>
+      <span style={{ fontSize: 11, fontWeight: 700, color: status === "current" ? col : "var(--text-secondary)", letterSpacing: "0.3px" }}>
         {status === "current" ? label : status === "Merged" ? `✓ ${label}` : `✗ ${label}`}
       </span>
-      <span style={{ fontSize: 6, color: col, fontWeight: 600 }}>
+      <span style={{ fontSize: 10, color: col, fontWeight: 600 }}>
         {status === "current" ? "CURRENT" : status.toUpperCase()}
       </span>
     </div>
@@ -172,10 +172,10 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         <GlowOrb color="rgba(139,92,246,0.08)" top="-40%" left="-10%" size={isMobile ? 160 : 240} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Repository Memory Intelligence</span>
-            <span style={{ fontSize: 7, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>● Live</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Repository Memory Intelligence</span>
+            <span style={{ fontSize: 11, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>● Live</span>
           </div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 12, maxWidth: "90%" }}>
+          <div style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 12, maxWidth: "90%" }}>
             Orbit analysed{" "}
             <strong style={{ color: "var(--text-primary)" }}>{totalCount} historical repository precedents</strong>.
             {closedCount > 0 && <span style={{ color: "#ef4444", fontWeight: 600 }}> {closedCount} closed without merge</span>}
@@ -204,7 +204,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         <GlowOrb color="rgba(234,179,8,0.05)" top="-30%" left="20%" size={140} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#eab308" }}>Pattern Discovery Timeline</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#eab308" }}>Pattern Discovery Timeline</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(234,179,8,0.2), transparent)" }} />
           </div>
           {/* SVG connecting line background */}
@@ -235,8 +235,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             textAlign: "center",
             animation: "fadeSlideUp 0.3s 0.35s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 8, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px" }}>Orbit Pattern Detected</span>
-            <span style={{ fontSize: 8, color: "var(--text-secondary)", marginLeft: 4 }}>— {closeRate}% abandonment trajectory from same branch</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px" }}>Orbit Pattern Detected</span>
+            <span style={{ fontSize: 12, color: "var(--text-secondary)", marginLeft: 4 }}>— {closeRate}% abandonment trajectory from same branch</span>
           </div>
         </div>
       </div>
@@ -244,9 +244,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       {/* CASE FILES */}
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 2px" }}>
-          <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Historical Case Files</span>
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Historical Case Files</span>
           <div style={{ flex: 1, height: 1, background: "var(--overlay-06)" }} />
-          <span style={{ fontSize: 7, color: "var(--text-tertiary)" }}>{incidents.length} files</span>
+          <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{incidents.length} files</span>
         </div>
         {sorted.map((item, i) => {
           const isClosed = item.outcome === "Closed";
@@ -273,20 +273,20 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6, gap: 4, flexWrap: isMobile ? "wrap" : "nowrap" }}>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: caseColor, letterSpacing: "0.3px" }}>Case File #{item.mrIid}</span>
+                      <span style={{ fontSize: 15, fontWeight: 800, color: caseColor, letterSpacing: "0.3px" }}>Case File #{item.mrIid}</span>
                       <span style={{
-                        fontSize: 7, padding: "1px 6px", borderRadius: 3, fontWeight: 600,
+                        fontSize: 11, padding: "1px 6px", borderRadius: 3, fontWeight: 600,
                         background: `${caseColor}12`, color: caseColor, border: `1px solid ${caseColor}22`,
                       }}>{item.similarity}% match</span>
                     </div>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: "var(--text-primary)" }}>{item.title}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{item.title}</div>
                   </div>
                   <OutcomeBadge outcome={item.outcome} />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "1px 8px", fontSize: 9, lineHeight: 1.5, marginBottom: 6 }}>
-                  <span style={{ color: "var(--text-tertiary)", fontSize: 7, letterSpacing: "0.3px" }}>Root Cause</span>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "1px 8px", fontSize: 13, lineHeight: 1.5, marginBottom: 6 }}>
+                  <span style={{ color: "var(--text-tertiary)", fontSize: 11, letterSpacing: "0.3px" }}>Root Cause</span>
                   <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{item.rootCause}</span>
-                  <span style={{ color: "var(--text-tertiary)", fontSize: 7, letterSpacing: "0.3px" }}>Orbit Insight</span>
+                  <span style={{ color: "var(--text-tertiary)", fontSize: 11, letterSpacing: "0.3px" }}>Orbit Insight</span>
                   <span style={{ color: "var(--accent-blue)", fontWeight: 500 }}>{formatOrdinal(i + 1)} occurrence of same branch pattern</span>
                 </div>
                 <div style={{
@@ -294,9 +294,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                   background: "rgba(0,0,0,0.15)", borderLeft: `2px solid ${caseColor}33`,
                   border: "1px solid var(--overlay-04)",
                 }}>
-                  <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Recommended Action</div>
-                  <div style={{ fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.3 }}>{item.recommendedAction}</div>
-                  <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>{item.date}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Recommended Action</div>
+                  <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.3 }}>{item.recommendedAction}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>{item.date}</div>
                 </div>
               </div>
             </div>
@@ -316,11 +316,11 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
             <div>
-              <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#22c55e", marginBottom: 1 }}>Successful Precedent</div>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#22c55e", marginBottom: 1 }}>Successful Precedent</div>
               <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.2)" }}>✓ MR #1 — Successfully Merged</div>
             </div>
             <div style={{
-              padding: "3px 8px", borderRadius: 4, fontSize: 7, color: "var(--text-secondary)",
+              padding: "3px 8px", borderRadius: 4, fontSize: 11, color: "var(--text-secondary)",
               background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)",
               whiteSpace: "nowrap", fontWeight: 600, letterSpacing: "0.3px",
             }}>
@@ -337,19 +337,19 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 display: "flex", alignItems: "center", gap: 3,
                 padding: "2px 8px", borderRadius: 3,
                 background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)",
-                fontSize: 9, color: "#22c55e", fontWeight: 500,
+                fontSize: 13, color: "#22c55e", fontWeight: 500,
               }}>
-                <span style={{ fontSize: 10 }}>{f.icon}</span> {f.label}
+                <span style={{ fontSize: 14 }}>{f.icon}</span> {f.label}
               </div>
             ))}
           </div>
           <div style={{
             padding: "5px 8px", borderRadius: 4,
             background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)",
-            fontSize: 9, color: "var(--text-secondary)",
+            fontSize: 13, color: "var(--text-secondary)",
             display: "flex", alignItems: "center", gap: 6,
           }}>
-            <span style={{ fontSize: 12 }}>✅</span>
+            <span style={{ fontSize: 16 }}>✅</span>
             <span><strong style={{ color: "#22c55e" }}>Result:</strong> Successfully shipped — proves the branch pattern is breakable with the right mitigations.</span>
           </div>
         </div>
@@ -365,21 +365,21 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       }}>
         <GlowOrb color="rgba(96,165,250,0.05)" top="-30%" right="-5%" size={160} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 6, textShadow: "0 0 8px rgba(96,165,250,0.2)" }}>What Orbit Learned</div>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 6, textShadow: "0 0 8px rgba(96,165,250,0.2)" }}>What Orbit Learned</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {lessons.map((p, i) => (
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: 5,
                 padding: "4px 8px", borderRadius: 4,
                 background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
-                fontSize: 9, color: "var(--text-secondary)", lineHeight: 1.4,
+                fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,
                 animation: `fadeSlideUp 0.3s ${0.27 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
                 transition: "border-color 0.2s ease, background 0.2s ease",
               }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}22`; e.currentTarget.style.background = `${p.color}06`; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; e.currentTarget.style.background = "var(--overlay-02)"; }}
               >
-                <span style={{ fontSize: 10, flexShrink: 0, width: 16, textAlign: "center" }}>{p.icon}</span>
+                <span style={{ fontSize: 14, flexShrink: 0, width: 16, textAlign: "center" }}>{p.icon}</span>
                 <span style={{ borderLeft: `1px solid ${p.color}22`, paddingLeft: 6 }}>{p.text}</span>
               </div>
             ))}
@@ -391,8 +391,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             display: "flex", alignItems: "center", justifyContent: "space-between",
             animation: "fadeSlideUp 0.3s 0.4s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 8, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px" }}>Forecast Contribution</span>
-            <span style={{ fontSize: 14, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>
+            <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px" }}>Forecast Contribution</span>
+            <span style={{ fontSize: 19, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>
               +{closeRate}% confidence
             </span>
           </div>
@@ -413,14 +413,14 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
           onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
         >
-          <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>Traditional Git History</div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Shows what happened</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>Traditional Git History</div>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 500 }}>Shows what happened</div>
         </div>
         <div style={{
           width: 24, height: 24, borderRadius: "50%",
           background: "linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.12))",
           border: "1px solid rgba(96,165,250,0.25)",
-          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11,
+          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15,
           flexShrink: 0,
           boxShadow: "0 0 10px rgba(96,165,250,0.15)",
           animation: "pulseGlow 4s ease-in-out infinite",
@@ -435,8 +435,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
           onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
         >
-          <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Repository Memory</div>
-          <div style={{ fontSize: 10, color: "var(--accent-blue)", fontWeight: 500 }}>Explains why and predicts what happens next</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Repository Memory</div>
+          <div style={{ fontSize: 14, color: "var(--accent-blue)", fontWeight: 500 }}>Explains why and predicts what happens next</div>
         </div>
       </div>
 
@@ -451,9 +451,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         <GlowOrb color="rgba(167,139,250,0.06)" top="-20%" right="-10%" size={140} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#a78bfa", textShadow: "0 0 6px rgba(167,139,250,0.2)" }}>Counterfactual Learning</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#a78bfa", textShadow: "0 0 6px rgba(167,139,250,0.2)" }}>Counterfactual Learning</div>
             <div style={{
-              fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px",
+              fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px",
               padding: "2px 7px", borderRadius: 3,
               background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.15)",
             }}>
@@ -470,9 +470,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
             >
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Actual</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "#ef4444", textShadow: "0 0 6px rgba(239,68,68,0.3)" }}>Closed</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)" }}>{highestSimilarity}% match</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Actual</div>
+              <div style={{ fontSize: 19, fontWeight: 800, color: "#ef4444", textShadow: "0 0 6px rgba(239,68,68,0.3)" }}>Closed</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{highestSimilarity}% match</div>
             </div>
             <div style={{
               flex: 1, padding: "8px 10px", borderRadius: 6, textAlign: "center",
@@ -484,9 +484,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
             >
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Estimate</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>67% Merged</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)" }}>if mitigations applied</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Estimate</div>
+              <div style={{ fontSize: 19, fontWeight: 800, color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>67% Merged</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>if mitigations applied</div>
             </div>
           </div>
         </div>
@@ -526,7 +526,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           
           {/* Evidence Confidence Breakdown — replaces the contradictory "Pattern Match Score 0% / HIGH" */}
           <div style={{ marginBottom: 14 }}>
-            <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 6, textAlign: "center" }}>Evidence Confidence Breakdown</div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 6, textAlign: "center" }}>Evidence Confidence Breakdown</div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 6 }}>
               {[
                 { label: "Historical Similarity", value: `${highestSimilarity}%`, numVal: highestSimilarity, color: highestSimilarity > 50 ? "#ef4444" : highestSimilarity > 0 ? "#eab308" : "#60a5fa", suffix: "%", note: highestSimilarity === 0 ? "No prior matches" : `${closedCount} case${closedCount !== 1 ? "s" : ""}` },
@@ -535,9 +535,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                 { label: "Aggregation", value: "75%", numVal: 75, color: "#f97316", suffix: "%", note: "Pipeline trend" },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: "center", padding: "6px 6px 4px", borderRadius: 6, background: "rgba(0,0,0,0.25)", border: `1px solid ${s.color}22`, position: "relative" }}>
-                  <div style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
                   <AnimatedCounter target={s.numVal} suffix={s.suffix} color={s.color} duration={1400} />
-                  <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 1 }}>{s.note}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{s.note}</div>
                   <div style={{ height: 2, borderRadius: 1, background: "var(--overlay-04)", margin: "4px 0 0", overflow: "hidden" }}>
                     <div style={{ width: `${s.numVal}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}88, ${s.color})`, transition: "width 1.2s ease" }} />
                   </div>
@@ -545,17 +545,17 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               ))}
             </div>
             <div style={{ marginTop: 6, padding: "4px 10px", borderRadius: 5, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 8, color: "var(--text-secondary)", fontWeight: 500 }}>
+              <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>
                 {highestSimilarity === 0 ? "Historical similarity: 0% — confidence driven by graph + path evidence" : `Historical patterns reinforce graph signals`}
               </span>
-              <span style={{ fontSize: 12, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>Overall: HIGH</span>
+              <span style={{ fontSize: 16, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>Overall: HIGH</span>
             </div>
           </div>
           
           {/* Signal Badges */}
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "flex-start", marginBottom: 14 }}>
             <div>
-              <div style={{ fontSize: 8, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 4 }}>Current MR exhibits the same signals:</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 4 }}>Current MR exhibits the same signals:</div>
               <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                 {[
                   { label: "No deployment path", color: "#ef4444" },
@@ -565,7 +565,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                   <div key={b.label} style={{
                     padding: "2px 8px", borderRadius: 4,
                     background: `rgba(239,68,68,0.1)`, border: `1px solid rgba(239,68,68,0.25)`,
-                    fontSize: 9, color: b.color, fontWeight: 600,
+                    fontSize: 13, color: b.color, fontWeight: 600,
                     animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
                   }}>{b.label}</div>
                 ))}
@@ -577,14 +577,14 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               textAlign: "center", whiteSpace: "nowrap",
               animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
             }}>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 500, letterSpacing: "0.3px" }}>Pattern Occurred</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 500, letterSpacing: "0.3px" }}>Pattern Occurred</div>
               <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>{closedCount}× before</div>
             </div>
           </div>
           
           {/* Pattern Flow — built dynamically from real incident data */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 9, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 8, textAlign: "center", letterSpacing: "0.3px" }}>Branch History Visualization</div>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 8, textAlign: "center", letterSpacing: "0.3px" }}>Branch History Visualization</div>
             {patternNodes.length > 1 ? (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, overflowX: isMobile ? "auto" : "visible", WebkitOverflowScrolling: "touch", paddingBottom: isMobile ? 4 : 0 }}>
                 {patternNodes.map((m, i) => (
@@ -597,30 +597,30 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                         background: m.isCurrent ? "rgba(59,130,246,0.15)" : m.status === "CLOSED" ? "rgba(239,68,68,0.15)" : "rgba(34,197,94,0.15)",
                         border: m.isCurrent ? "2px solid rgba(59,130,246,0.4)" : m.status === "CLOSED" ? "2px solid rgba(239,68,68,0.4)" : "2px solid rgba(34,197,94,0.4)",
                         boxShadow: m.isCurrent ? "0 0 12px rgba(59,130,246,0.25)" : m.status === "CLOSED" ? "0 0 10px rgba(239,68,68,0.2)" : "0 0 10px rgba(34,197,94,0.2)",
-                        fontSize: 11, color: m.color, fontWeight: 800,
+                        fontSize: 15, color: m.color, fontWeight: 800,
                         transition: "transform 0.2s ease, box-shadow 0.2s ease",
                       }}
                         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.15)"; e.currentTarget.style.boxShadow = `0 0 20px ${m.color}44`; }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
                       >●</div>
-                      <div style={{ fontSize: 7, color: m.color, fontWeight: 600, letterSpacing: "0.2px" }}>{m.status}</div>
+                      <div style={{ fontSize: 11, color: m.color, fontWeight: 600, letterSpacing: "0.2px" }}>{m.status}</div>
                     </div>
                     {i < patternNodes.length - 1 && (
-                      <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: -10, animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both" }}>→</div>
+                      <div style={{ fontSize: 16, color: "var(--text-tertiary)", marginTop: -10, animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both" }}>→</div>
                     )}
                   </React.Fragment>
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: "center", padding: "10px", fontSize: 9, color: "var(--text-tertiary)", fontStyle: "italic" }}>
+              <div style={{ textAlign: "center", padding: "10px", fontSize: 13, color: "var(--text-tertiary)", fontStyle: "italic" }}>
                 No historical MRs from this branch yet — first occurrence
               </div>
             )}
-            <div style={{ textAlign: "center", fontSize: 9, color: "var(--text-secondary)", marginTop: 6 }}>
+            <div style={{ textAlign: "center", fontSize: 13, color: "var(--text-secondary)", marginTop: 6 }}>
               {closedCount > 0
-                ? <><strong style={{ color: "#ef4444", fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>{closedCount}</strong> of {totalCount} prior MRs closed without merge</>  
+                ? <><strong style={{ color: "#ef4444", fontSize: 18, fontFamily: "'JetBrains Mono', monospace" }}>{closedCount}</strong> of {totalCount} prior MRs closed without merge</>  
                 : closedCount === 0 && totalCount > 0
-                  ? <><strong style={{ color: "#22c55e", fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>{mergedCount}/{totalCount}</strong> prior MRs merged — risk driven by graph signals</>
+                  ? <><strong style={{ color: "#22c55e", fontSize: 18, fontFamily: "'JetBrains Mono', monospace" }}>{mergedCount}/{totalCount}</strong> prior MRs merged — risk driven by graph signals</>
                   : <span style={{ color: "var(--text-tertiary)" }}>No branch history — prediction from graph analysis only</span>
               }
             </div>
@@ -637,10 +637,10 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
             >
-              <div style={{ fontSize: 8, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>If No Action</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>If No Action</div>
               <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.4)" }}>Closed</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 3 }}>within 7 days</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>{closeRate}% probability</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 3 }}>within 7 days</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>{closeRate}% probability</div>
             </div>
             <div style={{
               padding: "12px 16px", borderRadius: 8, textAlign: "center",
@@ -651,23 +651,23 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
             >
-              <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>With Mitigations</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>With Mitigations</div>
               <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>88% Merged</div>
-              <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 3 }}>with CI + reviewer + changes</div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", marginTop: 2 }}>Risk: {Math.round(riskScore * 100)}% → {Math.max(2, Math.round(Math.round(riskScore * 100) * 0.18))}%</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 3 }}>with CI + reviewer + changes</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>Risk: {Math.round(riskScore * 100)}% → {Math.max(2, Math.round(Math.round(riskScore * 100) * 0.18))}%</div>
             </div>
           </div>
           
           {/* Evidence Sources */}
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "center" }}>
             <div>
-              <div style={{ fontSize: 7, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>Evidence Sources</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>Evidence Sources</div>
               <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                 {["Traversal", "Historical Similarity", "Neighbors", "Path Finding"].map(src => (
                   <div key={src} style={{
                     padding: "2px 7px", borderRadius: 4,
                     background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)",
-                    fontSize: 8, color: "#22c55e", fontWeight: 600,
+                    fontSize: 12, color: "#22c55e", fontWeight: 600,
                   }}>✓ {src}</div>
                 ))}
               </div>
@@ -675,7 +675,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             <div style={{
               padding: "5px 12px", borderRadius: 6,
               background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)",
-              fontSize: 8, color: "var(--text-tertiary)", maxWidth: 240,
+              fontSize: 12, color: "var(--text-tertiary)", maxWidth: 240,
             }}>
               <strong style={{ color: "var(--accent-blue)" }}>Query Types Used:</strong> All 4 Orbit query types
             </div>

@@ -329,7 +329,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   {!currentScenario && !analyzing && (
                     <div style={{
                       position: "absolute", top: -10, right: 16, zIndex: 5,
-                      padding: "3px 12px", borderRadius: 20, fontSize: 9, fontWeight: 700,
+                      padding: "3px 12px", borderRadius: 20, fontSize: 13, fontWeight: 700,
                       background: "linear-gradient(135deg, #a78bfa, #7c3aed)",
                       color: "#fff", letterSpacing: "0.5px", textTransform: "uppercase",
                       boxShadow: "0 0 20px rgba(139,92,246,0.4)",
@@ -369,7 +369,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             )}
             <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
             <button onClick={() => setShowQueryInspector(!showQueryInspector)} style={{
-              padding: "6px 12px", borderRadius: 6, fontSize: 10, fontWeight: 600,
+              padding: "6px 12px", borderRadius: 6, fontSize: 14, fontWeight: 600,
               background: showQueryInspector ? "rgba(96,165,250,0.12)" : "var(--overlay-04)",
               color: showQueryInspector ? "#60a5fa" : "var(--text-secondary)",
               border: `1px solid ${showQueryInspector ? "rgba(96,165,250,0.25)" : "var(--overlay-08)"}`,
@@ -398,8 +398,8 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           flexShrink: 0, background: "rgba(8,9,13,0.8)", backdropFilter: "blur(16px)", overflowX: "hidden",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#60a5fa,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🛰️</div>
-            <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Sentinel</span>
+            <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#60a5fa,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19 }}>🛰️</div>
+            <span style={{ fontSize: 19, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Sentinel</span>
           </div>
         <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 420, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6, overflow: "hidden" }}>
           <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
@@ -415,10 +415,10 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         {loading ? <>
           <LoadingSkeleton />
           {loadingSlow && (
-            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: Z.overlay, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 11, boxShadow: "0 4px 24px rgba(0,0,0,0.4)",   animation: ANIM.fadeSlideUp.medium }}>
+            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: Z.overlay, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 15, boxShadow: "0 4px 24px rgba(0,0,0,0.4)",   animation: ANIM.fadeSlideUp.medium }}>
               <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
-                style={{ padding: "5px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: COLORS.info, whiteSpace: "nowrap" }}
+                style={{ padding: "5px 14px", fontSize: 14, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: COLORS.info, whiteSpace: "nowrap" }}
                 onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.2)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(96,165,250,0.12)"; }}
               >Use Demo Data →</button>
@@ -426,23 +426,23 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           )}
         </> : (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flex: 1, gap: 10, padding: 20, animation: ANIM.fadeSlideUp.slow }}>
-            <div style={{ fontSize: 36, animation: ANIM.float.slow }}>🛰️</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
+            <div style={{ fontSize: 42, animation: ANIM.float.slow }}>🛰️</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "var(--text-primary)" }}>
               {dataMode === "error" ? "Engine API Unreachable" : "No Data Available"}
             </div>
-            <div style={{ fontSize: 12, color: "var(--text-secondary)", textAlign: "center", maxWidth: 400, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 16, color: "var(--text-secondary)", textAlign: "center", maxWidth: 400, lineHeight: 1.6 }}>
               {dataMode === "error" && apiService.isApiAvailable()
                 ? "The Orbit Sentinel engine could not be reached. Demo data will be shown as fallback."
                 : "No visualization data loaded."}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={loadData}
-                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid var(--overlay-10)", borderRadius: 6, cursor: "pointer", background: "var(--overlay-04)", color: "var(--text-secondary)" }}
+                style={{ marginTop: 4, padding: "6px 18px", fontSize: 16, fontWeight: 600, border: "1px solid var(--overlay-10)", borderRadius: 6, cursor: "pointer", background: "var(--overlay-04)", color: "var(--text-secondary)" }}
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--overlay-08)"; e.currentTarget.style.color = "var(--text-primary)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.color = "var(--text-secondary)"; }}
               >Retry</button>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
-                style={{ marginTop: 4, padding: "6px 18px", fontSize: 12, fontWeight: 600, border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, cursor: "pointer", background: "rgba(96,165,250,0.1)", color: COLORS.info }}
+                style={{ marginTop: 4, padding: "6px 18px", fontSize: 16, fontWeight: 600, border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, cursor: "pointer", background: "rgba(96,165,250,0.1)", color: COLORS.info }}
                 onMouseEnter={e => { e.currentTarget.style.background = "rgba(96,165,250,0.18)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(96,165,250,0.1)"; }}
               >Use Demo Data</button>
@@ -470,8 +470,8 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         transition: "border-color 0.5s ease, box-shadow 0.5s ease",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, boxShadow: `0 0 16px ${accentGlow}` }}>🛰️</div>
-          <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
+          <div style={{ width: 30, height: 30, borderRadius: 8, background: `linear-gradient(135deg,${accentColor},${RISK[rk].glow.replace("rgba","rgb")})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, boxShadow: `0 0 16px ${accentGlow}` }}>🛰️</div>
+          <span style={{ fontSize: 20, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
         <div className="resp-hide-subtitle" style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: "auto" }}>
           <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
@@ -482,7 +482,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             <button onClick={() => setMobileViewOpen(!mobileViewOpen)}
               aria-label="Switch view" aria-expanded={mobileViewOpen}
               style={{
-                padding: "4px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer",
+                padding: "4px 10px", fontSize: 15, fontWeight: 700, cursor: "pointer",
                 border: `1px solid ${accentColor}44`, borderRadius: 6,
                 background: `${accentColor}15`, color: accentColor, whiteSpace: "nowrap",
                 display: "flex", alignItems: "center", gap: 6,
@@ -493,7 +493,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: accentColor, boxShadow: `0 0 8px ${accentGlow}` }} />
               {tabs.find(([k]) => k === view)?.[1] ?? "Overview"}
               <span style={{
-                fontSize: 8, opacity: mobileViewOpen ? 1 : 0.5,
+                fontSize: 12, opacity: mobileViewOpen ? 1 : 0.5,
                 transform: mobileViewOpen ? "rotate(180deg)" : "none",
                 transition: "transform 0.25s ease",
               }}>▾</span>
@@ -512,7 +512,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   return (
                   <button key={k} onClick={() => { setView(k); setMobileViewOpen(false); if (demo) stopDemo(); }}
                     style={{
-                      display: "flex", width: "100%", padding: "8px 14px", fontSize: 10.5, cursor: "pointer",
+                      display: "flex", width: "100%", padding: "8px 14px", fontSize: 14.5, cursor: "pointer",
                       border: "none", borderBottom: i < tabs.length - 1 ? "1px solid var(--overlay-04)" : "none",
                       background: isActive ? `${accentColor}15` : "transparent",
                       color: isActive ? accentColor : "var(--text-secondary)",
@@ -525,14 +525,14 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                     onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; } }}
                   >
                     {isActive && <div style={{ position: "absolute", left: 0, top: "20%", width: 2, height: "60%", borderRadius: 1, background: accentColor, boxShadow: `0 0 8px ${accentGlow}` }} />}
-                    <span style={{ fontSize: 12 }}>{qt?.tag === "NEIGHBORS" ? "💥" : qt?.tag === "TRAVERSAL" ? "📜" : qt?.tag === "AGGREGATION" ? "⚠️" : lbl === "Predictions" ? "🎯" : lbl === "Setup" ? "⚡" : lbl === "Overview" ? "🛰️" : lbl === "Report" ? "📋" : lbl === "Forecast" ? "🧪" : "📊"}</span>
+                    <span style={{ fontSize: 16 }}>{qt?.tag === "NEIGHBORS" ? "💥" : qt?.tag === "TRAVERSAL" ? "📜" : qt?.tag === "AGGREGATION" ? "⚠️" : lbl === "Predictions" ? "🎯" : lbl === "Setup" ? "⚡" : lbl === "Overview" ? "🛰️" : lbl === "Report" ? "📋" : lbl === "Forecast" ? "🧪" : "📊"}</span>
                     {lbl}
-                    {qt && <span style={{ fontSize: 7, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}
+                    {qt && <span style={{ fontSize: 11, fontWeight: 700, padding: "1px 5px", borderRadius: 3, background: `${qt.color}18`, color: qt.color, lineHeight: 1.2, marginLeft: "auto" }}>{qt.tag}</span>}
                   </button>
                   );
                 })}
                 <div style={{
-                  padding: "6px 14px", fontSize: 8, color: "var(--text-tertiary)",
+                  padding: "6px 14px", fontSize: 12, color: "var(--text-tertiary)",
                   borderTop: "1px solid var(--overlay-03)",
                   textAlign: "center", letterSpacing: "0.3px",
                 }}>
@@ -551,7 +551,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               aria-selected={view === k}
               className={VIEW_QUERY_TAG[k] ? "resp-hide-query-tag" : undefined}
               style={{
-              padding: "5px 10px", fontSize: 10.5, fontWeight: view === k ? 600 : 400,
+              padding: "5px 10px", fontSize: 14.5, fontWeight: view === k ? 600 : 400,
               border: view === k ? `1px solid ${accentColor}30` : "1px solid transparent",
               borderRadius: 6, cursor: "pointer",
               background: view === k ? `${accentColor}12` : "transparent",
@@ -564,7 +564,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
               onMouseLeave={e => { if (view !== k) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-tertiary)"; } }}
             >{lbl}
               {VIEW_QUERY_TAG[k] && (
-                <span style={{ fontSize: 7.5, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${VIEW_QUERY_TAG[k].color}15`, color: VIEW_QUERY_TAG[k].color, lineHeight: 1.2 }}>
+                <span style={{ fontSize: 11.5, fontWeight: 700, padding: "1px 4px", borderRadius: 3, background: `${VIEW_QUERY_TAG[k].color}15`, color: VIEW_QUERY_TAG[k].color, lineHeight: 1.2 }}>
                   {VIEW_QUERY_TAG[k].tag}
                 </span>
               )}
@@ -575,7 +575,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           <div style={{ width: 1, height: 16, background: "var(--border)", margin: "0 6px", flexShrink: 0 }} />
           <button onClick={() => setShowTour(true)} title="Judge's Tour" aria-label="Guided tour for judges"
             style={{
-              padding: "4px 10px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+              padding: "4px 10px", fontSize: 14, fontWeight: 600, cursor: "pointer",
               border: "1px solid rgba(167,139,250,0.3)", borderRadius: 6,
               background: "rgba(167,139,250,0.1)", color: COLORS.purple,
               boxShadow: "0 0 10px rgba(167,139,250,0.1)",
@@ -587,7 +587,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           >{isMobile ? "👑" : "👑 Tour"}</button>
           <button onClick={() => exportAsHtml(data)} title="Export as HTML" aria-label="Export report as HTML"
             style={{
-              padding: "4px 8px", fontSize: 12, cursor: "pointer",
+              padding: "4px 8px", fontSize: 16, cursor: "pointer",
               border: "1px solid var(--overlay-12)", borderRadius: 6,
               background: "var(--overlay-04)", color: "var(--text-secondary)",
               boxShadow: "0 0 6px var(--overlay-06)",
@@ -598,7 +598,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           >⬇</button>
           <button onClick={toggleTheme} title={dark ? "Switch to light theme" : "Switch to dark theme"} aria-label="Toggle theme"
             style={{
-              padding: "4px 8px", fontSize: 13, cursor: "pointer",
+              padding: "4px 8px", fontSize: 18, cursor: "pointer",
               border: `1px solid ${dark ? "rgba(251,191,36,0.3)" : "rgba(96,165,250,0.3)"}`, borderRadius: 6,
               background: dark ? "rgba(251,191,36,0.08)" : "rgba(96,165,250,0.08)",
               color: dark ? "#fbbf24" : "#60a5fa",
@@ -611,7 +611,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           <button onClick={demo ? stopDemo : startDemo}
             aria-label={demo ? "Stop demo" : "Play demo"}
             style={{
-            padding: "4px 12px", fontSize: 10, fontWeight: 700, cursor: "pointer",
+            padding: "4px 12px", fontSize: 14, fontWeight: 700, cursor: "pointer",
             border: demo ? "1px solid rgba(239,68,68,0.45)" : `1px solid ${accentColor}45`,
             borderRadius: 6, letterSpacing: "0.3px",
             background: demo ? "rgba(239,68,68,0.12)" : `${accentColor}15`,
@@ -622,7 +622,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             onMouseEnter={e => { e.currentTarget.style.background = demo ? "rgba(239,68,68,0.2)" : `${accentColor}22`; e.currentTarget.style.boxShadow = demo ? "0 0 22px rgba(239,68,68,0.25)" : `0 0 22px ${accentGlow}`; e.currentTarget.style.borderColor = demo ? "rgba(239,68,68,0.6)" : `${accentColor}60`; }}
             onMouseLeave={e => { e.currentTarget.style.background = demo ? "rgba(239,68,68,0.12)" : `${accentColor}15`; e.currentTarget.style.boxShadow = demo ? "0 0 14px rgba(239,68,68,0.15)" : `0 0 14px ${accentGlow}`; e.currentTarget.style.borderColor = demo ? "rgba(239,68,68,0.45)" : `${accentColor}45`; }}
           >
-            <span style={{ fontSize: 9 }}>{demo ? "■" : "▶"}</span>
+            <span style={{ fontSize: 13 }}>{demo ? "■" : "▶"}</span>
             {!isMobile && (demo ? "Stop" : "Play")}
           </button>
         </div>
@@ -637,7 +637,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           pointerEvents: "none",
         }}>
           <div style={{
-            padding: "8px 20px", borderRadius: 24, fontSize: 11, fontWeight: 600,
+            padding: "8px 20px", borderRadius: 24, fontSize: 15, fontWeight: 600,
             background: `${accentColor}22`, backdropFilter: "blur(12px)",
             border: `1px solid ${accentColor}33`,
             color: accentColor, letterSpacing: "1px", textTransform: "uppercase",
@@ -646,7 +646,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             {DEMO_STEPS[stepIndex].icon} {DEMO_STEPS[stepIndex].label}
           </div>
           <div style={{
-            padding: "4px 16px", borderRadius: 12, fontSize: 10,
+            padding: "4px 16px", borderRadius: 12, fontSize: 14,
             background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
             color: "var(--text-secondary)",
           }}>
@@ -681,11 +681,11 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 width: 36, height: 36, borderRadius: 8,
                 background: "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(139,92,246,0.1))",
                 border: "1px solid rgba(139,92,246,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
               }}>⌨️</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>Keyboard Shortcuts</div>
-                <div style={{ fontSize: 9, color: "var(--text-tertiary)" }}>Navigate Orbit Sentinel without touching a mouse</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>Keyboard Shortcuts</div>
+                <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>Navigate Orbit Sentinel without touching a mouse</div>
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
@@ -708,17 +708,17 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                     width: 24, height: 24, borderRadius: 5,
                     background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.12)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 11, flexShrink: 0,
+                    fontSize: 15, flexShrink: 0,
                   }}>{s.icon}</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>{s.key}</div>
-                    <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{s.desc}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>{s.key}</div>
+                    <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{s.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 10, fontSize: 8, color: "var(--text-tertiary)", textAlign: "center" }}>
-              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "var(--overlay-06)", fontFamily: "'JetBrains Mono', monospace", fontSize: 8 }}>?</kbd> or click anywhere to close
+            <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-tertiary)", textAlign: "center" }}>
+              Press <kbd style={{ padding: "1px 6px", borderRadius: 3, background: "var(--overlay-06)", fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>?</kbd> or click anywhere to close
             </div>
           </div>
         </div>
@@ -727,7 +727,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       {presentMode && (
         <div style={{
           position: "fixed", top: 8, left: 8, zIndex: Z.toast,
-          padding: "3px 10px", borderRadius: 6, fontSize: 9, fontWeight: 700,
+          padding: "3px 10px", borderRadius: 6, fontSize: 13, fontWeight: 700,
           background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)",
           color: COLORS.critical, letterSpacing: "0.5px", textTransform: "uppercase",
         }}>● Presenting</div>
@@ -756,7 +756,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         padding: "5px 14px", borderRadius: 8,
         background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
         border: "1px solid var(--overlay-06)",
-        fontSize: 9, color: "var(--text-tertiary)",
+        fontSize: 13, color: "var(--text-tertiary)",
         opacity: showFooter && !screenshotMode ? 1 : 0, pointerEvents: showFooter && !screenshotMode ? "auto" : "none",
         transition: "opacity 0.6s ease",
       }}>

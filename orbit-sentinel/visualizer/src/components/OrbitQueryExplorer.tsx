@@ -26,8 +26,8 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
   if (ordered.length === 0) {
     return (
       <div className="card" style={{ padding: 20, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, animation: "fadeSlideUp 0.5s ease both" }}>
-        <span style={{ fontSize: 24 }}>🛰️</span>
-        <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>No Orbit query results available</div>
+        <span style={{ fontSize: 30 }}>🛰️</span>
+        <div style={{ fontSize: 15, color: "var(--text-secondary)" }}>No Orbit query results available</div>
       </div>
     );
   }
@@ -46,16 +46,16 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div className="card-header-icon" style={{ background: "rgba(139,92,246,0.1)" }}>🛰️</div>
-          <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>Orbit Query Explorer</span>
-          <span style={{ fontSize: 9, color: "var(--text-tertiary)" }}>{ordered.length}/4 queries</span>
+          <span style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>Orbit Query Explorer</span>
+          <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>{ordered.length}/4 queries</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button onClick={() => setExpanded(!expanded)}
-            style={{ padding: "2px 6px", fontSize: 10, cursor: "pointer", background: "transparent", border: "1px solid var(--border)", borderRadius: 4, color: "var(--text-secondary)" }}
+            style={{ padding: "2px 6px", fontSize: 14, cursor: "pointer", background: "transparent", border: "1px solid var(--border)", borderRadius: 4, color: "var(--text-secondary)" }}
           >{expanded ? "−" : "+"}</button>
           {onRefresh && (
             <button onClick={onRefresh}
-              style={{ padding: "2px 6px", fontSize: 10, cursor: "pointer", background: "transparent", border: "1px solid var(--border)", borderRadius: 4, color: "var(--text-secondary)" }}
+              style={{ padding: "2px 6px", fontSize: 14, cursor: "pointer", background: "transparent", border: "1px solid var(--border)", borderRadius: 4, color: "var(--text-secondary)" }}
             title="Re-run queries">↻</button>
           )}
         </div>
@@ -70,7 +70,7 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
                 <button key={q.queryType} onClick={() => setActiveQuery(i)}
                   style={{
                     display: "flex", alignItems: "center", gap: 4,
-                    padding: "4px 10px", fontSize: 10, fontWeight: i === activeQuery ? 600 : 400, cursor: "pointer",
+                    padding: "4px 10px", fontSize: 14, fontWeight: i === activeQuery ? 600 : 400, cursor: "pointer",
                     border: i === activeQuery ? `1px solid ${m.color}44` : "1px solid transparent",
                     borderRadius: 5,
                     background: i === activeQuery ? `${m.color}12` : "transparent",
@@ -90,10 +90,10 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
 
           <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 18 }}>{meta.icon}</span>
+              <span style={{ fontSize: 24 }}>{meta.icon}</span>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>{current.queryName}</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, color: "var(--text-tertiary)" }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>{current.queryName}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: "var(--text-tertiary)" }}>
                   <span style={{ padding: "1px 5px", borderRadius: 3, background: meta.bg, color: meta.color, fontWeight: 600 }}>{current.queryType}</span>
                   <span>Graph query</span>
                 </div>
@@ -101,7 +101,7 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
             </div>
 
             <div style={{
-              padding: "8px 12px", borderRadius: 6, fontSize: 10, lineHeight: 1.6,
+              padding: "8px 12px", borderRadius: 6, fontSize: 14, lineHeight: 1.6,
               fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)",
               background: "rgba(0,0,0,0.2)", border: "1px solid var(--border)",
               whiteSpace: "pre-line", overflowX: "auto",
@@ -117,7 +117,7 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
                 const isActive = current.queryType === qt;
                 return (
                   <span key={qt} style={{
-                    fontSize: 8, padding: "1px 5px", borderRadius: 3,
+                    fontSize: 12, padding: "1px 5px", borderRadius: 3,
                     background: exists ? (isActive ? m.color + "22" : "var(--overlay-03)") : "var(--overlay-02)",
                     color: exists ? (isActive ? m.color : "var(--text-tertiary)") : "var(--text-tertiary)",
                     border: isActive ? `1px solid ${m.color}44` : "1px solid transparent",
@@ -132,10 +132,10 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
             </div>
 
             {/* Query JSON preview — shows there's a real query behind the scenes */}
-            <details style={{ fontSize: 9, color: "var(--text-tertiary)" }}>
+            <details style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
               <summary style={{ cursor: "pointer", padding: "2px 0", fontWeight: 600 }}>View raw Orbit query payload</summary>
               <pre style={{
-                marginTop: 4, padding: "8px 10px", borderRadius: 4, fontSize: 9, lineHeight: 1.5,
+                marginTop: 4, padding: "8px 10px", borderRadius: 4, fontSize: 13, lineHeight: 1.5,
                 background: "rgba(0,0,0,0.3)", border: "1px solid var(--border)",
                 overflowX: "auto", fontFamily: "'JetBrains Mono', monospace", color: "var(--text-tertiary)",
               }}>

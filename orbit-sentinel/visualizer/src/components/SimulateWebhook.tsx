@@ -73,14 +73,14 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
         <div className="card-header-icon" style={{ background: "rgba(34,197,94,0.12)" }}>⚡</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Simulate MR Webhook</div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>
+          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Simulate MR Webhook</div>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>
             {running ? "Orchestrating Orbit query pipeline..." : "Trigger a live simulation of Orbit Sentinel's analysis flow"}
           </div>
         </div>
         <button onClick={running ? reset : start} aria-label={running ? "Stop webhook simulation" : "Run webhook simulation"}
           style={{
-            padding: "6px 18px", fontSize: 11, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
+            padding: "6px 18px", fontSize: 15, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
             border: running ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(34,197,94,0.3)",
             borderRadius: 6,
             background: running ? "rgba(239,68,68,0.1)" : "rgba(34,197,94,0.1)",
@@ -91,7 +91,7 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
           onMouseEnter={e => { e.currentTarget.style.background = running ? "rgba(239,68,68,0.18)" : "rgba(34,197,94,0.18)"; }}
           onMouseLeave={e => { e.currentTarget.style.background = running ? "rgba(239,68,68,0.1)" : "rgba(34,197,94,0.1)"; }}
         >
-          <span style={{ fontSize: 14 }}>{running ? "■" : "▶"}</span>
+          <span style={{ fontSize: 19 }}>{running ? "■" : "▶"}</span>
           {running ? "Stop" : "Run Flow"}
         </button>
       </div>
@@ -111,7 +111,7 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
               }}>
                 <div style={{
                   width: 20, height: 20, borderRadius: "50%",
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
                   background: status === "done" ? `${s.color}18` : status === "active" ? `${s.color}22` : "var(--overlay-04)",
                   border: `1px solid ${status === "done" ? s.color + "44" : status === "active" ? s.color + "66" : "var(--overlay-08)"}`,
                   animation: status === "active" ? "pulseDot 1s ease-in-out infinite" : undefined,
@@ -119,10 +119,10 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
                   {status === "done" ? "✓" : status === "active" ? "●" : "○"}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: status === "active" ? s.color : "var(--text-primary)" }}>{s.label}</div>
-                  <div style={{ fontSize: 8, color: "var(--text-tertiary)" }}>{s.desc}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: status === "active" ? s.color : "var(--text-primary)" }}>{s.label}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{s.desc}</div>
                 </div>
-                {status === "done" && <span style={{ fontSize: 8, color: s.color, fontWeight: 600 }}>done</span>}
+                {status === "done" && <span style={{ fontSize: 12, color: s.color, fontWeight: 600 }}>done</span>}
               </div>
             );
           })}
@@ -131,7 +131,7 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
         <div style={{
           padding: "8px 12px", borderRadius: 6,
           background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.1)",
-          fontSize: 9, color: "var(--text-tertiary)", lineHeight: 1.4,
+          fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.4,
         }}>
           <strong style={{ color: "var(--accent-blue)" }}>What happens:</strong> Click "Run Flow" to simulate a real GitLab MR webhook triggering Orbit Sentinel. The visualizer walks through: receiving the webhook → querying all 4 Orbit query types → building the digital twin → analyzing signals → posting the verdict. This is what happens automatically when integrated with GitLab Duo Flow.
         </div>
@@ -142,10 +142,10 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
           marginTop: 8, padding: "6px 12px", borderRadius: 5,
           background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(59,130,246,0.05))",
           border: "1px solid rgba(34,197,94,0.15)",
-          display: "flex", alignItems: "center", gap: 6, fontSize: 9, color: "var(--text-secondary)",
+          display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--text-secondary)",
           animation: "fadeSlideUp 0.3s ease",
         }}>
-          <span style={{ fontSize: 13 }}>✅</span>
+          <span style={{ fontSize: 18 }}>✅</span>
           <span>Flow complete in <strong style={{ color: "#22c55e" }}>{(steps.length * 0.7).toFixed(1)}s</strong> — compared to <strong style={{ color: "#ef4444" }}>~45 min</strong> manual review. <strong style={{ color: "var(--accent-blue)" }}>Navigate the tabs above</strong> to explore the full analysis.</span>
         </div>
       )}

@@ -43,8 +43,8 @@ function DigitalTwinStatus({ graph }: { graph: { nodes: GraphNode[]; links: Grap
 
 function Stat({ icon, label, value, color }: { icon: string; label: string; value: number; color?: string }) {
   return (
-    <div className="resp-stat" style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10 }}>
-      <span style={{ fontSize: 9 }}>{icon}</span>
+    <div className="resp-stat" style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14 }}>
+      <span style={{ fontSize: 13 }}>{icon}</span>
       <span style={{ color: "var(--text-tertiary)", fontWeight: 500 }}>{label}</span>
       <span style={{ fontWeight: 700, color: color ?? "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>{value}</span>
     </div>
@@ -236,7 +236,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
   return (
     <div className="card" style={{ overflow:"hidden", position:"relative", height:"100%", minHeight:0, animation:"fadeSlideUp 0.5s 0.25s ease both", display:"flex", flexDirection:"column" }}>
       <DigitalTwinStatus graph={graph} />
-      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid var(--overlay-06)", backdropFilter:"blur(4px)", fontSize:9, color:"var(--text-secondary)" }}>
+      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid var(--overlay-06)", backdropFilter:"blur(4px)", fontSize: 13, color:"var(--text-secondary)" }}>
         {[{c:"#22c55e",l:"Safe"},{c:"#eab308",l:"Medium"},{c:"#f97316",l:"High"},{c:"#ef4444",l:"Critical"}].map(x=>(
           <span key={x.l} style={{display:"flex",alignItems:"center",gap:3}}><span style={{width:4,height:4,borderRadius:"50%",background:x.c,display:"inline-block",boxShadow:`0 0 4px ${x.c}`}}/>{x.l}</span>
         ))}
@@ -253,17 +253,17 @@ export default function DigitalTwinGraph({ graph }: Props) {
         <button onClick={handleZoomIn} title="Zoom In" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",
           width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
-          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+          justifyContent: "center", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
         }}>➕</button>
         <button onClick={handleZoomOut} title="Zoom Out" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",
           width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
-          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+          justifyContent: "center", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
         }}>➖</button>
         <button onClick={handleResetZoom} title="Reset View" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",
           width: 26, height: 26, borderRadius: 6, display: "flex", alignItems: "center",
-          justifyContent: "center", fontSize: 10, cursor: "pointer", transition: "all 0.15s",
+          justifyContent: "center", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
         }}>🎯</button>
       </div>
 
@@ -280,46 +280,46 @@ export default function DigitalTwinGraph({ graph }: Props) {
           <>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: 4 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <span style={{ fontSize: 14 }}>{TYPE_ICONS[selected.type] ?? "🔹"}</span>
+                <span style={{ fontSize: 19 }}>{TYPE_ICONS[selected.type] ?? "🔹"}</span>
                 <div>
-                  <div style={{ fontSize: 9, color: "var(--text-tertiary)", fontWeight: 500, letterSpacing: "0.3px", textTransform: "uppercase" }}>Node</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>{selected.label}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500, letterSpacing: "0.3px", textTransform: "uppercase" }}>Node</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>{selected.label}</div>
                 </div>
               </div>
               <button onClick={() => setSelected(null)} style={{
-                background:"none", border:"none", color:"var(--text-tertiary)", cursor:"pointer", fontSize:12,
+                background:"none", border:"none", color:"var(--text-tertiary)", cursor:"pointer", fontSize: 16,
                 padding:0, lineHeight:1, opacity:0.6,
               }}>✕</button>
             </div>
-            <div style={{ fontSize: 9, color: "var(--text-secondary)", marginBottom: 3 }}>{selected.type}</div>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 3 }}>{selected.type}</div>
             {selected.riskLevel && (
               <div style={{ display:"flex", gap:3 }}>
                 <div style={{
-                  padding:"1px 6px", borderRadius:3, fontSize:8, fontWeight:600,
+                  padding:"1px 6px", borderRadius:3, fontSize: 12, fontWeight:600,
                   background:`${nodeColor(selected)}22`, color:nodeColor(selected),
                   border:`1px solid ${nodeColor(selected)}33`,
                   textTransform:"uppercase", letterSpacing:"0.3px",
                 }}>{selected.riskLevel} Risk</div>
-                <div style={{ padding:"1px 6px", borderRadius:3, fontSize:8, fontWeight:600, background:"rgba(96,165,250,0.1)", color:"var(--accent-blue)", border:"1px solid rgba(96,165,250,0.15)" }}>
+                <div style={{ padding:"1px 6px", borderRadius:3, fontSize: 12, fontWeight:600, background:"rgba(96,165,250,0.1)", color:"var(--accent-blue)", border:"1px solid rgba(96,165,250,0.15)" }}>
                   {graph.links.filter(l => l.source === selected.id || l.target === selected.id).length} connections
                 </div>
               </div>
             )}
             {selected.type === "MergeRequest" && (
               <div style={{ padding:"5px 8px", borderRadius:5, background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.15)", marginTop:4 }}>
-                <div style={{ fontSize:7, fontWeight:700, letterSpacing:"0.3px", textTransform:"uppercase", color:"#ef4444", marginBottom:2 }}>Path Status</div>
-                <div style={{ fontSize:9, color:"#ef4444", fontWeight:600 }}>⚠ No deployment path</div>
-                <div style={{ fontSize:8, color:"var(--text-secondary)", marginTop:1 }}>{selected.label} → Pipeline missing</div>
+                <div style={{ fontSize: 11, fontWeight:700, letterSpacing:"0.3px", textTransform:"uppercase", color:"#ef4444", marginBottom:2 }}>Path Status</div>
+                <div style={{ fontSize: 13, color:"#ef4444", fontWeight:600 }}>⚠ No deployment path</div>
+                <div style={{ fontSize: 12, color:"var(--text-secondary)", marginTop:1 }}>{selected.label} → Pipeline missing</div>
               </div>
             )}
           </>
         ) : (
           <>
             <div style={{ display:"flex", alignItems:"center", gap:4, marginBottom:6 }}>
-              <span style={{ fontSize:12 }}>🌐</span>
+              <span style={{ fontSize: 16 }}>🌐</span>
               <div>
-                <div style={{ fontSize:9, fontWeight:600, color:"var(--text-primary)" }}>Digital Twin</div>
-                <div style={{ fontSize:8, color:"var(--text-secondary)" }}>Click a node for details</div>
+                <div style={{ fontSize: 13, fontWeight:600, color:"var(--text-primary)" }}>Digital Twin</div>
+                <div style={{ fontSize: 12, color:"var(--text-secondary)" }}>Click a node for details</div>
               </div>
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
@@ -328,7 +328,7 @@ export default function DigitalTwinGraph({ graph }: Props) {
                 {l:"Affected Systems",v:String(graph.nodes.filter(n=>n.type==="Service"||n.type==="File").length),c:"var(--text-primary)"},
                 {l:"Predicted Failures",v:String(graph.nodes.filter(n=>n.riskLevel==="high"||n.riskLevel==="critical").length),c:"#ef4444"},
               ].map(x=>(
-                <div key={x.l} style={{ display:"flex", justifyContent:"space-between", fontSize:8, color:"var(--text-secondary)", padding:"1px 4px" }}>
+                <div key={x.l} style={{ display:"flex", justifyContent:"space-between", fontSize: 12, color:"var(--text-secondary)", padding:"1px 4px" }}>
                   <span>{x.l}</span>
                   <span style={{ fontWeight:600, color:x.c }}>{x.v}</span>
                 </div>
@@ -340,9 +340,9 @@ export default function DigitalTwinGraph({ graph }: Props) {
 
       {graph.nodes.length === 0 || graph.links.length === 0 ? (
         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", flex:1, gap:8 }}>
-          <span style={{ fontSize:24, opacity:0.3 }}>🌐</span>
-          <div style={{ fontSize:12, fontWeight:600, color:"var(--text-secondary)" }}>No graph data yet</div>
-          <div style={{ fontSize:10, color:"var(--text-tertiary)", maxWidth:260, textAlign:"center" }}>Orbit data will populate the digital twin once project activity is detected.</div>
+          <span style={{ fontSize: 30, opacity:0.3 }}>🌐</span>
+          <div style={{ fontSize: 16, fontWeight:600, color:"var(--text-secondary)" }}>No graph data yet</div>
+          <div style={{ fontSize: 14, color:"var(--text-tertiary)", maxWidth:260, textAlign:"center" }}>Orbit data will populate the digital twin once project activity is detected.</div>
         </div>
       ) : (
         <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Digital twin knowledge graph showing connected nodes and edges across the ecosystem" style={{ flex:1, display:"block" }} />

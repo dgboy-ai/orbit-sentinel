@@ -57,7 +57,7 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
           ? `1px solid ${node.color}33`
           : "1px solid var(--overlay-05)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 19, flexShrink: 0,
+        fontSize: 25, flexShrink: 0,
         transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
         transform: isOpen ? "scale(1.06) translateY(-2px)" : hovered ? "scale(1.04) translateY(-1px)" : "scale(1)",
         boxShadow: isOpen
@@ -106,13 +106,13 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
         }} />
       </div>
       <span style={{
-        fontSize: 9, fontWeight: 600,
+        fontSize: 13, fontWeight: 600,
         color: isOpen ? node.color : hovered ? "var(--text-primary)" : "var(--text-secondary)",
         textAlign: "center", lineHeight: 1.15, maxWidth: 54,
         transition: "color 0.2s",
       }}>{node.title}</span>
       <span style={{
-        fontSize: 7, color: "var(--text-tertiary)", textAlign: "center",
+        fontSize: 11, color: "var(--text-tertiary)", textAlign: "center",
         lineHeight: 1.15, maxWidth: 52, textTransform: "uppercase",
         letterSpacing: "0.3px",
       }}>{node.subtitle}</span>
@@ -136,19 +136,19 @@ function ArchDetail({ node }: { node: ArchNode }) {
           width: 26, height: 26, borderRadius: 7,
           background: `linear-gradient(135deg, ${node.color}18, ${node.color}08)`,
           border: `1px solid ${node.color}22`,
-          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
+          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18,
         }}>{node.icon}</div>
-        <span style={{ fontSize: 11, fontWeight: 700, color: node.color, letterSpacing: "0.2px" }}>{node.title}</span>
-        <span style={{ fontSize: 8, color: "var(--text-tertiary)", marginLeft: "auto", padding: "2px 7px", borderRadius: 4, background: `${node.color}08`, border: `1px solid ${node.color}0c` }}>{node.subtitle}</span>
+        <span style={{ fontSize: 15, fontWeight: 700, color: node.color, letterSpacing: "0.2px" }}>{node.title}</span>
+        <span style={{ fontSize: 12, color: "var(--text-tertiary)", marginLeft: "auto", padding: "2px 7px", borderRadius: 4, background: `${node.color}08`, border: `1px solid ${node.color}0c` }}>{node.subtitle}</span>
       </div>
-      <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 7 }}>
+      <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 7 }}>
         {node.detail}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 12px" }}>
         {node.subItems.map((item, i) => (
           <div key={i} style={{
             display: "flex", alignItems: "center", gap: 4,
-            fontSize: 8.5, color: "var(--text-primary)", lineHeight: 1.4,
+            fontSize: 12.5, color: "var(--text-primary)", lineHeight: 1.4,
             animation: mounted ? `fadeSlideUp 0.2s ${0.03 + i * 0.015}s cubic-bezier(0.16,1,0.3,1) both` : "none",
             whiteSpace: "nowrap",
           }}>
@@ -191,9 +191,9 @@ export default function ArchitectureDiagram() {
 
       <div style={{ position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
-          <div style={{ width: 26, height: 26, borderRadius: 7, background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04))", border: "1px solid rgba(139,92,246,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>🏗️</div>
-          <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "0.2px" }}>System Architecture</span>
-          <span style={{ fontSize: 8, color: "var(--text-tertiary)", marginLeft: "auto" }}>Click a node to explore</span>
+          <div style={{ width: 26, height: 26, borderRadius: 7, background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(139,92,246,0.04))", border: "1px solid rgba(139,92,246,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🏗️</div>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "0.2px" }}>System Architecture</span>
+          <span style={{ fontSize: 12, color: "var(--text-tertiary)", marginLeft: "auto" }}>Click a node to explore</span>
         </div>
 
         {/* Pipeline flow */}
@@ -230,7 +230,7 @@ export default function ArchitectureDiagram() {
         {/* Hint */}
         {!selected && (
           <div style={{
-            textAlign: "center", fontSize: 8.5, color: "var(--text-tertiary)",
+            textAlign: "center", fontSize: 12.5, color: "var(--text-tertiary)",
             marginTop: 6, opacity: mounted ? 1 : 0,
             transition: "opacity 0.4s ease 0.6s",
             display: "flex", alignItems: "center", justifyContent: "center", gap: 4,

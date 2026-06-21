@@ -56,13 +56,13 @@ export default function CounterfactualSimulation({
           width: 32, height: 32, borderRadius: 8,
           background: "rgba(167,139,250,0.15)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16, flexShrink: 0,
+          fontSize: 22, flexShrink: 0,
         }}>🧪</div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontSize: 19, fontWeight: 600, color: "var(--text-primary)" }}>
             What-If Simulation
           </div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 1 }}>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 1 }}>
             {active !== null
               ? `Simulating: ${scenarios[active].label}`
               : "Click a scenario to simulate the outcome"}
@@ -70,7 +70,7 @@ export default function CounterfactualSimulation({
           {onViewDetail && (
             <button onClick={(e) => { e.stopPropagation(); onViewDetail(); }}
               style={{
-                marginTop: 6, padding: "2px 10px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+                marginTop: 6, padding: "2px 10px", fontSize: 14, fontWeight: 600, cursor: "pointer",
                 border: "1px solid rgba(167,139,250,0.25)", borderRadius: 5,
                 background: "rgba(167,139,250,0.08)", color: "#a78bfa",
                 transition: "all 0.15s ease",
@@ -83,11 +83,11 @@ export default function CounterfactualSimulation({
           )}
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <div style={{ fontSize: 9, color: "var(--text-tertiary)", letterSpacing: "0.3px", marginBottom: 1 }}>
+          <div style={{ fontSize: 13, color: "var(--text-tertiary)", letterSpacing: "0.3px", marginBottom: 1 }}>
             Risk Level
           </div>
           <div style={{
-            fontSize: 22, fontWeight: 800, color: curCol,
+            fontSize: 28, fontWeight: 800, color: curCol,
             fontFamily: "'JetBrains Mono', monospace",
             textShadow: `0 0 16px ${riskScoreToGlow(displayedRisk)}`,
             lineHeight: 1.2, transition: "color 0.3s ease",
@@ -105,10 +105,10 @@ export default function CounterfactualSimulation({
           border: "1px solid rgba(167,139,250,0.15)",
           animation: "fadeSlideUp 0.25s ease",
         }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#a78bfa", marginBottom: 2 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#a78bfa", marginBottom: 2 }}>
             {simResult.outcome}
           </div>
-          <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>
+          <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.4 }}>
             {simResult.detail}
           </div>
         </div>
@@ -118,8 +118,8 @@ export default function CounterfactualSimulation({
       {!scenarios.length ? (
         <div className="card" style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 100, borderColor: "transparent" }}>
           <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 4 }}>🧪 No scenarios available</div>
-            <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>What-if simulation requires counterfactual data</div>
+            <div style={{ fontSize: 19, color: "var(--text-secondary)", marginBottom: 4 }}>🧪 No scenarios available</div>
+            <div style={{ fontSize: 14, color: "var(--text-tertiary)" }}>What-if simulation requires counterfactual data</div>
           </div>
         </div>
       ) : (
@@ -159,12 +159,12 @@ export default function CounterfactualSimulation({
               onMouseUp={e => { e.currentTarget.style.transform = isActive ? "none" : "translateY(-2px)"; }}
             >
               <div style={{
-                fontSize: 9, fontWeight: 600, color: "var(--text-tertiary)",
+                fontSize: 13, fontWeight: 600, color: "var(--text-tertiary)",
                 letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 3,
                 whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
               }}>{s.label}</div>
               <div style={{
-                fontSize: 18, fontWeight: 700, color: s.color,
+                fontSize: 24, fontWeight: 700, color: s.color,
                 fontFamily: "'JetBrains Mono', monospace", marginBottom: 8,
               }}>{barPct.toFixed(0)}%</div>
               <div style={{ height: 5, borderRadius: 3, background: "var(--overlay-06)", overflow: "hidden" }}>

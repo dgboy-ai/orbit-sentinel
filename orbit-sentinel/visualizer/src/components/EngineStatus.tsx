@@ -78,7 +78,7 @@ export default function EngineStatus() {
                  state === "cold" ? "rgba(249,115,22,0.08)" :
                  "var(--overlay-02)",
       border: `1px solid ${state === "live" ? "rgba(34,197,94,0.15)" : state === "cold" ? "rgba(249,115,22,0.2)" : "transparent"}`,
-      fontSize: 9, whiteSpace: "nowrap",
+      fontSize: 13, whiteSpace: "nowrap",
       transition: "all 0.3s ease",
     }}
       title={c.hint}
@@ -97,7 +97,7 @@ export default function EngineStatus() {
       {(state === "cold" || state === "offline") && (
         <button onClick={warming ? undefined : warmUp}
           style={{
-            padding: "1px 7px", fontSize: 8, fontWeight: 600, cursor: warming ? "wait" : "pointer",
+            padding: "1px 7px", fontSize: 12, fontWeight: 600, cursor: warming ? "wait" : "pointer",
             border: "1px solid rgba(249,115,22,0.3)", borderRadius: 4,
             background: warming ? "rgba(249,115,22,0.15)" : "rgba(249,115,22,0.1)",
             color: "#fb923c", lineHeight: 1.4,

@@ -30,7 +30,7 @@ export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
                  mode === "connecting" || mode === "degraded" ? "rgba(234,179,8,0.06)" :
                  "var(--overlay-03)",
       border: `1px solid ${cfg.color}18`,
-      fontSize: 9,
+      fontSize: 13,
       opacity: mode === "loading" ? 0.5 : 1,
       transition: "all 0.3s ease",
     }}>
@@ -51,7 +51,7 @@ export default function DataModeBanner({ mode, errorMessage, onRetry }: Props) {
       {(mode === "error" || mode === "demo") && onRetry && (
         <button onClick={onRetry}
           style={{
-            padding: "2px 10px", fontSize: 9, fontWeight: 600, cursor: "pointer",
+            padding: "2px 10px", fontSize: 13, fontWeight: 600, cursor: "pointer",
             border: `1px solid ${cfg.color}33`, borderRadius: 4,
             background: `${cfg.color}11`, color: cfg.color,
             transition: "all 0.15s",

@@ -25,12 +25,12 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
         <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.12)" }}>🔮</div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Predicted Future</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Digital twin forecast · {confidence ?? "High"}</div>
+          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Predicted Future</div>
+          <div style={{ fontSize: 15, color: "var(--text-secondary)" }}>Digital twin forecast · {confidence ?? "High"}</div>
         </div>
       </div>
       {events.length === 0 ? (
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", fontSize: 11 }}>No predictions available — insufficient data</div>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", fontSize: 15 }}>No predictions available — insufficient data</div>
       ) : (
       <div style={{ display: "flex", flexDirection: "column", gap: 0, flex: 1, position: "relative", paddingLeft: 6 }}>
         {events.map((ev, i) => (
@@ -58,10 +58,10 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
               onMouseLeave={e => { e.currentTarget.style.borderColor = i === 0 ? "rgba(59,130,246,0.15)" : "var(--overlay-04)"; e.currentTarget.style.background = i === 0 ? "rgba(59,130,246,0.06)" : "var(--overlay-02)"; }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: i === 0 ? "var(--accent-blue)" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>D+{ev.day}</span>
-                <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>{ev.icon} {ev.label}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: i === 0 ? "var(--accent-blue)" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>D+{ev.day}</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>{ev.icon} {ev.label}</span>
               </div>
-              <div style={{ fontSize: 10, color: "var(--text-secondary)", lineHeight: 1.4 }}>{ev.description}</div>
+              <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.4 }}>{ev.description}</div>
             </div>
           </div>
         ))}

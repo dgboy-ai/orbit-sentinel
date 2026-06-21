@@ -79,8 +79,8 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
         <div className="card-header-icon" style={{ background: "rgba(96,165,250,0.1)" }}>⚡</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>Orbit Query Execution</div>
-          <div style={{ fontSize: 9, color: "var(--text-tertiary)" }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)" }}>Orbit Query Execution</div>
+          <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
             {completed
               ? `All 4 queries complete in ${queries.reduce((a, q) => a + q.durationMs, 0)}ms`
               : `Executing ${currentIndex + 1}/${QUERY_TYPES.length} queries…`
@@ -89,7 +89,7 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
         </div>
         <div style={{
           display: "flex", alignItems: "center", gap: 4,
-          padding: "2px 8px", borderRadius: 4, fontSize: 9, fontWeight: 700,
+          padding: "2px 8px", borderRadius: 4, fontSize: 13, fontWeight: 700,
           background: completed ? "rgba(34,197,94,0.1)" : "rgba(96,165,250,0.1)",
           color: completed ? "#22c55e" : "#60a5fa",
         }}>
@@ -129,7 +129,7 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
               <div style={{
                 width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 9, fontWeight: 700,
+                fontSize: 13, fontWeight: 700,
                 background: q.status === "success" ? `${meta.color}18` :
                            q.status === "error" ? "rgba(239,68,68,0.15)" :
                            isActive ? `${meta.color}12` : "var(--overlay-03)",
@@ -144,16 +144,16 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
               {/* Query info */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
-                  fontSize: 10, fontWeight: 600, color: isActive ? meta.color : "var(--text-primary)",
+                  fontSize: 14, fontWeight: 600, color: isActive ? meta.color : "var(--text-primary)",
                   display: "flex", alignItems: "center", gap: 4,
                 }}>
                   <span style={{
-                    padding: "1px 4px", borderRadius: 3, fontSize: 8, fontWeight: 700,
+                    padding: "1px 4px", borderRadius: 3, fontSize: 12, fontWeight: 700,
                     background: `${meta.color}12`, color: meta.color,
                   }}>{q.queryType}</span>
                   {q.queryName}
                 </div>
-                <div style={{ fontSize: 9, color: "var(--text-tertiary)" }}>
+                <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
                   {isDone
                     ? `${q.durationMs}ms · ${meta.description}`
                     : isActive ? "Executing…" : "Pending"
@@ -164,7 +164,7 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
               {/* Duration badge */}
               {isDone && (
                 <span style={{
-                  padding: "1px 5px", borderRadius: 3, fontSize: 8, fontWeight: 600,
+                  padding: "1px 5px", borderRadius: 3, fontSize: 12, fontWeight: 600,
                   background: q.durationMs > 400 ? "rgba(249,115,22,0.1)" : "rgba(34,197,94,0.1)",
                   color: q.durationMs > 400 ? "#fb923c" : "#22c55e",
                   whiteSpace: "nowrap",
@@ -178,7 +178,7 @@ export default function OrbitQueryLog({ onComplete, autoPlay = true }: OrbitQuer
       {/* Completion footer */}
       {completed && (
         <div style={{
-          marginTop: 8, padding: "6px 10px", borderRadius: 6, fontSize: 9,
+          marginTop: 8, padding: "6px 10px", borderRadius: 6, fontSize: 13,
           background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.12)",
           color: "var(--text-secondary)", textAlign: "center",
           animation: "fadeSlideUp 0.3s ease",

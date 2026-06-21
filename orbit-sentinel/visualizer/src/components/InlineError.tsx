@@ -25,15 +25,15 @@ export default function InlineError({ message, onRetry, height }: Props) {
       borderColor: "rgba(239,68,68,0.12)",
       background: "rgba(239,68,68,0.03)",
     }}>
-      <span style={{ fontSize: 20, lineHeight: 1 }}>⚠️</span>
-      <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>
+      <span style={{ fontSize: 26, lineHeight: 1 }}>⚠️</span>
+      <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
         {message || "Failed to load this panel"}
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         {onRetry && (
           <button onClick={onRetry}
             style={{
-              padding: "4px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+              padding: "4px 14px", fontSize: 14, fontWeight: 600, cursor: "pointer",
               border: "1px solid rgba(239,68,68,0.25)", borderRadius: 5,
               background: "rgba(239,68,68,0.08)", color: "#ef4444",
               transition: "all 0.15s",
@@ -44,7 +44,7 @@ export default function InlineError({ message, onRetry, height }: Props) {
         )}
         <button onClick={handleClearCache}
           style={{
-            padding: "4px 14px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+            padding: "4px 14px", fontSize: 14, fontWeight: 600, cursor: "pointer",
             border: "1px solid var(--overlay-08)", borderRadius: 5,
             background: "var(--overlay-04)", color: "var(--text-secondary)",
             transition: "all 0.15s",

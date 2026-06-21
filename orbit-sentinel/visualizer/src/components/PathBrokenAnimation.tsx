@@ -65,8 +65,8 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, width: "100%" }}>
         <div className="card-header-icon" style={{ background: "rgba(239,68,68,0.12)" }}>🛤️</div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Deployment Path Analysis</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Digital twin path tracing</div>
+          <div style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary)" }}>Deployment Path Analysis</div>
+          <div style={{ fontSize: 15, color: "var(--text-secondary)" }}>Digital twin path tracing</div>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
             }}>
               <div style={{
                 width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
                 background: step.broken ? "rgba(239,68,68,0.15)" : "rgba(96,165,250,0.12)",
                 border: step.broken ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(96,165,250,0.2)",
                             boxShadow: step.broken ? "0 0 20px rgba(239,68,68,0.3)" : "none",
@@ -100,11 +100,11 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
                 {step.broken ? "✗" : step.icon}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: step.broken ? "#ef4444" : "var(--text-primary)" }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: step.broken ? "#ef4444" : "var(--text-primary)" }}>
                   {step.label}
-                  {step.broken && <span style={{ marginLeft: 6, fontSize: 9, padding: "1px 5px", borderRadius: 3, background: "rgba(239,68,68,0.15)", color: "#ef4444", fontWeight: 700 }}>MISSING</span>}
+                  {step.broken && <span style={{ marginLeft: 6, fontSize: 13, padding: "1px 5px", borderRadius: 3, background: "rgba(239,68,68,0.15)", color: "#ef4444", fontWeight: 700 }}>MISSING</span>}
                 </div>
-                <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>{step.desc}</div>
+                <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>{step.desc}</div>
               </div>
             </div>
           </React.Fragment>
@@ -120,7 +120,7 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
           textAlign: "center",
           animation: showBroken ? "fadeSlideUp 0.5s ease, pulseGlow 4s ease-in-out infinite" : undefined,
         }}>
-          <div style={{ fontSize: 24, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "3px", textShadow: "0 0 30px rgba(239,68,68,0.6)" }}>
+          <div style={{ fontSize: 30, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "3px", textShadow: "0 0 30px rgba(239,68,68,0.6)" }}>
             ⚠ PATH BROKEN
           </div>
         </div>
@@ -132,8 +132,8 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
           transition: "all 0.5s 0.2s ease",
           textAlign: "center",
         }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Conclusion</div>
-          <div style={{ fontSize: 12, color: "var(--text-secondary)", fontStyle: "italic" }}>{conclusion}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Conclusion</div>
+          <div style={{ fontSize: 16, color: "var(--text-secondary)", fontStyle: "italic" }}>{conclusion}</div>
         </div>
       </div>
     </div>
