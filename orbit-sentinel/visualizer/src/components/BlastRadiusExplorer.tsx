@@ -5,6 +5,7 @@ import { findConnectedComponents, filterNodesByType } from "../utils/graph";
 import { NODE_COLORS, riskLevelToColor, riskLevelToGlow } from "../utils/colors";
 import { useAnimatedValue } from "../hooks/useAnimatedValue";
 import { useVulnerabilities } from "../hooks/useVulnerabilities";
+import { DEMO_DATA } from "../data/demoData";
 
 interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
 
@@ -358,7 +359,9 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
   );
 }
 
-export default function BlastRadiusExplorer({ graph }: Props) {
+export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
+  const isEmpty = !propGraph.nodes || propGraph.nodes.length === 0;
+  const graph = isEmpty ? DEMO_DATA.graph : propGraph;
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [depth, setDepth] = useState(3);
   const [highlight, setHighlight] = useState<string | null>(null);
@@ -404,7 +407,20 @@ export default function BlastRadiusExplorer({ graph }: Props) {
 
   try {
     return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minHeight: 650, animation: "fadeSlideUp 0.4s ease" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, minHeight: 650, animation: "fadeSlideUp 0.4s ease", position: "relative" }}>
+      {isEmpty && (
+        <div style={{
+          position: "absolute", top: 80, left: 16, right: 16, zIndex: 30,
+          padding: "8px 14px", borderRadius: 8, fontSize: 13,
+          background: "rgba(234,179,8,0.12)", border: "1px solid rgba(234,179,8,0.25)",
+          color: "#fbbf24", display: "flex", alignItems: "center", gap: 8,
+          backdropFilter: "blur(12px)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          animation: "fadeSlideUp 0.4s cubic-bezier(0.16,1,0.3,1)",
+        }}>
+          <span style={{ fontSize: 15 }}>⚠️</span>
+          <span><strong>Showing sample twin:</strong> Add a GitLab token or select a demo scenario to load live graph data.</span>
+        </div>
+      )}
       {/* HEADER STATS */}
       <div className="card" style={{
         padding: "14px 20px", position: "relative", overflow: "hidden",

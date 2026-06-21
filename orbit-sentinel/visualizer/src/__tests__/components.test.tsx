@@ -162,9 +162,9 @@ describe("DataModeBanner", () => {
 });
 
 describe("DigitalTwinGraph", () => {
-  it("renders empty state when graph has no nodes", () => {
+  it("renders sample twin fallback with warning when graph has no nodes", () => {
     const { container } = render(<DigitalTwinGraph graph={{ nodes: [], links: [] }} />);
-    expect(container.textContent).toContain("No graph data yet");
+    expect(container.textContent).toContain("Showing sample twin");
   });
 });
 

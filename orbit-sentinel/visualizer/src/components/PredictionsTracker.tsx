@@ -320,7 +320,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <div style={{ fontSize: 15, fontWeight: 700, color: "#a78bfa", marginBottom: 2 }}>Closed-Loop Prediction Engine</div>
             <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
               <strong style={{ color: "#60a5fa" }}>Predict</strong> → <strong style={{ color: "#eab308" }}>Ship</strong> → <strong style={{ color: "#22c55e" }}>Verify (7-day window)</strong> → <strong style={{ color: "#a78bfa" }}>Learn</strong>.
-              Every prediction feeds back into the model — accuracy improves with every MR.
+              Accuracy metrics are calibrated against operator-verified production outcomes (e.g. manual status logging of 'failed' or 'shipped') across a 7-day survival window post-merge.
             </div>
           </div>
           <div style={{
@@ -741,7 +741,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         animation: "fadeSlideUp 0.4s 0.2s cubic-bezier(0.16,1,0.3,1) both",
       }}>
         <div style={{ fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
-          Predictions verified against a <strong style={{ color: "var(--text-secondary)" }}>7-day survival window</strong> post-merge.
+          Accuracy metrics are calibrated against operator-verified production outcomes (e.g., manual status updates) over a <strong style={{ color: "var(--text-secondary)" }}>7-day survival window</strong> post-merge.
           <span style={{ marginLeft: 6 }}>Powered by GitLab Orbit — All 4 query types.</span>
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 10, marginTop: 6 }}>

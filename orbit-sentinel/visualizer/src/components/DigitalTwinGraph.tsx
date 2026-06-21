@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import type { GraphNode, GraphLink } from "../types";
 import { NODE_COLORS, riskLevelToColor } from "../utils/colors";
 import { useAnimatedValue } from "../hooks/useAnimatedValue";
+import { DEMO_DATA } from "../data/demoData";
 
 interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
 
@@ -51,7 +52,9 @@ function Stat({ icon, label, value, color }: { icon: string; label: string; valu
   );
 }
 
-export default function DigitalTwinGraph({ graph }: Props) {
+export default function DigitalTwinGraph({ graph: propGraph }: Props) {
+  const isEmpty = !propGraph.nodes || propGraph.nodes.length === 0;
+  const graph = isEmpty ? DEMO_DATA.graph : propGraph;
   const svgRef = useRef<SVGSVGElement>(null);
   const [selected, setSelected] = useState<GraphNode | null>(null);
   const rafRef = useRef<number>(0);
@@ -235,6 +238,19 @@ export default function DigitalTwinGraph({ graph }: Props) {
 
   return (
     <div className="card" style={{ overflow:"hidden", position:"relative", height:"100%", minHeight:0, animation:"fadeSlideUp 0.5s 0.25s ease both", display:"flex", flexDirection:"column" }}>
+      {isEmpty && (
+        <div style={{
+          position: "absolute", top: 40, left: 16, right: 16, zIndex: 30,
+          padding: "8px 14px", borderRadius: 8, fontSize: 13,
+          background: "rgba(234,179,8,0.12)", border: "1px solid rgba(234,179,8,0.25)",
+          color: "#fbbf24", display: "flex", alignItems: "center", gap: 8,
+          backdropFilter: "blur(12px)", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          animation: "fadeSlideUp 0.4s cubic-bezier(0.16,1,0.3,1)",
+        }}>
+          <span style={{ fontSize: 15 }}>⚠️</span>
+          <span><strong>Showing sample twin:</strong> Add a GitLab token or select a demo scenario to load live graph data.</span>
+        </div>
+      )}
       <DigitalTwinStatus graph={graph} />
       <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid var(--overlay-06)", backdropFilter:"blur(4px)", fontSize: 13, color:"var(--text-secondary)" }}>
         {[{c:"#22c55e",l:"Safe"},{c:"#eab308",l:"Medium"},{c:"#f97316",l:"High"},{c:"#ef4444",l:"Critical"}].map(x=>(
