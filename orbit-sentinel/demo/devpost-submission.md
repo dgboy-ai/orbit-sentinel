@@ -30,7 +30,7 @@ GitLab Orbit exposes the entire SDLC as a queryable knowledge graph. But Orbit i
 
 Orbit Sentinel is that tool. 🛰️
 
-## What It Does
+## What it does
 
 Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affected system — then delivers an **8-view interactive dashboard** and an **autonomous MR note**, all from the same analysis:
 
@@ -49,7 +49,7 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 
 **The closed loop** 🔄 — Every prediction is tracked post-merge through a 7-day survival window. The Predictions Tracker computes accuracy rate, shows risk trend charts, and surfaces vulnerability-adjusted forecasts. Orbit Sentinel doesn't just predict — it **proves its predictions were right**.
 
-## How We Built It 🏗️
+## How we built it
 
 ```
 GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D3, 29 tests)
@@ -84,7 +84,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **Testing** ✅ — 134 tests (105 engine + 29 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
 
-## Challenges We Ran Into 🧗
+## Challenges we ran into
 
 **Orbit API 2.1.0 format shift.** `result.rows` became `result.nodes`/`result.edges` mid-development. Entire `mergeGraph()` rewritten. Went from 0 nodes to 14 nodes, 13 edges per MR. Never hardcode GraphQL response shapes.
 
@@ -96,7 +96,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **Fallback hung without a token.** Grep fallback timed out at 30 seconds when no `GITLAB_ACCESS_TOKEN` was configured. Added fast-path: no token → return empty immediately. Failure mode went from 30s timeout to instant.
 
-## Accomplishments That We're Proud Of 🏆
+## Accomplishments that we're proud of
 
 **134 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
@@ -110,7 +110,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **Flow published to AI Catalog** alongside GitLab's official flows — the only one with a fully interactive visual dashboard.
 
-## What We Learned 💡
+## What we learned
 
 **The four Orbit query types are not interchangeable — they're complementary.** NEIGHBORS reveals blast radius. PATH_FINDING shows propagation chains. TRAVERSAL surfaces historical patterns. AGGREGATION measures systemic fragility. Combined, they paint a complete picture that no single query can. Using all four is not redundant — it's the whole point.
 
@@ -120,7 +120,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **Real Orbit data reveals what mocks cannot.** GraphQL response shapes, rate limiting behavior, schema differences between indexed and non-indexed projects — none of these show up in unit tests. Our fallback system exists because we learned this the hard way.
 
-## What's Next 🚀
+## What's next for Orbit Sentinel
 
 1. **Multi-group orbit traversal** — Trace dependencies across GitLab groups, not just single projects
 2. **Natural language MR briefs** — Plain-English summaries for non-technical stakeholders (product managers, support engineers)
