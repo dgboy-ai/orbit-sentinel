@@ -63,9 +63,9 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 - 29 component tests (26 component + 3 app) covering DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views
 
 **Duo Agent Platform** 🔌:
-- Flow YAML at `flow/orbit-sentinel-flow.yaml` — published to AI Catalog (1 run, public)
-- Skill at `.gitlab/duo/skill.yml` — category: code_review, 3 capabilities, agent orchestration
-- MCP config at `.gitlab/duo/mcp.json` — HTTP connection to Orbit knowledge graph
+- Flow YAML at `flow/orbit-sentinel-flow.yaml` — published to AI Catalog (multiple successful runs, public)
+- Skill at `.gitlab/duo/skill.yml` (relocated to repository root for auto-detection) — category: code_review, 3 capabilities, agent orchestration
+- MCP config at `.gitlab/duo/mcp.json` (relocated to repository root for auto-detection) — HTTP connection to Orbit knowledge graph
 - 6 query recipes in `skills/orbit-sentinel/recipes/` — ready-to-use JSON for each query pattern
 
 **Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks), CI/CD via `.gitlab-ci.yml` (6 jobs, 4 stages)
