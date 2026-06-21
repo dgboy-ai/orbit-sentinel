@@ -559,7 +559,9 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           {tabs.map(([k, lbl]) => (
             <button key={k} onClick={() => { if (demo) stopDemo(); navigate(k); }}
               role="tab"
+              id={`tab-${k}`}
               aria-selected={view === k}
+              aria-controls={`tabpanel-${k}`}
               className={VIEW_QUERY_TAG[k] ? "resp-hide-query-tag" : undefined}
               style={{
               padding: "5px 10px", fontSize: 14.5, fontWeight: view === k ? 600 : 400,
@@ -750,12 +752,17 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         animation: firstLoad ? "scaleIn 0.45s cubic-bezier(0.16,1,0.3,1) both" : "none",
       }}>
         <ErrorBoundary>
-          <div style={{
-            opacity: transitioning ? 0 : 1,
-            transform: transitioning ? "translateY(6px) scale(0.99)" : "none",
-            transition: "opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1)",
-            display: "flex", flexDirection: "column", flex: 1, minHeight: 0,
-          }}>
+          <div
+            id={`tabpanel-${view}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${view}`}
+            style={{
+              opacity: transitioning ? 0 : 1,
+              transform: transitioning ? "translateY(6px) scale(0.99)" : "none",
+              transition: "opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1)",
+              display: "flex", flexDirection: "column", flex: 1, minHeight: 0,
+            }}
+          >
             {body()}
           </div>
         </ErrorBoundary>

@@ -264,6 +264,12 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <div style={{
+        position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+        overflow: "hidden", clip: "rect(0,0,0,0)", border: 0
+      }}>
+        Blast radius explorer dependency graph showing impacted connections from the analyzed files. It contains {nodes.length} nodes and {links.length} connections.
+      </div>
       <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Blast radius dependency graph showing connected services, files, and pipelines" style={{ display:"block", borderRadius:8 }} />
       {/* Floating zoom and pan controls */}
       <div style={{

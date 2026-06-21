@@ -345,7 +345,15 @@ export default function DigitalTwinGraph({ graph }: Props) {
           <div style={{ fontSize: 14, color:"var(--text-tertiary)", maxWidth:260, textAlign:"center" }}>Orbit data will populate the digital twin once project activity is detected.</div>
         </div>
       ) : (
-        <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Digital twin knowledge graph showing connected nodes and edges across the ecosystem" style={{ flex:1, display:"block" }} />
+        <>
+          <div style={{
+            position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+            overflow: "hidden", clip: "rect(0,0,0,0)", border: 0
+          }}>
+            Digital twin knowledge graph visualization representing the repository ecosystem. It contains {graph.nodes.length} nodes and {graph.links.length} connections. Node types present include: {Array.from(new Set(graph.nodes.map(n => n.type))).join(", ")}.
+          </div>
+          <svg ref={svgRef} width="100%" height="100%" role="img" aria-label="Digital twin knowledge graph showing connected nodes and edges across the ecosystem" style={{ flex:1, display:"block" }} />
+        </>
       )}
     </div>
   );
