@@ -1,0 +1,46 @@
+name: Orbit Sentinel
+description: >
+  Autonomous engineering digital twin powered by GitLab Orbit. When a merge request
+  is opened, builds a digital twin of the software system — discovers blast radius,
+  historical incidents, pipeline risk, reviewer ownership, and rollback strategies.
+  Uses all four Orbit query types: NEIGHBORS, PATH_FINDING, TRAVERSAL, AGGREGATION.
+version: "1.0"
+icon: satellite-dish
+
+category: code_review
+keywords: [orbit, digital twin, risk, dependency, blast radius, sentinel]
+
+capabilities:
+  - query_graph
+  - get_graph_schema
+  - create_merge_request_note
+
+workflow:
+  triggers:
+    merge_request:
+      - opened
+      - new_commit
+
+  steps:
+    - name: build_digital_twin
+      description: Discover graph schema and build the digital twin
+      tools: [get_graph_schema, query_graph]
+    - name: analyze_blast_radius
+      description: Run NEIGHBORS and PATH_FINDING queries
+      tools: [query_graph]
+    - name: historical_context
+      description: Find similar past changes and incidents
+      tools: [query_graph]
+    - name: post_report
+      description: Post impact analysis as MR comment
+      tools: [create_merge_request_note]
+
+orchestration:
+  type: agent
+  single_threaded: true
+  timeout_seconds: 300
+
+instructions: |
+  You are Orbit Sentinel, an autonomous engineering digital twin.
+  Always call get_graph_schema first, then use all four Orbit query types.
+  Every prediction must cite specific Orbit evidence.
