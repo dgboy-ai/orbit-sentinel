@@ -125,6 +125,9 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   }, [data]);
 
   const demoRef = useRef<number | null>(null);
+  const mainRef = useRef<HTMLElement | null>(null);
+  const [stepProgress, setStepProgress] = useState(0); // 0-100 for the progress bar
+  const progressRef = useRef<number | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => { ssWrite("view", view); }, [view]);
@@ -179,19 +182,49 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
 
   useEffect(() => { document.title = `Orbit Sentinel — ${VIEW_LABELS[view]}${presentMode ? " (Presentation)" : ""} | Engineering Digital Twin`; }, [view, presentMode]);
 
+  // Schedule next step using per-step duration; rebuilds whenever stepIndex or demo changes
   useEffect(() => {
     if (!demo) {
-      if (demoRef.current) { clearInterval(demoRef.current); demoRef.current = null; }
+      if (demoRef.current) { clearTimeout(demoRef.current); demoRef.current = null; }
+      if (progressRef.current) { clearInterval(progressRef.current); progressRef.current = null; }
+      setStepProgress(0);
       return;
     }
-    demoRef.current = window.setInterval(() => {
-      setStepIndex(prev => (prev + 1) % DEMO_STEPS.length);
-    }, 4000);
-    return () => { if (demoRef.current) { clearInterval(demoRef.current); } };
-  }, [demo]);
+    const stepDuration = DEMO_STEPS[stepIndex].duration;
+    const startTime = Date.now();
 
+    // Animate the thin progress bar for this step
+    if (progressRef.current) clearInterval(progressRef.current);
+    setStepProgress(0);
+    progressRef.current = window.setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, (elapsed / stepDuration) * 100);
+      setStepProgress(pct);
+      if (pct >= 100 && progressRef.current) {
+        clearInterval(progressRef.current);
+        progressRef.current = null;
+      }
+    }, 80);
+
+    // Advance to next step after this step's duration
+    demoRef.current = window.setTimeout(() => {
+      setStepIndex(prev => (prev + 1) % DEMO_STEPS.length);
+    }, stepDuration);
+
+    return () => {
+      if (demoRef.current) { clearTimeout(demoRef.current); demoRef.current = null; }
+      if (progressRef.current) { clearInterval(progressRef.current); progressRef.current = null; }
+    };
+  }, [demo, stepIndex]);
+
+  // Sync view and scroll to top on step change
   useEffect(() => {
-    if (demo) setView(DEMO_STEPS[stepIndex].view);
+    if (!demo) return;
+    setView(DEMO_STEPS[stepIndex].view);
+    // After transition completes, scroll back to top so judges can read from the beginning
+    setTimeout(() => {
+      if (mainRef.current) mainRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }, 300);
   }, [demo, stepIndex]);
 
   useEffect(() => {
@@ -665,7 +698,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           }}>
             {DEMO_STEPS[stepIndex].sublabel}
           </div>
-          <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+          <div style={{ display: "flex", gap: 4, marginTop: 4, alignItems: "center" }}>
             {DEMO_STEPS.map((_, i) => (
               <div key={i} style={{
                 width: i === stepIndex ? 16 : 6, height: 4, borderRadius: 2,
@@ -673,6 +706,12 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                 transition: "all 0.3s ease",
               }} />
             ))}
+            <span style={{
+              fontSize: 12, color: "var(--text-tertiary)", marginLeft: 8,
+              fontVariantNumeric: "tabular-nums", letterSpacing: "0.3px",
+            }}>
+              {Math.max(0, Math.ceil(DEMO_STEPS[stepIndex].duration * (1 - stepProgress / 100) / 1000))}s
+            </span>
           </div>
         </div>
       )}
@@ -746,10 +785,29 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         }}>● Presenting</div>
       )}
 
-      <main style={{
+      {/* Demo progress bar — thin stripe at bottom of header showing time left on current screen */}
+      {demo && (
+        <div style={{
+          position: "absolute", top: isMobile ? 120 : 64, left: 0, right: 0,
+          height: 3, zIndex: Z.sticky, background: "var(--overlay-04)",
+          pointerEvents: "none",
+        }}>
+          <div style={{
+            height: "100%",
+            width: `${stepProgress}%`,
+            background: `linear-gradient(90deg, ${accentColor}, ${accentColor}88)`,
+            boxShadow: `0 0 8px ${accentGlow}`,
+            transition: "width 0.08s linear",
+            borderRadius: "0 2px 2px 0",
+          }} />
+        </div>
+      )}
+
+      <main ref={mainRef} style={{
         position: "relative", zIndex: Z.base, flex: 1, padding: isMobile ? 10 : 16, overflow: "auto", minHeight: 0,
         willChange: "transform", display: "flex", flexDirection: "column",
         animation: firstLoad ? "scaleIn 0.45s cubic-bezier(0.16,1,0.3,1) both" : "none",
+        scrollBehavior: "smooth",
       }}>
         <ErrorBoundary>
           <div
