@@ -350,40 +350,51 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
                   <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
                   <ErrorBoundary><PathBrokenAnimation mrIid={data.hero.mrIid} evidence={data.evidence} /></ErrorBoundary>
                 </div>
-                <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                    <ErrorBoundary><OrbitEvidencePanel evidence={data.evidence} graph={data.graph} /></ErrorBoundary>
-                    <ErrorBoundary><IncidentIntelligence incidents={data.incidents} /></ErrorBoundary>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-                    <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 580, flex: isMobile ? "none" : 1 }}><ErrorBoundary><Suspense fallback={<PanelFallback height={580} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary></div>
-                    <ErrorBoundary><CounterfactualSimulation scenarios={data.counterfactuals} currentRisk={data.hero.riskScore} onViewDetail={() => navigate("simulation")} /></ErrorBoundary>
+                <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
+                  <ErrorBoundary><OrbitEvidencePanel evidence={data.evidence} graph={data.graph} /></ErrorBoundary>
+                  <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 580, display: "flex", flexDirection: "column" }}>
+                    <ErrorBoundary><Suspense fallback={<PanelFallback height={580} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary>
                   </div>
                 </div>
-                <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} predictions={predictions} /></ErrorBoundary>
-                <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.4fr", gap: isMobile ? 8 : 12 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><SimulateWebhook data={data} dataMode={dataMode} /></ErrorBoundary>
-                  <ErrorBoundary><RealityCheck /></ErrorBoundary>
                 </div>
               </>
             )}
-            <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
             <button onClick={() => setShowQueryInspector(!showQueryInspector)} style={{
               padding: "6px 12px", borderRadius: 6, fontSize: 14, fontWeight: 600,
               background: showQueryInspector ? "rgba(96,165,250,0.12)" : "var(--overlay-04)",
               color: showQueryInspector ? "#60a5fa" : "var(--text-secondary)",
               border: `1px solid ${showQueryInspector ? "rgba(96,165,250,0.25)" : "var(--overlay-08)"}`,
               cursor: "pointer", fontFamily: "inherit", alignSelf: "flex-end",
-            }}>🔍 {showQueryInspector ? "Hide" : "Show"} Raw Query Data</button>
+            }}>🔍 {showQueryInspector ? "Hide" : "Show"} Raw Query Payloads</button>
             {showQueryInspector && <ErrorBoundary><OrbitQueryInspector evidence={data.evidence} timings={data.queryTimings} /></ErrorBoundary>}
           </div>
         );
       case "blast-radius": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><BlastRadiusExplorer graph={data.graph} /></Suspense></ErrorBoundary>;
-      case "risk": return <ErrorBoundary><RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} /></ErrorBoundary>;
+      case "risk":
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+            <ErrorBoundary><RiskInvestigation riskData={data.riskData} evidence={data.evidence} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} mrIid={data.hero.mrIid} /></ErrorBoundary>
+            <ErrorBoundary><OrbitQueryExplorer evidence={data.evidence} /></ErrorBoundary>
+          </div>
+        );
       case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Pipelines Found" || t.label === "Ecosystem Pipelines")?.value ?? 0} /></Suspense></ErrorBoundary>;
       case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} riskScore={data.hero.riskScore} /></Suspense></ErrorBoundary>;
-      case "setup": return <ErrorBoundary><SetupWizard /></ErrorBoundary>;
-      case "predictions": return <ErrorBoundary><PredictionsTracker predictions={predictions} onVerify={onVerifyPrediction} /></ErrorBoundary>;
+      case "setup":
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+            <ErrorBoundary><SetupWizard /></ErrorBoundary>
+            <ErrorBoundary><RealityCheck /></ErrorBoundary>
+          </div>
+        );
+      case "predictions":
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
+            <ErrorBoundary><PredictionsTracker predictions={predictions} onVerify={onVerifyPrediction} /></ErrorBoundary>
+            <ErrorBoundary><ImpactCalculator riskScore={data.hero.riskScore} evidenceCount={data.evidence.length} counterfactuals={data.counterfactuals} predictions={predictions} /></ErrorBoundary>
+          </div>
+        );
       case "report": return <ErrorBoundary><ImpactReport data={data} /></ErrorBoundary>;
     }
   }, [view, data, navigate, isMobile]);
