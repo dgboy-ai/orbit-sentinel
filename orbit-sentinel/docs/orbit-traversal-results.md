@@ -2,7 +2,8 @@
 
 Tested in GitLab Duo Chat, June 2026.
 
-> **Current demo graph:** 23 nodes, 43 edges, 9 node types.  
+> **Current baseline demo graph:** 23 nodes, 43 edges, 9 node types.  
+> **Peak live graph scale:** Up to 213 nodes and 185 edges confirmed on live ecosystem test runs (e.g. MR !12).
 > Sessions below document earlier states of the project as the graph evolved during development.
 
 ## Schema Discovery

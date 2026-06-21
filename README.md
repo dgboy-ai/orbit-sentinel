@@ -41,7 +41,7 @@
 | Differentiator | Orbit Sentinel | Traditional CI/CD |
 |----------------|---------------|------------------|
 | **Visual analysis** | 40 components, 8 views, interactive D3 graphs | Text-only output |
-| **Live graph scale** | **213 nodes + 185 edges** confirmed on MR !12 — real Orbit data, not mocks | Static file diff only |
+| **Live graph scale** | **23 nodes + 43 edges** baseline demo graph (scaling up to **213 nodes + 185 edges** peak scale observed during live MR !12 test run) | Static file diff only |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION — all 4 cross-referenced per MR | Single-query or no graph data |
 | **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
@@ -59,7 +59,7 @@ The **MR Analyzer** panel accepts any GitLab merge request URL — parses the pr
 
 **Live analysis flow:**
 1. Paste MR URL → auto-extracts project + MR IID
-2. Engine fetches changed files from GitLab API (up to 5 files, CORS-free)
+2. Engine fetches changed files from GitLab API (up to 15 files, CORS-free)
 3. `DigitalTwinBuilder` executes NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION
 4. Results merged into unified graph → 8 dashboard views populate
 5. Post-merge: every prediction tracked against real outcome in Predictions Tracker

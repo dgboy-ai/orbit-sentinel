@@ -38,7 +38,7 @@ export class DigitalTwinBuilder {
   }
 
   // Cap changed files to avoid Orbit API rate limits (max queries: 1 + cap * 4 + 2)
-  private static readonly MAX_CHANGED_FILES = 5;
+  private static readonly MAX_CHANGED_FILES = 15;
 
   private async timedQuery<T>(
     queryType: string,

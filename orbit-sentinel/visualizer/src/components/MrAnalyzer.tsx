@@ -25,6 +25,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
   const [analysisDone, setAnalysisDone] = useState<string | null>(null);
   const [demosHidden, setDemosHidden] = useState(false);
   const [coldStartActive, setColdStartActive] = useState(false);
+  const [fileCapNotice, setFileCapNotice] = useState<{ analyzed: number; total: number } | null>(null);
 
   // Reset demosHidden when currentScenario changes to null (page reload/reset)
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     setLiveError(null);
     setAnalysisDone(null);
     setShowTokenInput(false);
+    setFileCapNotice(null);
   }, [currentScenario]);
 
   const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +69,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
       // Fetch actual changed files from GitLab API via engine (avoids CORS)
       let changedFiles: string[] = ["src/main.ts"];
+      let totalFilesCount = 1;
       try {
         const probeRes = await fetch(`${API_BASE_URL}/api/probe-mr-files`, {
           method: "POST",
@@ -82,9 +85,16 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           const probeData = await probeRes.json() as { files: string[] };
           if (probeData.files?.length) {
             changedFiles = probeData.files;
+            totalFilesCount = probeData.files.length;
           }
         }
       } catch { /* fallback */ }
+
+      if (totalFilesCount > 15) {
+        setFileCapNotice({ analyzed: 15, total: totalFilesCount });
+      } else {
+        setFileCapNotice(null);
+      }
 
       const endpoint = `${API_BASE_URL}${useCreds ? "/api/analyze-with-creds" : "/api/analyze"}`;
       const controller = new AbortController();
@@ -490,6 +500,16 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           color: "#ef4444", fontWeight: 500,
         }}>
           ✗ {liveError}
+        </div>
+      )}
+
+      {fileCapNotice && (
+        <div style={{
+          padding: "8px 12px", borderRadius: 6, fontSize: 13.5,
+          background: "rgba(234,179,8,0.06)", border: "1px solid rgba(234,179,8,0.2)",
+          color: "#eab308", lineHeight: 1.4,
+        }}>
+          ⚠️ <strong>File Cap limit reached:</strong> Analyzed {fileCapNotice.analyzed} of {fileCapNotice.total} changed files to respect GitLab Orbit query rate-limits.
         </div>
       )}
 
