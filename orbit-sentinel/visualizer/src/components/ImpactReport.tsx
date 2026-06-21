@@ -317,7 +317,7 @@ const SectionCard = React.memo(function SectionCard({
           background: `${col}15`, display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 20, flexShrink: 0,
         }}>{icon}</div>
-        <h3 style={{ fontSize: 19, fontWeight: 600, color: "var(--text-primary)", margin: 0 }}>{title}</h3>
+        <h3 style={{ fontSize: 19, fontWeight: 600, color: "var(--text-primary)", margin: 0, whiteSpace: "nowrap" }}>{title}</h3>
         <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${col}22, transparent)`, marginLeft: 4 }} />
       </div>
       {children}
@@ -349,6 +349,7 @@ export default function ImpactReport({ data }: Props) {
   const grad = RISK[rk].gradient;
   const isMobile = useMediaQuery("(max-width: 640px)");
   const isSmall = useMediaQuery("(max-width: 480px)");
+  const isTablet = useMediaQuery("(max-width: 900px)");
 
   const [stickyVerdict, setStickyVerdict] = useState(false);
   const verdictRef = useRef<HTMLDivElement>(null);
@@ -649,7 +650,7 @@ export default function ImpactReport({ data }: Props) {
       </div>
 
       {/* ── 2-Column Body Grid ── */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "1fr 1fr", gap: 12, alignItems: "start" }}>
         {/* Left Column */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0 }}>
           {/* ── Executive Summary ── */}
@@ -730,8 +731,8 @@ export default function ImpactReport({ data }: Props) {
             </div>
           </SectionCard>
 
-          {/* ── Risk Trajectory + Timeline side by side ── */}
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
+          {/* ── Risk Trajectory & Timeline stacked vertically ── */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <SectionCard id="sec-remediation" icon="📉" title="Trajectory" col={col}>
               <RiskSparkline points={[
                 { label: "Current", value: decisionCenter.riskReduction.current },
@@ -854,7 +855,7 @@ export default function ImpactReport({ data }: Props) {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "1fr 1fr", gap: 10 }}>
           {/* Left half: Risk bars + remediation flow */}
           <div>
             <div style={{ marginBottom: 10 }}>
@@ -885,14 +886,14 @@ export default function ImpactReport({ data }: Props) {
 
           {/* Right half: Reviewers + Tests + Rollback */}
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isTablet ? "1fr" : "1fr 1fr", gap: 8 }}>
               <div style={{ padding: "8px 12px", borderRadius: 6, background: "var(--overlay-015)", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>👤 Reviewers</div>
                 {decisionCenter.reviewers.map(r => (
                   <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 5, padding: "2px 0", fontSize: 13 }}>
                     <span style={{ width: 4, height: 4, borderRadius: "50%", background: r.role.includes("Needed") ? "#eab308" : "#22c55e", flexShrink: 0 }} />
-                    <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{r.name}</span>
-                    <span style={{ color: "var(--text-tertiary)", marginLeft: "auto", fontSize: 11 }}>{r.role}</span>
+                    <span style={{ color: "var(--text-primary)", fontWeight: 500, whiteSpace: "nowrap" }}>{r.name}</span>
+                    <span style={{ color: "var(--text-tertiary)", marginLeft: "auto", fontSize: 11, whiteSpace: "nowrap" }}>{r.role}</span>
                   </div>
                 ))}
               </div>
