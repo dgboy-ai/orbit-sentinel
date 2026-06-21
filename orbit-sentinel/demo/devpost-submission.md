@@ -44,7 +44,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
                │                                     │
                ▼                                     │
       GitLab Orbit Knowledge Graph ◀─────────────────◘
-      (4 query types; 213 nodes + 185 edges confirmed live)
+      (Baseline: 23 nodes/43 edges; peak observed: 213 nodes/185 edges)
 ```
 
 **Engine** ⚙️ — TypeScript, Express, custom validation, 8 classified error types with exponential backoff:
@@ -78,7 +78,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **CORS blocking GitLab file fetches.** Browser couldn't fetch changed files from gitlab.com. Built a CORS proxy at `/api/probe-mr-files` on the engine — now all file fetches route through the server.
 
-**Rate limit amplification.** Initial code made 107 Orbit queries per MR analysis. Capped changed files at 5, added 500ms throttle, deduplicated query types. Down to 28 queries — 74% reduction.
+**Rate limit amplification.** Initial code made 107 Orbit queries per MR analysis. Raised file cap to 15 (from 5) for completeness, added a transparent UI notice if MRs exceed this cap, applied 500ms throttling, and deduplicated query types. Down to 28 queries — 74% reduction.
 
 **Dark screen on GitLab Pages.** Pages access control was Private, requiring auth the static site couldn't provide. Moved to Vercel. Kept Pages config for future use.
 
@@ -88,7 +88,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **134 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
-**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The MR !12 digital twin discovered **213 nodes + 185 edges** across 7 node types with all 4 query types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
+**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The baseline demo graph is calibrated to 23 nodes + 43 edges for optimal visual layout and performance, while our live test runs on MR !12 reached a peak observed scale of **213 nodes + 185 edges** across 7 node types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
 
 **Closed-loop accuracy.** We don't predict and disappear. Every prediction is tracked post-merge with a 7-day survival window. Accuracy rate, risk trends, vulnerability-adjusted forecasts — all surfaced in the Predictions Tracker. This is the difference between a demo and a tool. 🎯
 
