@@ -202,15 +202,20 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
     setActiveScenario(key);
     const target = scenarios.find(s => s.key === key)?.riskAfter ?? riskScore;
     const dur = 700;
+    const startRisk = animRisk;
     const t0 = performance.now();
+    let animId: number;
     function tick(now: number) {
       const p = Math.min((now - t0) / dur, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setAnimRisk(riskScore + (target - riskScore) * eased);
-      if (p < 1) requestAnimationFrame(tick);
+      setAnimRisk(startRisk + (target - startRisk) * eased);
+      if (p < 1) {
+        animId = requestAnimationFrame(tick);
+      }
     }
-    requestAnimationFrame(tick);
-  }, [scenarios, riskScore]);
+    animId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animId);
+  }, [scenarios, riskScore, animRisk]);
 
   const failureCount = fc ?? Math.round(pipelinesTotal * 0.18);
   const failureRate = pipelinesTotal > 0 ? ((failureCount / pipelinesTotal) * 100).toFixed(1) : "N/A";
@@ -231,9 +236,11 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
     animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
   });
 
-  const futureStateIcon = activeScenario === "all" || activeScenario === "cf-3" ? "✅" : activeScenario === "cf-1" || activeScenario === "cf-2" ? "🔄" : "🔒";
-  const futureStateLabel = activeScenario === "all" || activeScenario === "cf-3" ? "Successfully Merged" : activeScenario === "cf-1" || activeScenario === "cf-2" ? "In Review" : "MR Closed";
-  const futureStateColor = activeScenario === "all" || activeScenario === "cf-3" ? "#22c55e" : activeScenario === "cf-1" || activeScenario === "cf-2" ? "#a78bfa" : "#ef4444";
+  const isMitigated = activeScenario.includes("cf-3") || sel.label.toLowerCase().includes("all mitigations");
+  const isPending = activeScenario.startsWith("cf-");
+  const futureStateIcon = isMitigated ? "✅" : isPending ? "🔄" : "🔒";
+  const futureStateLabel = isMitigated ? "Successfully Merged" : isPending ? "In Review" : sel.outcome;
+  const futureStateColor = isMitigated ? "#22c55e" : isPending ? "#a78bfa" : "#ef4444";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "0 2px" }}>
