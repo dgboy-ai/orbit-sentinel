@@ -233,8 +233,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
     const total = verified + failed;
     const accuracy = total > 0 ? Math.round((verified / total) * 100) : 0;
     const avgPredicted = items.reduce((s, i) => s + i.predictedRisk, 0) / items.length;
-    const avgActual = items.filter(i => i.actualRisk !== undefined).reduce((s, i) => s + (i.actualRisk ?? 0), 0) / items.filter(i => i.actualRisk !== undefined).length;
-    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual };
+    const hasActual = items.some(i => i.actualRisk !== undefined);
+    const avgActual = hasActual ? items.reduce((s, i) => s + (i.actualRisk ?? 0), 0) / items.filter(i => i.actualRisk !== undefined).length : 0;
+    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual, hasActual };
   }, [items]);
 
   const trendData = useMemo(() => {
@@ -303,7 +304,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <StatCard label="Stayed Shipped" value={String(stats.verified)} target={stats.verified} sub="Passed 7-day window" color="#22c55e" icon="✅" />
             <StatCard label="Reverted / Hotfixed" value={String(stats.failed)} target={stats.failed} sub="Failed within window" color="#ef4444" icon="❌" />
             <StatCard label="Prediction Accuracy" value={`${stats.accuracy}%`} suffix="%" color="#fbbf24" icon="🎯" />
-            <StatCard label="Avg Risk Score" value={`${Math.round(stats.avgPredicted * 100)}%`} sub={`Actual: ${Math.round(stats.avgActual * 100)}%`} color="#a78bfa" icon="📊" />
+            <StatCard label="Avg Risk Score" value={`${Math.round(stats.avgPredicted * 100)}%`} sub={`Actual: ${stats.hasActual ? `${Math.round(stats.avgActual * 100)}%` : "—"}`} color="#a78bfa" icon="📊" />
           </div>
         </div>
       </div>
