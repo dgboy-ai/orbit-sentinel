@@ -4,6 +4,29 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
+## Submission Readiness & Data Integrity (June 23 — Final Cleanup)
+
+### Fixed
+
+- **Hardcoded project ID purged from visible UI** — Graph node labels (`transcend/39251857` → `Orbit Sentinel Demo`), button subtitles, OrbitQueryExplorer `<pre>` block, demo metadata. Internal API request payloads unchanged (non-visible).
+- **Marketing claims removed** — "Fewer false alarms" → "Context-rich alerts" across README, JudgesTour, ProblemSection. "Saves hours per MR" → "reduces manual analysis time". "Incidents Prevented" → "Incidents Identified" (types, utils, 2 UI components). "hours of manual review" removed from ProblemSection and SimulateWebhook.
+- **Hardcoded confidence percentages replaced** — 96% in scenarios → dynamic "High". 100%/95%/75% in HistoricalContext → computed from `highestSimilarity`, `closedCount`, `totalCount`. Stale "Why 91%?" comment removed.
+- **Competitor framing removed** — "vs." → "and" in 5 component headers (SetupWizard, RiskInvestigation, RealityCheck, TaglineBanner, ImpactCalculator). "Other tools predict" → "Predict and verify". "Prevented before production" → "Verified before production".
+- **Light theme fixed** — Header background (`rgba(8,9,13,0.85)` → `var(--bg-elevated)`), mobile dropdown, loading toast, demo badge, footer bar, D3 zoom controls + legend — all changed to CSS variables.
+- **Test counts updated** — All docs: 134→135 (105 engine + 30 visualizer). Badge URL, comparison table, contributing/installation/setup guides.
+- **Docs accuracy fixes** — Clone URLs reverted to actual GitLab project path. SECURITY.md/CONTRIBUTING.md issues URLs fixed. Badge link restored.
+
+### Changed
+
+- **Graph stats labels** — "Nodes" → "Total Nodes", "Relationships" → "Total Edges", "Affected Systems" → "Affected Systems (Files + Services)", "Graph: 225 nodes" → "Full knowledge graph: 225 nodes".
+- **MR URL input starts empty** — `DEFAULT_MR_URL = ""`, Live Demo button shows project path transparently.
+- **Predictions badge** — "LIVE" → "TRACKING".
+- **ROI claims** — "$139k/yr, 121% net ROI" → "estimated dollar impact with configurable parameters".
+- **Pipeline counts in demo data** — Reduced from 132,000→1,320 and 189,000→1,890 for credibility.
+- **ImpactCalculator time label** — "2.5h manual → 5m auto" → "Configurable estimate per MR".
+
+---
+
 ## SetupWizard & UI/UX Gaps (June 20 — Polish & Gaps)
 
 ### Added
