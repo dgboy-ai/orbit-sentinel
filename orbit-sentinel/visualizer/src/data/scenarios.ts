@@ -73,7 +73,7 @@ export const SCENARIO_SAFE: VisualizationData = (() => {
     { label: "Test Pass Rate", value: "100% (247/247)", status: "success" as const },
     { label: "Reviewer Approvals", value: "2 of 2", status: "success" as const },
     { label: "Downstream Impact", value: "None detected", status: "success" as const },
-    { label: "Prediction Confidence", value: "96%", status: "success" as const },
+    { label: "Prediction Confidence", value: "High", status: "success" as const },
   ];
   d.riskData.score = 0.15;
   d.riskData.level = "LOW";

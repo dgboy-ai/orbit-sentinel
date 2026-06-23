@@ -8,7 +8,7 @@ Orbit Sentinel is a hackathon project and does not process production data. If y
 
 ## Reporting
 
-- **GitLab**: Create a confidential issue at https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/issues/new
+- **GitLab**: Create a confidential issue at https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel/-/issues/new
 - **Email**: Reach out to the project maintainer directly
 
 ## Scope

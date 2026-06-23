@@ -26,7 +26,7 @@ orbit-sentinel/
 │   │   ├── server.ts        # Express API server
 │   │   └── types.ts         # TypeScript interfaces
 │   └── tests/
-├── visualizer/      # React + Vite + D3.js frontend (29 tests, 40 components)
+├── visualizer/      # React + Vite + D3.js frontend (30 tests, 40 components)
 │   └── src/
 │       ├── components/      # 40 UI components (PanelFallback, ScanLine, PredictionsTracker, etc.)
 │       ├── constants/       # Design tokens, view definitions
@@ -42,7 +42,7 @@ orbit-sentinel/
 
 1. **Engine** — `cd engine && npm run dev` (auto-restarts on changes)
 2. **Visualizer** — `cd visualizer && npm run dev` (Vite HMR)
-3. **Tests** — `cd engine && npm test` (105 engine tests) / `cd visualizer && npx vitest run` (29 visualizer tests)
+3. **Tests** — `cd engine && npm test` (105 engine tests) / `cd visualizer && npx vitest run` (30 visualizer tests)
 4. **Typecheck** — `cd engine && npx tsc --noEmit` / `cd visualizer && npx tsc --noEmit`
 5. **Build** — `cd engine && npm run build` then `cd visualizer && npm run build`
 
@@ -67,4 +67,4 @@ git push gitlab main
 
 ## Reporting Issues
 
-File issues on [GitLab](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/issues) or [GitHub](https://github.com/dgboy-ai/orbit-sentinel/issues).
+File issues on [GitLab](https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel/-/issues) or [GitHub](https://github.com/dgboy-ai/orbit-sentinel/issues).

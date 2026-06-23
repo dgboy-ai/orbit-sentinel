@@ -48,8 +48,8 @@ What it does:
 
 ```bash
 # 1. Clone
-git clone https://gitlab.com/gitlab-ai-hackathon/transcend/39251857.git
-cd 39251857
+git clone https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel.git
+cd orbit-sentinel
 
 # 2. Engine
 cd engine
@@ -105,7 +105,7 @@ To enable the autonomous agent on merge requests:
 | Check | Expected |
 |---|---|---|
 | `npm test` in `engine/` | 105 tests passed |
-| `npx vitest run` in `visualizer/` | 29 tests passed |
+| `npx vitest run` in `visualizer/` | 30 tests passed |
 | `npm run dev` in `visualizer/` | Server starts on port 5173 |
 | Browser at `http://localhost:5173` | Interactive dashboard loads |
 | `http://localhost:5173/?demo=true` | Auto-play demo cycles through all 8 views |

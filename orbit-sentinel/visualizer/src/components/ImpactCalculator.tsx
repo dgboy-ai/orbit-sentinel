@@ -82,7 +82,7 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
   const mrsPerYear = mrsPerWeek * WEEKS_PER_YEAR;
 
   const incidentRate = riskScore * 0.42;
-  const incidentsPreventedExtrapolated = Math.round(incidentRate * mrsPerYear * 0.78);
+  const incidentsIdentifiedEstimate = Math.round(incidentRate * mrsPerYear * 0.78);
 
   const successRate = counterfactuals.length > 0 ? Math.round((1 - Math.min(...counterfactuals.map(c => c.riskAfter))) * 100) : 72;
 
@@ -148,7 +148,7 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
               <div style={{ fontSize: 24, marginBottom: 1 }}>⏱️</div>
               <AnimatedValue value={hoursPerMR} prefix="" suffix="h" color="#60a5fa" decimals={1} />
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Saved per MR</div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{manualHours}h manual → 5m auto</div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Configurable estimate per MR</div>
             </div>
             <div style={{
               padding: "10px 12px", borderRadius: 8, textAlign: "center",
@@ -179,8 +179,8 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
               background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)",
             }}>
               <div style={{ fontSize: 24, marginBottom: 1 }}>🛡️</div>
-              <AnimatedValue value={roi.incidentsPrevented} prefix="" suffix="" color="#22c55e" />
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Incidents Prevented (TP)</div>
+              <AnimatedValue value={roi.incidentsIdentified} prefix="" suffix="" color="#22c55e" />
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginTop: 2 }}>Incidents Identified (TP)</div>
               <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk caught before failure</div>
             </div>
             <div style={{

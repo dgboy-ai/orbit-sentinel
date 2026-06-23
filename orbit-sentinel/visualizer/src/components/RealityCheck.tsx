@@ -39,7 +39,7 @@ export default function RealityCheck() {
             <div style={{ fontSize: 19, fontWeight: 800, color: "var(--text-primary)" }}>
               Why Orbit Sentinel Wins
               <span style={{ marginLeft: 8, fontSize: 13, color: "var(--text-tertiary)", fontWeight: 400, fontStyle: "italic" }}>
-                — Traditional CI/CD vs. Digital Twin Intelligence
+                — Traditional CI/CD and Digital Twin Intelligence
               </span>
             </div>
           </div>

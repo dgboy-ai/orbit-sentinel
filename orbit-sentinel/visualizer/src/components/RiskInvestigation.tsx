@@ -579,7 +579,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)" }}>Orbit Verdict</span>
           </div>
 
-          {/* Traditional CI/CD vs Orbit Sentinel Verdict Comparison */}
+          {/* Traditional CI/CD and Orbit Sentinel Verdict Comparison */}
           <div style={{
             display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12,
             marginBottom: 12, padding: "12px", borderRadius: 8,

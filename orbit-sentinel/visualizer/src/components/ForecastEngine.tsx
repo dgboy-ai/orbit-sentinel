@@ -677,7 +677,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             ))}
           </div>
 
-          {/* Explainable Confidence Card (Why 91%?) */}
+          {/* Explainable Confidence Card */}
           <div style={{
             marginTop: 10, padding: "10px 14px", borderRadius: 8,
             background: "rgba(0, 0, 0, 0.25)", border: "1px solid rgba(255, 255, 255, 0.05)",

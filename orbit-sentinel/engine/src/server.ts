@@ -286,7 +286,7 @@ app.get('/api/demo', (req, res) => {
     mrTitle: 'test sentinel',
     digitalTwin: {
       nodes: [
-        { id: 'repo:1', label: 'transcend/39251857', type: 'Project', properties: {} },
+        { id: 'repo:1', label: 'Orbit Sentinel Demo', type: 'Project', properties: {} },
         { id: 'u:1', label: '@trueboy1123', type: 'User', properties: {}, riskScore: 0.8 },
         { id: 'mr:10', label: 'MR !10: analyze this MR', type: 'MergeRequest', properties: {}, riskScore: 0.75 },
         { id: 'mr:1', label: 'MR !1: test sentinel', type: 'MergeRequest', properties: {}, riskScore: 0.15 },
@@ -335,7 +335,7 @@ app.get('/api/demo', (req, res) => {
         { source: 'inc:2', target: 'mr:10', type: 'CAUSED_INCIDENT' },
       ],
       metadata: {
-        projectPath: 'gitlab-ai-hackathon/transcend/39251857',
+        projectPath: 'orbit-sentinel/demo',
         mrIid: 10,
         branch: 'test-sentinel',
         timestamp: new Date().toISOString(),

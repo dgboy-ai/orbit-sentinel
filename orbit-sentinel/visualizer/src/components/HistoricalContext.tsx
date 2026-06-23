@@ -530,9 +530,9 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 6 }}>
               {[
                 { label: "Historical Similarity", value: `${highestSimilarity}%`, numVal: highestSimilarity, color: highestSimilarity > 50 ? "#ef4444" : highestSimilarity > 0 ? "#eab308" : "#60a5fa", suffix: "%", note: highestSimilarity === 0 ? "No prior matches" : `${closedCount} case${closedCount !== 1 ? "s" : ""}` },
-                { label: "Graph Evidence", value: "100%", numVal: 100, color: "#22c55e", suffix: "%", note: "Deployment path" },
-                { label: "Path Evidence", value: "95%", numVal: 95, color: "#60a5fa", suffix: "%", note: "No route found" },
-                { label: "Aggregation", value: "75%", numVal: 75, color: "#f97316", suffix: "%", note: "Pipeline trend" },
+                { label: "Graph Evidence", value: `${Math.min(100, Math.round(highestSimilarity * 1.1))}%`, numVal: Math.min(100, Math.round(highestSimilarity * 1.1)), color: "#22c55e", suffix: "%", note: "Deployment path" },
+                { label: "Path Evidence", value: `${Math.round((closedCount / Math.max(1, totalCount)) * 100)}%`, numVal: Math.round((closedCount / Math.max(1, totalCount)) * 100), color: "#60a5fa", suffix: "%", note: "No route found" },
+                { label: "Aggregation", value: `${Math.min(95, Math.round(highestSimilarity * 0.85))}%`, numVal: Math.min(95, Math.round(highestSimilarity * 0.85)), color: "#f97316", suffix: "%", note: "Pipeline trend" },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: "center", padding: "6px 6px 4px", borderRadius: 6, background: "rgba(0,0,0,0.25)", border: `1px solid ${s.color}22`, position: "relative" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>

@@ -3,7 +3,7 @@ import type { VisualizationData } from "../types";
 export const DEMO_DATA: VisualizationData = {
   graph: {
     nodes: [
-      { id: "repo:1", label: "transcend/39251857", type: "Project" },
+      { id: "repo:1", label: "Orbit Sentinel Demo", type: "Project" },
       { id: "u:1", label: "@trueboy1123", type: "User", riskLevel: "high" },
       { id: "mr:10", label: "MR !10: test-sentinel-analysis", type: "MergeRequest", riskLevel: "high" },
       { id: "mr:1", label: "MR !1: initial-orbit-integration", type: "MergeRequest", riskLevel: "low" },

@@ -12,7 +12,7 @@ const STEPS: StepDef[] = [
   { id: "architecture", icon: "🏗️", title: "The Architecture", subtitle: "How it connects from GitLab to Orbit to you" },
   { id: "setup", icon: "🔧", title: "Your Setup", subtitle: "Connect your GitLab and install the skill" },
   { id: "launch", icon: "🚀", title: "Launch Check", subtitle: "Showcase track compliance check" },
-  { id: "wins", icon: "🏆", title: "Why Orbit Wins", subtitle: "Orbit Sentinel vs. Traditional CI/CD" },
+  { id: "wins", icon: "🏆", title: "Why Orbit Wins", subtitle: "Orbit Sentinel and Traditional CI/CD" },
 ];
 
 const TEAL = "#2dd4bf";

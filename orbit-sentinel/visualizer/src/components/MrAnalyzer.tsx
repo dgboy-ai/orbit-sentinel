@@ -612,7 +612,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                     {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
                   </span>
                   <span style={{ fontSize: 14, fontWeight: 400, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
-                    For gitlab-ai-hackathon/transcend/39251857 · MR !12
+                    For any indexed GitLab project with a merge request
                   </span>
                 </div>
                 {analyzing && (

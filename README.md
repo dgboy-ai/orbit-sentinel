@@ -2,7 +2,7 @@
 
 > AI predicts code. Orbit Sentinel predicts **consequences**.
 
-[![Tests](https://img.shields.io/badge/tests-134%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-135%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab-transcend.devpost.com)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)
@@ -13,8 +13,8 @@
 
 | 🤔 The Problem | 🛰️ Orbit Sentinel (Solution) | 📊 Quantified Impact |
 | :--- | :--- | :--- |
-| **Manual review** per MR takes hours — still misses critical dependencies & blockers | **4 Orbit queries** automatically build a digital twin of every MR in seconds | **Fewer false alarms** compared to noisy, CI-only gatekeeping |
-| CI checks if code builds — **never if it is safe or correct to deploy** | Predicts outcomes using **repository memory**, not just pipeline status | **Actionable remediation** for every risk identified |
+| **Manual review** per MR takes hours — still misses critical dependencies & blockers | **4 Orbit queries** automatically build a digital twin of every MR in seconds | **Context-rich alerts** with cross-referenced graph evidence |
+| CI checks syntax — Orbit Sentinel checks **system-wide impact** | Predicts outcomes using **repository memory**, not just pipeline status | **Actionable remediation** for every risk identified |
 | **Historical failures invisible** at merge time, leading to repeated incidents | Posts **proactive remediation** on the MR before developer time is wasted | **Instant verification** instead of hours of manual codebase inspection |
 
 ![Orbit Sentinel Architecture](orbit-sentinel/docs/screenshots/architecture.png)
@@ -45,7 +45,7 @@
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION — all 4 cross-referenced per MR | Single-query or no graph data |
 | **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
-| **Test coverage** | **134 tests** (105 engine + 29 visualizer) — zero `as any` in production code | Minimal or no test suite |
+| **Test coverage** | **135 tests** (105 engine + 30 visualizer) — zero `as any` in production code | Minimal or no test suite |
 | **Deployment** | Vercel + Render, Docker Compose, CI/CD (6 jobs, 4 stages) | Manual setup |
 | **Onboarding** | Judge's Tour, auto-demo, setup wizard, keyboard shortcuts | No UX |
 
@@ -108,7 +108,7 @@ Orbit Sentinel consists of three core layers designed for robustness and perform
 | **Markdown Reporter** | MR notification | Composes and automatically posts formatted reports to MR comments |
 
 ### 2. The Visualizer (React, D3.js & Vite)
-> Deployed on Vercel • Tested with 29 component tests
+> Deployed on Vercel • Tested with 30 component tests
 
 *   **40 Modular Components:** Written with zero external CSS files, relying on a centralized 4px grid design token system.
 *   **Responsive Across 3 Breakpoints:** Optimized from 360px (mobile) to 768px+ (wide desktop screens).
@@ -185,8 +185,8 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 | | |
 |--|--|
 | **Deployed** | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
-| **Tests** | **134 passing** (105 engine · 29 visualizer) |
-| **Live Orbit Data** | Real graph data for project ID **39251857** (222+ nodes, 187+ edges) |
+| **Tests** | **135 passing** (105 engine · 30 visualizer) |
+| **Live Orbit Data** | Real graph data captured from a production GitLab project (222+ nodes, 187+ edges) |
 | **Quick Demos** | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
 | **Fallback** | Grep-based file analysis when Orbit unreachable — degraded mode banner in UI |
 | **Closed Loop** | Predictions tracked post-merge with accuracy scoring and 7-day survival window |

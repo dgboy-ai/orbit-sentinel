@@ -52,16 +52,16 @@ export function computeROI(predictions: PredictionRecord[], mrsPerWeek = 15, hou
   const costPerMR = sentinelHours * hourlyRate;
   const mrsPerYear = mrsPerWeek * WEEKS_PER_YEAR;
 
-  const incidentsPrevented = truePositives;
-  const incidentsCostAvoided = incidentsPrevented * incidentCost;
+  const incidentsIdentified = truePositives;
+  const incidentsCostImpact = incidentsIdentified * incidentCost;
   const falseNegativeCost = falseNegatives * incidentCost;
   const analysisCost = costPerYear;
-  const netSavings = incidentsCostAvoided + (hoursPerMR * mrsPerYear * hourlyRate) - falseNegativeCost;
+  const netSavings = incidentsCostImpact + (hoursPerMR * mrsPerYear * hourlyRate) - falseNegativeCost;
   const netROI = analysisCost > 0 ? Math.round((netSavings / analysisCost) * 100) : 0;
 
   return {
     hoursPerMR, hoursPerYear, costPerYear, costPerMR,
-    incidentsPrevented,
+    incidentsIdentified,
     falsePositiveCost: falsePositives * (manualHoursPerMR * hourlyRate),
     falseNegativeCost,
     netROI, accuracyPercent,

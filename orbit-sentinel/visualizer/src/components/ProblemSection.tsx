@@ -40,9 +40,9 @@ const PROBLEM_SOLUTION: ProblemCol[] = [
     icon: "📊",
     title: "Quantified Impact",
     items: [
-      <span key={1}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Fewer false alarms</strong> compared to noisy, CI-only alerts</span>,
+      <span key={1}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Context-rich alerts</strong> with cross-referenced graph evidence</span>,
       <span key={2}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Actionable remediation</strong> for every risk found</span>,
-      <span key={3}>Deployment blocks detected in <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>seconds</strong> vs. hours of manual review</span>,
+      <span key={3}>Deployment blocks detected in <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>seconds</strong> vs. traditional manual review</span>,
     ],
     color: "#60a5fa",
     bg: "rgba(96,165,250,0.02)",
@@ -175,7 +175,7 @@ export default function ProblemSection() {
         {[
           { label: "Orbit Query Types", value: "4", color: "#a78bfa" },
           { label: "Digital Twin Nodes", value: "23", color: "#60a5fa" },
-          { label: "Total Tests", value: "134", color: "#34d399" },
+          { label: "Total Tests", value: "135", color: "#34d399" },
           { label: "Time per MR", value: "~5m", color: "#fbbf24" },
         ].map(stat => (
           <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>

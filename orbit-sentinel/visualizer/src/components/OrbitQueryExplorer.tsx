@@ -142,7 +142,7 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
 {JSON.stringify({
   query: current.queryType,
   params: {
-    project: "gitlab-ai-hackathon/transcend/39251857",
+    project: "your-namespace/your-project",
     mrIid: 10,
     depth: current.queryType === "NEIGHBORS" ? 2 : undefined,
     similarity: current.queryType === "TRAVERSAL" ? 0.5 : undefined,

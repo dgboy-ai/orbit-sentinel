@@ -17,7 +17,7 @@ export default function TaglineBanner() {
         <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
           <span style={{ fontSize: 15, color: "var(--text-tertiary)", flexShrink: 0, marginTop: 1 }}>🤖</span>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Traditional AI</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Code AI</div>
             <div style={{ fontSize: 15, color: "var(--text-secondary)" }}>Explains code</div>
           </div>
         </div>

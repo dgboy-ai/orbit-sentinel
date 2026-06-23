@@ -114,7 +114,7 @@ export interface ROIMetrics {
   hoursPerYear: number;
   costPerYear: number;
   costPerMR: number;
-  incidentsPrevented: number;
+  incidentsIdentified: number;
   falsePositiveCost: number;
   falseNegativeCost: number;
   netROI: number;

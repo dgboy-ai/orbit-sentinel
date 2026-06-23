@@ -52,7 +52,7 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 ## How we built it
 
 ```
-GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D3, 29 tests)
+GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D3, 30 tests)
                │                                     │
                ▼                                     │
       GitLab Orbit Knowledge Graph ◀─────────────────◘
@@ -72,7 +72,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 - Design token system: centralized colors, z-index tiers, animation presets, spacing scale
 - Judge's Tour (`?judge=true`) 🧑‍⚖️ — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
 - Theme toggle (light/dark) persisted to localStorage 🌗
-- 29 component tests (26 component + 3 app) covering DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views
+- 30 component tests (27 component + 3 app) covering DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views
 
 **Duo Agent Platform** 🔌:
 - Flow YAML at `flow/orbit-sentinel-flow.yaml` — published to AI Catalog (multiple successful runs, public)
@@ -82,7 +82,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **Deployment** 🚀 — Vercel (visualizer), Render (engine), Docker Compose (full stack with health checks), CI/CD via `.gitlab-ci.yml` (6 jobs, 4 stages)
 
-**Testing** ✅ — 134 tests (105 engine + 29 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
+**Testing** ✅ — 135 tests (105 engine + 30 visualizer) — Orbit client error handling, all 4 query types, similarity engine edge cases, risk thresholds, twin construction, rollback strategies, remediation planning, component rendering
 
 ## Challenges we ran into
 
@@ -98,7 +98,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 ## Accomplishments that we're proud of
 
-**134 tests.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
+**135 tests.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
 **Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The baseline demo graph is calibrated to 23 nodes + 43 edges for optimal visual layout and performance, while our live test runs on MR !12 reached a peak observed scale of **213 nodes + 185 edges** across 18 node types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
 
