@@ -207,7 +207,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       setLiveError("Engine not available");
       return;
     }
-    setUrl(DEFAULT_MR_URL);
+    setUrl("https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/12");
     setParsed({ project: "gitlab-ai-hackathon/transcend/39251857", mrIid: 12 });
     setAnalyzing(true);
     setLiveError(null);
