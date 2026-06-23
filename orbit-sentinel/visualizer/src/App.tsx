@@ -152,7 +152,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     try {
       if (apiService.isApiAvailable()) {
         const liveData = await apiService.getDemoData();
-        setData(liveData);
+        setData(liveData?.report || liveData);
         setDataMode("live");
       } else {
         setData(DEMO_DATA);
@@ -186,7 +186,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     return () => clearTimeout(t);
   }, [loading]);
 
-  const rk = data ? riskScoreToKey(data.hero.riskScore) : riskScoreToKey(0.5);
+  const rk = riskScoreToKey(data?.hero?.riskScore ?? 0.5);
   const accentColor = RISK[rk].hex;
   const accentGlow = RISK[rk].glow;
 

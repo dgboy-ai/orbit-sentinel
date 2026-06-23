@@ -220,3 +220,12 @@ describe("OrbitQueryInspector", () => {
     expect(screen.getByText(/"NEIGHBORS"/)).toBeInTheDocument();
   });
 });
+
+import App from "../App";
+
+describe("App Component", () => {
+  it("renders the main App without crashing", () => {
+    const { container } = render(<App />);
+    expect(container).toBeTruthy();
+  });
+});
