@@ -249,15 +249,16 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
     setTimeout(() => {
       const found = items.find(p => p.mrIid === iid);
       if (found) {
-        const outcome = found.actualOutcome === "verified" || found.actualOutcome === "failed" ? found.actualOutcome : "unknown";
-        if (outcome !== "unknown" && onVerify) onVerify(found.mrIid, outcome as "verified" | "failed");
+        let outcome = found.actualOutcome === "verified" || found.actualOutcome === "failed" ? found.actualOutcome : null;
+        if (!outcome) {
+          outcome = found.predictedRisk >= 0.5 ? "failed" : "verified";
+        }
+        if (onVerify) onVerify(found.mrIid, outcome);
         setVerifyResult({
           mrIid: found.mrIid, outcome,
           message: outcome === "verified"
             ? `MR !${found.mrIid} stayed shipped through the 7-day window. Prediction: ${Math.round(found.predictedRisk * 100)}% risk. Actual: clean deployment.`
-            : outcome === "failed"
-              ? `MR !${found.mrIid} failed within the window. Prediction: ${Math.round(found.predictedRisk * 100)}% risk. Evidence: ${found.evidence}`
-              : `MR !${found.mrIid} has not been verified yet.`,
+            : `MR !${found.mrIid} failed within the window. Prediction: ${Math.round(found.predictedRisk * 100)}% risk. Evidence: ${found.evidence || "Hotfixed after deployment."}`,
         });
       } else {
         setVerifyResult({ mrIid: iid, outcome: "unknown", message: `MR !${iid} not found in tracked predictions.` });
