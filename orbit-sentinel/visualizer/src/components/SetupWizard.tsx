@@ -137,7 +137,7 @@ function MissionStep({ data }: { data?: any }) {
   ];
   const impacts = [
     { value: 78, suffix: "%", label: "Fewer Orbit Queries", detail: "Rate limiting cut queries from 107 → 23 per analysis", sub: "MAX_CHANGED_FILES=5 + 500ms throttle" },
-    { value: 3, suffix: " High", label: "Risk Signals Detected", detail: "Bus factor, zero coverage, no reviewers — real findings", sub: `From ${totalNodes}-node digital twin on project 39251857` },
+    { value: 3, suffix: " High", label: "Risk Signals Detected", detail: "Bus factor, zero coverage, no reviewers — real findings", sub: `From ${totalNodes}-node digital twin on indexed project` },
     { value: totalNodes, suffix: " Nodes", label: "Digital Twin Graph", detail: "Built from all 4 Orbit query types in a single pass", sub: `${totalEdges} relationships discovered` },
     { value: 4, suffix: "/4", label: "Orbit Query Types", detail: "NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION", sub: "All executed, all real, no mocks" },
   ];
