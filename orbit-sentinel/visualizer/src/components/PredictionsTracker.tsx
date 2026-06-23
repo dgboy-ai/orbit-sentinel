@@ -235,7 +235,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
     const avgPredicted = items.reduce((s, i) => s + i.predictedRisk, 0) / items.length;
     const hasActual = items.some(i => i.actualRisk !== undefined);
     const avgActual = hasActual ? items.reduce((s, i) => s + (i.actualRisk ?? 0), 0) / items.filter(i => i.actualRisk !== undefined).length : 0;
-    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual, hasActual, demoMode: !items.some(i => i.source === "live") };
+    const liveCount = items.filter(i => i.source === "live").length;
+    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual, hasActual, liveCount };
   }, [items]);
 
   const trendData = useMemo(() => {
@@ -283,7 +284,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.05)", filter: "blur(60px)", pointerEvents: "none" }} />
 
         <div style={{ position: "relative", zIndex: 1 }}>
-          {stats.demoMode && (
+          {stats.liveCount === 1 && (
           <div style={{
             background: "var(--overlay-90)", color: "var(--bg-primary)",
             borderRadius: 16, padding: "12px 18px", marginBottom: 12,
@@ -294,7 +295,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           }}>
             <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>💬</span>
             <div>
-              <strong>First visit?</strong> Showing demo examples. Run <strong>Live Analysis</strong> on any MR — demos disappear and only your real predictions appear.
+              <strong>One more step!</strong> Run live analysis on <strong>one more MR</strong> — demo examples will disappear and only your real predictions remain.
             </div>
           </div>
           )}
