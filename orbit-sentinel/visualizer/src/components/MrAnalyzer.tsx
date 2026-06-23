@@ -14,9 +14,9 @@ interface MrAnalyzerProps {
 }
 
 export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScenario, onAnalyzeStart }: MrAnalyzerProps) {
-  const DEFAULT_MR_URL = "https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/12";
+  const DEFAULT_MR_URL = "";
   const [url, setUrl] = useState(DEFAULT_MR_URL);
-  const [parsed, setParsed] = useState<{ project: string; mrIid: number } | null>({ project: "gitlab-ai-hackathon/transcend/39251857", mrIid: 12 });
+  const [parsed, setParsed] = useState<{ project: string; mrIid: number } | null>(null);
   const [token, setToken] = useState("");
   const [showToken, setShowToken] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -612,7 +612,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                     {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
                   </span>
                   <span style={{ fontSize: 14, fontWeight: 400, color: "var(--text-tertiary)", lineHeight: 1.3 }}>
-                    Queries real Orbit API against any indexed GitLab project
+                    For gitlab-ai-hackathon/transcend/39251857 · MR !12
                   </span>
                 </div>
                 {analyzing && (
