@@ -85,7 +85,8 @@ function loadLivePredictions(): PredictionRecord[] {
   }
 }
 
-export function loadPredictions(): PredictionRecord[] {
+export function loadPredictions(mode?: "demo" | "live"): PredictionRecord[] {
+  if (mode === "demo") return DEMO_PREDICTIONS;
   const live = loadLivePredictions();
   if (live.length > 0) return live;
   return DEMO_PREDICTIONS;

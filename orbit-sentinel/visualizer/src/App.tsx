@@ -113,7 +113,11 @@ export default function App() {
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
   const [showQueryLog, setShowQueryLog] = useState(false);
   const [showQueryInspector, setShowQueryInspector] = useState(false);
-const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPredictions());
+const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
+    const dm = localStorage.getItem("orbit-sentinel-predictions");
+    const mode: "demo" | "live" = dm ? (() => { try { const p = JSON.parse(dm); return Array.isArray(p) && p.some((x: Record<string, unknown>) => x.source === "live") ? "live" : "demo"; } catch { return "demo"; } })() : "demo";
+    return loadPredictions(mode);
+  });
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -127,7 +131,11 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   const toggleTheme = useCallback(() => setDark(prev => !prev), []);
   // Save or update prediction when new data arrives from live analysis only
   useEffect(() => {
-    if (!data || !currentScenario || dataMode !== "live") return;
+    if (dataMode !== "live") {
+      setPredictions(loadPredictions("demo"));
+      return;
+    }
+    if (!data || !currentScenario) return;
     const mrIid = data.summary?.mrIid ?? data.hero?.mrIid;
     if (!mrIid) return;
     const existing = predictions.find(p => p.mrIid === mrIid);
@@ -145,7 +153,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     } else {
       savePrediction(rec);
     }
-    setPredictions(loadPredictions());
+    setPredictions(loadPredictions("live"));
   }, [data, dataMode]);
 
   const demoRef = useRef<number | null>(null);
