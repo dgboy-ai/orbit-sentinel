@@ -136,9 +136,24 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   useEffect(() => { ssWrite("scenario", currentScenario); }, [currentScenario]);
 
   const loadData = useCallback(async () => {
-    setData(DEMO_DATA);
-    setDataMode("demo");
-    setLoading(false);
+    setLoading(true);
+    setError(null);
+    try {
+      if (apiService.isApiAvailable()) {
+        const liveData = await apiService.getDemoData();
+        setData(liveData);
+        setDataMode("live");
+      } else {
+        setData(DEMO_DATA);
+        setDataMode("demo");
+      }
+    } catch (err: any) {
+      console.warn("Failed to load live data, falling back to local demo:", err);
+      setData(DEMO_DATA);
+      setDataMode("demo");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // Load data from API or fallback to demo
