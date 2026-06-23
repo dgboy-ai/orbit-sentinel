@@ -96,6 +96,8 @@ export interface QueryTimingInfo {
 
 export type PredictionCategory = "true_positive" | "true_negative" | "false_positive" | "false_negative" | "pending";
 
+export type PredictionSource = "demo" | "live";
+
 export interface PredictionRecord {
   mrIid: number;
   title: string;
@@ -107,6 +109,7 @@ export interface PredictionRecord {
   verifiedAt?: string;
   evidence?: string;
   category?: PredictionCategory;
+  source?: PredictionSource;
 }
 
 export interface ROIMetrics {

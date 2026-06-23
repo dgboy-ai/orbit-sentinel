@@ -116,9 +116,9 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch { console.warn("localStorage theme write blocked"); }
   }, [dark]);
   const toggleTheme = useCallback(() => setDark(prev => !prev), []);
-  // Save or update prediction when new data arrives from deliberate user action
+  // Save or update prediction when new data arrives from live analysis only
   useEffect(() => {
-    if (!data || !currentScenario) return;
+    if (!data || !currentScenario || dataMode !== "live") return;
     const mrIid = data.summary?.mrIid ?? data.hero?.mrIid;
     if (!mrIid) return;
     const existing = predictions.find(p => p.mrIid === mrIid);
@@ -129,14 +129,15 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       predictedLevel: data.hero?.riskLevel ?? "medium",
       actualOutcome: "pending",
       mergedAt: new Date().toISOString().split("T")[0],
+      source: "live",
     };
     if (existing) {
-      updatePrediction(mrIid, { predictedRisk: rec.predictedRisk, predictedLevel: rec.predictedLevel });
+      updatePrediction(mrIid, { predictedRisk: rec.predictedRisk, predictedLevel: rec.predictedLevel, source: "live" });
     } else {
       savePrediction(rec);
     }
     setPredictions(loadPredictions());
-  }, [data]);
+  }, [data, dataMode]);
 
   const demoRef = useRef<number | null>(null);
   const mainRef = useRef<HTMLElement | null>(null);
