@@ -15,14 +15,16 @@ function Slider({ label, value, min, max, step, unit, onChange, color }: {
 }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div style={{ flex: 1, minWidth: 140 }}>
+    <div style={{ flex: 1, minWidth: 140, padding: "4px 6px", borderRadius: 6, border: "1px solid transparent", transition: "border-color 0.2s", cursor: "pointer" }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = `${color}44`)}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", letterSpacing: "0.3px" }}>{label}</span>
-        <span style={{ fontSize: 15, fontWeight: 700, color, fontFamily: "'JetBrains Mono', monospace" }}>{value}{unit}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>{label}</span>
+        <span style={{ fontSize: 16, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 8px ${color}44` }}>{value}{unit}</span>
       </div>
-      <div style={{ position: "relative", height: 6 }}>
-        <div style={{ position: "absolute", inset: 0, borderRadius: 3, background: "var(--overlay-06)" }} />
-        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 0.15s ease", boxShadow: `0 0 6px ${color}33` }} />
+      <div style={{ position: "relative", height: 10 }}>
+        <div style={{ position: "absolute", inset: 0, borderRadius: 5, background: "var(--overlay-06)", boxShadow: "inset 0 0 4px rgba(0,0,0,0.3)" }} />
+        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 5, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 0.2s ease", boxShadow: `0 0 12px ${color}55, 0 0 4px ${color}88` }} />
         <input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(parseFloat(e.target.value))}
           style={{
             position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", margin: 0, padding: 0,
@@ -127,6 +129,17 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
           </div>
 
           {/* Sliders */}
+          <div style={{
+            marginBottom: 6, padding: "6px 12px", borderRadius: 6,
+            background: "linear-gradient(135deg, rgba(45,212,191,0.08), rgba(139,92,246,0.06))",
+            border: "1px solid rgba(45,212,191,0.2)",
+            boxShadow: "0 0 12px rgba(45,212,191,0.08), 0 0 30px rgba(45,212,191,0.04)",
+            display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--text-secondary)",
+            animation: "pulseGlow 2s ease-in-out infinite",
+          }}>
+            <span style={{ fontSize: 16 }}>✨</span>
+            <span><strong style={{ color: TEAL }}>Drag these sliders</strong> to match your team's metrics — all numbers update live</span>
+          </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 10, marginBottom: 14, ...s(0.04) }}>
             <Slider label="MRs per Week" value={mrsPerWeek} min={2} max={80} step={1} unit="" onChange={setMrsPerWeek} color="#60a5fa" />
             <Slider label="Developer $/hr" value={hourlyRate} min={30} max={250} step={5} unit="" onChange={setHourlyRate} color="#22c55e" />
