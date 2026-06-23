@@ -116,13 +116,12 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
     try { localStorage.setItem("orbit-sentinel-theme", dark ? "dark" : "light"); } catch { console.warn("localStorage theme write blocked"); }
   }, [dark]);
   const toggleTheme = useCallback(() => setDark(prev => !prev), []);
-  // Save prediction when new data arrives (from demo or live analysis)
+  // Save or update prediction when new data arrives (from demo or live analysis)
   useEffect(() => {
     if (!data) return;
     const mrIid = data.summary?.mrIid ?? data.hero?.mrIid;
     if (!mrIid) return;
     const existing = predictions.find(p => p.mrIid === mrIid);
-    if (existing) return;
     const rec: PredictionRecord = {
       mrIid,
       title: `MR !${mrIid}`,
@@ -131,7 +130,11 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       actualOutcome: "pending",
       mergedAt: new Date().toISOString().split("T")[0],
     };
-    savePrediction(rec);
+    if (existing) {
+      updatePrediction(mrIid, { predictedRisk: rec.predictedRisk, predictedLevel: rec.predictedLevel });
+    } else {
+      savePrediction(rec);
+    }
     setPredictions(loadPredictions());
   }, [data]);
 
