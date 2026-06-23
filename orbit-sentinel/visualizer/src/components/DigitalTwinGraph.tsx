@@ -31,9 +31,9 @@ function DigitalTwinStatus({ graph }: { graph: { nodes: GraphNode[]; links: Grap
   const animFailures = useAnimatedValue(highRiskCount, 1200, 400);
   return (
     <div className="resp-graph-status" style={{ display: "flex", gap: 6, padding: "6px 12px", background: "var(--overlay-02)", borderBottom: "1px solid var(--overlay-05)" }}>
-      <Stat icon="🔗" label="Nodes" value={Math.round(animNodes)} />
+      <Stat icon="🔗" label="Total Nodes" value={Math.round(animNodes)} />
       <div style={{ width: 1, background: "var(--overlay-06)" }} />
-      <Stat icon="🔀" label="Relationships" value={Math.round(animLinks)} />
+      <Stat icon="🔀" label="Total Edges" value={Math.round(animLinks)} />
       <div style={{ width: 1, background: "var(--overlay-06)" }} />
       <Stat icon="⚙️" label="Systems" value={Math.round(animServices)} />
       <div style={{ width: 1, background: "var(--overlay-06)" }} />
@@ -341,7 +341,7 @@ export default function DigitalTwinGraph({ graph: propGraph }: Props) {
             <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
               {[
                 {l:"Risk Propagation",v:"Active",c:"#eab308"},
-                {l:"Affected Systems",v:String(graph.nodes.filter(n=>n.type==="Service"||n.type==="File").length),c:"var(--text-primary)"},
+                {l:"Affected Systems (Files + Services)",v:String(graph.nodes.filter(n=>n.type==="Service"||n.type==="File").length),c:"var(--text-primary)"},
                 {l:"Predicted Failures",v:String(graph.nodes.filter(n=>n.riskLevel==="high"||n.riskLevel==="critical").length),c:"#ef4444"},
               ].map(x=>(
                 <div key={x.l} style={{ display:"flex", justifyContent:"space-between", fontSize: 12, color:"var(--text-secondary)", padding:"1px 4px" }}>

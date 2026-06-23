@@ -39,7 +39,7 @@ export default function OrbitEvidencePanel({ evidence, graph }: { evidence: Orbi
   const r = pf?.result.toLowerCase() ?? "";
   const isAlert = r.includes("no deployment path") || r.includes("cannot deploy") || r.includes("no linked pipeline");
   const conclusion = isAlert
-    ? `This MR has no path to production. Graph: ${graph?.nodes.length ?? "?"} nodes, ${graph?.links.length ?? "?"} relationships.`
+    ? `This MR has no path to production. Full knowledge graph: ${graph?.nodes.length ?? "?"} nodes, ${graph?.links.length ?? "?"} relationships.`
     : "Orbit analysis complete — see per-query results below.";
 
   const conclusionColor = isAlert ? "#ef4444" : "#22c55e";
