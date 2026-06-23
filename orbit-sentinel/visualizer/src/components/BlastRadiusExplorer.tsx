@@ -471,7 +471,7 @@ export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
             }}>
               <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600 }}>Depth</span>
               <input type="range" min={1} max={5} value={depth} onChange={e => setDepth(Number(e.target.value))}
-                style={{ flex: 1, accentColor: "#f97316", height: 2 }} />
+                style={{ flex: 1, accentColor: "#f97316", cursor: "pointer" }} />
               <span style={{ fontSize: 13, color: "#f97316", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{depth}</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, overflow: "auto" }}>

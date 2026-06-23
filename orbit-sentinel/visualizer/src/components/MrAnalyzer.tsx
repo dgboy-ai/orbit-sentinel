@@ -475,7 +475,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             >{showToken ? "Hide" : "Show"}</button>
           </div>
           <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 4 }}>
-            Token is sent once to the engine and discarded after analysis. Requires <code>read_api</code> scope.
+            🔒 Sent once via encrypted POST, never stored or logged. Requires only <code>read_api</code> scope.
           </div>
         </div>
       )}
