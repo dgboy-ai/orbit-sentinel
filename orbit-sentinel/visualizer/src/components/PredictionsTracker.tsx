@@ -757,9 +757,14 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             >
               <div style={{ fontSize: 13, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Key Pattern</div>
               <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                High-risk predictions (≥60%) that were mitigated before merge <strong style={{ color: "#22c55e" }}>all stayed shipped</strong>.
-                The 4 failures were MRs where mitigations were <strong style={{ color: "#ef4444" }}>not applied</strong>.
-                This confirms Orbit Sentinel's mitigations are effective when followed.
+                {stats.failed > 0 ? (
+                  <>High-risk predictions (≥60%) that were mitigated before merge <strong style={{ color: "#22c55e" }}>all stayed shipped</strong>.
+                  The {stats.failed} failure{stats.failed !== 1 ? "s were" : " was"} MRs where mitigations were <strong style={{ color: "#ef4444" }}>not applied</strong>.</>
+                ) : stats.verified > 0 ? (
+                  <>All {stats.verified} verified prediction{stats.verified !== 1 ? "s" : ""} stayed shipped through the 7-day window — no failures have been tracked yet.</>
+                ) : (
+                  <>Analyze and verify predictions to uncover patterns in how risk scores align with real outcomes.</>
+                )}
               </div>
             </div>
           </div>
