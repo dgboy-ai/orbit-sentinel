@@ -432,7 +432,14 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             Security findings from blast radius analysis are factored into risk predictions.
             Files with <strong style={{ color: "#ef4444" }}>critical</strong> CVEs increase the predicted risk by up to <strong style={{ color: "#eab308" }}>25%</strong>.
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 80px", gap: 6, alignItems: "center", padding: "0 12px 4px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>
+              <span>MR</span>
+              <span>File</span>
+              <span style={{ textAlign: "center" }}>Severity</span>
+              <span style={{ textAlign: "center" }}>Boost</span>
+              <span style={{ textAlign: "center" }}>Status</span>
+            </div>
             {[
               { mr: 42, file: "src/deploy/gateway.ts", severity: "critical", riskBoost: 0.25, adjustedRisk: 0.88, caught: true },
               { mr: 38, file: "src/api/auth/middleware.ts", severity: "high", riskBoost: 0.18, adjustedRisk: 0.82, caught: true },
@@ -444,7 +451,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               return (
                 <div key={v.mr} style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 70px",
+                  gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 80px",
                   gap: 6, alignItems: "center",
                   padding: "8px 12px", borderRadius: 6,
                   background: `rgba(255,255,255,0.01)`, border: "1px solid var(--overlay-04)",
@@ -570,6 +577,15 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               {sortAsc ? "↑ Oldest" : "↓ Newest"}
             </button>
           </div>
+          {!isMobile && (
+            <div style={{ display: "grid", gridTemplateColumns: "60px minmax(140px, 1fr) 90px 90px 110px", gap: 10, alignItems: "center", padding: "0 14px 6px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.45 }}>
+              <span>MR</span>
+              <span>Title</span>
+              <span style={{ textAlign: "center" }}>Predicted</span>
+              <span style={{ textAlign: "center" }}>Actual</span>
+              <span style={{ textAlign: "center" }}>Result</span>
+            </div>
+          )}
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
             {sorted.length === 0 ? (
               <div style={{ padding: "20px", textAlign: "center", fontSize: 15, color: "var(--text-tertiary)" }}>
@@ -632,7 +648,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               return (
                 <div key={item.mrIid} style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "60px minmax(130px, 1fr) 80px 80px 80px 100px",
+                  gridTemplateColumns: isMobile ? "1fr" : "60px minmax(140px, 1fr) 90px 90px 110px",
                   gap: isMobile ? 4 : 10, alignItems: "center",
                   padding: "10px 14px", borderRadius: 8,
                   background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
@@ -646,14 +662,18 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                 >
                   <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</div>
                   <div style={{ fontSize: 14, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
-                  <div style={{ textAlign: "center" }}><RiskBadge score={item.predictedRisk} /></div>
-                  <div style={{ textAlign: "center" }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>Predicted</span>
+                    <RiskBadge score={item.predictedRisk} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>Actual</span>
                     {item.actualRisk !== undefined ? <RiskBadge score={item.actualRisk} /> : <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>—</span>}
                   </div>
-                  <div style={{ textAlign: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                     {item.actualRisk !== undefined && <VerdictLabel predicted={item.predictedRisk} actual={item.actualRisk} />}
+                    <OutcomeBadge outcome={item.actualOutcome} />
                   </div>
-                  <div style={{ textAlign: "center" }}><OutcomeBadge outcome={item.actualOutcome} /></div>
                   {isHovered && item.evidence && (
                     <div style={{
                       gridColumn: "1 / -1", marginTop: 4, padding: "6px 10px", borderRadius: 4,
