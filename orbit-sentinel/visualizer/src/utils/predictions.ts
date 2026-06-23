@@ -1,6 +1,7 @@
 import type { PredictionRecord, PredictionCategory, ROIMetrics } from "../types";
 
 const STORAGE_KEY = "orbit-sentinel-predictions";
+const MIGRATION_KEY = "orbit-sentinel-predictions-v2";
 
 export function categorizePrediction(rec: PredictionRecord): PredictionCategory {
   if (rec.actualOutcome === "pending" || rec.actualOutcome === "unknown") return "pending";
@@ -67,6 +68,12 @@ export function loadPredictions(): PredictionRecord[] {
   try {
     const v = localStorage.getItem(STORAGE_KEY);
     if (!v) return [];
+    // One-time migration: clear predictions created by old preseeded/demo-data code
+    if (!localStorage.getItem(MIGRATION_KEY)) {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(MIGRATION_KEY, "1");
+      return [];
+    }
     const parsed: PredictionRecord[] = JSON.parse(v);
     return parsed.map(p => ({ ...p, category: p.category || categorizePrediction(p) }));
   } catch {
