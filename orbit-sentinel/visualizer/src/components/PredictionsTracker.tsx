@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "../utils/colors";
+import { categorizePrediction } from "../utils/predictions";
 import type { PredictionRecord } from "../types";
 
 function DualSparkline({ series, labels, height = 120 }: { series: { data: number[]; color: string; label: string }[]; labels?: string[]; height?: number }) {
@@ -217,32 +218,46 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
   const [verifying, setVerifying] = useState(false);
   const [sortAsc, setSortAsc] = useState(false);
   const [filterOutcome, setFilterOutcome] = useState<string>("all");
+  const [showOnlyLive, setShowOnlyLive] = useState(false);
   const items = preds ?? [];
 
+  const displayItems = useMemo(() => {
+    if (!showOnlyLive) return items;
+    return items.filter(i => i.source === "live");
+  }, [showOnlyLive, items]);
+
   const sorted = useMemo(() => {
-    const list = [...items];
+    const list = [...displayItems];
     if (sortAsc) list.sort((a, b) => a.mrIid - b.mrIid);
     else list.sort((a, b) => b.mrIid - a.mrIid);
     if (filterOutcome !== "all") return list.filter(i => i.actualOutcome === filterOutcome);
     return list;
-  }, [sortAsc, filterOutcome, items]);
+  }, [sortAsc, filterOutcome, displayItems]);
 
   const stats = useMemo(() => {
-    const verified = items.filter(i => i.actualOutcome === "verified").length;
-    const failed = items.filter(i => i.actualOutcome === "failed").length;
-    const total = verified + failed;
-    const accuracy = total > 0 ? Math.round((verified / total) * 100) : 0;
-    const avgPredicted = items.reduce((s, i) => s + i.predictedRisk, 0) / items.length;
-    const hasActual = items.some(i => i.actualRisk !== undefined);
-    const avgActual = hasActual ? items.reduce((s, i) => s + (i.actualRisk ?? 0), 0) / items.filter(i => i.actualRisk !== undefined).length : 0;
-    const liveCount = items.filter(i => i.source === "live").length;
-    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual, hasActual, liveCount };
-  }, [items]);
+    const verified = displayItems.filter(i => i.actualOutcome === "verified").length;
+    const failed = displayItems.filter(i => i.actualOutcome === "failed").length;
+    const totalVerified = verified + failed;
+    const withCat = displayItems.map(p => ({ ...p, category: p.category || categorizePrediction(p) }));
+    const classified = withCat.filter(p => p.category !== "pending");
+    const tp = classified.filter(p => p.category === "true_positive").length;
+    const tn = classified.filter(p => p.category === "true_negative").length;
+    const fp = classified.filter(p => p.category === "false_positive").length;
+    const fn = classified.filter(p => p.category === "false_negative").length;
+    const classTotal = tp + tn + fp + fn;
+    const classificationAccuracy = classTotal > 0 ? Math.round(((tp + tn) / classTotal) * 100) : 0;
+    const avgPredicted = displayItems.length > 0 ? displayItems.reduce((s, i) => s + i.predictedRisk, 0) / displayItems.length : 0;
+    const hasActual = displayItems.some(i => i.actualRisk !== undefined);
+    const avgActual = hasActual ? displayItems.reduce((s, i) => s + (i.actualRisk ?? 0), 0) / displayItems.filter(i => i.actualRisk !== undefined).length : 0;
+    const liveCount = displayItems.filter(i => i.source === "live").length;
+    const demoCount = displayItems.filter(i => i.source === "demo").length;
+    return { verified, failed, pending: displayItems.length - totalVerified, total: totalVerified, accuracy: classificationAccuracy, avgPredicted, avgActual, hasActual, liveCount, demoCount, tp, tn, fp, fn };
+  }, [displayItems]);
 
   const trendData = useMemo(() => {
-    const sorted = [...items].sort((a, b) => a.mrIid - b.mrIid);
+    const sorted = [...displayItems].sort((a, b) => a.mrIid - b.mrIid);
     return { predicted: sorted.map(i => i.predictedRisk), actual: sorted.map(i => i.actualRisk ?? null), labels: sorted.map(i => `!${i.mrIid}`) };
-  }, [items]);
+  }, [displayItems]);
 
   const handleVerify = useCallback(() => {
     const iid = parseInt(verifyMrIid, 10);
@@ -296,12 +311,25 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 10, background: "rgba(96,165,250,0.15)", color: "#60a5fa", fontWeight: 700, border: "1px solid rgba(96,165,250,0.2)" }}>TRACKING</span>
             </div>
             <div style={{ fontSize: 14, color: "var(--text-tertiary)" }}>
-              Tracking <strong style={{ color: "var(--text-primary)" }}>{items.length}</strong> MRs · <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.verified}</span> verified · <span style={{ color: "#ef4444", fontWeight: 600 }}>{stats.failed}</span> failed · <span style={{ color: "#60a5fa", fontWeight: 600 }}>{stats.accuracy}%</span> accuracy
+              Tracking <strong style={{ color: "var(--text-primary)" }}>{displayItems.length}</strong> MRs{stats.demoCount > 0 && stats.liveCount > 0 ? <>
+                · <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.liveCount}</span> live · <span style={{ color: "#a78bfa", fontWeight: 600 }}>{stats.demoCount}</span> demo
+              </> : null} · <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.verified}</span> shipped · <span style={{ color: "#ef4444", fontWeight: 600 }}>{stats.failed}</span> failed
             </div>
+            <button onClick={() => setShowOnlyLive(!showOnlyLive)}
+              style={{
+                padding: "4px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer", borderRadius: 4,
+                border: `1px solid ${showOnlyLive ? "rgba(34,197,94,0.3)" : "var(--overlay-08)"}`,
+                background: showOnlyLive ? "rgba(34,197,94,0.1)" : "transparent",
+                color: showOnlyLive ? "#22c55e" : "var(--text-tertiary)",
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = showOnlyLive ? "rgba(34,197,94,0.15)" : "var(--overlay-04)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = showOnlyLive ? "rgba(34,197,94,0.1)" : "transparent"; }}
+            >{showOnlyLive ? "● Live Only" : "○ All Predictions"}</button>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: 8 }}>
-            <StatCard label="Total MRs Tracked" value={String(items.length)} target={items.length} color="#60a5fa" icon="📋" />
+            <StatCard label="Total MRs Tracked" value={String(displayItems.length)} target={displayItems.length} color="#60a5fa" icon="📋" />
             <StatCard label="Stayed Shipped" value={String(stats.verified)} target={stats.verified} sub="Passed 7-day window" color="#22c55e" icon="✅" />
             <StatCard label="Reverted / Hotfixed" value={String(stats.failed)} target={stats.failed} sub="Failed within window" color="#ef4444" icon="❌" />
             <StatCard label="Prediction Accuracy" value={`${stats.accuracy}%`} suffix="%" color="#fbbf24" icon="🎯" />
@@ -309,6 +337,18 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           </div>
         </div>
       </div>
+
+      {stats.demoCount > 0 && stats.liveCount > 0 && !showOnlyLive && (
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "8px 14px", borderRadius: 6,
+          background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.12)",
+          fontSize: 13, color: "var(--text-secondary)", animation: "fadeSlideUp 0.3s ease",
+        }}>
+          <span style={{ fontSize: 14 }}>💡</span>
+          <span><strong style={{ color: "#a78bfa" }}>{stats.demoCount} demo predictions</strong> with verified outcomes shown as illustration. Click <strong style={{ color: "#22c55e" }}>● Live Only</strong> above to see just your real data.</span>
+        </div>
+      )}
 
       {/* CLOSED-LOOP NARRATIVE */}
       <div className="card" style={{
@@ -353,7 +393,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
             {(["true_positive","true_negative","false_positive","false_negative"] as const).map(cat => {
-              const count = items.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === cat).length;
+              const count = displayItems.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === cat).length;
               const labels: Record<string, { label: string; short: string; color: string; desc: string }> = {
                 true_positive: { label: "True Positive", short: "TP", color: "#22c55e", desc: "High risk → failed" },
                 true_negative: { label: "True Negative", short: "TN", color: "#60a5fa", desc: "Low risk → shipped" },
@@ -443,7 +483,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <span style={{ textAlign: "center" }}>Boost</span>
               <span style={{ textAlign: "center" }}>Status</span>
             </div>
-            {items.filter(p => p.predictedRisk >= 0.3).map((p, i) => {
+            {displayItems.filter(p => p.predictedRisk >= 0.3).map((p, i) => {
               const sev = p.predictedRisk >= 0.8 ? "critical" : p.predictedRisk >= 0.6 ? "high" : p.predictedRisk >= 0.3 ? "medium" : "low";
               const sevColor = sev === "critical" ? "#ef4444" : sev === "high" ? "#f97316" : "#eab308";
               const boost = Math.max(0, Math.round((p.predictedRisk - 0.5) * 100)) / 100;
@@ -589,7 +629,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
             {sorted.length === 0 ? (
               <div style={{ padding: "24px 20px", textAlign: "center", fontSize: 15, color: "var(--text-tertiary)" }}>
-                {items.length === 0 ? (
+                {displayItems.length === 0 ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
                     <span style={{ fontSize: 32 }}>📊</span>
                     <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>No predictions yet</span>
@@ -734,7 +774,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             >
               <div style={{ fontSize: 13, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Average Error Margin</div>
               <div style={{ fontSize: 26, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.3)" }}>
-                {stats.total > 0 ? `${Math.round(items.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / items.length * 100)}%` : "—"}
+                {stats.total > 0 ? `${Math.round(displayItems.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / displayItems.length * 100)}%` : "—"}
               </div>
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 2 }}>Prediction vs actual risk score delta</div>
             </div>
@@ -748,7 +788,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             >
               <div style={{ fontSize: 13, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Failed MRs Caught</div>
               <div style={{ fontSize: 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
-                {stats.failed > 0 ? `${Math.round((items.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
+                {stats.failed > 0 ? `${Math.round((displayItems.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
               </div>
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 2 }}>High-risk predictions that correctly flagged failures</div>
             </div>
