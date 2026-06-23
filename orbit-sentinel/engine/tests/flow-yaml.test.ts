@@ -8,7 +8,7 @@ const FLOW_PATH = path.resolve(__dirname, "../../flow/orbit-sentinel-flow.yaml")
 
 describe("Duo flow YAML", () => {
   let flowContent: string;
-  let flow: Record<string, unknown>;
+  let flow: any;
 
   it("file exists", () => {
     expect(fs.existsSync(FLOW_PATH)).toBe(true);
@@ -17,7 +17,7 @@ describe("Duo flow YAML", () => {
   it("parses as valid YAML", async () => {
     flowContent = fs.readFileSync(FLOW_PATH, "utf-8");
     const { default: yaml } = await import("js-yaml");
-    flow = yaml.load(flowContent) as Record<string, unknown>;
+    flow = yaml.load(flowContent);
     expect(flow).toBeTruthy();
     expect(typeof flow).toBe("object");
   });
@@ -27,7 +27,7 @@ describe("Duo flow YAML", () => {
   });
 
   it("has components section", () => {
-    const components = flow.components as Array<Record<string, unknown>>;
+    const components = flow.components as any[];
     expect(Array.isArray(components)).toBe(true);
     expect(components.length).toBeGreaterThan(0);
     expect(components[0].name).toBe("orbit_sentinel");
@@ -35,7 +35,7 @@ describe("Duo flow YAML", () => {
   });
 
   it("has toolset with all 3 required tools", () => {
-    const components = flow.components as Array<Record<string, unknown>>;
+    const components = flow.components as any[];
     const toolset = components[0].toolset as string[];
     expect(toolset).toContain("get_graph_schema");
     expect(toolset).toContain("query_graph");
@@ -44,16 +44,16 @@ describe("Duo flow YAML", () => {
   });
 
   it("has prompts section with sentinel_prompt", () => {
-    const prompts = flow.prompts as Array<Record<string, unknown>>;
+    const prompts = flow.prompts as any[];
     expect(Array.isArray(prompts)).toBe(true);
-    const prompt = prompts.find((p: Record<string, unknown>) => p.prompt_id === "sentinel_prompt");
+    const prompt = prompts.find((p: any) => p.prompt_id === "sentinel_prompt");
     expect(prompt).toBeTruthy();
     expect(prompt.name).toBe("Orbit Sentinel Prompt");
   });
 
   it("prompt template contains all 8 steps", () => {
-    const prompts = flow.prompts as Array<Record<string, unknown>>;
-    const prompt = prompts.find((p: Record<string, unknown>) => p.prompt_id === "sentinel_prompt");
+    const prompts = flow.prompts as any[];
+    const prompt = prompts.find((p: any) => p.prompt_id === "sentinel_prompt");
     const template = prompt.prompt_template as { system: string };
     const system = template.system;
     const stepNumbers = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -70,21 +70,21 @@ describe("Duo flow YAML", () => {
   });
 
   it("has flow section with entry_point", () => {
-    const flowSection = flow.flow as Record<string, unknown>;
+    const flowSection = flow.flow as any;
     expect(flowSection).toBeTruthy();
     expect(flowSection.entry_point).toBe("orbit_sentinel");
   });
 
   it("has routers section", () => {
-    const routers = flow.routers as Array<Record<string, unknown>>;
+    const routers = flow.routers as any[];
     expect(Array.isArray(routers)).toBe(true);
     expect(routers[0].from).toBe("orbit_sentinel");
     expect(routers[0].to).toBe("end");
   });
 
   it("prompt uses all 4 Orbit query types", () => {
-    const prompts = flow.prompts as Array<Record<string, unknown>>;
-    const prompt = prompts.find((p: Record<string, unknown>) => p.prompt_id === "sentinel_prompt");
+    const prompts = flow.prompts as any[];
+    const prompt = prompts.find((p: any) => p.prompt_id === "sentinel_prompt");
     const template = prompt.prompt_template as { system: string };
     const system = template.system;
     expect(system).toContain("query_type\":\"neighbors");
@@ -94,7 +94,7 @@ describe("Duo flow YAML", () => {
   });
 
   it("has inputs section with required context", () => {
-    const components = flow.components as Array<Record<string, unknown>>;
+    const components = flow.components as any[];
     const inputs = components[0].inputs as string[];
     expect(inputs).toContain("context:goal");
     expect(inputs.length).toBe(1);
