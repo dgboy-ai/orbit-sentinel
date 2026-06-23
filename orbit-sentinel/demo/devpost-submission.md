@@ -98,7 +98,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 ## Accomplishments that we're proud of
 
-**134 tests. 93% meaningful.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
+**134 tests.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
 **Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The baseline demo graph is calibrated to 23 nodes + 43 edges for optimal visual layout and performance, while our live test runs on MR !12 reached a peak observed scale of **213 nodes + 185 edges** across 18 node types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
 

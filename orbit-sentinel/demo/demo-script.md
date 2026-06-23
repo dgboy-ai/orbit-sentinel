@@ -207,10 +207,10 @@ If video recording isn't possible, create a comprehensive static demo:
 
 ### Technical Metrics
 
-- **Response Time**: < 5 seconds for complete analysis
-- **Accuracy**: 95%+ confidence in predictions
+- **Response Time**: < 30 seconds for complete analysis (including Render cold start)
+- **Accuracy**: Continuously calibrated via post-merge verification
 - **Coverage**: All 4 Orbit query types used
-- **Reliability**: 99.9% uptime for production deployment
+- **Reliability**: Fallback degrades gracefully when Orbit is unavailable
 
 ### User Experience Metrics
 
@@ -221,8 +221,8 @@ If video recording isn't possible, create a comprehensive static demo:
 
 ### Business Impact Metrics
 
-- **Time Savings**: 80% reduction in MR analysis time
-- **Risk Reduction**: 60% decrease in production incidents
+- **Time Savings**: Significant reduction in MR analysis time
+- **Risk Reduction**: Evidence-based risk detection before merge
 - **Productivity**: Faster review cycles and better code quality
 - **Compliance**: Full audit trail and evidence-based decisions
 
