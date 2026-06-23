@@ -52,12 +52,23 @@ const BlastRadiusExplorer = React.lazy(() => import("./components/BlastRadiusExp
 const ForecastEngine = React.lazy(() => import("./components/ForecastEngine"));
 const HistoricalContext = React.lazy(() => import("./components/HistoricalContext"));
 
+function safeGetItem(key: string): string | null {
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return localStorage.getItem(key);
+    }
+  } catch (err) {
+    console.warn("Failed to read from localStorage:", err);
+  }
+  return null;
+}
+
 function getInitialView(): View {
   if (typeof window === "undefined") return "setup";
   const p = new URLSearchParams(window.location.search);
   const v = p.get("view");
   if (v && (ALL_VIEWS as readonly string[]).includes(v)) return v as View;
-  const onboarded = localStorage.getItem("orbit-sentinel-onboarded");
+  const onboarded = safeGetItem("orbit-sentinel-onboarded");
   return onboarded ? "overview" : "setup";
 }
 
@@ -76,7 +87,7 @@ export default function App() {
   const [dataMode, setDataMode] = useState<DataMode>("demo");
   const [showOnboarding, setShowOnboarding] = useState(() => {
     if (typeof window === "undefined") return false;
-    return !localStorage.getItem("orbit-sentinel-onboarded") && new URLSearchParams(window.location.search).get("judge") !== "true";
+    return !safeGetItem("orbit-sentinel-onboarded") && new URLSearchParams(window.location.search).get("judge") !== "true";
   });
   const [showTour, setShowTour] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -97,7 +108,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [dark, setDark] = useState(() => {
     if (typeof window === "undefined") return true;
-    const saved = localStorage.getItem("orbit-sentinel-theme");
+    const saved = safeGetItem("orbit-sentinel-theme");
     return saved !== null ? saved === "dark" : true;
   });
   useEffect(() => {
