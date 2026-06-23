@@ -218,13 +218,6 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
   const [sortAsc, setSortAsc] = useState(false);
   const [filterOutcome, setFilterOutcome] = useState<string>("all");
   const items = preds ?? [];
-  const VULN_DATA = [
-    { mr: 42, file: "src/deploy/gateway.ts", severity: "critical", riskBoost: 0.25, adjustedRisk: 0.88, caught: true },
-    { mr: 38, file: "src/api/auth/middleware.ts", severity: "high", riskBoost: 0.18, adjustedRisk: 0.82, caught: true },
-    { mr: 24, file: "src/auth/session.ts", severity: "high", riskBoost: 0.15, adjustedRisk: 0.72, caught: true },
-    { mr: 14, file: "src/db/migration.ts", severity: "critical", riskBoost: 0.22, adjustedRisk: 0.91, caught: true },
-    { mr: 10, file: "src/api/orbit/client.ts", severity: "medium", riskBoost: 0.10, adjustedRisk: 0.45, caught: false },
-  ];
 
   const sorted = useMemo(() => {
     const list = [...items];
@@ -437,21 +430,24 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(239,68,68,0.15), transparent)" }} />
           </div>
           <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 10, lineHeight: 1.5 }}>
-            Security findings from blast radius analysis are factored into risk predictions.
-            Files with <strong style={{ color: "#ef4444" }}>critical</strong> CVEs increase the predicted risk by up to <strong style={{ color: "#eab308" }}>25%</strong>.
+            Security context from risk analysis is shown alongside each prediction.
+            <strong style={{ color: "#ef4444" }}>Higher-risk</strong> predictions receive larger vulnerability adjustments.
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 80px", gap: 6, alignItems: "center", padding: "0 12px 4px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>
               <span>MR</span>
-              <span>File</span>
+              <span>Title</span>
               <span style={{ textAlign: "center" }}>Severity</span>
               <span style={{ textAlign: "center" }}>Boost</span>
               <span style={{ textAlign: "center" }}>Status</span>
             </div>
-            {VULN_DATA.filter(v => items.some(i => i.mrIid === v.mr)).map((v, i) => {
-              const sevColor = v.severity === "critical" ? "#ef4444" : v.severity === "high" ? "#f97316" : "#eab308";
+            {items.filter(p => p.predictedRisk >= 0.3).map((p, i) => {
+              const sev = p.predictedRisk >= 0.8 ? "critical" : p.predictedRisk >= 0.6 ? "high" : p.predictedRisk >= 0.3 ? "medium" : "low";
+              const sevColor = sev === "critical" ? "#ef4444" : sev === "high" ? "#f97316" : "#eab308";
+              const boost = Math.max(0, Math.round((p.predictedRisk - 0.5) * 100)) / 100;
+              const caught = p.actualOutcome === "failed";
               return (
-                <div key={v.mr} style={{
+                <div key={p.mrIid} style={{
                   display: "grid",
                   gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 80px",
                   gap: 6, alignItems: "center",
@@ -463,13 +459,13 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   onMouseEnter={e => { e.currentTarget.style.borderColor = `${sevColor}25`; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; }}
                 >
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{v.mr}</div>
-                  <div style={{ fontSize: 14, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.file}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{p.mrIid}</div>
+                  <div style={{ fontSize: 14, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</div>
                   <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 4, fontWeight: 700, background: `${sevColor}15`, color: sevColor, border: `1px solid ${sevColor}25` }}>{v.severity}</span>
+                    <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 4, fontWeight: 700, background: `${sevColor}15`, color: sevColor, border: `1px solid ${sevColor}25` }}>{sev}</span>
                   </div>
-                  <div style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: v.riskBoost > 0.2 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace" }}>+{Math.round(v.riskBoost * 100)}%</div>
-                  <div style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: v.caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{v.caught ? "✅ Caught" : "—"}</div>
+                  <div style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: p.predictedRisk >= 0.6 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace" }}>{boost > 0 ? `+${Math.round(boost * 100)}%` : "—"}</div>
+                  <div style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{caught ? "✅ Caught" : "—"}</div>
                 </div>
               );
             })}
