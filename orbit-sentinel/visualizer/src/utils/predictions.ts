@@ -88,8 +88,10 @@ function loadLivePredictions(): PredictionRecord[] {
 export function loadPredictions(mode?: "demo" | "live"): PredictionRecord[] {
   if (mode === "demo") return DEMO_PREDICTIONS;
   const live = loadLivePredictions();
-  if (live.length > 0) return live;
-  return DEMO_PREDICTIONS;
+  if (live.length === 0) return DEMO_PREDICTIONS;
+  const demoIids = new Set(DEMO_PREDICTIONS.map(d => d.mrIid));
+  const withoutOverlap = DEMO_PREDICTIONS.filter(d => !live.some(l => l.mrIid === d.mrIid));
+  return [...live, ...withoutOverlap];
 }
 
 export function savePrediction(rec: PredictionRecord) {
