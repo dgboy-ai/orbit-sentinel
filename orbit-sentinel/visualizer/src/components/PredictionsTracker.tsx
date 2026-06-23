@@ -218,6 +218,13 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
   const [sortAsc, setSortAsc] = useState(false);
   const [filterOutcome, setFilterOutcome] = useState<string>("all");
   const items = preds ?? [];
+  const VULN_DATA = [
+    { mr: 42, file: "src/deploy/gateway.ts", severity: "critical", riskBoost: 0.25, adjustedRisk: 0.88, caught: true },
+    { mr: 38, file: "src/api/auth/middleware.ts", severity: "high", riskBoost: 0.18, adjustedRisk: 0.82, caught: true },
+    { mr: 24, file: "src/auth/session.ts", severity: "high", riskBoost: 0.15, adjustedRisk: 0.72, caught: true },
+    { mr: 14, file: "src/db/migration.ts", severity: "critical", riskBoost: 0.22, adjustedRisk: 0.91, caught: true },
+    { mr: 10, file: "src/api/orbit/client.ts", severity: "medium", riskBoost: 0.10, adjustedRisk: 0.45, caught: false },
+  ];
 
   const sorted = useMemo(() => {
     const list = [...items];
@@ -441,13 +448,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <span style={{ textAlign: "center" }}>Boost</span>
               <span style={{ textAlign: "center" }}>Status</span>
             </div>
-            {[
-              { mr: 42, file: "src/deploy/gateway.ts", severity: "critical", riskBoost: 0.25, adjustedRisk: 0.88, caught: true },
-              { mr: 38, file: "src/api/auth/middleware.ts", severity: "high", riskBoost: 0.18, adjustedRisk: 0.82, caught: true },
-              { mr: 24, file: "src/auth/session.ts", severity: "high", riskBoost: 0.15, adjustedRisk: 0.72, caught: true },
-              { mr: 14, file: "src/db/migration.ts", severity: "critical", riskBoost: 0.22, adjustedRisk: 0.91, caught: true },
-              { mr: 10, file: "src/api/orbit/client.ts", severity: "medium", riskBoost: 0.10, adjustedRisk: 0.45, caught: false },
-            ].map((v, i) => {
+            {VULN_DATA.filter(v => items.some(i => i.mrIid === v.mr)).map((v, i) => {
               const sevColor = v.severity === "critical" ? "#ef4444" : v.severity === "high" ? "#f97316" : "#eab308";
               return (
                 <div key={v.mr} style={{
