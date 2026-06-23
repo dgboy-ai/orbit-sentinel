@@ -171,7 +171,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 |------|---------------|-------------|
 | **Overview** | Impact Calculator (interactive ROI sliders), hero prediction, evidence panel, decision center, counterfactual simulation, digital twin graph, Orbit Query Inspector | All 4 |
 | **Predictions Tracker** 🎯 | Accuracy scoreboard, post-merge verification, risk trend chart, vulnerability-adjusted predictions | Closed-loop |
-| **Blast Radius** | Interactive dependency explorer with depth control — click nodes to inspect. Security Findings stat pill with critical/high vulnerability counts | NEIGHBORS |
+| **Blast Radius** (Graph page) | Interactive dependency explorer with depth control — click nodes to inspect. Security Findings stat pill with critical/high vulnerability counts | NEIGHBORS |
 | **Risk** | 5-dimension risk breakdown with probability bars — click mitigations to see risk animate down. Pipeline Failure Correlation card, failure probability heatmap | AGGREGATION |
 | **Forecast** | Counterfactual analysis with timeline — toggle variables, watch risk animate in real-time | Simulation |
 | **History** | Repository memory with Jaccard similarity scoring — has this failed before? | TRAVERSAL |
