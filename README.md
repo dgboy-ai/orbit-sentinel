@@ -2,7 +2,7 @@
 
 > AI predicts code. Orbit Sentinel predicts **consequences**.
 
-[![Tests](https://img.shields.io/badge/tests-135%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel/-/pipelines)
+[![Tests](https://img.shields.io/badge/tests-135%20passing-brightgreen?logo=vitest)](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/pipelines)
 [![Vercel](https://img.shields.io/badge/live%20demo-Vercel-000?logo=vercel)](https://orbit-sentinel.vercel.app)
 [![GitLab AI Hackathon](https://img.shields.io/badge/GitLab%20AI%20Hackathon-2026-orange?logo=gitlab)](https://gitlab-transcend.devpost.com)
 [![Judge's Tour](https://img.shields.io/badge/judge-tour-purple?logo=react)](https://orbit-sentinel.vercel.app/?judge=true)

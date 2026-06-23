@@ -121,8 +121,7 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
           }}>
             <span style={{ fontSize: 22 }}>🔄</span>
             <span style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5, flex: 1 }}>
-              <strong style={{ color: "#a78bfa" }}>Other tools predict</strong> — they tell you risk before merge and stop there.{" "}
-              <strong style={{ color: TEAL }}>Orbit Sentinel verifies and learns</strong> — every prediction is tracked through a{" "}
+              <strong style={{ color: "#a78bfa" }}>Predict and verify</strong> — risk assessment before merge, then tracked through a{" "}
               <strong style={{ color: "var(--text-primary)" }}>7-day survival window</strong> post-merge. Actual outcomes update the model, making every future prediction smarter.
             </span>
           </div>

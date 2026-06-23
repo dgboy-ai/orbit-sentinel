@@ -48,8 +48,8 @@ What it does:
 
 ```bash
 # 1. Clone
-git clone https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel.git
-cd orbit-sentinel
+git clone https://gitlab.com/gitlab-ai-hackathon/transcend/39251857.git
+cd 39251857
 
 # 2. Engine
 cd engine

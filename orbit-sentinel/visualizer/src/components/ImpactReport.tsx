@@ -926,7 +926,7 @@ export default function ImpactReport({ data }: Props) {
           position: "absolute", left: "20%", right: "20%", top: 0, height: 1,
           background: `linear-gradient(90deg, transparent, ${col}22, transparent)`,
         }} />
-        <div style={{ marginBottom: 2 }}>Predicted before merge. Prevented before production.</div>
+        <div style={{ marginBottom: 2 }}>Predicted before merge. Verified before production.</div>
         <div style={{ fontSize: 13, fontFamily: "'JetBrains Mono', monospace", marginTop: 4 }}>
           Orbit Sentinel · v{new Date(summary.timestamp).toISOString().slice(0, 10).replace(/-/g, ".")} · {summary.project.split("/")[0]}/{summary.project.split("/")[1]}
         </div>

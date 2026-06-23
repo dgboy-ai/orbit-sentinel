@@ -67,4 +67,4 @@ git push gitlab main
 
 ## Reporting Issues
 
-File issues on [GitLab](https://gitlab.com/gitlab-ai-hackathon/transcend/orbit-sentinel/-/issues) or [GitHub](https://github.com/dgboy-ai/orbit-sentinel/issues).
+File issues on [GitLab](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/issues) or [GitHub](https://github.com/dgboy-ai/orbit-sentinel/issues).
