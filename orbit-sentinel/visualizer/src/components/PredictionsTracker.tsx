@@ -283,6 +283,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.05)", filter: "blur(60px)", pointerEvents: "none" }} />
 
         <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 12, color: "#a78bfa", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: 6, padding: "3px 8px" }}>📋 Includes demo examples (<span style={{ fontWeight: 700 }}>DEMO</span>) — your live analyses appear as <span style={{ fontWeight: 700, color: "#22c55e" }}>LIVE</span></span>
+          </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
@@ -623,7 +626,15 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                       <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
                       <OutcomeBadge outcome={item.actualOutcome} />
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{item.title}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 6 }}>
+                      {item.title}
+                      {item.source === "demo" && (
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 4, padding: "0 5px", lineHeight: "18px" }}>DEMO</span>
+                      )}
+                      {item.source === "live" && (
+                        <span style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 4, padding: "0 5px", lineHeight: "18px" }}>LIVE</span>
+                      )}
+                    </div>
                     
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 4, borderTop: "1px solid var(--overlay-03)", paddingTop: 6 }}>
                       <div>

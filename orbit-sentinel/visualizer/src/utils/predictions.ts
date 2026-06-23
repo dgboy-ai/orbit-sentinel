@@ -3,6 +3,14 @@ import type { PredictionRecord, PredictionCategory, ROIMetrics } from "../types"
 const STORAGE_KEY = "orbit-sentinel-predictions";
 const MIGRATION_KEY = "orbit-sentinel-predictions-v2";
 
+const DEMO_PREDICTIONS: PredictionRecord[] = [
+  { mrIid: 42, title: "Add GraphQL support", predictedRisk: 0.85, predictedLevel: "critical", actualOutcome: "failed", actualRisk: 0.80, mergedAt: "2026-06-10", verifiedAt: "2026-06-17", source: "demo", category: "true_positive" },
+  { mrIid: 38, title: "Refactor auth middleware", predictedRisk: 0.75, predictedLevel: "high", actualOutcome: "verified", actualRisk: 0.15, mergedAt: "2026-06-08", verifiedAt: "2026-06-15", source: "demo", category: "false_positive" },
+  { mrIid: 24, title: "Fix database migration", predictedRisk: 0.65, predictedLevel: "high", actualOutcome: "failed", actualRisk: 0.72, mergedAt: "2026-06-05", verifiedAt: "2026-06-12", source: "demo", category: "true_positive" },
+  { mrIid: 14, title: "API specifications", predictedRisk: 0.15, predictedLevel: "low", actualOutcome: "verified", actualRisk: 0.12, mergedAt: "2026-06-02", verifiedAt: "2026-06-09", source: "demo", category: "true_negative" },
+  { mrIid: 10, title: "Update configurations", predictedRisk: 0.55, predictedLevel: "medium", actualOutcome: "verified", actualRisk: 0.40, mergedAt: "2026-06-01", verifiedAt: "2026-06-08", source: "demo", category: "true_negative" },
+];
+
 export function categorizePrediction(rec: PredictionRecord): PredictionCategory {
   if (rec.actualOutcome === "pending" || rec.actualOutcome === "unknown") return "pending";
   const highRisk = rec.predictedRisk >= 0.6;
@@ -64,16 +72,10 @@ export function computeROI(predictions: PredictionRecord[], mrsPerWeek = 15, hou
   };
 }
 
-export function loadPredictions(): PredictionRecord[] {
+function loadLivePredictions(): PredictionRecord[] {
   try {
     const v = localStorage.getItem(STORAGE_KEY);
     if (!v) return [];
-    // One-time migration: clear predictions created by old preseeded/demo-data code
-    if (!localStorage.getItem(MIGRATION_KEY)) {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.setItem(MIGRATION_KEY, "1");
-      return [];
-    }
     const parsed: PredictionRecord[] = JSON.parse(v);
     return parsed.map(p => ({ ...p, category: p.category || categorizePrediction(p) }));
   } catch {
@@ -81,10 +83,16 @@ export function loadPredictions(): PredictionRecord[] {
   }
 }
 
+export function loadPredictions(): PredictionRecord[] {
+  const live = loadLivePredictions();
+  const dedupedDemo = DEMO_PREDICTIONS.filter(d => !live.some(l => l.mrIid === d.mrIid));
+  return [...dedupedDemo, ...live];
+}
+
 export function savePrediction(rec: PredictionRecord) {
   const withCategory = { ...rec, category: rec.category || categorizePrediction(rec) };
   try {
-    const all = loadPredictions().filter(p => p.mrIid !== rec.mrIid);
+    const all = loadLivePredictions().filter(p => p.mrIid !== rec.mrIid);
     all.unshift(withCategory);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   } catch { console.warn("localStorage save blocked"); }
@@ -92,7 +100,7 @@ export function savePrediction(rec: PredictionRecord) {
 
 export function updatePrediction(mrIid: number, updates: Partial<PredictionRecord>) {
   try {
-    const all = loadPredictions();
+    const all = loadLivePredictions();
     const i = all.findIndex(p => p.mrIid === mrIid);
     if (i === -1) return;
     const updated = { ...all[i], ...updates };
