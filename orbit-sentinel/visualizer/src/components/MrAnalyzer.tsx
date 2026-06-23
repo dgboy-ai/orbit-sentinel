@@ -409,7 +409,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.4,
         position: "relative", zIndex: 1
       }}>
-        💡 <strong style={{ color: "var(--accent-purple)" }}>Judge Testing:</strong> Try entering a URL containing <code>404</code> (invalid project), <code>empty</code> (no files changed), or <code>private</code> (requires credentials) to test our graceful failure modes.
+        💡 <strong style={{ color: "var(--accent-purple)" }}>Judge Testing:</strong> Paste any GitLab MR URL below and click Analyze Live. Public projects work immediately. For <strong>private</strong> repos, add a <code>glpat-...</code> token (requires <code>read_api</code> scope).
       </div>
 
       {parsed && !apiAvailable && (
