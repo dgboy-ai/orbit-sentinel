@@ -422,15 +422,17 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       {apiAvailable && !showTokenInput && (
         <button onClick={() => setShowTokenInput(true)}
           style={{
-            fontSize: 13, fontWeight: 600, cursor: "pointer", padding: "4px 12px",
-            border: "1px dashed rgba(139,92,246,0.2)", borderRadius: 6,
-            background: "transparent", color: "var(--text-tertiary)",
+            fontSize: 14, fontWeight: 700, cursor: "pointer", padding: "8px 16px",
+            border: "1px solid rgba(139,92,246,0.35)", borderRadius: 8,
+            background: "rgba(139,92,246,0.12)", color: "#c4b5fd",
             alignSelf: "flex-start", transition: "all 0.2s",
             position: "relative", zIndex: 1,
+            display: "flex", alignItems: "center", gap: 6,
+            boxShadow: "0 0 20px rgba(139,92,246,0.06)",
           }}
-          onMouseEnter={e => { e.currentTarget.style.color = "#a78bfa"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)"; e.currentTarget.style.background = "rgba(139,92,246,0.04)"; }}
-          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-tertiary)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)"; e.currentTarget.style.background = "transparent"; }}
-        >+ Add GitLab token</button>
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(139,92,246,0.2)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)"; e.currentTarget.style.boxShadow = "0 0 30px rgba(139,92,246,0.12)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(139,92,246,0.12)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.35)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(139,92,246,0.06)"; }}
+        >🔑 Add GitLab token (for private repos)</button>
       )}
 
       {apiAvailable && showTokenInput && (
