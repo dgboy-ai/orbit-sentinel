@@ -67,7 +67,7 @@ All notable changes to Orbit Sentinel are documented here.
 ### Fixed
 
 - **Fallback flag logic** — `orbitOrFallback()` no longer sets `usedFallback` when Orbit returns empty results. Only genuine errors (auth failure, network timeout) trigger the fallback flag. Empty results still try fallback for data enrichment but don't degrade the badge.
-- **README accuracy** — 108→124 tests, 13→29 visualizer tests, 40→41 components, 5→3 breakpoints, project ID 83381762→39251857, removed Zod claim, updated live data counts (222+ nodes, 187+ edges).
+- **README accuracy** — 108→124 tests, 13→29 visualizer tests, 40→41 components, 5→3 breakpoints, project ID 83381762→39251857, removed Zod claim, updated live data counts (206+ nodes, 172+ edges).
 - **`noEngine` unused import** — Cleaned up from `client.ts`.
 - **DataModeBanner consistency** — Empty Orbit results no longer show "Degraded" badge; app stays "Live" when Orbit is reachable.
 

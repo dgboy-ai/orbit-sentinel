@@ -41,7 +41,7 @@
 | Differentiator | Orbit Sentinel | Traditional CI/CD |
 |----------------|---------------|------------------|
 | **Visual analysis** | 40 components, 8 views, interactive D3 graphs | Text-only output |
-| **Live graph scale** | **23 nodes + 43 edges** baseline demo graph (scaling up to **213 nodes + 185 edges** peak scale observed during live MR !12 test run) | Static file diff only |
+| **Live graph scale** | **23 nodes + 43 edges** baseline demo graph (scaling up to **206 nodes + 172 edges** peak scale observed during live MR !12 test run) | Static file diff only |
 | **Closed-loop accuracy** | Tracks predictions post-merge with 7-day survival window, computes accuracy score | Predicts but never verifies |
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION — all 4 cross-referenced per MR | Single-query or no graph data |
 | **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
@@ -186,7 +186,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 |--|--|
 | **Deployed** | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
 | **Tests** | **135 passing** (105 engine · 30 visualizer) |
-| **Live Orbit Data** | Real graph data captured from a production GitLab project (222+ nodes, 187+ edges) |
+| **Live Orbit Data** | Real graph data captured from a production GitLab project (206+ nodes, 172+ edges) |
 | **Quick Demos** | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
 | **Fallback** | Grep-based file analysis when Orbit unreachable — degraded mode banner in UI |
 | **Closed Loop** | Predictions tracked post-merge with accuracy scoring and 7-day survival window |

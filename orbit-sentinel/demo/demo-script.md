@@ -144,7 +144,7 @@ Most teams answer these manually, if at all. Orbit Sentinel answers them automat
 - Successfully tested in GitLab Duo Chat
 - Ran live Orbit queries against the hackathon project
 - Discovered 18 node types, ~45 relationship types
-- MR !12 digital twin: **23 nodes + 43 edges** (baseline demo graph, scaling up to **213 nodes + 185 edges** peak scale observed during live test runs)
+- MR !12 digital twin: **23 nodes + 43 edges** (baseline demo graph, scaling up to **206 nodes + 172 edges** peak scale observed during live test runs)
 - Generated evidence-based conclusions with specific query citations
 
 **Call to Action**: "Make AI smarter by giving it real context. Join the GitLab Transcend Hackathon and build the future of AI-native software development."
