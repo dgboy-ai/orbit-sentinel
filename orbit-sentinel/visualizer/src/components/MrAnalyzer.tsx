@@ -474,7 +474,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
               onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(139,92,246,0.1)"; }}
             >{showToken ? "Hide" : "Show"}</button>
           </div>
-          <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 4 }}>
+          <div style={{ fontSize: 13, color: "#93c5fd", marginTop: 6, padding: "6px 10px", background: "rgba(96,165,250,0.06)", borderRadius: 6, border: "1px solid rgba(96,165,250,0.12)", lineHeight: 1.5 }}>
             🔒 Sent once via encrypted POST, never stored or logged. Requires only <code>read_api</code> scope.
           </div>
         </div>
