@@ -153,7 +153,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       if (apiService.isApiAvailable()) {
         const liveData = await apiService.getDemoData();
         setData(liveData?.report || liveData);
-        setDataMode("live");
+        setDataMode("demo");
       } else {
         setData(DEMO_DATA);
         setDataMode("demo");
