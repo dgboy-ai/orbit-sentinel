@@ -85,8 +85,8 @@ function loadLivePredictions(): PredictionRecord[] {
 
 export function loadPredictions(): PredictionRecord[] {
   const live = loadLivePredictions();
-  const dedupedDemo = DEMO_PREDICTIONS.filter(d => !live.some(l => l.mrIid === d.mrIid));
-  return [...dedupedDemo, ...live];
+  if (live.length > 0) return live;
+  return DEMO_PREDICTIONS;
 }
 
 export function savePrediction(rec: PredictionRecord) {

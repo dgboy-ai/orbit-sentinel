@@ -235,7 +235,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
     const avgPredicted = items.reduce((s, i) => s + i.predictedRisk, 0) / items.length;
     const hasActual = items.some(i => i.actualRisk !== undefined);
     const avgActual = hasActual ? items.reduce((s, i) => s + (i.actualRisk ?? 0), 0) / items.filter(i => i.actualRisk !== undefined).length : 0;
-    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual, hasActual };
+    return { verified, failed, pending: items.length - total, total, accuracy, avgPredicted, avgActual, hasActual, demoMode: !items.some(i => i.source === "live") };
   }, [items]);
 
   const trendData = useMemo(() => {
@@ -283,6 +283,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.05)", filter: "blur(60px)", pointerEvents: "none" }} />
 
         <div style={{ position: "relative", zIndex: 1 }}>
+          {stats.demoMode && (
           <div style={{
             background: "var(--overlay-90)", color: "var(--bg-primary)",
             borderRadius: 16, padding: "12px 18px", marginBottom: 12,
@@ -293,10 +294,10 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           }}>
             <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>💬</span>
             <div>
-              <strong>First visit?</strong> The predictions below include 5 demo examples (<strong>DEMO</strong>).<br />
-              Run <strong>Live Analysis</strong> on any MR in the Overview page — your results appear as <strong style={{ color: "#22c55e" }}>LIVE</strong> alongside demos.
+              <strong>First visit?</strong> Showing demo examples. Run <strong>Live Analysis</strong> on any MR — demos disappear and only your real predictions appear.
             </div>
           </div>
+          )}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
