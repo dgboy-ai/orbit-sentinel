@@ -331,7 +331,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
       actualRisk: outcome === "failed" ? 0.8 : 0.15,
       evidence: outcome === "failed" ? "Failed within the 7-day survival window." : "No incidents reported in the 7-day survival window.",
     });
-    setPredictions(loadPredictions());
+    setPredictions(loadPredictions("live"));
   }, []);
 
   const onSelectScenario = useCallback((scenarioData: VisualizationData, label: string) => {
