@@ -4,6 +4,7 @@ import { config } from './config.js';
 import { sentinel, dataVisualizer, queryEngine, orbitClient } from './index.js';
 import type { SentinelReport } from './types.js';
 import { GitLabErrorHandler } from './errors.js';
+import { cacheGet, cacheSet } from './cache.js';
 
 export const app = express();
 const PORT = process.env.PORT || 3001;
@@ -109,6 +110,12 @@ app.post('/api/analyze', gitLabTokenValidation, async (req: express.Request, res
       return res.status(400).json({ error: 'Invalid changeDescription format' });
     }
 
+    const cacheKey = `analyze:${projectPath}:${mrIid}`;
+    const cached = cacheGet<{ report: unknown; demoMode: boolean }>(cacheKey);
+    if (cached) {
+      return res.json({ success: true, ...cached, cached: true });
+    }
+
     // Look up project ID from path if not provided
     if (!projectId || Number(projectId) === 0) {
       try {
@@ -143,10 +150,15 @@ app.post('/api/analyze', gitLabTokenValidation, async (req: express.Request, res
       report,
     );
 
-    return res.json({
-      success: true,
+    const response = {
       report: vizData,
       demoMode: process.env.DEMO_MODE === 'true',
+    };
+    cacheSet(cacheKey, response);
+
+    return res.json({
+      success: true,
+      ...response,
     });
   } catch (error) {
     next(error);
@@ -227,6 +239,13 @@ app.post('/api/analyze-with-creds', async (req: express.Request, res: express.Re
       });
     }
 
+    const tokenPrefix = gitlabToken.slice(0, 12);
+    const cacheKey = `analyze-creds:${projectPath}:${mrIid}:${tokenPrefix}`;
+    const cached = cacheGet<{ report: unknown; realTime: boolean; queryTimings: unknown[] }>(cacheKey);
+    if (cached) {
+      return res.json({ success: true, ...cached, cached: true });
+    }
+
     // Temporarily override GITLAB_ACCESS_TOKEN with user-provided token
     const originalToken = process.env.GITLAB_ACCESS_TOKEN;
     process.env.GITLAB_ACCESS_TOKEN = gitlabToken;
@@ -264,11 +283,16 @@ app.post('/api/analyze-with-creds', async (req: express.Request, res: express.Re
         report,
       );
 
-      return res.json({
-        success: true,
+      const response = {
         report: vizData,
         realTime: true,
         queryTimings: report.digitalTwin.metadata.queryTimings || [],
+      };
+      cacheSet(cacheKey, response);
+
+      return res.json({
+        success: true,
+        ...response,
       });
     } finally {
       // Restore original token (don't persist user tokens)
