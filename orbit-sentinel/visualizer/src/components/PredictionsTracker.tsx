@@ -590,8 +590,19 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           )}
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
             {sorted.length === 0 ? (
-              <div style={{ padding: "20px", textAlign: "center", fontSize: 15, color: "var(--text-tertiary)" }}>
-                No predictions match the filter.
+              <div style={{ padding: "24px 20px", textAlign: "center", fontSize: 15, color: "var(--text-tertiary)" }}>
+                {items.length === 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                    <span style={{ fontSize: 32 }}>📊</span>
+                    <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>No predictions yet</span>
+                    <span style={{ fontSize: 14, lineHeight: 1.4, maxWidth: 360 }}>
+                      Analyze an MR on the <strong style={{ color: "var(--text-primary)" }}>Overview</strong> page to track your first prediction.
+                      Every MR you analyze is saved here with its risk score.
+                    </span>
+                  </div>
+                ) : (
+                  <span>No predictions match the filter.</span>
+                )}
               </div>
             ) : sorted.map((item, i) => {
               const isHovered = hoveredRow === item.mrIid;
