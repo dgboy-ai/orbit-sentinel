@@ -15,22 +15,37 @@ function Slider({ label, value, min, max, step, unit, onChange, color }: {
 }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div style={{ flex: 1, minWidth: 140, padding: "4px 6px", borderRadius: 6, border: "1px solid transparent", transition: "border-color 0.2s", cursor: "pointer" }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = `${color}44`)}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = "transparent")}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>{label}</span>
+    <div style={{ flex: 1, minWidth: 140, padding: "6px 8px", borderRadius: 8, border: "1px solid transparent", transition: "border-color 0.2s, background 0.2s", cursor: "pointer" }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = `${color}44`; e.currentTarget.style.background = `${color}08`; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.background = "transparent"; }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px", display: "flex", alignItems: "center", gap: 4 }}>
+          <span style={{ fontSize: 12, opacity: 0.5 }}>↔</span> {label}
+        </span>
         <span style={{ fontSize: 16, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 8px ${color}44` }}>{value}{unit}</span>
       </div>
-      <div style={{ position: "relative", height: 10 }}>
-        <div style={{ position: "absolute", inset: 0, borderRadius: 5, background: "var(--overlay-06)", boxShadow: "inset 0 0 4px rgba(0,0,0,0.3)" }} />
-        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 5, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 0.2s ease", boxShadow: `0 0 12px ${color}55, 0 0 4px ${color}88` }} />
+      <div style={{ position: "relative", height: 12, display: "flex", alignItems: "center" }}>
+        <div style={{ position: "absolute", left: 0, right: 0, height: 6, borderRadius: 3, background: "var(--overlay-06)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.3)" }} />
+        <div style={{ width: `${pct}%`, height: 6, borderRadius: "3px 0 0 3px", background: `linear-gradient(90deg, ${color}, ${color}aa)`, transition: "width 0.15s ease", boxShadow: `0 0 10px ${color}44` }} />
+        <div style={{
+          position: "absolute", left: `calc(${pct}% - 8px)`, width: 16, height: 16, borderRadius: "50%",
+          background: `linear-gradient(135deg, ${color}, ${color}cc)`,
+          boxShadow: `0 0 10px ${color}66, 0 2px 6px rgba(0,0,0,0.3)`,
+          border: `2px solid ${color}44`,
+          transition: "left 0.15s ease",
+          pointerEvents: "none",
+        }} />
         <input type="range" min={min} max={max} step={step} value={value} onChange={e => onChange(parseFloat(e.target.value))}
           style={{
-            position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", margin: 0, padding: 0,
+            position: "absolute", inset: "-6px 0", width: "100%", height: "calc(100% + 12px)",
+            opacity: 0, cursor: "grab", margin: 0, padding: 0,
           }}
           aria-label={label}
         />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3, padding: "0 2px" }}>
+        <span style={{ fontSize: 10, color: "var(--text-tertiary)", opacity: 0.5 }}>◀</span>
+        <span style={{ fontSize: 10, color: "var(--text-tertiary)", opacity: 0.5 }}>drag ▶</span>
       </div>
     </div>
   );
