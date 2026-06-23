@@ -284,7 +284,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
 
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 12, color: "#a78bfa", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: 6, padding: "3px 8px" }}>📋 Includes demo examples (<span style={{ fontWeight: 700 }}>DEMO</span>) — your live analyses appear as <span style={{ fontWeight: 700, color: "#22c55e" }}>LIVE</span></span>
+            <span style={{ fontSize: 12, color: "#a78bfa", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: 6, padding: "3px 8px" }}>📋 First visit shows demo examples (<span style={{ fontWeight: 700 }}>DEMO</span>). Run live analysis on any MR — your results appear as <span style={{ fontWeight: 700, color: "#22c55e" }}>LIVE</span> alongside demos.</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
             <div style={{
