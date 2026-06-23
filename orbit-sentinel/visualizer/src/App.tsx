@@ -417,7 +417,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
       case "setup":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
-            <ErrorBoundary><SetupWizard /></ErrorBoundary>
+            <ErrorBoundary><SetupWizard data={data} /></ErrorBoundary>
             <ErrorBoundary><RealityCheck /></ErrorBoundary>
           </div>
         );

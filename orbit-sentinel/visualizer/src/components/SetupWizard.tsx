@@ -115,10 +115,13 @@ function AnimatedCounter({ value, suffix = "", delay = 0 }: { value: string | nu
   return <span>{display}{suffix}</span>;
 }
 
-function MissionStep() {
+function MissionStep({ data }: { data?: any }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   const s = (d: number) => mounted ? { animation: `fadeSlideUp 0.5s ${d}s cubic-bezier(0.16,1,0.3,1) both` } : { opacity: 0 };
+
+  const totalNodes = data?.graph?.nodes?.length ?? 23;
+  const totalEdges = data?.graph?.links?.length ?? 43;
 
   const problems = [
     { icon: "⏱️", text: "Hours wasted manually tracing blast radius across files", accent: "#f97316" },
@@ -127,15 +130,15 @@ function MissionStep() {
     { icon: "🤷", text: "Unknown reviewers, missing rollback plans, blind merges", accent: "#6366f1" },
   ];
   const solutions = [
-    { icon: "💥", label: "Blast Radius", desc: "NEIGHBORS query finds everything connected to changed files", nodes: "23 nodes", color: "#a78bfa" },
-    { icon: "🔗", label: "Dependency Chain", desc: "PATH_FINDING traces MR-to-pipeline deployment paths", nodes: "13 edges", color: "#60a5fa" },
+    { icon: "💥", label: "Blast Radius", desc: "NEIGHBORS query finds everything connected to changed files", nodes: `${totalNodes} nodes`, color: "#a78bfa" },
+    { icon: "🔗", label: "Dependency Chain", desc: "PATH_FINDING traces MR-to-pipeline deployment paths", nodes: `${totalEdges} edges`, color: "#60a5fa" },
     { icon: "📜", label: "Historical Match", desc: "TRAVERSAL finds similar MRs using Jaccard similarity", nodes: "3 incidents", color: "#22d3ee" },
     { icon: "📊", label: "Pipeline Risk", desc: "AGGREGATION counts failures across the pipeline ecosystem", nodes: "132K pipelines", color: "#f97316" },
   ];
   const impacts = [
     { value: 78, suffix: "%", label: "Fewer Orbit Queries", detail: "Rate limiting cut queries from 107 → 23 per analysis", sub: "MAX_CHANGED_FILES=5 + 500ms throttle" },
-    { value: 3, suffix: " High", label: "Risk Signals Detected", detail: "Bus factor, zero coverage, no reviewers — real findings", sub: "From 23-node digital twin on project 39251857" },
-    { value: 14, suffix: " Nodes", label: "Digital Twin Graph", detail: "Built from all 4 Orbit query types in a single pass", sub: "13 relationships across 7 node types" },
+    { value: 3, suffix: " High", label: "Risk Signals Detected", detail: "Bus factor, zero coverage, no reviewers — real findings", sub: `From ${totalNodes}-node digital twin on project 39251857` },
+    { value: totalNodes, suffix: " Nodes", label: "Digital Twin Graph", detail: "Built from all 4 Orbit query types in a single pass", sub: `${totalEdges} relationships discovered` },
     { value: 4, suffix: "/4", label: "Orbit Query Types", detail: "NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION", sub: "All executed, all real, no mocks" },
   ];
 
@@ -181,7 +184,7 @@ function MissionStep() {
           fontSize: 12, fontWeight: 700, color: "#22c55e",
         }}>
           <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)" }} />
-          Live Orbit API · 23 nodes · 43 edges
+          Live Orbit API · {totalNodes} nodes · {totalEdges} edges
         </div>
       </div>
 
@@ -747,18 +750,21 @@ function WinsStep() {
   );
 }
 
-export default function SetupWizard() {
+export default function SetupWizard({ data }: { data?: any }) {
   const [step, setStep] = useState(0);
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
-  const stepContent = [
-    <MissionStep />,
-    <ArchitectureStep />,
-    <SetupStep />,
-    <LaunchStep />,
-    <WinsStep />,
-  ];
+  const renderStep = () => {
+    switch (step) {
+      case 0: return <MissionStep data={data} />;
+      case 1: return <ArchitectureStep />;
+      case 2: return <SetupStep />;
+      case 3: return <LaunchStep />;
+      case 4: return <WinsStep />;
+      default: return null;
+    }
+  };
 
   return (
     <div style={{
@@ -795,7 +801,7 @@ export default function SetupWizard() {
         animation: "fadeSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) both",
       }}>
         <ErrorBoundary fallback={<div style={{ padding: 20, color: "#ef4444", fontSize: 16 }}>Failed to render step content.</div>}>
-          {stepContent[step]}
+          {renderStep()}
         </ErrorBoundary>
       </div>
 
