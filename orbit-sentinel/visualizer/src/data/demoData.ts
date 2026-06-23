@@ -92,7 +92,7 @@ export const DEMO_DATA: VisualizationData = {
     { label: "From Same Branch", value: 10, color: "#a78bfa" },
     { label: "Previously Merged", value: 1, color: "#22c55e" },
     { label: "Previously Closed", value: 9, color: "#ef4444" },
-    { label: "Pipelines Found", value: 132000, color: "#f97316" },
+    { label: "Pipelines Found", value: 1320, color: "#f97316" },
   ],
   summary: { project: "gitlab-ai-hackathon/transcend/orbit-sentinel", mrIid: 10, branch: "test-sentinel", totalNodes: 23, totalEdges: 43, riskScore: "55.0%", riskLevel: "MEDIUM", timestamp: new Date().toISOString() },
   hero: { mrIid: 10, riskLevel: "MEDIUM", riskScore: 0.55, predictedOutcome: "Likely abandoned without merge — 9 of 10 prior MRs from this branch were closed with no pipeline ever triggered.", recommendedAction: "Add file changes, remove draft status, trigger pipeline, assign reviewers", confidence: "High (10 MR history across 4 Orbit query types)",   generatedUsing: "GitLab Orbit · 23 nodes · 43 edges · all 4 queries", confidenceFactors: [
@@ -103,9 +103,9 @@ export const DEMO_DATA: VisualizationData = {
   ] },
   evidence: [
     { queryType: "NEIGHBORS", queryName: "Orbit Graph", result: "Nodes: 23, Edges: 43\n9 node types discovered across the digital twin\nMR !10 has an empty diff — no file changes to analyze\nNo linked pipeline for head commit — CI never triggered for this branch" },
-    { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !10 → no head pipeline (CI never triggered)\nNo deployment path exists for this change set\nProject pipeline history: 132K total (17.8% failure rate)" },
+    { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !10 → no head pipeline (CI never triggered)\nNo deployment path exists for this change set\nProject pipeline history: 1,320 total (17.8% failure rate)" },
     { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: "9 historical MRs from test-sentinel branch (50+ total analyzed)\nOnly MR !1 was merged; MRs !2–!9 all closed without merge\nAbandonment pattern: 9 of 10 recent MRs were closed without merge" },
-    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "132K total pipelines across the ecosystem\n23.5K failed (17.8%), 106.3K passed, 2.2K canceled\nMR !10 contributed zero pipeline runs — changes were never validated" },
+    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "1,320 total pipelines across the ecosystem\n235 failed (17.8%), 1,063 passed, 22 canceled\nMR !10 contributed zero pipeline runs — changes were never validated" },
   ],
   decisionCenter: { deploymentStrategy: "Cannot deploy safely — risk score 55%. Empty diff detected with no pipeline triggered. Branch abandonment pattern: 9 of 10 prior MRs from this branch were closed without merge.", reviewers: [{ name: "@trueboy1123", role: "Author" }, { name: "Unassigned", role: "Reviewer Needed" }], requiredTests: ["Add file changes to the MR — current diff is empty", "Remove draft status before requesting review", "Ensure pipeline triggers on next push", "Assign at least one reviewer"], rollbackStrategy: "Not applicable — no changes have been deployed. Close MR to prevent confusion.", riskReduction: { current: 0.55, afterRecommendation: 0.10 } },
   counterfactuals: [

@@ -33,7 +33,7 @@ export const SCENARIO_CRITICAL: VisualizationData = (() => {
     { queryType: "NEIGHBORS", queryName: "Orbit Graph", result: "Nodes: 47, Edges: 112\n12 node types discovered\n7 downstream services connected to changed files\n3 services have >80% dependency coupling" },
     { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !42 → head pipeline #149283749 (failed)\nDeployment path: 3 hops to production\n2 of 3 deployment gates are RED" },
     { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: "34 of 50 similar MRs (68%) resulted in pipeline failure\n3 prior incidents linked to same file patterns\nAverage recovery time: 47 minutes" },
-    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "189,000 total pipelines across the ecosystem\n43,200 failed (22.9%), 142,100 passed, 3,700 canceled\nAffected path failure rate: 78% (well above ecosystem average)" },
+    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "1,890 total pipelines across the ecosystem\n432 failed (22.9%), 1,421 passed, 37 canceled\nAffected path failure rate: 78% (well above ecosystem average)" },
   ];
   d.incidents = [
     { similarity: 97, mrIid: 41, title: "critical-deploy-failure-3", files: ["src/api/gateway.ts", "deploy/config.yml"], outcome: "Incident", rootCause: "Missing rollback plan caused 23min production outage when deployment gate failed silently", mitigation: "Add mandatory rollback plan to all MRs modifying deploy config", recommendedAction: "Add comprehensive rollback plan and test deployment gates before merge", date: "2026-06-17" },
@@ -88,7 +88,7 @@ export const SCENARIO_SAFE: VisualizationData = (() => {
     { queryType: "NEIGHBORS", queryName: "Orbit Graph", result: "Nodes: 12, Edges: 28\n4 node types discovered\nNo downstream services affected — change is fully isolated" },
     { queryType: "PATH_FINDING", queryName: "MR-to-Pipeline Trace", result: "MR !7 → head pipeline #149283750 (passed)\nDeployment path: 2 hops to production\nAll 2 deployment gates are GREEN" },
     { queryType: "TRAVERSAL", queryName: "Historical Similarity", result: "12 similar MRs found — all merged without incident\nNo prior failures on this file path\nAverage merge-to-deploy time: 4.2 minutes" },
-    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "189,000 total pipelines across the ecosystem\n43,200 failed (22.9%), 142,100 passed, 3,700 canceled\nThis file path: 0 failures in last 30 days" },
+    { queryType: "AGGREGATION", queryName: "Pipeline Failure Rate", result: "1,890 total pipelines across the ecosystem\n432 failed (22.9%), 1,421 passed, 37 canceled\nThis file path: 0 failures in last 30 days" },
   ];
   d.incidents = [
     { similarity: 95, mrIid: 5, title: "clean-deployment-example", files: ["src/utils/format.ts"], outcome: "Merged & Deployed", rootCause: "N/A — no incidents. This is a reference example of a clean merge.", mitigation: "N/A", recommendedAction: "Use this MR as a template for future low-risk changes: isolated scope, full test coverage, early review.", date: "2026-06-16" },

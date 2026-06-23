@@ -290,7 +290,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 12px rgba(34,197,94,0.6)", animation: "pulseDot 2s ease-in-out infinite" }} />
               <span style={{ fontSize: 14, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.5px", textTransform: "uppercase" }}>Prediction Scoreboard</span>
-              <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 10, background: "rgba(34,197,94,0.15)", color: "#22c55e", fontWeight: 700, border: "1px solid rgba(34,197,94,0.2)" }}>LIVE</span>
+              <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 10, background: "rgba(96,165,250,0.15)", color: "#60a5fa", fontWeight: 700, border: "1px solid rgba(96,165,250,0.2)" }}>TRACKING</span>
             </div>
             <div style={{ fontSize: 14, color: "var(--text-tertiary)" }}>
               Tracking <strong style={{ color: "var(--text-primary)" }}>{items.length}</strong> MRs · <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.verified}</span> verified · <span style={{ color: "#ef4444", fontWeight: 600 }}>{stats.failed}</span> failed · <span style={{ color: "#60a5fa", fontWeight: 600 }}>{stats.accuracy}%</span> accuracy

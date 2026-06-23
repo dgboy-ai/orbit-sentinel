@@ -232,6 +232,30 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
   const qEvidence = (type: string) => evidence.find(e => e.queryType === type);
 
+  const queryConfidence = useMemo(() => {
+    const types = ["NEIGHBORS", "PATH_FINDING", "TRAVERSAL", "AGGREGATION"];
+    const labels: Record<string, { label: string; color: string; icon: string }> = {
+      NEIGHBORS: { label: "Graph Discovery", color: "#22c55e", icon: "🌐" },
+      PATH_FINDING: { label: "Deployment Path", color: "#60a5fa", icon: "🛣" },
+      TRAVERSAL: { label: "Historical Analysis", color: "#a78bfa", icon: "📚" },
+      AGGREGATION: { label: "Pipeline Trend", color: "#f97316", icon: "📊" },
+    };
+    return types.map(t => {
+      const ev = evidence.find(e => e.queryType === t);
+      const text = (ev?.result || "").toLowerCase();
+      let pct = 0;
+      if (ev && text.length > 0 && !text.includes("no data") && !text.includes("no pipeline data returned")) {
+        pct = text.includes("0 nodes") || text.includes("0 affected") || text.includes("no results") ? 40 : text.includes("error") ? 30 : 85;
+      }
+      return { type: t, pct, ...labels[t] };
+    });
+  }, [evidence]);
+
+  const overallPct = useMemo(() => {
+    const vals = queryConfidence.map(q => q.pct);
+    return Math.round(vals.reduce((a, b) => a + b, 0) / Math.max(vals.length, 1));
+  }, [queryConfidence]);
+
   const fadeIn = (delay: number) => ({
     animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
   });
@@ -621,15 +645,10 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Forecast Confidence</div>
               <div style={{ fontSize: 13, color: "var(--text-secondary)", fontStyle: "italic" }}>All 4 Orbit query types independently support this prediction</div>
             </div>
-            <CircularGauge pct={91} color="#22c55e" size={52} strokeWidth={4} value="91%" label="HIGH" />
+            <CircularGauge pct={overallPct} color={overallPct >= 70 ? "#22c55e" : overallPct >= 40 ? "#eab308" : "#ef4444"} size={52} strokeWidth={4} value={`${overallPct}%`} label={overallPct >= 70 ? "HIGH" : overallPct >= 40 ? "MEDIUM" : "LOW"} />
           </div>
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-            {[
-              { type: "NEIGHBORS", pct: 100, color: "#22c55e", icon: "🌐", label: "Graph Discovery" },
-              { type: "PATH_FINDING", pct: 95, color: "#60a5fa", icon: "🛣", label: "Deployment Path" },
-              { type: "TRAVERSAL", pct: 90, color: "#a78bfa", icon: "📚", label: "Historical Analysis" },
-              { type: "AGGREGATION", pct: 75, color: "#f97316", icon: "📊", label: "Pipeline Trend" },
-            ].map(q => (
+            {queryConfidence.map(q => (
               <div key={q.type} style={{
                 padding: isSmall ? "4px 8px" : "6px 10px", borderRadius: 6,
                 background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",

@@ -3,6 +3,16 @@ import type { RiskBreakdown, OrbitQueryEvidence, DecisionCenterData } from "../t
 import TiltCard from "./TiltCard";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 
+function computeConfidence(evidence: OrbitQueryEvidence[]): string {
+  const withData = evidence.filter(e => {
+    const t = (e.result || "").toLowerCase();
+    return t.length > 0 && !t.includes("no data") && !t.includes("no pipeline data returned") && !t.includes("0 nodes");
+  });
+  const pct = evidence.length > 0 ? Math.round((withData.length / evidence.length) * 100) : 0;
+  const clamped = Math.max(Math.min(pct, 99), 50);
+  return `${clamped}%`;
+}
+
 interface Props {
   riskData: { score: number; level: string; breakdown: RiskBreakdown[] };
   evidence: OrbitQueryEvidence[];
@@ -386,7 +396,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
               <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: config.color, textShadow: `0 0 12px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.predictedOutcome}</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
-                <div><span style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 15, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>{isLow ? "96%" : isMedium ? "90%" : "91%"}</span></div>
+                <div><span style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Confidence </span><span style={{ fontSize: 15, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>{computeConfidence(evidence)}</span></div>
                 <div><span style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase" }}>Horizon </span><span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>7 Days</span></div>
               </div>
             </div>
