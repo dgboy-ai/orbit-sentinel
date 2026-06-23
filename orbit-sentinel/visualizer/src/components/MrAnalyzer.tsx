@@ -133,7 +133,12 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
-      setLiveError(msg);
+      const isAuthError = msg.toLowerCase().includes("401") || msg.toLowerCase().includes("unauthorized") || msg.toLowerCase().includes("403") || msg.toLowerCase().includes("forbidden");
+      if (isAuthError && !token) {
+        setLiveError("🔑 This MR requires a GitLab token. Click \"Add GitLab token (for private repos)\" above to provide one.");
+      } else {
+        setLiveError(msg);
+      }
     } finally {
       clearTimeout(coldStartTimer);
       setColdStartActive(false);
