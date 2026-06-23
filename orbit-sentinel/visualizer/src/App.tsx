@@ -84,7 +84,16 @@ export default function App() {
   const [data, setData] = useState<VisualizationData | null>(DEMO_DATA);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [dataMode, setDataMode] = useState<DataMode>("demo");
+  const [dataMode, setDataMode] = useState<DataMode>(() => {
+    try {
+      const v = localStorage.getItem("orbit-sentinel-predictions");
+      if (v) {
+        const parsed = JSON.parse(v);
+        if (Array.isArray(parsed) && parsed.some((p: Record<string, unknown>) => p.source === "live")) return "live";
+      }
+    } catch { /* ignore */ }
+    return "demo";
+  });
   const [showOnboarding, setShowOnboarding] = useState(() => {
     if (typeof window === "undefined") return false;
     return !safeGetItem("orbit-sentinel-onboarded") && new URLSearchParams(window.location.search).get("judge") !== "true";

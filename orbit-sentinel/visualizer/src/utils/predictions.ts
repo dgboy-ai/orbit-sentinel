@@ -77,7 +77,9 @@ function loadLivePredictions(): PredictionRecord[] {
     const v = localStorage.getItem(STORAGE_KEY);
     if (!v) return [];
     const parsed: PredictionRecord[] = JSON.parse(v);
-    return parsed.map(p => ({ ...p, category: p.category || categorizePrediction(p) }));
+    return parsed
+      .filter(p => p.source === "live")
+      .map(p => ({ ...p, category: p.category || categorizePrediction(p) }));
   } catch {
     return [];
   }
