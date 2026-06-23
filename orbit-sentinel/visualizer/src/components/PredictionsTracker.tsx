@@ -284,21 +284,6 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.05)", filter: "blur(60px)", pointerEvents: "none" }} />
 
         <div style={{ position: "relative", zIndex: 1 }}>
-          {stats.liveCount === 1 && (
-          <div style={{
-            background: "var(--overlay-90)", color: "var(--bg-primary)",
-            borderRadius: 16, padding: "12px 18px", marginBottom: 12,
-            fontSize: 13, lineHeight: 1.6, fontWeight: 500,
-            boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
-            display: "flex", alignItems: "flex-start", gap: 10,
-            animation: "fadeSlideDown 0.5s ease both",
-          }}>
-            <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>💬</span>
-            <div>
-              <strong>One more step!</strong> Run live analysis on <strong>one more MR</strong> — demo examples will disappear and only your real predictions remain.
-            </div>
-          </div>
-          )}
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
             <div style={{
               display: "flex", alignItems: "center", gap: 8,

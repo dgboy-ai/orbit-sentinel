@@ -85,8 +85,7 @@ function loadLivePredictions(): PredictionRecord[] {
 
 export function loadPredictions(): PredictionRecord[] {
   const live = loadLivePredictions();
-  if (live.length >= 2) return live;
-  if (live.length === 1) return [...DEMO_PREDICTIONS, ...live];
+  if (live.length > 0) return live;
   return DEMO_PREDICTIONS;
 }
 
