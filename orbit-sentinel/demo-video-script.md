@@ -1,114 +1,69 @@
-# Orbit Sentinel — 3-Minute Demo Video Script
+# Orbit Sentinel — Demo Video Script
 
-**Goal:** Win Design & Usability 1st Prize ($2k). Judges see our UI the entire time.
-**Style:** Confident, clear, fast-paced. No music. No competitor names.
-**Important:** Do NOT use `?judge=true` auto-tour — record manually for full control.
+**Total duration**: ~2:54
 
 ---
 
-## Scene 1: Problem, Solution & Impact (0:00 - 0:35)
+00:00 Welcome to Orbit Sentinel, my submission for the Showcase track.
 
-**Visuals:**
-* Start on Orbit Sentinel Dashboard (Overview view).
-* Slowly scroll or zoom through the Problem → Solution → Impact 3-column card.
+00:03 Every merge request or simply MR hides unknown risk, leading to hours of manual dependency tracing and repeated failures.
 
-**Voiceover:**
-> "Every time a developer opens a merge request, they face a silent gamble. Will this code break a downstream dependency? Did a similar change cause an incident last month? Most teams merge blind because manual analysis takes hours."
+00:09 Orbit Sentinel solves this by building a digital twin using all four query types, mapping blast radius, dependency chains, history, and pipeline risks automatically.
 
-*Zoom to the Solution column:*
-> "Orbit Sentinel is the solution — a digital twin for every merge request, powered by all four GitLab Orbit query types. No API keys, no setup. It tells you what breaks before you ship."
+00:16 This was the setup page, and let's start with the overview page.
 
-*Zoom to the Impact column (quantified metrics):*
-> "The impact: hours saved per merge request. Fewer false alarms. One hundred thirty-nine thousand dollars per year for a typical team. Every number traces back to real Orbit graph data."
+00:20 On the overview page, we can see the several info currently in demo mode like MR Analyzer recommended action orbit evidence, Also the digital twin graph, which is currently in demo mode.
 
----
+00:30 Let's come back to the MR analyzer.
 
-## Scene 2: Dashboard Flythrough — Three Scenarios (0:35 - 1:05)
+00:32 This can analyze your MR in real time.
 
-**Visuals:**
-* Dashboard overview — slowly scroll from top to bottom.
-* Click the scenario selector: "Critical: Broken Deploy Path" → watch the verdict change.
-* Click "Safe: Test Coverage Only" → verdict flips to Low Risk.
-* Click "Medium: Dependency Shift" → verdict shows Medium Risk with confidence factors.
-* Scroll further to the Digital Twin Graph (23 nodes, 43 edges). Hover over 2-3 nodes.
+00:34 Let's run the analyze live button.
 
-**Voiceover:**
-> "Back on the dashboard — three pre-seeded scenarios show how the verdict changes in real time. Critical, safe, medium — each with a different risk level and confidence breakdown."
+00:37 Behind the scenes of Vercel frontend requests our render engine.
 
-> "The digital twin graph maps every dependency, every connection, every historical incident. Built from Orbit's four query types: NEIGHBORS for blast radius, PATH_FINDING for dependency chains, TRAVERSAL for historical matches, AGGREGATION for pipeline fragility."
+00:40 To query the GitLab Orbit API using all four query types.
 
----
+00:43 If Orbit is offline, it falls back to the grep based parsing.
 
-## Scene 3: Blast Radius & Risk Investigation (1:05 - 1:40)
+00:46 As you can see, the analysis is done, the data in all app and all the pages is changed from demo data to real data.
 
-**Visuals:**
-* Navigate to Blast Radius Explorer tab.
-* Drag a node. Watch connected edges highlight upstream and downstream.
-* Navigate to Risk Investigation tab.
-* Scroll through the pipeline failure heatmap, correlation gauges, and risk matrices.
+00:54 For example, the recommended action orbit evidence and the number of nodes and other numbers in the digital twin graph is come from.
 
-**Voiceover:**
-> "The Blast Radius Explorer lets you visually trace every ripple effect across your architecture. Click any node — see everything it touches."
+01:00 Real time analysis.
 
-> "Risk Investigation aggregates pipeline failure history, code coverage, and author metrics into a single fragility score. By combining NEIGHBORS, AGGREGATION, and TRAVERSAL, it pinpoints where new vulnerabilities emerge — before code ever reaches staging."
+01:01 Let's go to the next page.
 
----
+01:03 In our prediction tracker, we track actual post-merge outcome over a 7 day survival window to continuously calibrate the model, showing input like prediction scorecard, prediction versus actual trend graph.
 
-## Scene 4: The Moat — Closed-Loop Predictions (1:40 - 2:20)
+01:12 And at the bottom there is closed loop ROI Calculator where dynamically calculates the exact hours and incidence cost saved.
 
-**Visuals:**
-* Navigate to Predictions Tracker tab.
-* Mouse over each confusion matrix cell: TP, TN, FP, FN — one by one.
-* Scroll to DualSparkline trend chart.
-* Scroll to ROI Calculator. Drag the "Manual Analysis Hours" slider from 2.5h down to 5m.
+01:19 And at the bottom there is prediction confusion matrix with dynamically maps every verified MR showing exactly how the model learned with every outcome.
 
-**Voiceover:**
-> "Here's what makes Orbit Sentinel different. Other tools predict risk before merge and stop. Orbit Sentinel verifies."
+01:26 Now let's go to the next page.
 
-> "Every prediction is tracked through a seven-day survival window after merge. Did it stay shipped or did it fail? True positives we caught. True negatives that shipped clean. False positives we overcorrected on. False negatives we missed."
+01:29 In this live graph which uses BFS traversal algorithm, we can visualize a blast radius of MR By adjusting the depth slider in the left sidebar, we can increase the search depth of MR and also we can directly interact with the nodes to get meaningful information.
 
-> "One point eight percent false negative rate. Eighty percent accuracy across five verified MRs."
+01:43 Also, there is provider.
 
-> "The ROI calculator runs on real prediction data — not static estimates. For a typical team: one hundred thirty-nine thousand dollars per year saved. One hundred twenty-one percent net ROI."
+01:44 There we provide an impact summary which provides meaningful information like service affected files change and etc.
 
----
+01:49 This was the graphics and let's move to the next page.
 
-## Scene 5: Setup & Wrap (2:20 - 2:50)
+01:52 This Risk investigation page which explained why this MR is safe or not to deploy while traditional CI only tells you if the code compiled but Orbit Sentinel validates our dependency graph and pipeline history and provide a safe to deploy verdict Also why Orbit approved this MR and recommended actions.
 
-**Visuals:**
-* Navigate to Setup Wizard tab.
-* Scroll through the quick-start instructions.
-* Toggle the "Degraded Mode" banner to show the grep fallback capability.
+02:09 This forecast page predicts MR's future pipeline timeline, outcome prediction, What if scenarios, Forecast confidence and also engineering futures if nothing changes and if recommended actions are followed.
 
-**Voiceover:**
-> "Setup takes under a minute. If Orbit is unavailable, the grep fallback keeps working — same digital twin, built from file analysis instead."
+02:23 Also orbit delta.
 
-> "Orbit Sentinel is published to the GitLab AI Catalog, open source, and ready to run. Fork it, install the skill, publish the flow."
+02:25 This History Page checks our Repository memory using Traversal queries.
 
----
+02:28 It compares current changes against past merges and incidents, showing what the model has learned, Counterfactual learning and orbit memory verdict.
 
-## Scene 6: Outro (2:50 - 3:00)
+02:37 Finally, the report page compiles all findings of MR into a structure summary with rollback strategies and metadata.
 
-**Visuals:**
-* Orbit Sentinel logo on dark background.
-* Text: orbit-sentinel.vercel.app | Source Code: gitlab.com/trueboy1123/orbit-sentinel
-* GitLab Transcend 2026 — Design & Usability
+02:44 Orbit UI supports light mode also and its fully mobile responsive.
 
-**Voiceover:**
-> "Stop guessing. Stop merging blind. Predict the consequences of your code with Orbit Sentinel. Design and Usability — GitLab Transcend 2026."
+02:49 So at the end, finally, with Orbit Sentinel, we don't just predict code, we predict consequences.
 
----
-
-## Recording Guide
-
-Record in separate takes and edit together:
-
-| Take | What to Record | Est. Time |
-|---|---|---|
-| A | Open visualizer. Scroll overview slowly. Click all 3 scenarios. Hover digital twin graph. | 30s |
-| B | Navigate to Blast Radius tab. Drag nodes. Then switch to Risk Investigation. Scroll heatmap. | 35s |
-| C | Navigate to Predictions tab. Mouse over confusion matrix cells. Scroll to ROI calculator. Drag slider. | 40s |
-| D | Navigate to Setup tab. Scroll instructions. Toggle degraded mode. | 30s |
-| E | End screen — logo + URLs. | 10s |
-
-**Assembly:** Overlay AI voiceover (videomule). Cut between takes at natural pauses. Clean cuts only — no transitions or effects.
+02:54 Thank you.

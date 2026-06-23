@@ -276,9 +276,9 @@ function BlastRadiusGraph({ nodes, links, selectedId, onNodeClick, highlight }: 
       <div style={{
         position: "absolute", bottom: 12, right: 12, zIndex: 10,
         display: "flex", gap: 4,
-        background: "rgba(15,18,26,0.92)", backdropFilter: "blur(12px)",
+        background: "var(--bg-elevated)", backdropFilter: "blur(12px)",
         border: "1px solid var(--overlay-08)", borderRadius: 8,
-        padding: "4px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+        padding: "4px", boxShadow: "0 4px 20px var(--shadow-card)",
       }}>
         <button onClick={handleZoomIn} title="Zoom In" style={{
           background: "transparent", border: "none", color: "var(--text-primary)",

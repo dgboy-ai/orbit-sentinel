@@ -485,7 +485,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         {loading ? <>
           <LoadingSkeleton />
           {loadingSlow && (
-            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: Z.overlay, background: "rgba(8,9,13,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 15, boxShadow: "0 4px 24px rgba(0,0,0,0.4)",   animation: ANIM.fadeSlideUp.medium }}>
+            <div style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: Z.overlay, background: "var(--bg-elevated)", backdropFilter: "blur(12px)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 10, padding: "10px 18px", display: "flex", alignItems: "center", gap: 10, fontSize: 15, boxShadow: "0 4px 24px rgba(0,0,0,0.4)",   animation: ANIM.fadeSlideUp.medium }}>
               <span style={{ color: "var(--text-secondary)" }}>Engine is taking longer than expected...</span>
               <button onClick={() => { setData(DEMO_DATA); setDataMode("demo"); }}
                 style={{ padding: "5px 14px", fontSize: 14, fontWeight: 600, cursor: "pointer", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 6, background: "rgba(96,165,250,0.12)", color: COLORS.info, whiteSpace: "nowrap" }}
@@ -535,7 +535,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         position: "relative", zIndex: Z.dropdown,
         borderBottom: `1px solid ${accentColor}22`,
         padding: "6px 16px", alignItems: "center", gap: 14,
-        flexShrink: 0, background: "rgba(8,9,13,0.85)", backdropFilter: "blur(20px)",
+        flexShrink: 0, background: "var(--bg-elevated)", backdropFilter: "blur(20px)",
         boxShadow: `0 1px 0 ${accentColor}11, 0 4px 24px ${accentGlow}08`,
         transition: "border-color 0.5s ease, box-shadow 0.5s ease",
       }}>
@@ -571,7 +571,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
             {mobileViewOpen && (
               <div style={{
                 position: "absolute", top: "100%", right: 0, zIndex: Z.modal, marginTop: 6,
-                background: "rgba(15,18,26,0.97)", backdropFilter: "blur(16px)",
+                background: "var(--bg-elevated)", backdropFilter: "blur(16px)",
                 border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden",
                 minWidth: 160, boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
                 animation: "fadeSlideUp 0.2s cubic-bezier(0.16,1,0.3,1)",
@@ -719,7 +719,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
           </div>
           <div style={{
             padding: "4px 16px", borderRadius: 12, fontSize: 14,
-            background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
+            background: "var(--bg-card)", backdropFilter: "blur(8px)",
             color: "var(--text-secondary)",
           }}>
             {DEMO_STEPS[stepIndex].sublabel}
@@ -856,7 +856,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => loadPre
         position: "fixed", bottom: 12, left: "50%", transform: "translateX(-50%)", zIndex: Z.modal,
         display: "flex", alignItems: "center", gap: 8,
         padding: "5px 14px", borderRadius: 8,
-        background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
+        background: "var(--bg-elevated)", backdropFilter: "blur(8px)",
         border: "1px solid var(--overlay-06)",
         fontSize: 13, color: "var(--text-tertiary)",
         opacity: showFooter && !screenshotMode ? 1 : 0, pointerEvents: showFooter && !screenshotMode ? "auto" : "none",

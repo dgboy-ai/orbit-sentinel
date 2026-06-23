@@ -175,17 +175,6 @@ function MissionStep({ data }: { data?: any }) {
           </div>
           </div>
         </div>
-        {/* Real data badge */}
-        <div style={{
-          position: "absolute", bottom: 10, right: 14, zIndex: 1,
-          display: "flex", alignItems: "center", gap: 4,
-          padding: "2px 8px", borderRadius: 4,
-          background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.1)",
-          fontSize: 12, fontWeight: 700, color: "#22c55e",
-        }}>
-          <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)" }} />
-          Live Orbit API · {totalNodes} nodes · {totalEdges} edges
-        </div>
       </div>
 
       {/* Problem */}

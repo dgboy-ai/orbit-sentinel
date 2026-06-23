@@ -252,7 +252,7 @@ export default function DigitalTwinGraph({ graph: propGraph }: Props) {
         </div>
       )}
       <DigitalTwinStatus graph={graph} />
-      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"rgba(0,0,0,0.6)", border:"1px solid var(--overlay-06)", backdropFilter:"blur(4px)", fontSize: 13, color:"var(--text-secondary)" }}>
+      <div className="resp-graph-info-text" style={{ position:"absolute", bottom:8, left:8, zIndex:10, display:"flex", gap:6, padding:"3px 8px", borderRadius:6, background:"var(--bg-elevated)", border:"1px solid var(--overlay-06)", backdropFilter:"blur(4px)", fontSize: 13, color:"var(--text-secondary)" }}>
         {[{c:"#22c55e",l:"Safe"},{c:"#eab308",l:"Medium"},{c:"#f97316",l:"High"},{c:"#ef4444",l:"Critical"}].map(x=>(
           <span key={x.l} style={{display:"flex",alignItems:"center",gap:3}}><span style={{width:4,height:4,borderRadius:"50%",background:x.c,display:"inline-block",boxShadow:`0 0 4px ${x.c}`}}/>{x.l}</span>
         ))}
@@ -262,7 +262,7 @@ export default function DigitalTwinGraph({ graph: propGraph }: Props) {
       <div style={{
         position: "absolute", bottom: 12, right: 12, zIndex: 10,
         display: "flex", gap: 4,
-        background: "rgba(15,18,26,0.92)", backdropFilter: "blur(12px)",
+        background: "var(--bg-elevated)", backdropFilter: "blur(12px)",
         border: "1px solid var(--overlay-08)", borderRadius: 8,
         padding: "4px", boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
       }}>
