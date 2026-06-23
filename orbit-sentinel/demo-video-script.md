@@ -19,7 +19,7 @@
 > "Orbit Sentinel is the solution — a digital twin for every merge request, powered by all four GitLab Orbit query types. No API keys, no setup. It tells you what breaks before you ship."
 
 *Zoom to the Impact column (quantified metrics):*
-> "The impact: forty-five minutes saved per merge request. Eighty-nine percent fewer false alarms. One hundred thirty-nine thousand dollars per year for a typical team. Every number traces back to real Orbit graph data."
+> "The impact: hours saved per merge request. Fewer false alarms. One hundred thirty-nine thousand dollars per year for a typical team. Every number traces back to real Orbit graph data."
 
 ---
 

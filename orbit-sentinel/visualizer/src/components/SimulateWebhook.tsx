@@ -146,7 +146,7 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
           animation: "fadeSlideUp 0.3s ease",
         }}>
           <span style={{ fontSize: 18 }}>✅</span>
-          <span>Flow complete in <strong style={{ color: "#22c55e" }}>{(steps.length * 0.7).toFixed(1)}s</strong> — compared to <strong style={{ color: "#ef4444" }}>~45 min</strong> manual review. <strong style={{ color: "var(--accent-blue)" }}>Navigate the tabs above</strong> to explore the full analysis.</span>
+          <span>Flow complete in <strong style={{ color: "#22c55e" }}>{(steps.length * 0.7).toFixed(1)}s</strong> — compared to <strong style={{ color: "#ef4444" }}>hours</strong> of manual review. <strong style={{ color: "var(--accent-blue)" }}>Navigate the tabs above</strong> to explore the full analysis.</span>
         </div>
       )}
     </div>

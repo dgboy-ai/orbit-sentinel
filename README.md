@@ -13,9 +13,9 @@
 
 | 🤔 The Problem | 🛰️ Orbit Sentinel (Solution) | 📊 Quantified Impact |
 | :--- | :--- | :--- |
-| **~45 min manual review** per MR — still misses critical dependencies & blockers | **4 Orbit queries** automatically build a digital twin of every MR in seconds | **89% fewer false alarms** compared to noisy, CI-only gatekeeping |
-| CI checks if code builds — **never if it is safe or correct to deploy** | Predicts outcomes using **repository memory**, not just pipeline status | **88% mitigation success** when developers follow recommendations |
-| **Historical failures invisible** at merge time, leading to repeated incidents | Posts **proactive remediation** on the MR before developer time is wasted | **Instant verification** instead of 45-minute manual codebase inspection |
+| **Manual review** per MR takes hours — still misses critical dependencies & blockers | **4 Orbit queries** automatically build a digital twin of every MR in seconds | **Fewer false alarms** compared to noisy, CI-only gatekeeping |
+| CI checks if code builds — **never if it is safe or correct to deploy** | Predicts outcomes using **repository memory**, not just pipeline status | **Actionable remediation** for every risk identified |
+| **Historical failures invisible** at merge time, leading to repeated incidents | Posts **proactive remediation** on the MR before developer time is wasted | **Instant verification** instead of hours of manual codebase inspection |
 
 ![Orbit Sentinel Architecture](orbit-sentinel/docs/screenshots/architecture.png)
 
@@ -114,7 +114,7 @@ Orbit Sentinel consists of three core layers designed for robustness and perform
 *   **Responsive Across 3 Breakpoints:** Optimized from 360px (mobile) to 768px+ (wide desktop screens).
 *   **Interactive D3 Graphs:** Live Force-Directed Graphs showcasing dependencies and path propagation.
 *   **Judge's Tour (`?judge=true`):** Interactive keyboard-controlled (`←`, `→`, `Space`) tour guiding judges through the views.
-*   **State & Caching:** Persisted dark/light themes, lazy-loaded route chunks (~125KB gzipped bundle), and 5-minute API cache.
+*   **State & Caching:** Persisted dark/light themes, lazy-loaded route chunks (~125KB initial JS gzipped), and 5-minute in-memory API cache on all requests.
 
 ### 3. Duo Agent Platform Integration
 > Autonomous Agent Capabilities & Recipes

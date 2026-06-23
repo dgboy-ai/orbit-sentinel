@@ -1,5 +1,31 @@
 export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || '';
 const FETCH_TIMEOUT = 90000; // 90 seconds to handle Render backend cold start
+const CACHE_TTL = 5 * 60 * 1000; // 5-minute API cache
+
+interface CacheEntry {
+  data: unknown;
+  expiry: number;
+}
+
+const cache = new Map<string, CacheEntry>();
+
+function getCached<T>(key: string): T | null {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiry) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.data as T;
+}
+
+function setCache(key: string, data: unknown): void {
+  cache.set(key, { data, expiry: Date.now() + CACHE_TTL });
+  if (cache.size > 50) {
+    const first = cache.keys().next();
+    if (!first.done) cache.delete(first.value);
+  }
+}
 
 export interface RequestValidationResult {
   isValid: boolean;
@@ -87,6 +113,10 @@ export const apiService = {
       throw new Error(`Validation failed: ${validation.errors.join(' ')}`);
     }
 
+    const cacheKey = `analyze:${params.projectPath}:${params.mrIid}:${JSON.stringify(params.changedFiles)}`;
+    const cached = getCached<any>(cacheKey);
+    if (cached) return cached;
+
     try {
       const response = await fetchWithTimeout(`${API_BASE_URL}/api/analyze`, {
         method: 'POST',
@@ -107,7 +137,9 @@ export const apiService = {
         throw new Error(`${errData.error || 'Failed to analyze change'}${codeMsg}.${details}`);
       }
 
-      return response.json();
+      const data = await response.json();
+      setCache(cacheKey, data);
+      return data;
     } catch (err: any) {
       if (err.name === 'AbortError') {
         throw new Error('Analysis request timed out. Please check the network connectivity or try again.');
@@ -117,9 +149,16 @@ export const apiService = {
   },
 
   async getDemoData(): Promise<any> {
+    const cacheKey = 'demo';
+    const cached = getCached<any>(cacheKey);
+    if (cached) return cached;
+
     const response = await fetchWithTimeout(`${API_BASE_URL}/api/demo`);
     if (!response.ok) throw new Error('Engine demo endpoint unreachable');
-    return response.json();
+    
+    const data = await response.json();
+    setCache(cacheKey, data);
+    return data;
   },
 
   isApiAvailable(): boolean {

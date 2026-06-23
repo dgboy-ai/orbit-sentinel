@@ -15,7 +15,7 @@ const PROBLEM_SOLUTION: ProblemCol[] = [
     icon: "🤔",
     title: "The Problem",
     items: [
-      <span key={1}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>~45 min manual review</strong> per MR — still misses critical blockers</span>,
+      <span key={1}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Manual review</strong> per MR takes hours — still misses critical blockers</span>,
       <span key={2}>CI checks if code builds — <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>never asks if it should deploy</strong></span>,
       <span key={3}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Historical failures invisible</strong> at merge time, repeating past incidents</span>,
     ],
@@ -40,9 +40,9 @@ const PROBLEM_SOLUTION: ProblemCol[] = [
     icon: "📊",
     title: "Quantified Impact",
     items: [
-      <span key={1}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>89% fewer false alarms</strong> compared to noisy, CI-only alerts</span>,
-      <span key={2}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>88% mitigation success</strong> when remediation recommendations are followed</span>,
-      <span key={3}>Deployment blocks detected in <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>seconds</strong> vs. ~45 min manual review</span>,
+      <span key={1}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Fewer false alarms</strong> compared to noisy, CI-only alerts</span>,
+      <span key={2}><strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>Actionable remediation</strong> for every risk found</span>,
+      <span key={3}>Deployment blocks detected in <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>seconds</strong> vs. hours of manual review</span>,
     ],
     color: "#60a5fa",
     bg: "rgba(96,165,250,0.02)",
