@@ -603,8 +603,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             </button>
           ) : (
             <>
-              {/* Small Box Above MR Analyzer - Current Demo Mode */}
-              {!(currentScenario && currentScenario.startsWith("Live")) && (
+              {/* Small Box Above MR Analyzer - Current Demo Mode — only when engine is offline */}
+              {!apiAvailable && !(currentScenario && currentScenario.startsWith("Live")) && (
                 <div style={{
                   marginBottom: 16,
                   padding: "10px 14px",

@@ -343,7 +343,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
   const cleanConfidence = useMemo(() => {
     if (confidence && confidence.includes("0 historical match")) {
-      return "High (driven by graph & path evidence)";
+      return "Moderate — no historical baseline on this branch yet";
     }
     return confidence;
   }, [confidence]);

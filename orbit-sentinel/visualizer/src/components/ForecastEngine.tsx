@@ -607,11 +607,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 pct: 95, signalText: "Blocking deployment",
               },
               {
-                type: "TRAVERSAL", icon: "📚", color: "#f97316", severity: "high", severityLabel: "High",
-                title: `${historicalCount} Historical Match${historicalCount !== 1 ? "es" : ""} Found`,
-                finding: evidenceSummary.TRAVERSAL?.finding?.slice(0, 60) || "Branch abandonment pattern detected",
-                detail: `${historicalCount} of 10 prior MRs from this branch were closed without merge`,
-                pct: 90, signalText: "Requires attention",
+                type: "TRAVERSAL", icon: "📚", color: historicalCount === 0 ? "#22c55e" : "#f97316",
+                severity: historicalCount === 0 ? "info" : "high",
+                severityLabel: historicalCount === 0 ? "Clean" : "High",
+                title: historicalCount === 0 ? "No Prior Incidents Found" : `${historicalCount} Historical Match${historicalCount !== 1 ? "es" : ""} Found`,
+                finding: evidenceSummary.TRAVERSAL?.finding?.slice(0, 60) || (historicalCount === 0 ? "No prior failures on this branch" : "Branch abandonment pattern detected"),
+                detail: historicalCount === 0 ? "No historical failures on this branch — clean record" : `${historicalCount} of 10 prior MRs from this branch were closed without merge`,
+                pct: 90, signalText: historicalCount === 0 ? "No incidents" : "Requires attention",
               },
               {
                 type: "AGGREGATION", icon: "📊", color: "#eab308", severity: "medium", severityLabel: "Medium",
