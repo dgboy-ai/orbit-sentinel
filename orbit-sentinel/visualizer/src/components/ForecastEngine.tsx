@@ -364,7 +364,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             {/* Column 1: Operational Risk */}
             <div style={{
               padding: "14px 16px", borderRadius: 10,
-              background: "linear-gradient(135deg, rgba(0,0,0,0.35), rgba(0,0,0,0.15))",
+              background: "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.35), rgba(var(--bg-card-rgb),0.15))",
               border: `1px solid ${gaugeColor}33`,
               boxShadow: `inset 0 0 30px ${gaugeColor}06, 0 0 20px ${gaugeColor}08`,
               transition: "all 0.3s ease", display: "flex", flexDirection: "column", gap: 8,
@@ -393,7 +393,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             {/* Column 2: Process Risk */}
             <div style={{
               padding: "14px 16px", borderRadius: 10,
-              background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(0,0,0,0.2))",
+              background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(var(--bg-card-rgb),0.2))",
               border: "1px solid rgba(239,68,68,0.22)",
               boxShadow: "inset 0 0 30px rgba(239,68,68,0.06), 0 0 20px rgba(239,68,68,0.08)",
               display: "flex", flexDirection: "column", gap: 8,
@@ -427,7 +427,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             {/* Column 3: Outcome Prediction */}
             <div style={{
               padding: "14px 16px", borderRadius: 10,
-              background: `linear-gradient(135deg, ${curCol}0E, rgba(0,0,0,0.22))`,
+              background: `linear-gradient(135deg, ${curCol}0E, rgba(var(--bg-card-rgb),0.22))`,
               border: `1px solid ${curCol}44`,
               boxShadow: `inset 0 0 30px ${curCol}08, 0 0 20px ${curCol}08`,
               transition: "all 0.4s ease", display: "flex", flexDirection: "column", gap: 8,
@@ -796,9 +796,9 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           {/* Explainable Confidence Card */}
           <div style={{
             marginTop: 10, padding: "12px 16px", borderRadius: 8,
-            background: "linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.15))",
+            background: "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.3), rgba(var(--bg-card-rgb),0.15))",
             border: "1px solid rgba(255,255,255,0.06)",
-            boxShadow: "inset 0 0 16px rgba(0,0,0,0.2)",
+            boxShadow: "inset 0 0 16px rgba(var(--bg-card-rgb),0.2)",
             animation: "fadeSlideUp 0.3s 0.12s cubic-bezier(0.16,1,0.3,1) both",
           }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", marginBottom: 6, letterSpacing: "0.5px", textTransform: "uppercase", textShadow: "0 0 8px rgba(96,165,250,0.15)" }}>
@@ -890,9 +890,9 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               {/* Why This Changed (Causality reinforcement) */}
               <div style={{
                 marginTop: 6, padding: "6px 10px", borderRadius: 6,
-                background: "linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.15))",
+                background: "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.25), rgba(var(--bg-card-rgb),0.15))",
                 border: "1px solid var(--overlay-05)",
-                boxShadow: "inset 0 0 10px rgba(0,0,0,0.15)",
+                boxShadow: "inset 0 0 10px rgba(var(--bg-card-rgb),0.15)",
               }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Why This Changed</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 13, color: "#22c55e", fontWeight: 600 }}>
@@ -953,7 +953,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           {/* Engineering Cost of Inaction (Dynamic + Animated) */}
           <div style={{
             padding: "14px 16px", borderRadius: 8, position: "relative", overflow: "hidden",
-            background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03), rgba(0,0,0,0.2))",
+            background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03), rgba(var(--bg-card-rgb),0.2))",
             border: "1px solid rgba(239,68,68,0.2)",
             boxShadow: "0 0 24px rgba(239,68,68,0.08), inset 0 0 24px rgba(239,68,68,0.03)",
             animation: "pulseGlow 3s ease-in-out infinite",
@@ -981,13 +981,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                   ].map(d => (
                     <div key={d.label} style={{
                       padding: "8px 6px", borderRadius: 5, textAlign: "center",
-                      background: "linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.18))",
+                      background: "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.3), rgba(var(--bg-card-rgb),0.18))",
                       border: `1px solid ${d.color}22`,
                       boxShadow: `0 0 8px ${d.color}08`,
                       transition: "all 0.2s ease",
                     }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = `${d.color}50`; e.currentTarget.style.background = "linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.25))"; e.currentTarget.style.boxShadow = `0 0 16px ${d.color}15`; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = `${d.color}22`; e.currentTarget.style.background = "linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.18))"; e.currentTarget.style.boxShadow = `0 0 8px ${d.color}08`; e.currentTarget.style.transform = "none"; }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = `${d.color}50`; e.currentTarget.style.background = "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.4), rgba(var(--bg-card-rgb),0.25))"; e.currentTarget.style.boxShadow = `0 0 16px ${d.color}15`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = `${d.color}22`; e.currentTarget.style.background = "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.3), rgba(var(--bg-card-rgb),0.18))"; e.currentTarget.style.boxShadow = `0 0 8px ${d.color}08`; e.currentTarget.style.transform = "none"; }}
                     >
                       <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>{d.icon} {d.label}</div>
                       <div style={{
