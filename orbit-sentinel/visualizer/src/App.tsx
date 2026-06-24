@@ -459,7 +459,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
           </div>
         );
       case "simulation": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><ForecastEngine evidence={data.evidence} futureTimeline={data.futureTimeline} counterfactuals={data.counterfactuals} decisionCenter={data.decisionCenter} confidence={data.hero.confidence} riskScore={data.hero.riskScore} riskLevel={data.hero.riskLevel} mrIid={data.hero.mrIid} pipelinesTotal={data.timelines.find(t => t.label === "Pipelines Found" || t.label === "Ecosystem Pipelines")?.value ?? 0} dataMode={dataMode === "live" ? "live" : "demo"} /></Suspense></ErrorBoundary>;
-      case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} riskScore={data.hero.riskScore} /></Suspense></ErrorBoundary>;
+      case "historical": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><HistoricalContext incidents={data.incidents} totalAnalyzed={data.timelines.find(t => t.label === "MRs Analyzed")?.value ?? 10} mrIid={data.hero.mrIid} riskScore={data.hero.riskScore} dataMode={dataMode === "live" ? "live" : "demo"} /></Suspense></ErrorBoundary>;
       case "setup":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>

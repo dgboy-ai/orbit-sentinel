@@ -7,6 +7,7 @@ interface Props {
   totalAnalyzed: number;
   mrIid?: number;
   riskScore?: number;
+  dataMode?: "live" | "demo" | string;
 }
 
 function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top?: string; left?: string; right?: string; bottom?: string; size: number }) {
@@ -123,7 +124,7 @@ function formatOrdinal(n: number): string {
   return `${n}th`;
 }
 
-export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10, riskScore = 0.55 }: Props) {
+export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10, riskScore = 0.55, dataMode = "demo" }: Props) {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const isSmall = useMediaQuery("(max-width: 480px)");
 
@@ -209,11 +210,12 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             }}>Repository Memory Intelligence</span>
             <span style={{
               fontSize: 11, padding: "2px 8px", borderRadius: 3,
-              background: "rgba(34,197,94,0.12)", color: "#22c55e",
-              border: "1px solid rgba(34,197,94,0.2)",
+              background: dataMode === "live" ? "rgba(34,197,94,0.12)" : "rgba(167,139,250,0.12)",
+              color: dataMode === "live" ? "#22c55e" : "#a78bfa",
+              border: `1px solid ${dataMode === "live" ? "rgba(34,197,94,0.2)" : "rgba(167,139,250,0.2)"}`,
               fontWeight: 700, letterSpacing: "0.3px",
-              textShadow: "0 0 8px rgba(34,197,94,0.3)",
-            }}>● Live</span>
+              textShadow: `0 0 8px ${dataMode === "live" ? "rgba(34,197,94,0.3)" : "rgba(167,139,250,0.3)"}`,
+            }}>{dataMode === "live" ? "● Live" : "◆ Demo"}</span>
           </div>
           {/* Description */}
           <div style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 14, maxWidth: "92%" }}>
