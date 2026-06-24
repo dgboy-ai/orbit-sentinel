@@ -373,7 +373,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
             <div>
               <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#22c55e", marginBottom: 1 }}>Successful Precedent</div>
-              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.2)" }}>✓ MR #1 — Successfully Merged</div>
+              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.2)" }}>✓ {mergedCount > 0 ? `MR #${sorted.find(i => i.outcome === "Merged")?.mrIid || 1}` : "Reference Example"} — Successfully Merged</div>
             </div>
             <div style={{
               padding: "3px 8px", borderRadius: 4, fontSize: 11, color: "var(--text-secondary)",
@@ -520,7 +520,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               boxShadow: "0 0 8px rgba(167,139,250,0.08)",
               textShadow: "0 0 6px rgba(167,139,250,0.2)",
             }}>
-              What if MR #9 had CI + reviewer?
+              What if MR #{highestSimilarity > 0 ? sorted.find(i => i.similarity === highestSimilarity)?.mrIid || 9 : 9} had CI + reviewer?
             </div>
           </div>
           <div style={{ display: "flex", gap: 10, flexDirection: isMobile ? "column" : "row" }}>

@@ -212,8 +212,12 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       setLiveError("Engine not available");
       return;
     }
-    setUrl("https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/12");
-    setParsed({ project: "gitlab-ai-hackathon/transcend/39251857", mrIid: 12 });
+    const targetIid = parsed?.mrIid || 12;
+    const targetProject = parsed?.project || "gitlab-ai-hackathon/transcend/39251857";
+    if (!parsed) {
+      setUrl(`https://gitlab.com/${targetProject}/-/merge_requests/${targetIid}`);
+      setParsed({ project: targetProject, mrIid: targetIid });
+    }
     setAnalyzing(true);
     setLiveError(null);
     setDemosHidden(true);
@@ -232,9 +236,9 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
       const body: Record<string, unknown> = {
         projectId: 0,
-        projectPath: "gitlab-ai-hackathon/transcend/39251857",
-        mrIid: 12,
-        mrTitle: "MR !12: test-sentinel",
+        projectPath: targetProject,
+        mrIid: targetIid,
+        mrTitle: `MR !${targetIid}: test-sentinel`,
         changedFiles,
         changeDescription: "Live demo analysis against indexed Orbit project",
       };
@@ -255,8 +259,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
       const data = await res.json();
       if (data.success && data.report) {
-        onSelectScenario(data.report, "Live Demo · MR !12");
-        setAnalysisDone("✓ Live analysis complete — MR !12 analyzed via Orbit");
+        onSelectScenario(data.report, `Live Demo · MR !${targetIid}`);
+        setAnalysisDone(`✓ Live analysis complete — MR !${targetIid} analyzed via Orbit`);
         setTimeout(() => setAnalysisDone(null), 5000);
       } else {
         throw new Error("Invalid response from engine");
