@@ -87,25 +87,27 @@ function TimelineDot({ status, delay, label }: { status: string; delay: number; 
       animation: `fadeSlideUp 0.4s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
     }}>
       <div style={{
-        width: 22, height: 22, borderRadius: "50%",
-        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
-        background: status === "current" ? "rgba(59,130,246,0.18)" : status === "Merged" ? "rgba(34,197,94,0.18)" : "rgba(239,68,68,0.15)",
-        border: status === "current" ? `2px solid ${col}` : `1px solid ${col}55`,
-        boxShadow: pulse ? `0 0 20px ${col}44` : `0 0 8px ${col}22`,
+        width: 28, height: 28, borderRadius: "50%",
+        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800,
+        background: status === "current" ? "rgba(59,130,246,0.2)" : status === "Merged" ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)",
+        border: status === "current" ? `2.5px solid ${col}` : `2px solid ${col}77`,
+        boxShadow: `0 0 ${pulse ? 24 : 12}px ${col}44, inset 0 0 8px ${col}22`,
         transition: "box-shadow 0.5s ease",
         position: "relative",
       }}>
-        {status === "current" ? "◉" : status === "Merged" ? "✓" : "✗"}
+        <span style={{ color: col, filter: `drop-shadow(0 0 4px ${col}66)` }}>
+          {status === "current" ? "◉" : status === "Merged" ? "✓" : "✗"}
+        </span>
         {pulse && <div style={{
-          position: "absolute", inset: -4, borderRadius: "50%",
-          border: `1px solid ${col}33`,
+          position: "absolute", inset: -5, borderRadius: "50%",
+          border: `1.5px solid ${col}44`,
           animation: "ripple 1.5s ease-out infinite",
         }} />}
       </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color: status === "current" ? col : "var(--text-secondary)", letterSpacing: "0.3px" }}>
+      <span style={{ fontSize: 12, fontWeight: 700, color: status === "current" ? col : "var(--text-primary)", letterSpacing: "0.3px", textShadow: status === "current" ? `0 0 8px ${col}44` : "none" }}>
         {status === "current" ? label : status === "Merged" ? `✓ ${label}` : `✗ ${label}`}
       </span>
-      <span style={{ fontSize: 10, color: col, fontWeight: 600 }}>
+      <span style={{ fontSize: 11, color: col, fontWeight: 700, textShadow: `0 0 8px ${col}33` }}>
         {status === "current" ? "CURRENT" : status.toUpperCase()}
       </span>
     </div>
@@ -219,31 +221,32 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
       {/* PATTERN DISCOVERY TIMELINE */}
       <div className="card" style={{
-        padding: "12px 16px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(234,179,8,0.15)",
-        background: "linear-gradient(135deg, rgba(234,179,8,0.03), rgba(15,18,26,0.95))",
+        padding: isMobile ? "12px 14px" : "14px 18px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(234,179,8,0.3)",
+        background: "linear-gradient(135deg, rgba(234,179,8,0.06), rgba(15,18,26,0.95))",
         animation: "fadeSlideUp 0.4s 0.04s cubic-bezier(0.16,1,0.3,1) both",
+        boxShadow: "0 0 30px rgba(234,179,8,0.06), inset 0 0 20px rgba(234,179,8,0.03)",
       }}>
-        <GlowOrb color="rgba(234,179,8,0.05)" top="-30%" left="20%" size={140} />
+        <GlowOrb color="rgba(234,179,8,0.08)" top="-30%" left="20%" size={160} />
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#eab308" }}>Pattern Discovery Timeline</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(234,179,8,0.2), transparent)" }} />
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#eab308", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>Pattern Discovery Timeline</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(234,179,8,0.3), transparent)" }} />
           </div>
           {/* SVG connecting line background */}
           <div style={{ position: "relative", padding: "4px 0" }}>
             <svg style={{ position: "absolute", top: 0, left: "5%", width: "90%", height: "100%", pointerEvents: "none" }}>
-              <line x1="0" y1="16" x2="100%" y2="16" stroke="var(--overlay-06)" strokeWidth="1" strokeDasharray="4 3" />
+              <line x1="0" y1="18" x2="100%" y2="18" stroke="rgba(234,179,8,0.15)" strokeWidth="1.5" strokeDasharray="4 3" />
             </svg>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 0, position: "relative" }}>
               {timeline.map((t, i) => (
                 <React.Fragment key={t.key}>
                   <TimelineDot status={t.outcome} delay={0.06 + i * 0.05} label={t.label} />
                   {i < timeline.length - 1 && (
-                    <div style={{ flex: "0 0 16px", display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 6 }}>
+                    <div style={{ flex: "0 0 16px", display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 8 }}>
                       <div style={{
                         width: 10, height: 2, borderRadius: 1,
-                        background: `linear-gradient(90deg, ${t.outcome === "current" ? "rgba(59,130,246,0.3)" : "rgba(239,68,68,0.2)"}, ${timeline[i + 1]?.outcome === "current" ? "rgba(59,130,246,0.15)" : "var(--overlay-08)"})`,
+                        background: `linear-gradient(90deg, ${t.outcome === "current" ? "rgba(59,130,246,0.4)" : "rgba(239,68,68,0.35)"}, ${timeline[i + 1]?.outcome === "current" ? "rgba(59,130,246,0.25)" : "rgba(234,179,8,0.15)"})`,
                       }} />
                     </div>
                   )}
@@ -252,14 +255,15 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
             </div>
           </div>
           <div style={{
-            marginTop: 8, padding: "5px 10px", borderRadius: 4,
-            background: "linear-gradient(135deg, rgba(234,179,8,0.08), rgba(234,179,8,0.02))",
-            border: "1px solid rgba(234,179,8,0.1)",
+            marginTop: 8, padding: "6px 12px", borderRadius: 5,
+            background: "linear-gradient(135deg, rgba(234,179,8,0.12), rgba(234,179,8,0.04))",
+            border: "1px solid rgba(234,179,8,0.25)",
+            boxShadow: "0 0 20px rgba(234,179,8,0.06)",
             textAlign: "center",
             animation: "fadeSlideUp 0.3s 0.35s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px" }}>Orbit Pattern Detected</span>
-            <span style={{ fontSize: 12, color: "var(--text-secondary)", marginLeft: 4 }}>— {closeRate}% abandonment trajectory from same branch</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>Orbit Pattern Detected</span>
+            <span style={{ fontSize: 12, color: "var(--text-secondary)", marginLeft: 4, fontWeight: 500 }}>— {closeRate}% abandonment trajectory from same branch</span>
           </div>
         </div>
       </div>
