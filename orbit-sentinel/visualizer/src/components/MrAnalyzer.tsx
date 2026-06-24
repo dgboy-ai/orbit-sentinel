@@ -315,7 +315,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       )}
 
       {/* Conditional Demo Message - Only show when in demo mode */}
-      {!apiAvailable && (
+      {!apiAvailable && !(currentScenario && currentScenario.startsWith("Live")) && (
         <div style={{
           marginBottom: 16,
           padding: "10px 14px",
@@ -604,24 +604,26 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           ) : (
             <>
               {/* Small Box Above MR Analyzer - Current Demo Mode */}
-              <div style={{
-                marginBottom: 16,
-                padding: "10px 14px",
-                borderRadius: 8,
-                background: "rgba(251,146,60,0.06)",
-                border: "1px solid rgba(251,146,60,0.2)",
-                fontSize: 13,
-                color: "var(--text-secondary)",
-                position: "relative",
-                zIndex: 2
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
-                  <div>
-                    <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
+              {!(currentScenario && currentScenario.startsWith("Live")) && (
+                <div style={{
+                  marginBottom: 16,
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  background: "rgba(251,146,60,0.06)",
+                  border: "1px solid rgba(251,146,60,0.2)",
+                  fontSize: 13,
+                  color: "var(--text-secondary)",
+                  position: "relative",
+                  zIndex: 2
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
+                    <div>
+                      <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, zIndex: 1, position: "relative" }}>
                 <span style={{ fontSize: 13, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "1px" }}>⚡ Quick Demos</span>
@@ -661,7 +663,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                       </span>
                       <div style={{ marginTop: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
                         {s.id === "critical" && <Tag t="7 services at risk" c="#ef4444" />}
-                        {s.id === "critical" && <Tag t="No rollback" c="#ef44444" />}
+                        {s.id === "critical" && <Tag t="No rollback" c="#ef4444" />}
                         {s.id === "medium" && <Tag t="Empty diff" c="#eab308" />}
                         {s.id === "medium" && <Tag t="No pipeline" c="#eab308" />}
                         {s.id === "safe" && <Tag t="Tests passed" c="#22c55e" />}
@@ -675,7 +677,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
               {apiAvailable && (
                 <div style={{ marginTop: 10, zIndex: 1, position: "relative" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
                     <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.2), transparent)" }} />
                   </div>
                   <button onClick={runLiveDemo} disabled={analyzing}
@@ -708,39 +710,10 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                       <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
                     )}
                   </button>
-                  <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>
-                    💡 Tip: Use the "● Live Only" filter above to show only your verified MRs
-                  </div>
                 </div>
               )}
             </>
           )}
-
-          {/* Compact Legend for Live vs Demo data distinction */}
-          <div style={{ marginTop: 12, paddingTop: 8, borderTop: "1px solid var(--overlay-05)" }}>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ 
-                  width: 8, 
-                  height: 8, 
-                  borderRadius: "50%", 
-                  background: "#22c55e",
-                  boxShadow: "0 0 4px rgba(34,197,94,0.3)"
-                }}></span>
-                <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Live MRs</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ 
-                  width: 8, 
-                  height: 8, 
-                  borderRadius: "50%", 
-                  background: "#a78bfa",
-                  boxShadow: "0 0 4px rgba(167,139,250,0.3)"
-                }}></span>
-                <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Demo MRs</span>
-              </div>
-            </div>
-          </div>
       </div>
   );
 }
