@@ -683,15 +683,15 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 6 : 10, marginBottom: 14, flexWrap: "wrap", justifyContent: "center" }}>
             <span style={{
               fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
-              color: "var(--accent-blue)", padding: "3px 10px", borderRadius: 4,
-              background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.2)",
-            }}>🔮 Orbit Sentinel</span>
-            <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>VS</span>
-            <span style={{
-              fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
               color: "var(--text-secondary)", padding: "3px 10px", borderRadius: 4,
               background: "var(--overlay-04)", border: "1px solid var(--overlay-06)",
             }}>⚙️ Traditional CI/CD</span>
+            <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>VS</span>
+            <span style={{
+              fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
+              color: "var(--accent-blue)", padding: "3px 10px", borderRadius: 4,
+              background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.2)",
+            }}>🔮 Orbit Sentinel</span>
           </div>
 
           {/* Comparison: Traditional CI/CD vs Orbit Sentinel */}
