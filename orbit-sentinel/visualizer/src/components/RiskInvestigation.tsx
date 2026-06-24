@@ -706,18 +706,36 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 <span style={{ fontSize: 16 }}>⚙️</span> Traditional CI/CD
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Build Passed</div>
-                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Tests Passed</div>
-                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Lint Passed</div>
+                {isLow ? (
+                  <>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Build Passed</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Tests Passed</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Lint Passed</div>
+                  </>
+                ) : isMedium ? (
+                  <>
+                    <div style={{ color: "#eab308", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(234,179,8,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>⚠</span> No Pipeline Run</div>
+                    <div style={{ color: "#eab308", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(234,179,8,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>⚠</span> No Tests to Run</div>
+                    <div style={{ color: "#eab308", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(234,179,8,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>⚠</span> Empty Diff — N/A</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ color: "#eab308", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(234,179,8,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>⚠</span> No Pipeline Run</div>
+                    <div style={{ color: "#eab308", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(234,179,8,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>⚠</span> No Tests to Run</div>
+                    <div style={{ color: "#eab308", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(234,179,8,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>⚠</span> Empty Diff — N/A</div>
+                  </>
+                )}
               </div>
               <div style={{
                 marginTop: 6, padding: "4px 10px", borderRadius: 4,
-                background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)",
-                fontSize: 13, fontWeight: 700, color: "#22c55e", display: "inline-block",
-                boxShadow: "0 0 8px rgba(34,197,94,0.15)",
+                background: isLow ? "rgba(34,197,94,0.12)" : "rgba(234,179,8,0.12)",
+                border: `1px solid ${isLow ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)"}`,
+                fontSize: 13, fontWeight: 700, color: isLow ? "#22c55e" : "#eab308", display: "inline-block",
+                boxShadow: isLow ? "0 0 8px rgba(34,197,94,0.15)" : "none",
               }}>
-                Verdict: ✓ DEPLOYABLE
+                {isLow ? "Verdict: ✓ DEPLOYABLE" : "Verdict: ⚠ INCONCLUSIVE"}
               </div>
+              {!isLow && <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 4, fontStyle: "italic", lineHeight: 1.3 }}>CI/CD cannot assess deployment path, ownership, or historical abandonment patterns</div>}
             </div>
 
             {/* Orbit Sentinel */}
