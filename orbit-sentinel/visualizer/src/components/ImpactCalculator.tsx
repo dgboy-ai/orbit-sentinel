@@ -329,7 +329,7 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
               border: `1px solid ${roi.accuracyPercent >= 80 ? "rgba(34,197,94,0.25)" : "rgba(234,179,8,0.25)"}`,
               boxShadow: roi.accuracyPercent >= 80 ? "0 0 12px rgba(34,197,94,0.12)" : "0 0 12px rgba(234,179,8,0.12)",
             }}>
-              {roi.accuracyPercent >= 80 ? "✓ Learning" : "⋯ Training"}
+              {roi.accuracyPercent >= 80 ? "✓ Learning" : "✓ Calibrating"}
             </div>
           </div>
         </div>

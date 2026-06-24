@@ -324,12 +324,10 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </div>
             <div style={{ fontSize: 14, color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
               <span>Tracking <strong style={{ color: "var(--text-primary)" }}>{displayItems.length}</strong> MRs</span>
-              {stats.demoCount > 0 && stats.liveCount > 0 ? <>
+              {stats.liveCount > 0 && stats.demoCount === 0 && <>
                 <span style={{ color: "var(--overlay-08)" }}>·</span>
                 <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.liveCount} live</span>
-                <span style={{ color: "var(--overlay-08)" }}>·</span>
-                <span style={{ color: "#a78bfa", fontWeight: 600 }}>{stats.demoCount} demo</span>
-              </> : null}
+              </>}
               <span style={{ color: "var(--overlay-08)" }}>·</span>
               <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.verified} shipped</span>
               <span style={{ color: "var(--overlay-08)" }}>·</span>
@@ -358,21 +356,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         </div>
       </div>
 
-      {/* Demo Notice + Closed-Loop Engine — side by side when space allows */}
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : stats.demoCount > 0 && stats.liveCount > 0 && !showOnlyLive ? "1fr 2fr" : "1fr", gap: 10, ...fadeIn(0.02) }}>
-        {stats.demoCount > 0 && stats.liveCount > 0 && !showOnlyLive && (
-          <div style={{
-            display: "flex", alignItems: "center", gap: 8,
-            padding: "10px 14px", borderRadius: 8,
-            background: "linear-gradient(135deg, rgba(167,139,250,0.1), rgba(167,139,250,0.03))",
-            border: "1px solid rgba(167,139,250,0.3)",
-            boxShadow: "0 0 20px rgba(167,139,250,0.06)",
-            fontSize: 13, color: "var(--text-secondary)",
-          }}>
-            <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
-            <span><strong style={{ color: "#a78bfa", textShadow: "0 0 8px rgba(167,139,250,0.3)" }}>{stats.demoCount} demo predictions</strong> with verified outcomes shown as illustration. Click <strong style={{ color: "#22c55e" }}>● Live Only</strong> to see just your real data.</span>
-          </div>
-        )}
+      {/* Closed-Loop Engine */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10, ...fadeIn(0.02) }}>
 
         {/* CLOSED-LOOP ENGINE */}
         <div style={{
@@ -845,8 +830,6 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
-                        {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(139,92,246,0.3)" }}>D</span>}
-                        {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(34,197,94,0.3)" }}>L</span>}
                       </div>
                       <OutcomeBadge outcome={item.actualOutcome} />
                     </div>
@@ -896,8 +879,6 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
-                    {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(139,92,246,0.3)" }}>D</span>}
-                    {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(34,197,94,0.3)" }}>L</span>}
                   </div>
                   <div style={{ fontSize: 13, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 4 }}>{item.title}</div>
                   <div style={{ textAlign: "center" }}>
