@@ -37,6 +37,27 @@ export class RiskEngine {
     ).length;
     score += Math.min(failedPipelineCount * 0.05, 0.2);
 
+    if (twin.nodes.length > 0) {
+      if (affectedFileCount === 0) {
+        score += 0.3;
+      }
+
+      const hasPipeline = twin.nodes.some((n) => n.type === "Pipeline");
+      if (!hasPipeline) {
+        score += 0.2;
+      }
+
+      const hasReviewer = twin.edges.some((e) => e.type === "REVIEWED_BY");
+      if (!hasReviewer) {
+        score += 0.15;
+      }
+
+      const mrNode = twin.nodes.find((n) => n.type === "MergeRequest");
+      if (mrNode && (mrNode.properties?.draft === true || mrNode.label?.toLowerCase().includes("draft"))) {
+        score += 0.1;
+      }
+    }
+
     return Math.min(Math.max(score, 0), 1);
   }
 
