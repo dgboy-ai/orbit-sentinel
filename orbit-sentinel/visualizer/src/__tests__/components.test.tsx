@@ -155,7 +155,7 @@ describe("DataModeBanner", () => {
     render(<DataModeBanner mode="error" errorMessage="Network failure" onRetry={onRetry} />);
     expect(screen.getByText("Error")).toBeInTheDocument();
     expect(screen.getByText("Network failure")).toBeInTheDocument();
-    const retry = screen.getByText("Retry");
+    const retry = screen.getByText("↻ Retry");
     fireEvent.click(retry);
     expect(onRetry).toHaveBeenCalledOnce();
   });

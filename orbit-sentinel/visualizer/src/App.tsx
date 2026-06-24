@@ -18,7 +18,6 @@ import HelpTooltip from "./components/HelpTooltip";
 import RealityCheck from "./components/RealityCheck";
 import SimulateWebhook from "./components/SimulateWebhook";
 import LoadingSkeleton from "./components/LoadingSkeleton";
-import EngineStatus from "./components/EngineStatus";
 
 import DataModeBanner from "./components/DataModeBanner";
 import type { DataMode } from "./components/DataModeBanner";
@@ -493,8 +492,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
             <span style={{ fontSize: 19, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Sentinel</span>
           </div>
         <div className="resp-hide-subtitle" style={{ flex: 1, maxWidth: 420, minWidth: 0, margin: "0 4px", display: "flex", alignItems: "center", gap: 6, overflow: "hidden" }}>
-          <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
-          <EngineStatus />
+          <DataModeBanner mode={dataMode} onRetry={loadData} />
         </div>
           {/* Placeholder matching loaded header height to prevent CLS */}
           <div className="header-nav resp-hide-subtitle" style={{ height: 28, display: "flex", alignItems: "center", gap: 6 }}>
@@ -565,8 +563,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
           <span style={{ fontSize: 20, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.2px", whiteSpace: "nowrap" }}>Orbit Sentinel</span>
         </div>
         <div className="resp-hide-subtitle" style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: "auto" }}>
-          <DataModeBanner mode={dataMode} onRetry={apiService.isApiAvailable() ? loadData : undefined} />
-          <EngineStatus />
+          <DataModeBanner mode={dataMode} onRetry={loadData} />
         </div>
         {isMobile && (
           <div style={{ position: "relative" }}>
