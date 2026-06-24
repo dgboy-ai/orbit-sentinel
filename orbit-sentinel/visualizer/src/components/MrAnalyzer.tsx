@@ -689,8 +689,40 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                   <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
                 )}
               </button>
+              <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                💡 Tip: Use the "● Live Only" filter above to show only your verified MRs
+              </div>
             </div>
           )}
+
+          {/* Legend for Live vs Demo data distinction */}
+          <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid var(--overlay-05)" }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>
+              Data Legend:
+            </div>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ 
+                  width: 10, 
+                  height: 10, 
+                  borderRadius: "50%", 
+                  background: "#22c55e",
+                  boxShadow: "0 0 6px rgba(34,197,94,0.4)"
+                }}></span>
+                <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>Live MRs (verified outcomes)</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ 
+                  width: 10, 
+                  height: 10, 
+                  borderRadius: "50%", 
+                  background: "#a78bfa",
+                  boxShadow: "0 0 6px rgba(167,139,250,0.4)"
+                }}></span>
+                <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>Demo MRs (illustrated examples)</span>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </div>
