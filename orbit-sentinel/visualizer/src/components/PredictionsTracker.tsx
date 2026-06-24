@@ -58,10 +58,8 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
           </linearGradient>
         </defs>
 
-        {/* subtle bg fill */}
         <rect x={pad.left} y={pad.top} width={plotW} height={plotH} rx={4} fill="url(#chart-bg-grad)" />
 
-        {/* horizontal grid lines */}
         {yLabels.map(v => (
           <g key={v}>
             <line x1={pad.left} x2={w - pad.right} y1={yTick(v)} y2={yTick(v)} stroke="var(--overlay-06)" strokeWidth="0.5" strokeDasharray="3,3" />
@@ -69,7 +67,6 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
           </g>
         ))}
 
-        {/* series lines */}
         {series.map((s) => {
           const pts = s.data.map((v, i) => `${xTick(i)},${yTick(v)}`).join(" ");
           const area = s.data.map((v, i) => `${xTick(i)},${yTick(v)}`).join(" ") + ` ${xTick(lastIdx)},${pad.top + plotH} ${xTick(0)},${pad.top + plotH}`;
@@ -84,7 +81,6 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
           );
         })}
 
-        {/* hover indicator */}
         {hoverX !== null && (
           <g>
             <line x1={xTick(hoverX)} x2={xTick(hoverX)} y1={pad.top} y2={pad.top + plotH} stroke="var(--overlay-12)" strokeWidth="1" strokeDasharray="2,2" />
@@ -115,7 +111,6 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
           </g>
         )}
 
-        {/* x-axis labels — use real MR IIDs from labels prop */}
         <text x={xTick(0)} y={h - 2} textAnchor="middle" fill="var(--overlay-25)" fontSize="13" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[0] ?? `MR #1`}</text>
         {n > 3 && <text x={xTick(midIdx)} y={h - 2} textAnchor="middle" fill="var(--overlay-18)" fontSize="13" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[midIdx] ?? `MR #${midIdx + 1}`}</text>}
         <text x={xTick(lastIdx)} y={h - 2} textAnchor="middle" fill="var(--overlay-25)" fontSize="13" fontWeight="600" fontFamily="'JetBrains Mono',monospace">{labels?.[lastIdx] ?? `MR #${n}`}</text>
@@ -297,6 +292,10 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
     }, 1200);
   }, [verifyMrIid, items, onVerify]);
 
+  const fadeIn = (delay: number) => ({
+    animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
+  });
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
 
@@ -306,7 +305,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         background: "linear-gradient(135deg, rgba(59,130,246,0.1), rgba(15,18,26,0.96), rgba(139,92,246,0.06))",
         border: "1px solid rgba(59,130,246,0.2)",
         boxShadow: "0 0 40px rgba(59,130,246,0.08)",
-        animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)",
+        ...fadeIn(0),
       }}>
         <div style={{ position: "absolute", top: -80, left: -40, width: 260, height: 260, borderRadius: "50%", background: "rgba(59,130,246,0.08)", filter: "blur(80px)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.06)", filter: "blur(60px)", pointerEvents: "none" }} />
@@ -359,164 +358,246 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         </div>
       </div>
 
-      {stats.demoCount > 0 && stats.liveCount > 0 && !showOnlyLive && (
+      {/* Demo Notice + Closed-Loop Engine — side by side when space allows */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : stats.demoCount > 0 && stats.liveCount > 0 && !showOnlyLive ? "1fr 2fr" : "1fr", gap: 10, ...fadeIn(0.02) }}>
+        {stats.demoCount > 0 && stats.liveCount > 0 && !showOnlyLive && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "10px 14px", borderRadius: 8,
+            background: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(167,139,250,0.02))",
+            border: "1px solid rgba(167,139,250,0.15)",
+            fontSize: 13, color: "var(--text-secondary)",
+          }}>
+            <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
+            <span><strong style={{ color: "#a78bfa" }}>{stats.demoCount} demo predictions</strong> with verified outcomes shown as illustration. Click <strong style={{ color: "#22c55e" }}>● Live Only</strong> to see just your real data.</span>
+          </div>
+        )}
+
+        {/* CLOSED-LOOP ENGINE */}
         <div style={{
-          display: "flex", alignItems: "center", gap: 8,
-          padding: "8px 14px", borderRadius: 6,
-          background: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(167,139,250,0.02))",
-          border: "1px solid rgba(167,139,250,0.15)",
-          fontSize: 13, color: "var(--text-secondary)", animation: "fadeSlideUp 0.3s ease",
+          padding: "12px 16px", borderRadius: 8, position: "relative", overflow: "hidden",
+          background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.96))",
+          border: "1px solid rgba(139,92,246,0.12)",
         }}>
-          <span style={{ fontSize: 14 }}>💡</span>
-          <span><strong style={{ color: "#a78bfa" }}>{stats.demoCount} demo predictions</strong> with verified outcomes shown as illustration. Click <strong style={{ color: "#22c55e" }}>● Live Only</strong> above to see just your real data.</span>
-        </div>
-      )}
-
-      {/* CLOSED-LOOP NARRATIVE */}
-      <div className="card" style={{
-        padding: "14px 18px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.96))",
-        border: "1px solid rgba(139,92,246,0.12)",
-        animation: "fadeSlideUp 0.4s 0.03s cubic-bezier(0.16,1,0.3,1) both",
-      }}>
-        <div style={{ position: "absolute", bottom: -30, right: 40, width: 140, height: 140, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-            <span style={{ fontSize: 24 }}>🔄</span>
-            <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#a78bfa" }}>Closed-Loop Prediction Engine</div>
-              <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 1 }}>Predict → Ship → Verify → Learn — accuracy calibrated against production outcomes</div>
-            </div>
-            <div style={{ marginLeft: "auto", padding: "4px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, background: `linear-gradient(135deg, ${stats.accuracy >= 70 ? "rgba(34,197,94,0.12)" : "rgba(234,179,8,0.12)"}, ${stats.accuracy >= 70 ? "rgba(34,197,94,0.04)" : "rgba(234,179,8,0.04)"})`, border: `1px solid ${stats.accuracy >= 70 ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)"}`, color: stats.accuracy >= 70 ? "#22c55e" : "#eab308", letterSpacing: "0.3px" }}>
-              {stats.accuracy}% Accuracy
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {[
-              { step: "Predict", icon: "🔮", color: "#60a5fa", desc: "Risk score via Orbit graph" },
-              { step: "Ship", icon: "🚀", color: "#eab308", desc: "MR merged to target branch" },
-              { step: "Verify", icon: "✅", color: "#22c55e", desc: "7-day survival window" },
-              { step: "Learn", icon: "🧠", color: "#a78bfa", desc: "Calibrate accuracy model" },
-            ].map((s, i) => (
-              <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, background: `${s.color}08`, border: `1px solid ${s.color}15`, flex: 1, minWidth: 120 }}>
-                <span style={{ fontSize: 15 }}>{s.icon}</span>
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: s.color }}>{s.step}</div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{s.desc}</div>
-                </div>
-                {i < 3 && <span style={{ color: "var(--overlay-08)", fontSize: 13, marginLeft: "auto" }}>→</span>}
+          <div style={{ position: "absolute", bottom: -30, right: 40, width: 140, height: 140, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <span style={{ fontSize: 22 }}>🔄</span>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#a78bfa" }}>Closed-Loop Prediction Engine</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 1 }}>Predict → Ship → Verify → Learn</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* CONFUSION MATRIX */}
-      <div className="card" style={{
-        padding: isMobile ? "14px 14px" : "16px 18px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(96,165,250,0.12)",
-        boxShadow: "0 0 20px rgba(96,165,250,0.04)",
-        animation: "fadeSlideUp 0.4s 0.035s cubic-bezier(0.16,1,0.3,1) both",
-      }}>
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <span style={{ fontSize: 18 }}>📊</span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px" }}>Prediction Outcomes</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
-          </div>
-          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
-            {(["true_positive","true_negative","false_positive","false_negative"] as const).map(cat => {
-              const count = displayItems.filter(i => i.actualOutcome !== "pending" && i.actualOutcome !== "unknown" && i.category === cat).length;
-              const labels: Record<string, { label: string; short: string; color: string; desc: string }> = {
-                true_positive: { label: "True Positive", short: "TP", color: "#22c55e", desc: "High risk → failed" },
-                true_negative: { label: "True Negative", short: "TN", color: "#60a5fa", desc: "Low risk → shipped" },
-                false_positive: { label: "False Positive", short: "FP", color: "#eab308", desc: "High risk → shipped" },
-                false_negative: { label: "False Negative", short: "FN", color: "#ef4444", desc: "Low risk → failed" },
-              };
-              const info = labels[cat];
-              return (
-                <div key={cat} style={{
-                  padding: "12px 10px", borderRadius: 8, textAlign: "center",
-                  background: `${info.color}06`, border: `1px solid ${info.color}20`,
-                  boxShadow: `0 0 12px ${info.color}08`,
-                  animation: "fadeSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) both",
-                  transition: "all 0.15s ease",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${info.color}45`; e.currentTarget.style.boxShadow = `0 0 16px ${info.color}15`; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = `${info.color}20`; e.currentTarget.style.boxShadow = `0 0 12px ${info.color}08`; }}
-                >
-                  <div style={{ fontSize: 14, fontWeight: 800, color: info.color, marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.5px" }}>{info.short}</div>
-                  <div style={{ fontSize: 30, fontWeight: 900, color: info.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${info.color}40`, lineHeight: 1.1 }}>{count}</div>
-                  <div style={{ fontSize: 12.5, color: "var(--text-tertiary)", marginTop: 2 }}>{info.desc}</div>
+              <div style={{ marginLeft: "auto", padding: "3px 14px", borderRadius: 16, fontSize: 13, fontWeight: 700, background: `linear-gradient(135deg, ${stats.accuracy >= 70 ? "rgba(34,197,94,0.12)" : "rgba(234,179,8,0.12)"}, ${stats.accuracy >= 70 ? "rgba(34,197,94,0.04)" : "rgba(234,179,8,0.04)"})`, border: `1px solid ${stats.accuracy >= 70 ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)"}`, color: stats.accuracy >= 70 ? "#22c55e" : "#eab308" }}>
+                {stats.accuracy}% Accuracy
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+              {[
+                { step: "Predict", icon: "🔮", color: "#60a5fa", desc: "Risk score via Orbit graph" },
+                { step: "Ship", icon: "🚀", color: "#eab308", desc: "MR merged to target branch" },
+                { step: "Verify", icon: "✅", color: "#22c55e", desc: "7-day survival window" },
+                { step: "Learn", icon: "🧠", color: "#a78bfa", desc: "Calibrate accuracy model" },
+              ].map((s, i) => (
+                <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", borderRadius: 6, background: `${s.color}08`, border: `1px solid ${s.color}15`, flex: 1, minWidth: 100 }}>
+                  <span style={{ fontSize: 14 }}>{s.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{s.step}</div>
+                    <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>{s.desc}</div>
+                  </div>
+                  {i < 3 && <span style={{ color: "var(--overlay-08)", fontSize: 12, marginLeft: "auto" }}>→</span>}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* TREND CHART */}
-      <div className="card" style={{
-        padding: isMobile ? "16px 16px" : "18px 20px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(59,130,246,0.04), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(59,130,246,0.12)",
-        animation: "fadeSlideUp 0.4s 0.04s cubic-bezier(0.16,1,0.3,1) both",
-      }}>
-        <div style={{ position: "absolute", top: -50, left: "30%", width: 180, height: 180, borderRadius: "50%", background: "rgba(59,130,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <span style={{ fontSize: 18 }}>📈</span>
-            <span style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>Predicted vs Actual Risk Trend</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(59,130,246,0.15), transparent)" }} />
-            <div style={{ display: "flex", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 18, height: 3, borderRadius: 2, background: "#60a5fa", boxShadow: "0 0 6px rgba(96,165,250,0.4)" }} /><span style={{ fontSize: 14, color: "#60a5fa", fontWeight: 700 }}>Predicted</span></div>
-              <div style={{ display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 18, height: 3, borderRadius: 2, background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.4)" }} /><span style={{ fontSize: 14, color: "#22c55e", fontWeight: 700 }}>Actual</span></div>
+              ))}
             </div>
           </div>
-          <div style={{ overflowX: "auto", paddingBottom: 4 }}>
+        </div>
+      </div>
+
+      {/* CONFUSION MATRIX + TREND CHART — side by side */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1.8fr", gap: 10, ...fadeIn(0.04) }}>
+        {/* CONFUSION MATRIX — 2x2 grid */}
+        <div className="card" style={{
+          padding: "14px 16px", position: "relative", overflow: "hidden",
+          background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
+          border: "1px solid rgba(96,165,250,0.12)",
+          boxShadow: "0 0 20px rgba(96,165,250,0.04)",
+        }}>
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 16 }}>📊</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px" }}>Prediction Outcomes</span>
+              <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
+            </div>
+            {/* 2x2 grid */}
+            <div style={{
+              display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6,
+              position: "relative",
+            }}>
+              {/* Row header: Predicted */}
+              <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", marginBottom: 2 }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
+                  color: "var(--text-tertiary)", opacity: 0.5, padding: "1px 10px",
+                  background: "var(--overlay-03)", borderRadius: 4,
+                }}>Predicted</div>
+              </div>
+              {/* Column sub-headers */}
+              <div style={{ textAlign: "center", fontSize: 10, fontWeight: 600, color: "var(--text-tertiary)", opacity: 0.4 }}>High Risk</div>
+              <div style={{ textAlign: "center", fontSize: 10, fontWeight: 600, color: "var(--text-tertiary)", opacity: 0.4 }}>Low Risk</div>
+              {/* TP */}
+              <div style={{
+                padding: "10px 8px", borderRadius: 6, textAlign: "center",
+                background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.2)",
+                boxShadow: "0 0 12px rgba(34,197,94,0.06)",
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px" }}>TP</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)", lineHeight: 1.1 }}>{stats.tp}</div>
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Failed as predicted</div>
+              </div>
+              {/* FP */}
+              <div style={{
+                padding: "10px 8px", borderRadius: 6, textAlign: "center",
+                background: "rgba(234,179,8,0.06)", border: "1px solid rgba(234,179,8,0.2)",
+                boxShadow: "0 0 12px rgba(234,179,8,0.06)",
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#eab308", letterSpacing: "0.5px" }}>FP</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(234,179,8,0.3)", lineHeight: 1.1 }}>{stats.fp}</div>
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Shipped anyway</div>
+              </div>
+              {/* FN */}
+              <div style={{
+                padding: "10px 8px", borderRadius: 6, textAlign: "center",
+                background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.2)",
+                boxShadow: "0 0 12px rgba(239,68,68,0.06)",
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px" }}>FN</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.3)", lineHeight: 1.1 }}>{stats.fn}</div>
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Missed prediction</div>
+              </div>
+              {/* TN */}
+              <div style={{
+                padding: "10px 8px", borderRadius: 6, textAlign: "center",
+                background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.2)",
+                boxShadow: "0 0 12px rgba(96,165,250,0.06)",
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.5px" }}>TN</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.3)", lineHeight: 1.1 }}>{stats.tn}</div>
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Shipped as predicted</div>
+              </div>
+              {/* Row header: Actual */}
+              <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", marginTop: 2 }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
+                  color: "var(--text-tertiary)", opacity: 0.5, padding: "1px 10px",
+                  background: "var(--overlay-03)", borderRadius: 4,
+                }}>Actual</div>
+              </div>
+            </div>
+            {/* Summary line */}
+            <div style={{ marginTop: 8, fontSize: 11, color: "var(--text-tertiary)", textAlign: "center", lineHeight: 1.5 }}>
+              Accuracy = <strong style={{ color: "#22c55e" }}>TP + TN</strong> / TP + TN + FP + FN = <strong style={{ color: stats.accuracy >= 70 ? "#22c55e" : "#eab308", fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>{stats.accuracy}%</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* TREND CHART */}
+        <div className="card" style={{
+          padding: "14px 16px", position: "relative", overflow: "hidden",
+          background: "linear-gradient(135deg, rgba(59,130,246,0.04), rgba(15,18,26,0.95))",
+          border: "1px solid rgba(59,130,246,0.12)",
+        }}>
+          <div style={{ position: "absolute", top: -50, left: "30%", width: 180, height: 180, borderRadius: "50%", background: "rgba(59,130,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 16 }}>📈</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>Risk Trend</span>
+              <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(59,130,246,0.15), transparent)" }} />
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}><div style={{ width: 16, height: 3, borderRadius: 2, background: "#60a5fa", boxShadow: "0 0 6px rgba(96,165,250,0.4)" }} /><span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 700 }}>Predicted</span></div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}><div style={{ width: 16, height: 3, borderRadius: 2, background: "#22c55e", boxShadow: "0 0 6px rgba(34,197,94,0.4)" }} /><span style={{ fontSize: 12, color: "#22c55e", fontWeight: 700 }}>Actual</span></div>
+              </div>
+            </div>
+            <div style={{ overflowX: "auto", paddingBottom: 4 }}>
               <DualSparkline
                 series={[
                   { data: trendData.predicted, color: "#60a5fa", label: "Predicted" },
                   { data: trendData.actual.filter((v): v is number => v !== null), color: "#22c55e", label: "Actual" },
                 ]}
                 labels={trendData.labels}
-                height={120}
+                height={110}
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "var(--text-tertiary)", marginTop: 6 }}>
-              <span style={{ fontWeight: 600 }}>Earliest MR</span>
-              <span style={{ fontStyle: "italic", opacity: 0.7 }}>Hover any dot for values</span>
-              <span style={{ fontWeight: 600 }}>Latest MR</span>
           </div>
         </div>
       </div>
 
-      {/* VULNERABILITY ADJUSTMENTS */}
+      {/* ACCURACY INSIGHTS — compact row */}
       <div className="card" style={{
-        padding: isMobile ? "16px 16px" : "18px 20px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(239,68,68,0.04), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(239,68,68,0.12)",
-        animation: "fadeSlideUp 0.4s 0.06s cubic-bezier(0.16,1,0.3,1) both",
+        padding: "14px 16px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.97), rgba(59,130,246,0.03))",
+        border: "1px solid rgba(139,92,246,0.1)",
+        ...fadeIn(0.06),
+      }}>
+        <div style={{ position: "absolute", bottom: -40, right: -20, width: 160, height: 160, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <span style={{ fontSize: 16 }}>💡</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.3px" }}>Accuracy Insights</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.15), transparent)" }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 2fr", gap: 8 }}>
+            <div style={{
+              padding: "10px 12px", borderRadius: 6,
+              background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.1)",
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Avg Error Margin</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 10px rgba(96,165,250,0.3)" }}>
+                {stats.total > 0 ? `${Math.round(displayItems.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / displayItems.length * 100)}%` : "—"}
+              </div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Prediction vs actual delta</div>
+            </div>
+            <div style={{
+              padding: "10px 12px", borderRadius: 6,
+              background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.1)",
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Failures Caught</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 10px rgba(34,197,94,0.3)" }}>
+                {stats.failed > 0 ? `${Math.round((displayItems.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
+              </div>
+              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk correctly flagged</div>
+            </div>
+            <div style={{
+              padding: "10px 12px", borderRadius: 6,
+              background: "rgba(234,179,8,0.04)", border: "1px solid rgba(234,179,8,0.1)",
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Key Pattern</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                {stats.failed > 0 ? (
+                  <>High-risk (≥60%) mitigated before merge <strong style={{ color: "#22c55e" }}>all stayed shipped</strong>. Failures were MRs where mitigations <strong style={{ color: "#ef4444" }}>not applied</strong>.</>
+                ) : stats.verified > 0 ? (
+                  <>All {stats.verified} verified stayed shipped — no failures tracked yet.</>
+                ) : (
+                  <>Analyze and verify predictions to uncover pattern insights.</>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* VULNERABILITY-ADJUSTED PREDICTIONS */}
+      <div className="card" style={{
+        padding: "14px 16px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(239,68,68,0.03), rgba(15,18,26,0.95))",
+        border: "1px solid rgba(239,68,68,0.1)",
+        ...fadeIn(0.07),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <span style={{ fontSize: 18 }}>🛡️</span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#ef4444", letterSpacing: "0.3px" }}>Vulnerability-Adjusted Predictions</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <span style={{ fontSize: 16 }}>🛡️</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444", letterSpacing: "0.3px" }}>Vulnerability-Adjusted Predictions</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(239,68,68,0.15), transparent)" }} />
           </div>
-          <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 10, lineHeight: 1.5 }}>
-            Security context from risk analysis is shown alongside each prediction.
-            <strong style={{ color: "#ef4444" }}>Higher-risk</strong> predictions receive larger vulnerability adjustments.
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 80px", gap: 6, alignItems: "center", padding: "0 12px 4px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>
-              <span>MR</span>
-              <span>Title</span>
-              <span style={{ textAlign: "center" }}>Severity</span>
-              <span style={{ textAlign: "center" }}>Boost</span>
-              <span style={{ textAlign: "center" }}>Status</span>
-            </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {displayItems.filter(p => p.predictedRisk >= 0.3).map((p, i) => {
               const sev = p.predictedRisk >= 0.8 ? "critical" : p.predictedRisk >= 0.6 ? "high" : p.predictedRisk >= 0.3 ? "medium" : "low";
               const sevColor = sev === "critical" ? "#ef4444" : sev === "high" ? "#f97316" : "#eab308";
@@ -524,24 +605,23 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               const caught = p.actualOutcome === "failed";
               return (
                 <div key={p.mrIid} style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(120px, 1fr) 70px 70px 80px",
+                  display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(100px, 1fr) 60px 60px 70px",
                   gap: 6, alignItems: "center",
-                  padding: "8px 12px", borderRadius: 6,
+                  padding: "6px 10px", borderRadius: 5,
                   background: `rgba(255,255,255,0.01)`, border: "1px solid var(--overlay-04)",
-                  animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s ease both`,
+                  animation: `fadeSlideUp 0.3s ${0.05 + i * 0.02}s ease both`,
                   transition: "border-color 0.15s",
                 }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = `${sevColor}25`; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; }}
                 >
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{p.mrIid}</div>
-                  <div style={{ fontSize: 14, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{p.mrIid}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</div>
                   <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 4, fontWeight: 700, background: `${sevColor}15`, color: sevColor, border: `1px solid ${sevColor}25` }}>{sev}</span>
+                    <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 3, fontWeight: 700, background: `${sevColor}15`, color: sevColor, border: `1px solid ${sevColor}25` }}>{sev}</span>
                   </div>
-                  <div style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: p.predictedRisk >= 0.6 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace" }}>{boost > 0 ? `+${Math.round(boost * 100)}%` : "—"}</div>
-                  <div style={{ textAlign: "center", fontSize: 14, fontWeight: 700, color: caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{caught ? "✅ Caught" : "—"}</div>
+                  <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: p.predictedRisk >= 0.6 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace" }}>{boost > 0 ? `+${Math.round(boost * 100)}%` : "—"}</div>
+                  <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{caught ? "✅ Caught" : "—"}</div>
                 </div>
               );
             })}
@@ -551,30 +631,27 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
 
       {/* POST-MERGE VERIFICATION */}
       <div className="card" style={{
-        padding: isMobile ? "16px 16px" : "18px 20px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(34,197,94,0.12)",
-        animation: "fadeSlideUp 0.4s 0.08s cubic-bezier(0.16,1,0.3,1) both",
+        padding: "14px 16px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.03), rgba(15,18,26,0.95))",
+        border: "1px solid rgba(34,197,94,0.1)",
+        ...fadeIn(0.08),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <span style={{ fontSize: 18 }}>🔬</span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px" }}>Post-Merge Verification</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <span style={{ fontSize: 16 }}>🔬</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px" }}>Post-Merge Verification</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.15), transparent)" }} />
           </div>
-          <div style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 10, lineHeight: 1.5 }}>
-            Enter a merged MR IID to check if the change <strong style={{ color: "#22c55e" }}>stayed shipped</strong> through the 7-day survival window.
-          </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ position: "relative", flex: 1, maxWidth: 220 }}>
+            <div style={{ position: "relative", flex: 1, maxWidth: 200 }}>
               <input
                 value={verifyMrIid}
                 onChange={e => setVerifyMrIid(e.target.value.replace(/\D/g, ""))}
                 placeholder="MR IID (e.g. 42)"
                 onKeyDown={e => { if (e.key === "Enter") handleVerify(); }}
                 style={{
-                  width: "100%", padding: "9px 14px", fontSize: 18, fontFamily: "'JetBrains Mono', monospace",
-                  border: "1px solid rgba(34,197,94,0.2)", borderRadius: 8,
+                  width: "100%", padding: "8px 12px", fontSize: 16, fontFamily: "'JetBrains Mono', monospace",
+                  border: "1px solid rgba(34,197,94,0.2)", borderRadius: 6,
                   background: "rgba(34,197,94,0.04)", color: "var(--text-primary)",
                   outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
                 }}
@@ -584,53 +661,52 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </div>
             <button onClick={handleVerify} disabled={!verifyMrIid || verifying}
               style={{
-                padding: "9px 20px", fontSize: 15, fontWeight: 700, cursor: !verifyMrIid || verifying ? "not-allowed" : "pointer",
-                border: "1px solid rgba(34,197,94,0.25)", borderRadius: 8,
+                padding: "8px 18px", fontSize: 14, fontWeight: 700, cursor: !verifyMrIid || verifying ? "not-allowed" : "pointer",
+                border: "1px solid rgba(34,197,94,0.25)", borderRadius: 6,
                 background: verifying ? "rgba(34,197,94,0.06)" : "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06))",
                 color: "#22c55e", transition: "all 0.2s", whiteSpace: "nowrap",
                 opacity: !verifyMrIid || verifying ? 0.5 : 1,
                 display: "flex", alignItems: "center", gap: 6,
-                boxShadow: verifyMrIid && !verifying ? "0 0 20px rgba(34,197,94,0.1)" : "none",
               }}
               onMouseEnter={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.18), rgba(34,197,94,0.08))"; e.currentTarget.style.boxShadow = "0 0 30px rgba(34,197,94,0.15)"; } }}
-              onMouseLeave={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06))"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.1)"; } }}
+              onMouseLeave={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06))"; e.currentTarget.style.boxShadow = "none"; } }}
             >
               {verifying && <span style={{ width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite", display: "inline-block" }} />}
-              {verifying ? "Checking Orbit records…" : "✓ Verify MR"}
+              {verifying ? "Checking…" : "✓ Verify MR"}
             </button>
           </div>
           {verifyResult && (
             <div style={{
-              marginTop: 10, padding: "10px 14px", borderRadius: 8,
+              marginTop: 8, padding: "10px 14px", borderRadius: 6,
               background: verifyResult.outcome === "verified" ? "rgba(34,197,94,0.06)" : verifyResult.outcome === "failed" ? "rgba(239,68,68,0.06)" : "var(--overlay-02)",
               border: `1px solid ${verifyResult.outcome === "verified" ? "rgba(34,197,94,0.15)" : verifyResult.outcome === "failed" ? "rgba(239,68,68,0.15)" : "var(--overlay-06)"}`,
               animation: "fadeSlideUp 0.3s ease",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 22 }}>{verifyResult.outcome === "verified" ? "✅" : verifyResult.outcome === "failed" ? "❌" : "ℹ️"}</span>
-                <span style={{ fontSize: 15, fontWeight: 700, color: verifyResult.outcome === "verified" ? "#22c55e" : verifyResult.outcome === "failed" ? "#ef4444" : "var(--text-secondary)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                <span style={{ fontSize: 20 }}>{verifyResult.outcome === "verified" ? "✅" : verifyResult.outcome === "failed" ? "❌" : "ℹ️"}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: verifyResult.outcome === "verified" ? "#22c55e" : verifyResult.outcome === "failed" ? "#ef4444" : "var(--text-secondary)" }}>
                   MR !{verifyResult.mrIid} — {verifyResult.outcome === "verified" ? "Stayed Shipped" : verifyResult.outcome === "failed" ? "Failed" : "Not Found"}
                 </span>
               </div>
-              <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>{verifyResult.message}</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>{verifyResult.message}</div>
             </div>
           )}
         </div>
       </div>
 
-      {/* PREDICTIONS LEDGER */}
+      {/* MR PREDICTIONS LEDGER */}
       <div className="card" style={{
-        padding: isMobile ? "16px 16px" : "18px 20px", position: "relative", overflow: "hidden",
-        animation: "fadeSlideUp 0.4s 0.12s cubic-bezier(0.16,1,0.3,1) both",
+        padding: "16px 18px", position: "relative", overflow: "hidden",
+        ...fadeIn(0.1),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 18 }}>📒</span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>MR Predictions Ledger</span>
+            <span style={{ fontSize: 16 }}>📒</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>MR Predictions Ledger</span>
             <div style={{ flex: 1, height: 1, background: "var(--overlay-06)" }} />
             <select value={filterOutcome} onChange={e => setFilterOutcome(e.target.value)}
               style={{
-                fontSize: 13, padding: "4px 10px", borderRadius: 6,
+                fontSize: 12, padding: "3px 8px", borderRadius: 4,
                 background: "var(--overlay-04)", border: "1px solid var(--overlay-10)",
                 color: "var(--text-secondary)", cursor: "pointer", outline: "none",
               }}>
@@ -641,7 +717,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </select>
             <button onClick={() => setSortAsc(!sortAsc)}
               style={{
-                fontSize: 13, padding: "4px 10px", borderRadius: 6, cursor: "pointer",
+                fontSize: 12, padding: "3px 8px", borderRadius: 4, cursor: "pointer",
                 background: "var(--overlay-04)", border: "1px solid var(--overlay-10)",
                 color: "var(--text-secondary)", transition: "all 0.15s",
               }}
@@ -652,7 +728,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </button>
           </div>
           {!isMobile && (
-            <div style={{ display: "grid", gridTemplateColumns: "60px minmax(140px, 1fr) 90px 90px 110px", gap: 10, alignItems: "center", padding: "0 14px 6px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.45 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "50px minmax(120px, 1fr) 80px 80px 100px", gap: 8, alignItems: "center", padding: "0 12px 6px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.4 }}>
               <span>MR</span>
               <span>Title</span>
               <span style={{ textAlign: "center" }}>Predicted</span>
@@ -660,16 +736,15 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <span style={{ textAlign: "center" }}>Result</span>
             </div>
           )}
-          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {sorted.length === 0 ? (
-              <div style={{ padding: "24px 20px", textAlign: "center", fontSize: 15, color: "var(--text-tertiary)" }}>
+              <div style={{ padding: "20px 16px", textAlign: "center", fontSize: 14, color: "var(--text-tertiary)" }}>
                 {displayItems.length === 0 ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
-                    <span style={{ fontSize: 32 }}>📊</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
+                    <span style={{ fontSize: 28 }}>📊</span>
                     <span style={{ fontWeight: 600, color: "var(--text-secondary)" }}>No predictions yet</span>
-                    <span style={{ fontSize: 14, lineHeight: 1.4, maxWidth: 360 }}>
+                    <span style={{ fontSize: 13, lineHeight: 1.4, maxWidth: 320 }}>
                       Analyze an MR on the <strong style={{ color: "var(--text-primary)" }}>Overview</strong> page to track your first prediction.
-                      Every MR you analyze is saved here with its risk score.
                     </span>
                   </div>
                 ) : (
@@ -682,55 +757,50 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               if (isMobile) {
                 return (
                   <div key={item.mrIid} style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 6,
-                    padding: "12px 14px", borderRadius: 8,
+                    display: "flex", flexDirection: "column", gap: 5,
+                    padding: "10px 12px", borderRadius: 6,
                     background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
                     border: `1px solid ${isHovered ? `${outcomeColor}22` : "var(--overlay-04)"}`,
                     transition: "all 0.15s ease",
-                    animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                    animation: `fadeSlideUp 0.3s ${0.1 + i * 0.02}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}
                     onMouseEnter={() => setHoveredRow(item.mrIid)}
                     onMouseLeave={() => setHoveredRow(null)}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
                       <OutcomeBadge outcome={item.actualOutcome} />
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 6 }}>
                       {item.title}
                       {item.source === "demo" && (
-                        <span style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 4, padding: "0 5px", lineHeight: "18px" }}>DEMO</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>DEMO</span>
                       )}
                       {item.source === "live" && (
-                        <span style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 4, padding: "0 5px", lineHeight: "18px" }}>LIVE</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>LIVE</span>
                       )}
                     </div>
-                    
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 4, borderTop: "1px solid var(--overlay-03)", paddingTop: 6 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, borderTop: "1px solid var(--overlay-03)", paddingTop: 4 }}>
                       <div>
-                        <div style={{ fontSize: 12, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 2 }}>Predicted Risk</div>
+                        <div style={{ fontSize: 10, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 1 }}>Predicted</div>
                         <RiskBadge score={item.predictedRisk} />
                       </div>
                       <div>
-                        <div style={{ fontSize: 12, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 2 }}>Actual Risk</div>
+                        <div style={{ fontSize: 10, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 1 }}>Actual</div>
                         {item.actualRisk !== undefined ? <RiskBadge score={item.actualRisk} /> : <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>—</span>}
                       </div>
                     </div>
-
                     {item.actualRisk !== undefined && (
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4, background: "rgba(255,255,255,0.01)", padding: "4px 8px", borderRadius: 4 }}>
-                        <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>Verdict:</span>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.01)", padding: "3px 6px", borderRadius: 3 }}>
+                        <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>Verdict:</span>
                         <VerdictLabel predicted={item.predictedRisk} actual={item.actualRisk} />
                       </div>
                     )}
-                    
                     {(isHovered || true) && item.evidence && (
                       <div style={{
-                        marginTop: 4, padding: "6px 10px", borderRadius: 4,
+                        padding: "5px 8px", borderRadius: 3,
                         background: "rgba(0,0,0,0.2)", borderLeft: `2px solid ${outcomeColor}44`,
-                        fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,
+                        fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.4,
                       }}>
                         {item.evidence}
                       </div>
@@ -741,37 +811,38 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               return (
                 <div key={item.mrIid} style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "60px minmax(140px, 1fr) 90px 90px 110px",
-                  gap: isMobile ? 4 : 10, alignItems: "center",
-                  padding: "10px 14px", borderRadius: 8,
-                  background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
+                  gridTemplateColumns: isMobile ? "1fr" : "50px minmax(120px, 1fr) 80px 80px 100px",
+                  gap: isMobile ? 4 : 8, alignItems: "center",
+                  padding: "8px 12px", borderRadius: 6,
+                  background: isHovered ? `linear-gradient(135deg, ${outcomeColor}08, transparent)` : "rgba(255,255,255,0.01)",
                   border: `1px solid ${isHovered ? `${outcomeColor}22` : "var(--overlay-04)"}`,
-                  transition: "all 0.15s ease",
-                  cursor: "default",
-                  animation: `fadeSlideUp 0.3s ${0.1 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                  transition: "all 0.15s ease", cursor: "default",
+                  animation: `fadeSlideUp 0.3s ${0.1 + i * 0.02}s cubic-bezier(0.16,1,0.3,1) both`,
                 }}
                   onMouseEnter={() => setHoveredRow(item.mrIid)}
                   onMouseLeave={() => setHoveredRow(null)}
                 >
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</div>
-                  <div style={{ fontSize: 14, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>Predicted</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
+                    {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 2, padding: "0 3px" }}>D</span>}
+                    {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 2, padding: "0 3px" }}>L</span>}
+                  </div>
+                  <div style={{ fontSize: 13, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
+                  <div style={{ textAlign: "center" }}>
                     <RiskBadge score={item.predictedRisk} />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.5 }}>Actual</span>
+                  <div style={{ textAlign: "center" }}>
                     {item.actualRisk !== undefined ? <RiskBadge score={item.actualRisk} /> : <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>—</span>}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
                     {item.actualRisk !== undefined && <VerdictLabel predicted={item.predictedRisk} actual={item.actualRisk} />}
                     <OutcomeBadge outcome={item.actualOutcome} />
                   </div>
                   {isHovered && item.evidence && (
                     <div style={{
-                      gridColumn: "1 / -1", marginTop: 4, padding: "6px 10px", borderRadius: 4,
+                      gridColumn: "1 / -1", marginTop: 4, padding: "5px 8px", borderRadius: 3,
                       background: "rgba(0,0,0,0.2)", borderLeft: `2px solid ${outcomeColor}44`,
-                      fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,
+                      fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.4,
                     }}>
                       {item.evidence}
                     </div>
@@ -783,88 +854,20 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         </div>
       </div>
 
-      {/* ACCURACY INSIGHTS */}
-      <div className="card" style={{
-        padding: isMobile ? "16px 16px" : "18px 20px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.97), rgba(59,130,246,0.03))",
-        border: "1px solid rgba(139,92,246,0.1)",
-        animation: "fadeSlideUp 0.4s 0.16s cubic-bezier(0.16,1,0.3,1) both",
-      }}>
-        <div style={{ position: "absolute", bottom: -40, right: -20, width: 160, height: 160, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <span style={{ fontSize: 18 }}>💡</span>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.3px" }}>Accuracy Insights</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.15), transparent)" }} />
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8 }}>
-            <div style={{
-              padding: "12px 14px", borderRadius: 8,
-              background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.1)",
-              transition: "border-color 0.15s",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(96,165,250,0.25)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(96,165,250,0.1)"; }}
-            >
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Average Error Margin</div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.3)" }}>
-                {stats.total > 0 ? `${Math.round(displayItems.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / displayItems.length * 100)}%` : "—"}
-              </div>
-              <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 2 }}>Prediction vs actual risk score delta</div>
-            </div>
-            <div style={{
-              padding: "12px 14px", borderRadius: 8,
-              background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.1)",
-              transition: "border-color 0.15s",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(34,197,94,0.25)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(34,197,94,0.1)"; }}
-            >
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Failed MRs Caught</div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
-                {stats.failed > 0 ? `${Math.round((displayItems.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
-              </div>
-              <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 2 }}>High-risk predictions that correctly flagged failures</div>
-            </div>
-            <div style={{
-              padding: "12px 14px", borderRadius: 8,
-              background: "rgba(234,179,8,0.04)", border: "1px solid rgba(234,179,8,0.1)",
-              gridColumn: isMobile ? "auto" : "1 / -1",
-              transition: "border-color 0.15s",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(234,179,8,0.25)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(234,179,8,0.1)"; }}
-            >
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Key Pattern</div>
-              <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                {stats.failed > 0 ? (
-                  <>High-risk predictions (≥60%) that were mitigated before merge <strong style={{ color: "#22c55e" }}>all stayed shipped</strong>.
-                  The {stats.failed} failure{stats.failed !== 1 ? "s were" : " was"} MRs where mitigations were <strong style={{ color: "#ef4444" }}>not applied</strong>.</>
-                ) : stats.verified > 0 ? (
-                  <>All {stats.verified} verified prediction{stats.verified !== 1 ? "s" : ""} stayed shipped through the 7-day window — no failures have been tracked yet.</>
-                ) : (
-                  <>Analyze and verify predictions to uncover patterns in how risk scores align with real outcomes.</>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* FOOTER */}
       <div style={{
-        padding: "10px 16px", textAlign: "center",
-        background: "var(--overlay-02)", borderRadius: 8,
+        padding: "8px 14px", textAlign: "center",
+        background: "var(--overlay-02)", borderRadius: 6,
         border: "1px solid var(--overlay-04)",
-        animation: "fadeSlideUp 0.4s 0.2s cubic-bezier(0.16,1,0.3,1) both",
+        ...fadeIn(0.12),
       }}>
-        <div style={{ fontSize: 13, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
-          Accuracy metrics are calibrated against operator-verified production outcomes (e.g., manual status updates) over a <strong style={{ color: "var(--text-secondary)" }}>7-day survival window</strong> post-merge.
-          <span style={{ marginLeft: 6 }}>Powered by GitLab Orbit — All 4 query types.</span>
+        <div style={{ fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
+          Accuracy metrics calibrated against operator-verified production outcomes over a <strong style={{ color: "var(--text-secondary)" }}>7-day survival window</strong> post-merge.
+          <span style={{ marginLeft: 4 }}>Powered by GitLab Orbit — All 4 query types.</span>
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 10, marginTop: 6 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 4 }}>
           {(["NEIGHBORS", "PATH_FINDING", "TRAVERSAL", "AGGREGATION"] as const).map(q => (
-            <span key={q} style={{ fontSize: 12, padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.08)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>
+            <span key={q} style={{ fontSize: 10, padding: "1px 6px", borderRadius: 3, background: "rgba(96,165,250,0.08)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>
               {q}
             </span>
           ))}
