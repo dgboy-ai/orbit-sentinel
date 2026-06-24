@@ -14,7 +14,7 @@ Validated across **4 merge requests** via the GitLab Duo Agent Platform and live
 | MR | Summary | What Was Proven |
 |----|---------|------------------|
 | !10 | Duo Session 10 | All 4 Orbit query types executed; report posted as MR note. Ecosystem: 132,059 pipelines (17.8% failure rate), 50+ historical MRs (90% abandonment rate) |
-| !12 | Duo Session 4587076 | 51 nodes / 29 edges confirmed live — report auto-posted to MR |
+| !12 | Live Duo Run | 51 nodes / 29 edges confirmed live — report auto-posted to MR |
 | !3 | Duo Session 3 | Full graph traversal: 22 nodes / 40 relationships, 7 distinct risk signals detected |
 | !5 | Live Dashboard Run | **Real-time dashboard verification** — 224 nodes / 189 edges discovered live. Orbit Sentinel correctly scored 8% LOW risk (Draft MR, 1 file, no pipeline). Forecast Engine predicted MR would close — **it did (closed June 16)**. Closed-loop prediction confirmed. |
 
@@ -67,14 +67,11 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 
 ## How we built it
 
-```mermaid
-graph TD
-    A[GitLab MR] --> B[Engine: Node.js/TS, 105 tests]
-    B --> C[Visualizer: React/D3, 30 tests]
-    B --> D[GitLab Orbit Knowledge Graph]
-    C --> D
-    style D fill:#1e1b4b,stroke:#a78bfa,stroke-width:2px,color:#fff
-```
+**Architecture Flow:**
+1. 🦊 **GitLab MR** (Trigger event)
+2. ⚙️ **Engine** (Node.js/TypeScript, 105 tests) — processes logic, mitigations, and incident matching
+3. 🎨 **Visualizer** (React/D3, 30 tests) — renders the 8 interactive views and dashboard
+4. 🛰️ **GitLab Orbit Knowledge Graph** (Connected to both Engine & Visualizer)
 *(Graph Scale: 23 nodes / 43 edges baseline, scaling to 224 nodes / 189 edges live peak)*
 
 **Engine** ⚙️ — TypeScript, Express, custom validation, 8 classified error types with exponential backoff:
