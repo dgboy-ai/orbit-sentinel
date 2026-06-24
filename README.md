@@ -64,7 +64,7 @@ The **MR Analyzer** panel accepts any GitLab merge request URL — parses the pr
 4. Results merged into unified graph → 8 dashboard views populate
 5. Post-merge: every prediction tracked against real outcome in Predictions Tracker
 
-**No GitLab token required** to explore the dashboard. App loads rich demo scenarios instantly — full verdict, blast radius, risk analysis, simulation, and predictions with realistic data. Optional GitLab PAT (`glpat-xxx`, `read_api` scope) enables live analysis against your own projects.
+**No GitLab token required** to explore the dashboard. App loads rich demo scenarios instantly — full verdict, blast radius, risk analysis, simulation, and predictions with realistic data. Optional GitLab PAT (`glpat-xxx`, `read_api` scope) enables live analysis against your own projects — sent once, discarded after.
 
 ### 3 Pre-Configured Quick Demos
 
