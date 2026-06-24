@@ -132,32 +132,32 @@ function AnimatedCounter({ target, suffix = "", duration = 1200, color }: { targ
     }
     requestAnimationFrame(tick);
   }, [target, duration]);
-  return <span style={{ fontSize: 30, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${color}50` }}>{val}{suffix}</span>;
+  return <span style={{ fontSize: 30, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 24px ${color}60, 0 0 60px ${color}20` }}>{val}{suffix}</span>;
 }
 
 function StatCard({ label, value, sub, color, target, suffix = "", icon, badge, bars }: { label: string; value: string; sub?: string; color: string; target?: number; suffix?: string; icon?: string; badge?: string; bars?: { label: string; value: number; color: string }[] }) {
   return (
     <div style={{
       padding: "14px 16px", borderRadius: 10, position: "relative", overflow: "hidden",
-      background: `linear-gradient(145deg, ${color}12, ${color}04)`,
-      border: `1px solid ${color}25`,
-      boxShadow: `0 0 24px ${color}08`,
+      background: `linear-gradient(145deg, ${color}15, ${color}05)`,
+      border: `1px solid ${color}40`,
+      boxShadow: `0 0 30px ${color}15, inset 0 0 20px ${color}06`,
       animation: "fadeSlideUp 0.35s ease both",
       transition: "transform 0.15s, box-shadow 0.15s",
     }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 0 36px ${color}18`; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 0 24px ${color}08`; }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 0 45px ${color}25, inset 0 0 25px ${color}10`; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 0 30px ${color}15, inset 0 0 20px ${color}06`; }}
     >
       <div style={{ position: "absolute", top: -20, right: -20, width: 90, height: 90, borderRadius: "50%", background: `${color}06`, pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 1 }}>
         {icon && <span style={{ fontSize: 22, opacity: 0.5, display: "block", marginBottom: 2 }}>{icon}</span>}
         {target !== undefined
           ? <AnimatedCounter target={target} suffix={suffix || ""} color={color} />
-          : <div style={{ fontSize: 28, fontWeight: 800, color: `${color}cc`, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 14px ${color}30` }}>{value}</div>}
-        <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginTop: 2, lineHeight: 1.3 }}>{label}</div>
-        {sub && <div style={{ fontSize: 12, color: `${color}aa`, marginTop: 1, fontWeight: 500 }}>{sub}</div>}
+          : <div style={{ fontSize: 28, fontWeight: 800, color: `${color}dd`, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 20px ${color}50, 0 0 50px ${color}20` }}>{value}</div>}
+        <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginTop: 2, lineHeight: 1.3 }}>{label}</div>
+        {sub && <div style={{ fontSize: 12, color: `${color}bb`, marginTop: 1, fontWeight: 600 }}>{sub}</div>}
         {badge && (
-          <div style={{ marginTop: 4, display: "inline-flex", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontWeight: 700, background: `${color}15`, color, border: `1px solid ${color}25`, letterSpacing: "0.3px" }}>{badge}</div>
+          <div style={{ marginTop: 4, display: "inline-flex", padding: "1px 8px", borderRadius: 3, fontSize: 10, fontWeight: 700, background: `${color}20`, color, border: `1px solid ${color}35`, letterSpacing: "0.3px", textShadow: `0 0 8px ${color}40` }}>{badge}</div>
         )}
         {bars && (
           <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
@@ -364,20 +364,22 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           <div style={{
             display: "flex", alignItems: "center", gap: 8,
             padding: "10px 14px", borderRadius: 8,
-            background: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(167,139,250,0.02))",
-            border: "1px solid rgba(167,139,250,0.15)",
+            background: "linear-gradient(135deg, rgba(167,139,250,0.1), rgba(167,139,250,0.03))",
+            border: "1px solid rgba(167,139,250,0.3)",
+            boxShadow: "0 0 20px rgba(167,139,250,0.06)",
             fontSize: 13, color: "var(--text-secondary)",
           }}>
             <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
-            <span><strong style={{ color: "#a78bfa" }}>{stats.demoCount} demo predictions</strong> with verified outcomes shown as illustration. Click <strong style={{ color: "#22c55e" }}>● Live Only</strong> to see just your real data.</span>
+            <span><strong style={{ color: "#a78bfa", textShadow: "0 0 8px rgba(167,139,250,0.3)" }}>{stats.demoCount} demo predictions</strong> with verified outcomes shown as illustration. Click <strong style={{ color: "#22c55e" }}>● Live Only</strong> to see just your real data.</span>
           </div>
         )}
 
         {/* CLOSED-LOOP ENGINE */}
         <div style={{
           padding: "12px 16px", borderRadius: 8, position: "relative", overflow: "hidden",
-          background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.96))",
-          border: "1px solid rgba(139,92,246,0.12)",
+          background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.96))",
+          border: "1px solid rgba(139,92,246,0.25)",
+          boxShadow: "0 0 30px rgba(139,92,246,0.08), inset 0 0 20px rgba(139,92,246,0.03)",
         }}>
           <div style={{ position: "absolute", bottom: -30, right: 40, width: 140, height: 140, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
@@ -398,11 +400,11 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                 { step: "Verify", icon: "✅", color: "#22c55e", desc: "7-day survival window" },
                 { step: "Learn", icon: "🧠", color: "#a78bfa", desc: "Calibrate accuracy model" },
               ].map((s, i) => (
-                <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", borderRadius: 6, background: `${s.color}08`, border: `1px solid ${s.color}15`, flex: 1, minWidth: 100 }}>
+                <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", borderRadius: 6, background: `${s.color}10`, border: `1px solid ${s.color}25`, boxShadow: `0 0 12px ${s.color}08`, flex: 1, minWidth: 100 }}>
                   <span style={{ fontSize: 14 }}>{s.icon}</span>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{s.step}</div>
-                    <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>{s.desc}</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: s.color, textShadow: `0 0 8px ${s.color}40` }}>{s.step}</div>
+                    <div style={{ fontSize: 10, color: "var(--text-secondary)" }}>{s.desc}</div>
                   </div>
                   {i < 3 && <span style={{ color: "var(--overlay-08)", fontSize: 12, marginLeft: "auto" }}>→</span>}
                 </div>
@@ -436,65 +438,69 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", marginBottom: 2 }}>
                 <div style={{
                   fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
-                  color: "var(--text-tertiary)", opacity: 0.5, padding: "1px 10px",
+                  color: "var(--text-secondary)", opacity: 0.8, padding: "1px 10px",
                   background: "var(--overlay-03)", borderRadius: 4,
                 }}>Predicted</div>
               </div>
               {/* Column sub-headers */}
-              <div style={{ textAlign: "center", fontSize: 10, fontWeight: 600, color: "var(--text-tertiary)", opacity: 0.4 }}>High Risk</div>
-              <div style={{ textAlign: "center", fontSize: 10, fontWeight: 600, color: "var(--text-tertiary)", opacity: 0.4 }}>Low Risk</div>
+              <div style={{ textAlign: "center", fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", opacity: 0.7 }}>High Risk</div>
+              <div style={{ textAlign: "center", fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", opacity: 0.7 }}>Low Risk</div>
               {/* TP */}
               <div style={{
-                padding: "10px 8px", borderRadius: 6, textAlign: "center",
-                background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.2)",
-                boxShadow: "0 0 12px rgba(34,197,94,0.06)",
+                padding: "12px 10px", borderRadius: 8, textAlign: "center",
+                background: "linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.03))",
+                border: "1px solid rgba(34,197,94,0.3)",
+                boxShadow: "0 0 20px rgba(34,197,94,0.1), inset 0 0 15px rgba(34,197,94,0.04)",
               }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px" }}>TP</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)", lineHeight: 1.1 }}>{stats.tp}</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Failed as predicted</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", letterSpacing: "0.8px", textTransform: "uppercase", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>TP</div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(34,197,94,0.5), 0 0 50px rgba(34,197,94,0.2)", lineHeight: 1.1 }}>{stats.tp}</div>
+                <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Failed as predicted</div>
               </div>
               {/* FP */}
               <div style={{
-                padding: "10px 8px", borderRadius: 6, textAlign: "center",
-                background: "rgba(234,179,8,0.06)", border: "1px solid rgba(234,179,8,0.2)",
-                boxShadow: "0 0 12px rgba(234,179,8,0.06)",
+                padding: "12px 10px", borderRadius: 8, textAlign: "center",
+                background: "linear-gradient(135deg, rgba(234,179,8,0.1), rgba(234,179,8,0.03))",
+                border: "1px solid rgba(234,179,8,0.3)",
+                boxShadow: "0 0 20px rgba(234,179,8,0.1), inset 0 0 15px rgba(234,179,8,0.04)",
               }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "#eab308", letterSpacing: "0.5px" }}>FP</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(234,179,8,0.3)", lineHeight: 1.1 }}>{stats.fp}</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Shipped anyway</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#eab308", letterSpacing: "0.8px", textTransform: "uppercase", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>FP</div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(234,179,8,0.5), 0 0 50px rgba(234,179,8,0.2)", lineHeight: 1.1 }}>{stats.fp}</div>
+                <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Shipped anyway</div>
               </div>
               {/* FN */}
               <div style={{
-                padding: "10px 8px", borderRadius: 6, textAlign: "center",
-                background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.2)",
-                boxShadow: "0 0 12px rgba(239,68,68,0.06)",
+                padding: "12px 10px", borderRadius: 8, textAlign: "center",
+                background: "linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.03))",
+                border: "1px solid rgba(239,68,68,0.3)",
+                boxShadow: "0 0 20px rgba(239,68,68,0.1), inset 0 0 15px rgba(239,68,68,0.04)",
               }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px" }}>FN</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.3)", lineHeight: 1.1 }}>{stats.fn}</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Missed prediction</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#ef4444", letterSpacing: "0.8px", textTransform: "uppercase", textShadow: "0 0 8px rgba(239,68,68,0.3)" }}>FN</div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(239,68,68,0.5), 0 0 50px rgba(239,68,68,0.2)", lineHeight: 1.1 }}>{stats.fn}</div>
+                <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Missed prediction</div>
               </div>
               {/* TN */}
               <div style={{
-                padding: "10px 8px", borderRadius: 6, textAlign: "center",
-                background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.2)",
-                boxShadow: "0 0 12px rgba(96,165,250,0.06)",
+                padding: "12px 10px", borderRadius: 8, textAlign: "center",
+                background: "linear-gradient(135deg, rgba(96,165,250,0.1), rgba(96,165,250,0.03))",
+                border: "1px solid rgba(96,165,250,0.3)",
+                boxShadow: "0 0 20px rgba(96,165,250,0.1), inset 0 0 15px rgba(96,165,250,0.04)",
               }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.5px" }}>TN</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.3)", lineHeight: 1.1 }}>{stats.tn}</div>
-                <div style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Shipped as predicted</div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.8px", textTransform: "uppercase", textShadow: "0 0 8px rgba(96,165,250,0.3)" }}>TN</div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(96,165,250,0.5), 0 0 50px rgba(96,165,250,0.2)", lineHeight: 1.1 }}>{stats.tn}</div>
+                <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Shipped as predicted</div>
               </div>
               {/* Row header: Actual */}
               <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", marginTop: 2 }}>
                 <div style={{
                   fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
-                  color: "var(--text-tertiary)", opacity: 0.5, padding: "1px 10px",
+                  color: "var(--text-secondary)", opacity: 0.8, padding: "1px 10px",
                   background: "var(--overlay-03)", borderRadius: 4,
                 }}>Actual</div>
               </div>
             </div>
             {/* Summary line */}
-            <div style={{ marginTop: 8, fontSize: 11, color: "var(--text-tertiary)", textAlign: "center", lineHeight: 1.5 }}>
-              Accuracy = <strong style={{ color: "#22c55e" }}>TP + TN</strong> / TP + TN + FP + FN = <strong style={{ color: stats.accuracy >= 70 ? "#22c55e" : "#eab308", fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>{stats.accuracy}%</strong>
+            <div style={{ marginTop: 8, fontSize: 11, color: "var(--text-secondary)", textAlign: "center", lineHeight: 1.5, fontWeight: 500 }}>
+              Accuracy = <strong style={{ color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>TP + TN</strong> / TP + TN + FP + FN = <strong style={{ color: stats.accuracy >= 70 ? "#22c55e" : "#eab308", fontFamily: "'JetBrains Mono', monospace", fontSize: 13, textShadow: `0 0 12px ${stats.accuracy >= 70 ? "rgba(34,197,94,0.4)" : "rgba(234,179,8,0.4)"}` }}>{stats.accuracy}%</strong>
             </div>
           </div>
         </div>
@@ -502,8 +508,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         {/* TREND CHART */}
         <div className="card" style={{
           padding: "14px 16px", position: "relative", overflow: "hidden",
-          background: "linear-gradient(135deg, rgba(59,130,246,0.04), rgba(15,18,26,0.95))",
-          border: "1px solid rgba(59,130,246,0.12)",
+          background: "linear-gradient(135deg, rgba(59,130,246,0.05), rgba(15,18,26,0.95))",
+          border: "1px solid rgba(59,130,246,0.25)",
+          boxShadow: "0 0 30px rgba(59,130,246,0.08), inset 0 0 20px rgba(59,130,246,0.03)",
         }}>
           <div style={{ position: "absolute", top: -50, left: "30%", width: 180, height: 180, borderRadius: "50%", background: "rgba(59,130,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
@@ -530,65 +537,91 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         </div>
       </div>
 
-      {/* ACCURACY INSIGHTS — compact row */}
+      {/* ACCURACY INSIGHTS */}
       <div className="card" style={{
-        padding: "14px 16px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.97), rgba(59,130,246,0.03))",
-        border: "1px solid rgba(139,92,246,0.1)",
+        padding: "16px 18px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.97), rgba(59,130,246,0.04))",
+        border: "1px solid rgba(139,92,246,0.15)",
+        boxShadow: "inset 0 0 40px rgba(139,92,246,0.04)",
         ...fadeIn(0.06),
       }}>
-        <div style={{ position: "absolute", bottom: -40, right: -20, width: 160, height: 160, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(60px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -50, right: -30, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.05)", filter: "blur(70px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -30, left: -20, width: 140, height: 140, borderRadius: "50%", background: "rgba(59,130,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: 16 }}>💡</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.3px" }}>Accuracy Insights</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.15), transparent)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: 6,
+              background: "linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.05))",
+              border: "1px solid rgba(167,139,250,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15,
+            }}>💡</div>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.3px" }}>Accuracy Insights</span>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.2), transparent)" }} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 2fr", gap: 8 }}>
-            <div style={{
-              padding: "10px 12px", borderRadius: 6,
-              background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.1)",
-            }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Avg Error Margin</div>
-              <div style={{ fontSize: 22, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 10px rgba(96,165,250,0.3)" }}>
-                {stats.total > 0 ? `${Math.round(displayItems.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / displayItems.length * 100)}%` : "—"}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 2.2fr", gap: 8 }}>
+              <div style={{
+                padding: "12px 14px", borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(96,165,250,0.1), rgba(96,165,250,0.03))",
+                border: "1px solid rgba(96,165,250,0.3)",
+                boxShadow: "0 0 24px rgba(96,165,250,0.08), inset 0 0 20px rgba(96,165,250,0.03)",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                  <span style={{ fontSize: 16 }}>📏</span>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.5px", textTransform: "uppercase" }}>Avg Error Margin</div>
+                </div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 24px rgba(96,165,250,0.6), 0 0 60px rgba(96,165,250,0.2)" }}>
+                  {stats.total > 0 ? `${Math.round(displayItems.reduce((s, i) => s + Math.abs(i.predictedRisk - (i.actualRisk ?? i.predictedRisk)), 0) / displayItems.length * 100)}%` : "—"}
+                </div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1, borderTop: "1px solid rgba(96,165,250,0.12)", paddingTop: 4, fontWeight: 500 }}>Prediction vs actual risk score delta</div>
               </div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Prediction vs actual delta</div>
-            </div>
-            <div style={{
-              padding: "10px 12px", borderRadius: 6,
-              background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.1)",
-            }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Failures Caught</div>
-              <div style={{ fontSize: 22, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 10px rgba(34,197,94,0.3)" }}>
-                {stats.failed > 0 ? `${Math.round((displayItems.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
+              <div style={{
+                padding: "12px 14px", borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.03))",
+                border: "1px solid rgba(34,197,94,0.3)",
+                boxShadow: "0 0 24px rgba(34,197,94,0.08), inset 0 0 20px rgba(34,197,94,0.03)",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                  <span style={{ fontSize: 16 }}>🛡️</span>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase" }}>Failures Caught</div>
+                </div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 24px rgba(34,197,94,0.6), 0 0 60px rgba(34,197,94,0.2)" }}>
+                  {stats.failed > 0 ? `${Math.round((displayItems.filter(i => i.actualOutcome === "failed" && i.predictedRisk >= 0.6).length / stats.failed) * 100)}%` : "—"}
+                </div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1, borderTop: "1px solid rgba(34,197,94,0.12)", paddingTop: 4, fontWeight: 500 }}>High-risk predictions that correctly flagged failures</div>
               </div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>High-risk correctly flagged</div>
-            </div>
-            <div style={{
-              padding: "10px 12px", borderRadius: 6,
-              background: "rgba(234,179,8,0.04)", border: "1px solid rgba(234,179,8,0.1)",
-            }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#eab308", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Key Pattern</div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                {stats.failed > 0 ? (
-                  <>High-risk (≥60%) mitigated before merge <strong style={{ color: "#22c55e" }}>all stayed shipped</strong>. Failures were MRs where mitigations <strong style={{ color: "#ef4444" }}>not applied</strong>.</>
-                ) : stats.verified > 0 ? (
-                  <>All {stats.verified} verified stayed shipped — no failures tracked yet.</>
-                ) : (
-                  <>Analyze and verify predictions to uncover pattern insights.</>
-                )}
+              <div style={{
+                padding: "12px 14px", borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(234,179,8,0.1), rgba(234,179,8,0.03))",
+                border: "1px solid rgba(234,179,8,0.3)",
+                boxShadow: "0 0 24px rgba(234,179,8,0.08), inset 0 0 20px rgba(234,179,8,0.03)",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                  <span style={{ fontSize: 16 }}>🔍</span>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#eab308", letterSpacing: "0.5px", textTransform: "uppercase" }}>Key Pattern</div>
+                </div>
+                <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.5, fontWeight: 500 }}>
+                  {stats.failed > 0 ? (
+                    <><span style={{ color: "#22c55e", fontWeight: 700, textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>High-risk (≥60%)</span> mitigated before merge — all stayed shipped. The <span style={{ color: "#ef4444", fontWeight: 700, textShadow: "0 0 8px rgba(239,68,68,0.3)" }}>{stats.failed} failure{stats.failed !== 1 ? "s" : ""}</span> {stats.failed !== 1 ? "were" : "was"} MRs where mitigations were <span style={{ color: "#ef4444", fontWeight: 700, textShadow: "0 0 8px rgba(239,68,68,0.3)" }}>not applied</span>.</>
+                  ) : stats.verified > 0 ? (
+                    <>All <span style={{ color: "#22c55e", fontWeight: 700, textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>{stats.verified}</span> verified prediction{stats.verified !== 1 ? "s" : ""} stayed shipped through the 7-day window — no failures have been tracked yet.</>
+                  ) : (
+                    <>Analyze and verify predictions to uncover patterns in how risk scores align with real outcomes.</>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
 
       {/* VULNERABILITY-ADJUSTED PREDICTIONS */}
       <div className="card" style={{
         padding: "14px 16px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(239,68,68,0.03), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(239,68,68,0.1)",
+        background: "linear-gradient(135deg, rgba(239,68,68,0.05), rgba(15,18,26,0.95))",
+        border: "1px solid rgba(239,68,68,0.2)",
+        boxShadow: "0 0 24px rgba(239,68,68,0.06), inset 0 0 15px rgba(239,68,68,0.03)",
         ...fadeIn(0.07),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
@@ -632,8 +665,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* POST-MERGE VERIFICATION */}
       <div className="card" style={{
         padding: "14px 16px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.03), rgba(15,18,26,0.95))",
-        border: "1px solid rgba(34,197,94,0.1)",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.05), rgba(15,18,26,0.95))",
+        border: "1px solid rgba(34,197,94,0.2)",
+        boxShadow: "0 0 24px rgba(34,197,94,0.06), inset 0 0 15px rgba(34,197,94,0.03)",
         ...fadeIn(0.08),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
@@ -697,13 +731,16 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* MR PREDICTIONS LEDGER */}
       <div className="card" style={{
         padding: "16px 18px", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95))",
+        border: "1px solid rgba(96,165,250,0.15)",
+        boxShadow: "0 0 24px rgba(96,165,250,0.05), inset 0 0 15px rgba(96,165,250,0.02)",
         ...fadeIn(0.1),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
             <span style={{ fontSize: 16 }}>📒</span>
             <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>MR Predictions Ledger</span>
-            <div style={{ flex: 1, height: 1, background: "var(--overlay-06)" }} />
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
             <select value={filterOutcome} onChange={e => setFilterOutcome(e.target.value)}
               style={{
                 fontSize: 12, padding: "3px 8px", borderRadius: 4,
@@ -728,7 +765,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </button>
           </div>
           {!isMobile && (
-            <div style={{ display: "grid", gridTemplateColumns: "50px minmax(120px, 1fr) 80px 80px 100px", gap: 8, alignItems: "center", padding: "0 12px 6px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", opacity: 0.4 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "50px minmax(120px, 1fr) 80px 80px 100px", gap: 8, alignItems: "center", padding: "0 12px 6px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", opacity: 0.6 }}>
               <span>MR</span>
               <span>Title</span>
               <span style={{ textAlign: "center" }}>Predicted</span>
@@ -759,8 +796,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   <div key={item.mrIid} style={{
                     display: "flex", flexDirection: "column", gap: 5,
                     padding: "10px 12px", borderRadius: 6,
-                    background: isHovered ? `${outcomeColor}08` : "rgba(255,255,255,0.01)",
-                    border: `1px solid ${isHovered ? `${outcomeColor}22` : "var(--overlay-04)"}`,
+                    background: isHovered ? `${outcomeColor}12` : "rgba(255,255,255,0.01)",
+                    border: `1px solid ${isHovered ? `${outcomeColor}30` : "var(--overlay-04)"}`,
+                    boxShadow: isHovered ? `0 0 20px ${outcomeColor}10` : "none",
                     transition: "all 0.15s ease",
                     animation: `fadeSlideUp 0.3s ${0.1 + i * 0.02}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}
@@ -814,8 +852,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                   gridTemplateColumns: isMobile ? "1fr" : "50px minmax(120px, 1fr) 80px 80px 100px",
                   gap: isMobile ? 4 : 8, alignItems: "center",
                   padding: "8px 12px", borderRadius: 6,
-                  background: isHovered ? `linear-gradient(135deg, ${outcomeColor}08, transparent)` : "rgba(255,255,255,0.01)",
-                  border: `1px solid ${isHovered ? `${outcomeColor}22` : "var(--overlay-04)"}`,
+                  background: isHovered ? `linear-gradient(135deg, ${outcomeColor}12, transparent)` : "rgba(255,255,255,0.01)",
+                  border: `1px solid ${isHovered ? `${outcomeColor}30` : "var(--overlay-04)"}`,
+                  boxShadow: isHovered ? `0 0 20px ${outcomeColor}10` : "none",
                   transition: "all 0.15s ease", cursor: "default",
                   animation: `fadeSlideUp 0.3s ${0.1 + i * 0.02}s cubic-bezier(0.16,1,0.3,1) both`,
                 }}
@@ -824,8 +863,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
-                    {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 2, padding: "0 3px" }}>D</span>}
-                    {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 2, padding: "0 3px" }}>L</span>}
+                    {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.35)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(139,92,246,0.4)" }}>D</span>}
+                    {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.35)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(34,197,94,0.4)" }}>L</span>}
                   </div>
                   <div style={{ fontSize: 13, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
                   <div style={{ textAlign: "center" }}>
@@ -856,21 +895,42 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
 
       {/* FOOTER */}
       <div style={{
-        padding: "8px 14px", textAlign: "center",
-        background: "var(--overlay-02)", borderRadius: 6,
-        border: "1px solid var(--overlay-04)",
+        padding: "14px 18px", textAlign: "center", position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.96), rgba(139,92,246,0.03))",
+        borderRadius: 8, border: "1px solid rgba(96,165,250,0.1)",
         ...fadeIn(0.12),
       }}>
-        <div style={{ fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.5 }}>
-          Accuracy metrics calibrated against operator-verified production outcomes over a <strong style={{ color: "var(--text-secondary)" }}>7-day survival window</strong> post-merge.
-          <span style={{ marginLeft: 4 }}>Powered by GitLab Orbit — All 4 query types.</span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 4 }}>
-          {(["NEIGHBORS", "PATH_FINDING", "TRAVERSAL", "AGGREGATION"] as const).map(q => (
-            <span key={q} style={{ fontSize: 10, padding: "1px 6px", borderRadius: 3, background: "rgba(96,165,250,0.08)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>
-              {q}
-            </span>
-          ))}
+        <div style={{ position: "absolute", top: -30, left: "40%", width: 120, height: 120, borderRadius: "50%", background: "rgba(96,165,250,0.04)", filter: "blur(40px)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.6, maxWidth: 500, margin: "0 auto" }}>
+            Accuracy metrics are calibrated against operator-verified production outcomes over a <strong style={{ color: "var(--text-secondary)" }}>7-day survival window</strong> post-merge.
+          </div>
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px" }}>Powered by GitLab Orbit</span>
+            <span style={{ color: "var(--overlay-08)", fontSize: 11 }}>·</span>
+            <div style={{ display: "flex", gap: 4 }}>
+              {(["NEIGHBORS", "PATH_FINDING", "TRAVERSAL", "AGGREGATION"] as const).map((q, i) => {
+                const qColors: Record<string, string> = { NEIGHBORS: "#22c55e", PATH_FINDING: "#60a5fa", TRAVERSAL: "#a78bfa", AGGREGATION: "#f97316" };
+                return (
+                  <span key={q} style={{
+                    fontSize: 10, padding: "2px 8px", borderRadius: 4,
+                    background: `${qColors[q]}12`, color: qColors[q],
+                    border: `1px solid ${qColors[q]}20`,
+                    fontWeight: 700, letterSpacing: "0.5px", fontFamily: "'JetBrains Mono', monospace",
+                    transition: "transform 0.15s",
+                    display: "inline-flex", alignItems: "center", gap: 3,
+                    animation: `fadeSlideUp 0.3s ${0.13 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
+                  >
+                    <span style={{ width: 4, height: 4, borderRadius: "50%", background: qColors[q], display: "inline-block" }} />
+                    {q}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
