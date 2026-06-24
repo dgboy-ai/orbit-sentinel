@@ -37,6 +37,23 @@ function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top
   );
 }
 
+function AnimatedNum({ value, color }: { value: number; color: string }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    let t0: number, id: number;
+    function tick(now: number) {
+      if (!t0) t0 = now;
+      const p = Math.min((now - t0) / 800, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(eased * value));
+      if (p < 1) id = requestAnimationFrame(tick);
+    }
+    id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  }, [value]);
+  return <span style={{ fontSize: "inherit", fontWeight: "inherit", color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 8px ${color}40` }}>{display.toLocaleString()}</span>;
+}
+
 function CircularGauge({ pct, color, size = 32, strokeWidth = 3, label, value }: { pct: number; color: string; size?: number; strokeWidth?: number; label?: string; value?: string }) {
   const r = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * r;
@@ -463,6 +480,10 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       </div>
 
       {/* SIGNAL EVIDENCE GRID — 4 query types with severity-coded cards from real Orbit data */}
+      <style>{`
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+        @keyframes pulseBadge { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+      `}</style>
       <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {[
           {
@@ -470,37 +491,42 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             title: `${totalNodes} Nodes + ${totalEdges} Edges Mapped`,
             finding: evidenceSummary.NEIGHBORS?.finding?.slice(0, 60) || "Graph discovery complete",
             detail: `${totalNodes} nodes, ${totalEdges} edges discovered in digital twin`,
-            pct: 100,
+            pct: 100, signalText: "Graph health OK",
           },
           {
             type: "PATH_FINDING", icon: "🛣", color: "#ef4444", severity: "critical", severityLabel: "Critical",
-            title: "No Deployment Path Exists",
+            title: mrState.hasPipeline ? "Deployment Path Detected" : "No Deployment Path Exists",
             finding: evidenceSummary.PATH_FINDING?.finding?.slice(0, 60) || "MR → Pipeline relation missing",
-            detail: "No validated production deployment route exists",
-            pct: 95,
+            detail: mrState.hasPipeline ? "Validated production deployment route exists" : "No validated production deployment route exists",
+            pct: 95, signalText: "Blocking deployment",
           },
           {
             type: "TRAVERSAL", icon: "📚", color: "#f97316", severity: "high", severityLabel: "High",
             title: `${historicalCount} Historical Match${historicalCount !== 1 ? "es" : ""} Found`,
             finding: evidenceSummary.TRAVERSAL?.finding?.slice(0, 60) || "Branch abandonment pattern detected",
             detail: `${historicalCount} of 10 prior MRs from this branch were closed without merge`,
-            pct: 90,
+            pct: 90, signalText: "Requires attention",
           },
           {
             type: "AGGREGATION", icon: "📊", color: "#eab308", severity: "medium", severityLabel: "Medium",
             title: `${failureRate}% Pipeline Failure Rate`,
             finding: evidenceSummary.AGGREGATION?.finding?.slice(0, 60) || `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`,
             detail: `${failureRate}% historical failure rate across ${pipelinesTotal.toLocaleString("en-US")} pipelines — used for calibration`,
-            pct: 75,
+            pct: 75, signalText: failureRate === "N/A" ? "Insufficient data" : `${pipelinesTotal} pipelines tracked`,
           },
         ].map((signal, i) => (
           <div key={signal.type} className="card" style={{
             padding: isMobile ? "10px 12px" : "14px 16px", position: "relative", overflow: "hidden",
-            borderColor: `${signal.color}18`,
-            background: `linear-gradient(135deg, ${signal.color}06, rgba(15,18,26,0.95), ${signal.color}03)`,
+            borderColor: `${signal.color}20`,
+            background: `linear-gradient(135deg, ${signal.color}08, rgba(15,18,26,0.95), ${signal.color}04)`,
+            boxShadow: signal.severity === "critical" ? `0 0 20px ${signal.color}15` : `0 0 12px ${signal.color}08`,
             animation: `fadeSlideUp 0.35s ${0.04 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
-          }}>
-            <GlowOrb color={`${signal.color}08`} top={i % 2 === 0 ? "-30%" : "50%"} left={i < 2 ? "-10%" : "auto"} right={i >= 2 ? "-10%" : "auto"} size={120} />
+            transition: "all 0.25s ease",
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = `${signal.color}55`; e.currentTarget.style.boxShadow = `0 0 30px ${signal.color}20`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = `${signal.color}20`; e.currentTarget.style.boxShadow = signal.severity === "critical" ? `0 0 20px ${signal.color}15` : `0 0 12px ${signal.color}08`; e.currentTarget.style.transform = "none"; }}
+          >
+            <GlowOrb color={`${signal.color}12`} top={i % 2 === 0 ? "-30%" : "50%"} left={i < 2 ? "-15%" : "auto"} right={i >= 2 ? "-15%" : "auto"} size={160} />
             <div style={{ position: "relative", zIndex: 1 }}>
               {/* Header */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -508,12 +534,13 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                   <span style={{ fontSize: 19 }}>{signal.icon}</span>
                   <span style={{
                     fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: signal.color,
-                    padding: "1px 6px", borderRadius: 3, background: `${signal.color}14`, border: `1px solid ${signal.color}22`,
+                    padding: "1px 6px", borderRadius: 3, background: `${signal.color}18`, border: `1px solid ${signal.color}30`,
                   }}>{signal.type}</span>
                 </div>
                 <span style={{
                   fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase",
                   padding: "2px 7px", borderRadius: 3,
+                  animation: signal.severity === "critical" || signal.severity === "high" ? "pulseBadge 2s ease-in-out infinite" : "none",
                   background: signal.severity === "critical" ? "rgba(239,68,68,0.15)"
                     : signal.severity === "high" ? "rgba(249,115,22,0.12)"
                     : signal.severity === "medium" ? "rgba(234,179,8,0.12)"
@@ -522,30 +549,35 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                     : signal.severity === "high" ? "#f97316"
                     : signal.severity === "medium" ? "#eab308"
                     : "#22c55e",
-                  border: signal.severity === "critical" ? "1px solid rgba(239,68,68,0.2)"
-                    : signal.severity === "high" ? "1px solid rgba(249,115,22,0.2)"
-                    : signal.severity === "medium" ? "1px solid rgba(234,179,8,0.2)"
-                    : "1px solid rgba(34,197,94,0.2)",
+                  border: signal.severity === "critical" ? `1px solid rgba(239,68,68,0.25)`
+                    : signal.severity === "high" ? `1px solid rgba(249,115,22,0.25)`
+                    : signal.severity === "medium" ? `1px solid rgba(234,179,8,0.2)`
+                    : `1px solid rgba(34,197,94,0.2)`,
+                  boxShadow: signal.severity === "critical" ? `0 0 8px rgba(239,68,68,0.2)` : "none",
                 }}>
                   {signal.severity === "critical" ? "🔴" : signal.severity === "high" ? "🟠" : signal.severity === "medium" ? "🟡" : "🟢"} {signal.severityLabel}
                 </span>
               </div>
-              {/* Title */}
-              <div style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3 }}>{signal.title}</div>
+              {/* Title + animated count */}
+              <div style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3, display: "flex", alignItems: "center", gap: 4 }}>
+                {signal.type === "NEIGHBORS" ? <><AnimatedNum value={totalNodes} color={signal.color} /> Nodes + <AnimatedNum value={totalEdges} color={signal.color} /> Edges Mapped</>
+                : signal.type === "TRAVERSAL" ? <><AnimatedNum value={historicalCount} color={signal.color} /> Historical Match{historicalCount !== 1 ? "es" : ""} Found</>
+                : signal.title}</div>
               {/* Finding */}
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 8, lineHeight: 1.4, fontStyle: "italic", borderLeft: `2px solid ${signal.color}33`, paddingLeft: 8 }}>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 6, lineHeight: 1.4, fontStyle: "italic", borderLeft: `2px solid ${signal.color}44`, paddingLeft: 8, position: "relative" }}>
+                <div style={{ position: "absolute", left: -2, top: 0, bottom: 0, width: 2, background: signal.color, boxShadow: `0 0 6px ${signal.color}55`, borderRadius: 1 }} />
                 {signal.finding}
               </div>
               {/* Detail */}
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginBottom: 8, lineHeight: 1.4 }}>{signal.detail}</div>
               {/* Confidence bar */}
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", width: 50, flexShrink: 0 }}>Orbit Confidence</span>
-                <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
+                <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", width: 66, flexShrink: 0 }}>Orbit Confidence</span>
+                <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden", position: "relative" }}>
                   <div style={{
                     width: `${signal.pct}%`, height: "100%", borderRadius: 2,
                     background: `linear-gradient(90deg, ${signal.color}, ${signal.color}88)`,
-                    boxShadow: `0 0 8px ${signal.color}33`,
+                    boxShadow: `0 0 8px ${signal.color}44`,
                     transition: "width 1s ease",
                   }} />
                 </div>
@@ -556,8 +588,8 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                   <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Signal</span>
                   <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${signal.color}33, transparent)` }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: signal.color }}>
-                    {signal.severity === "critical" ? "Blocking deployment" : signal.severity === "high" ? "Requires attention" : signal.severity === "medium" ? "Monitor trend" : "Graph health OK"}
+                  <span style={{ fontSize: 12, fontWeight: 700, color: signal.color, textShadow: `0 0 8px ${signal.color}33` }}>
+                    {signal.signalText}
                   </span>
                 </div>
               </div>
