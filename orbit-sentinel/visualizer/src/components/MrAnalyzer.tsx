@@ -88,7 +88,9 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             totalFilesCount = probeData.files.length;
           }
         }
-      } catch { /* fallback */ }
+      } catch { 
+        if (!token) setLiveError("⚠ No GitLab token — using sample file data. Add a token above for real file analysis.");
+      }
 
       if (totalFilesCount > 15) {
         setFileCapNotice({ analyzed: 15, total: totalFilesCount });
@@ -125,6 +127,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
       const data = await res.json();
       if (data.success && data.report) {
+        setLiveError(null);
         onSelectScenario(data.report, `Live · MR !${parsed.mrIid}`);
         setAnalysisDone(`✓ Analysis complete — MR !${parsed.mrIid}`);
         setTimeout(() => setAnalysisDone(null), 5000);
@@ -186,6 +189,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       analyzeLive();
     } else {
       if (onAnalyzeStart) onAnalyzeStart();
+      setLiveError("Engine is not running — showing demo data for this MR (representative scenario)");
       const medium = SCENARIOS.find(s => s.id === "medium")!;
       setTimeout(() => onSelectScenario(medium.data, `MR !${parsed.mrIid} · ${parsed.project}`), 5400);
     }
@@ -230,6 +234,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
 
     try {
       const changedFiles = ["src/main.ts"];
+      setLiveError("⚠ Live demo uses sample file data — analysis is representative");
+      setTimeout(() => setLiveError(null), 4000);
       const endpoint = `${API_BASE_URL}${token ? "/api/analyze-with-creds" : "/api/analyze"}`;
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
