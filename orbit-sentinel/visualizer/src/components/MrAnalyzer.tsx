@@ -233,9 +233,30 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
     }, 12000);
 
     try {
-      const changedFiles = ["src/main.ts"];
-      setLiveError("⚠ Live demo uses sample file data — analysis is representative");
-      setTimeout(() => setLiveError(null), 4000);
+      // Probe for real changed files first — same as custom MR flow
+      let changedFiles = ["src/main.ts"];
+      try {
+        const useCreds = !!token;
+        const probeRes = await fetch(`${API_BASE_URL}/api/mr-files`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            projectPath: targetProject,
+            mrIid: targetIid,
+            ...(useCreds ? { gitlabToken: token } : {}),
+          }),
+          signal: AbortSignal.timeout(10000),
+        });
+        if (probeRes.ok) {
+          const probeData = await probeRes.json() as { files: string[] };
+          if (probeData.files?.length) {
+            changedFiles = probeData.files;
+          }
+        }
+      } catch {
+        // Silent fallback — probe failed, use sample files, no warning shown
+      }
+
       const endpoint = `${API_BASE_URL}${token ? "/api/analyze-with-creds" : "/api/analyze"}`;
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
