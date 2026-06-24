@@ -15,6 +15,17 @@ function ConfidenceFactor({ label, value, status }: { label: string; value: stri
   );
 }
 
+function StatusBadge({ icon, label, good, warn }: { icon: string; label: string; good?: boolean; warn?: boolean }) {
+  const color = good ? "#22c55e" : warn ? "#eab308" : "#ef4444";
+  const bg = good ? "rgba(34,197,94,0.08)" : warn ? "rgba(234,179,8,0.08)" : "rgba(239,68,68,0.08)";
+  const bd = good ? "rgba(34,197,94,0.15)" : warn ? "rgba(234,179,8,0.15)" : "rgba(239,68,68,0.15)";
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 5, background: bg, border: `1px solid ${bd}`, fontSize: 13, color, fontWeight: 600 }}>
+      {icon} {label}
+    </span>
+  );
+}
+
 export default function HeroSection({
   mrIid, riskLevel, riskScore, predictedOutcome, recommendedAction, confidence, generatedUsing, confidenceFactors,
 }: {
@@ -36,70 +47,75 @@ export default function HeroSection({
       <div className="resp-hero-column" style={{ padding: "20px 24px", position: "relative", zIndex: 2, display: "flex", gap: 20 }}>
         {/* LEFT: Narrative */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 10px", background: "var(--overlay-04)", borderRadius: 6, border: "1px solid var(--overlay-06)" }}>
-              <span style={{ fontSize: 16, color: "var(--text-secondary)" }}>MR</span>
+          {/* Top row: MR badge, risk level, confidence */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", background: "var(--overlay-04)", borderRadius: 6, border: "1px solid var(--overlay-06)" }}>
+              <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600 }}>MR</span>
               <span style={{ fontSize: 18, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace" }}>!{mrIid}</span>
             </div>
             <div style={{ padding: "3px 12px", borderRadius: 6, fontSize: 15, fontWeight: 700, letterSpacing: "0.8px", background: `${r.rgba}0.15)`, color: r.hex, border: `1px solid ${r.rgba}0.25)`, boxShadow: `0 0 12px ${r.glow}` }}>
               {riskLevel}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 6, fontSize: 15, color: "var(--text-secondary)", background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>
-              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 6, fontSize: 13, color: "var(--text-secondary)", background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0 }} />
               {confidence}
             </div>
           </div>
 
-          <div style={{ fontSize: 15, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.5px", marginBottom: 4, textTransform: "uppercase" }}>Predicted Outcome</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: r.hex, lineHeight: 1.3, marginBottom: 10, textShadow: `0 0 20px ${r.glow}` }}>
-            {predictedOutcome}
+          {/* Predicted Outcome */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", marginBottom: 3, textTransform: "uppercase" }}>Predicted Outcome</div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: r.hex, lineHeight: 1.3, textShadow: `0 0 20px ${r.glow}` }}>
+                {predictedOutcome}
+              </div>
+            </div>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>Risk</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: r.hex, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 14px ${r.glow}` }}>
+                {(riskScore * 100).toFixed(0)}%
+              </div>
+            </div>
           </div>
 
-          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+          {/* Status tags */}
+          <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
             {(() => {
               const rl = riskLevel?.toLowerCase() ?? "";
               if (rl === "low") return <>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", fontSize: 14, color: "#22c55e", fontWeight: 600 }}>
-                  ✓ Pipeline passing
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", fontSize: 14, color: "#22c55e", fontWeight: 600 }}>
-                  ✓ All tests pass
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", fontSize: 14, color: "#22c55e", fontWeight: 600 }}>
-                  ✓ No downstream impact
-                </div>
+                <StatusBadge good icon="✓" label="Pipeline passing" />
+                <StatusBadge good icon="✓" label="All tests pass" />
+                <StatusBadge good icon="✓" label="No downstream impact" />
               </>;
               if (rl === "critical") return <>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 14, color: "#ef4444", fontWeight: 600 }}>
-                  ✗ Pipeline failed
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 14, color: "#ef4444", fontWeight: 600 }}>
-                  ✗ 7 downstream services
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 14, color: "#ef4444", fontWeight: 600 }}>
-                  ✗ No rollback plan
-                </div>
+                <StatusBadge icon="✗" label="Pipeline failed" />
+                <StatusBadge icon="✗" label="7 downstream services" />
+                <StatusBadge icon="✗" label="No rollback plan" />
               </>;
               return <>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 14, color: "#ef4444", fontWeight: 600 }}>
-                  ✗ Empty diff
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", fontSize: 14, color: "#ef4444", fontWeight: 600 }}>
-                  ✗ No pipeline
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 9px", borderRadius: 5, background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.15)", fontSize: 14, color: "#eab308", fontWeight: 600 }}>
-                  ⚠ 9 historical matches
-                </div>
+                <StatusBadge icon="✗" label="Empty diff" />
+                <StatusBadge icon="✗" label="No pipeline" />
+                <StatusBadge warn icon="⚠" label="9 historical matches" />
               </>;
             })()}
           </div>
 
-          <div style={{ fontSize: 15, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.5px", marginBottom: 3, textTransform: "uppercase" }}>Recommended Action</div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 8, background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)", fontSize: 18, fontWeight: 600, color: "var(--accent-blue)" }}>
-            🎯 {recommendedAction}
+          {/* Divider */}
+          <div style={{ height: 1, background: "var(--overlay-05)", margin: "0 0 10px 0" }} />
+
+          {/* Recommended Action */}
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", marginBottom: 4, textTransform: "uppercase" }}>Recommended Action</div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 8, background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)", fontSize: 18, fontWeight: 600, color: "var(--accent-blue)" }}>
+              🎯 {recommendedAction}
+            </div>
           </div>
 
-          <div style={{ fontSize: 15, color: "var(--text-tertiary)", fontStyle: "italic", marginTop: 10 }}>{generatedUsing}</div>
+          {/* Footer — generated using */}
+          <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontStyle: "italic", borderTop: "1px solid var(--overlay-04)", paddingTop: 8, display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--text-tertiary)", opacity: 0.5, display: "inline-block" }} />
+            {generatedUsing}
+          </div>
         </div>
 
         {/* RIGHT: Confidence Card */}

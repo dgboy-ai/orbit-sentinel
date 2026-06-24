@@ -165,27 +165,16 @@ export default function ProblemSection() {
         })}
       </div>
 
-      {/* Bottom Stats Bar */}
+      {/* Bottom Bar — tech stack only */}
       <div style={{
         padding: "8px 20px", position: "relative", zIndex: 1,
         borderTop: "1px solid rgba(139,92,246,0.06)",
         background: "rgba(139,92,246,0.02)",
-        display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+        display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        {[
-          { label: "Orbit Query Types", value: "4", color: "#a78bfa" },
-          { label: "Digital Twin Nodes", value: "23", color: "#60a5fa" },
-          { label: "Total Tests", value: "30", color: "#34d399" },
-          { label: "Edges Discovered", value: "43", color: "#f59e0b" },
-        ].map(stat => (
-          <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span style={{ fontSize: 16, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>{stat.value}</span>
-            <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500 }}>{stat.label}</span>
-          </div>
-        ))}
-        <div style={{ marginLeft: "auto", fontSize: 13, color: "var(--text-tertiary)" }}>
+        <span style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 500 }}>
           Built with TypeScript · React · Express · GitLab Orbit API
-        </div>
+        </span>
       </div>
     </div>
   );

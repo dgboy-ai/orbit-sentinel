@@ -62,7 +62,7 @@ describe("TaglineBanner", () => {
     render(<TaglineBanner />);
     expect(screen.getByText("Why This Is Unique")).toBeInTheDocument();
     expect(screen.getByText((content) => content.startsWith("Predicts"))).toBeInTheDocument();
-    expect(screen.getByText("consequences")).toBeInTheDocument();
+    expect(screen.getByText("failure consequences")).toBeInTheDocument();
   });
 });
 
