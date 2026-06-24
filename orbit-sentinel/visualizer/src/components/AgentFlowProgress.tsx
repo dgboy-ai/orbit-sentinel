@@ -14,9 +14,10 @@ const FLOW_STEPS = [
 interface AgentFlowProgressProps {
   active: boolean;
   onComplete: () => void;
+  graph?: { nodes: unknown[]; links: unknown[] };
 }
 
-export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgressProps) {
+export default function AgentFlowProgress({ active, onComplete, graph }: AgentFlowProgressProps) {
   const [currentStep, setCurrentStep] = useState(-1);
   const timerRef = useRef<number | null>(null);
   const completed = useRef(false);
@@ -63,7 +64,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
   return (
     <div className="card" style={{
       padding: "14px 18px", marginBottom: 12,
-      background: "linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(15,15,30,0.95) 50%, rgba(59,130,246,0.04) 100%)",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(var(--bg-card-rgb),0.95) 50%, rgba(59,130,246,0.04) 100%)",
       border: isComplete
         ? "1px solid rgba(34,197,94,0.2)"
         : "1px solid rgba(139,92,246,0.15)",
@@ -269,7 +270,7 @@ export default function AgentFlowProgress({ active, onComplete }: AgentFlowProgr
                 background: "rgba(34,197,94,0.1)",
                 whiteSpace: "nowrap", flexShrink: 0,
               }}>
-                14 nodes · 13 edges
+                {graph?.nodes?.length ?? 14} nodes · {graph?.links?.length ?? 13} edges
               </span>
             )}
           </div>

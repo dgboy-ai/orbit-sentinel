@@ -423,7 +423,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
                     />
                   </ErrorBoundary>
                 </div>
-                {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} />}
+                {analyzing && <AgentFlowProgress active={analyzing} onComplete={onFlowComplete} graph={data.graph} />}
                 <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.9fr", gap: isMobile ? 8 : 12 }}>
                   <div className="section-accent section-accent-verdict" style={{ position: "relative" }}><ErrorBoundary><DecisionCenter d={data.decisionCenter} /></ErrorBoundary></div>
                   <ErrorBoundary><FutureTimeline events={data.futureTimeline} confidence={data.hero.confidence} /></ErrorBoundary>
