@@ -314,6 +314,36 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         }} />
       )}
 
+      {/* Direct Message Above MR Analyzer */}
+      <div style={{
+        marginBottom: 20,
+        padding: "12px 16px",
+        borderRadius: 8,
+        background: "linear-gradient(135deg, rgba(251,146,60,0.08), rgba(251,146,60,0.02))",
+        border: "1px solid rgba(251,146,60,0.2)",
+        boxShadow: "0 0 16px rgba(251,146,60,0.08)",
+        fontSize: 14,
+        lineHeight: 1.5,
+        color: "var(--text-secondary)",
+        position: "relative",
+        zIndex: 2
+      }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <span style={{ fontSize: 18, flexShrink: 0 }}>ℹ️</span>
+          <div>
+            <strong style={{ color: "#fb923c" }}>Demo Mode Active</strong> — This overview shows representative demo data.
+            <br />
+            <span style={{ color: "#fb923c" }}>
+              Try <strong>Live Analysis</strong> for real Orbit data:
+            </span>
+            <br />
+            • Paste any public GitLab MR URL above and click "Analyze Live"
+            • Or use <strong>MR #12</strong> (gitlab-ai-hackathon/transcend/39251857) for instant live demo
+            • For private repos, add a GitLab PAT token above
+          </div>
+        </div>
+      </div>
+
       <div style={{ display: "flex", alignItems: "center", gap: 10, position: "relative", zIndex: 1 }}>
         <div style={{
           width: 32, height: 32, borderRadius: 8,
@@ -637,7 +667,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                     {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
                   </span>
                   <span style={{ fontSize: 13, fontWeight: 400, color: "#22c55e" }}>
-                    For any indexed GitLab project with a merge request
+                    Live demo for real MR12 of trueboy — try yours in input section
                   </span>
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", padding: "2px 8px", borderRadius: 4, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)", letterSpacing: "0.5px", textTransform: "uppercase" }}>Live</span>
