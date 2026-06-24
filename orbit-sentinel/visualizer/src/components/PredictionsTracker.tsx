@@ -625,12 +625,13 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         ...fadeIn(0.07),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <span style={{ fontSize: 16 }}>🛡️</span>
             <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444", letterSpacing: "0.3px" }}>Vulnerability-Adjusted Predictions</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(239,68,68,0.15), transparent)" }} />
+            <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600 }}>{displayItems.filter(p => p.predictedRisk >= 0.3).length} flagged</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 6 }}>
             {displayItems.filter(p => p.predictedRisk >= 0.3).map((p, i) => {
               const sev = p.predictedRisk >= 0.8 ? "critical" : p.predictedRisk >= 0.6 ? "high" : p.predictedRisk >= 0.3 ? "medium" : "low";
               const sevColor = sev === "critical" ? "#ef4444" : sev === "high" ? "#f97316" : "#eab308";
@@ -638,23 +639,31 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               const caught = p.actualOutcome === "failed";
               return (
                 <div key={p.mrIid} style={{
-                  display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "50px minmax(100px, 1fr) 60px 60px 70px",
-                  gap: 6, alignItems: "center",
-                  padding: "6px 10px", borderRadius: 5,
-                  background: `rgba(255,255,255,0.01)`, border: "1px solid var(--overlay-04)",
+                  padding: "10px 12px", borderRadius: 6,
+                  background: `linear-gradient(135deg, ${sevColor}08, rgba(255,255,255,0.01))`,
+                  border: `1px solid ${sevColor}20`,
                   animation: `fadeSlideUp 0.3s ${0.05 + i * 0.02}s ease both`,
-                  transition: "border-color 0.15s",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${sevColor}25`; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; }}
-                >
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{p.mrIid}</div>
-                  <div style={{ fontSize: 12, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</div>
-                  <div style={{ textAlign: "center" }}>
-                    <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 3, fontWeight: 700, background: `${sevColor}15`, color: sevColor, border: `1px solid ${sevColor}25` }}>{sev}</span>
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{p.mrIid}</span>
+                    <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, fontWeight: 700, background: `${sevColor}20`, color: sevColor, border: `1px solid ${sevColor}30`, textShadow: `0 0 6px ${sevColor}30` }}>{sev}</span>
+                    {caught && <span style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", marginLeft: "auto", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>✅ Caught</span>}
                   </div>
-                  <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: p.predictedRisk >= 0.6 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace" }}>{boost > 0 ? `+${Math.round(boost * 100)}%` : "—"}</div>
-                  <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{caught ? "✅ Caught" : "—"}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.title}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, borderTop: `1px solid ${sevColor}10`, paddingTop: 5 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.3px", marginBottom: 1 }}>Risk Score</div>
+                      <span style={{ fontSize: 15, fontWeight: 800, color: sevColor, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${sevColor}40` }}>{Math.round(p.predictedRisk * 100)}%</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.3px", marginBottom: 1 }}>Vuln. Boost</div>
+                      <span style={{ fontSize: 15, fontWeight: 800, color: p.predictedRisk >= 0.6 ? "#ef4444" : "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.3)" }}>{boost > 0 ? `+${Math.round(boost * 100)}%` : "—"}</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 9, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.3px", marginBottom: 1 }}>Outcome</div>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: caught ? "#22c55e" : "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>{caught ? "FAILED" : "—"}</span>
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -671,39 +680,44 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         ...fadeIn(0.08),
       }}>
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <span style={{ fontSize: 16 }}>🔬</span>
             <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e", letterSpacing: "0.3px" }}>Post-Merge Verification</span>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.15), transparent)" }} />
+            <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600 }}>{displayItems.filter(i => i.actualOutcome !== "pending").length} verified</span>
+          </div>
+          <div style={{ fontSize: 12, color: "var(--text-tertiary)", lineHeight: 1.4, marginBottom: 10, maxWidth: 480 }}>
+            Check an MR's actual production outcome after it ships. Results are logged to the <strong style={{ color: "var(--text-secondary)" }}>prediction accuracy model</strong> for continuous calibration.
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ position: "relative", flex: 1, maxWidth: 200 }}>
+            <div style={{ position: "relative", flex: 1, maxWidth: isMobile ? "100%" : 240 }}>
+              <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, pointerEvents: "none" }}>!</span>
               <input
                 value={verifyMrIid}
                 onChange={e => setVerifyMrIid(e.target.value.replace(/\D/g, ""))}
                 placeholder="MR IID (e.g. 42)"
                 onKeyDown={e => { if (e.key === "Enter") handleVerify(); }}
                 style={{
-                  width: "100%", padding: "8px 12px", fontSize: 16, fontFamily: "'JetBrains Mono', monospace",
-                  border: "1px solid rgba(34,197,94,0.2)", borderRadius: 6,
+                  width: "100%", padding: "9px 12px 9px 26px", fontSize: 15, fontFamily: "'JetBrains Mono', monospace",
+                  border: "1px solid rgba(34,197,94,0.25)", borderRadius: 6,
                   background: "rgba(34,197,94,0.04)", color: "var(--text-primary)",
                   outline: "none", transition: "border-color 0.2s, box-shadow 0.2s",
                 }}
-                onFocus={e => { e.currentTarget.style.borderColor = "rgba(34,197,94,0.4)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.06)"; }}
-                onBlur={e => { e.currentTarget.style.borderColor = "rgba(34,197,94,0.2)"; e.currentTarget.style.boxShadow = "none"; }}
+                onFocus={e => { e.currentTarget.style.borderColor = "rgba(34,197,94,0.5)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.08)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "rgba(34,197,94,0.25)"; e.currentTarget.style.boxShadow = "none"; }}
               />
             </div>
             <button onClick={handleVerify} disabled={!verifyMrIid || verifying}
               style={{
-                padding: "8px 18px", fontSize: 14, fontWeight: 700, cursor: !verifyMrIid || verifying ? "not-allowed" : "pointer",
-                border: "1px solid rgba(34,197,94,0.25)", borderRadius: 6,
-                background: verifying ? "rgba(34,197,94,0.06)" : "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06))",
+                padding: "9px 20px", fontSize: 14, fontWeight: 700, cursor: !verifyMrIid || verifying ? "not-allowed" : "pointer",
+                border: "1px solid rgba(34,197,94,0.3)", borderRadius: 6,
+                background: verifying ? "rgba(34,197,94,0.06)" : "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,197,94,0.07))",
                 color: "#22c55e", transition: "all 0.2s", whiteSpace: "nowrap",
                 opacity: !verifyMrIid || verifying ? 0.5 : 1,
                 display: "flex", alignItems: "center", gap: 6,
               }}
-              onMouseEnter={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.18), rgba(34,197,94,0.08))"; e.currentTarget.style.boxShadow = "0 0 30px rgba(34,197,94,0.15)"; } }}
-              onMouseLeave={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06))"; e.currentTarget.style.boxShadow = "none"; } }}
+              onMouseEnter={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1))"; e.currentTarget.style.boxShadow = "0 0 30px rgba(34,197,94,0.15)"; } }}
+              onMouseLeave={e => { if (verifyMrIid && !verifying) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,197,94,0.07))"; e.currentTarget.style.boxShadow = "none"; } }}
             >
               {verifying && <span style={{ width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite", display: "inline-block" }} />}
               {verifying ? "Checking…" : "✓ Verify MR"}
@@ -725,6 +739,28 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>{verifyResult.message}</div>
             </div>
           )}
+          {/* Recent verifications */}
+          {displayItems.filter(i => i.actualOutcome !== "pending").length > 0 && (
+            <div style={{ marginTop: 10, borderTop: "1px solid rgba(34,197,94,0.08)", paddingTop: 8 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 5 }}>Recent Verifications</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                {displayItems.filter(i => i.actualOutcome !== "pending").slice(-3).reverse().map(v => (
+                  <div key={v.mrIid} style={{
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: "5px 10px", borderRadius: 4,
+                    background: "rgba(255,255,255,0.01)", border: "1px solid var(--overlay-04)",
+                    fontSize: 13,
+                  }}>
+                    <span style={{ fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace", minWidth: 40 }}>!{v.mrIid}</span>
+                    <span style={{ flex: 1, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</span>
+                    <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 3, fontWeight: 700, background: v.actualOutcome === "verified" ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)", color: v.actualOutcome === "verified" ? "#22c55e" : "#ef4444", border: `1px solid ${v.actualOutcome === "verified" ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}` }}>
+                      {v.actualOutcome === "verified" ? "✓ Shipped" : "✗ Failed"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -743,7 +779,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(96,165,250,0.15), transparent)" }} />
             <select value={filterOutcome} onChange={e => setFilterOutcome(e.target.value)}
               style={{
-                fontSize: 12, padding: "3px 8px", borderRadius: 4,
+                fontSize: 12, padding: "4px 10px", borderRadius: 4,
                 background: "var(--overlay-04)", border: "1px solid var(--overlay-10)",
                 color: "var(--text-secondary)", cursor: "pointer", outline: "none",
               }}>
@@ -754,7 +790,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             </select>
             <button onClick={() => setSortAsc(!sortAsc)}
               style={{
-                fontSize: 12, padding: "3px 8px", borderRadius: 4, cursor: "pointer",
+                fontSize: 12, padding: "4px 10px", borderRadius: 4, cursor: "pointer",
                 background: "var(--overlay-04)", border: "1px solid var(--overlay-10)",
                 color: "var(--text-secondary)", transition: "all 0.15s",
               }}
@@ -763,9 +799,10 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
             >
               {sortAsc ? "↑ Oldest" : "↓ Newest"}
             </button>
+            <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600 }}>{sorted.length} MR{sorted.length !== 1 ? "s" : ""}</span>
           </div>
           {!isMobile && (
-            <div style={{ display: "grid", gridTemplateColumns: "50px minmax(120px, 1fr) 80px 80px 100px", gap: 8, alignItems: "center", padding: "0 12px 6px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", opacity: 0.6 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "55px 1fr 90px 90px 130px", gap: 8, alignItems: "center", padding: "0 12px 7px", fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", opacity: 0.6, borderBottom: "1px solid var(--overlay-03)" }}>
               <span>MR</span>
               <span>Title</span>
               <span style={{ textAlign: "center" }}>Predicted</span>
@@ -773,9 +810,9 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               <span style={{ textAlign: "center" }}>Result</span>
             </div>
           )}
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {sorted.length === 0 ? (
-              <div style={{ padding: "20px 16px", textAlign: "center", fontSize: 14, color: "var(--text-tertiary)" }}>
+              <div style={{ padding: "24px 16px", textAlign: "center", fontSize: 14, color: "var(--text-tertiary)" }}>
                 {displayItems.length === 0 ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
                     <span style={{ fontSize: 28 }}>📊</span>
@@ -794,7 +831,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               if (isMobile) {
                 return (
                   <div key={item.mrIid} style={{
-                    display: "flex", flexDirection: "column", gap: 5,
+                    display: "flex", flexDirection: "column", gap: 4,
                     padding: "10px 12px", borderRadius: 6,
                     background: isHovered ? `${outcomeColor}12` : "rgba(255,255,255,0.01)",
                     border: `1px solid ${isHovered ? `${outcomeColor}30` : "var(--overlay-04)"}`,
@@ -806,18 +843,14 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                     onMouseLeave={() => setHoveredRow(null)}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
+                        {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(139,92,246,0.3)" }}>D</span>}
+                        {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(34,197,94,0.3)" }}>L</span>}
+                      </div>
                       <OutcomeBadge outcome={item.actualOutcome} />
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 6 }}>
-                      {item.title}
-                      {item.source === "demo" && (
-                        <span style={{ fontSize: 9, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>DEMO</span>
-                      )}
-                      {item.source === "live" && (
-                        <span style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>LIVE</span>
-                      )}
-                    </div>
+                    <div style={{ fontSize: 12, color: "var(--text-primary)", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, borderTop: "1px solid var(--overlay-03)", paddingTop: 4 }}>
                       <div>
                         <div style={{ fontSize: 10, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.2px", marginBottom: 1 }}>Predicted</div>
@@ -829,7 +862,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                       </div>
                     </div>
                     {item.actualRisk !== undefined && (
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.01)", padding: "3px 6px", borderRadius: 3 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.01)", padding: "3px 8px", borderRadius: 3 }}>
                         <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>Verdict:</span>
                         <VerdictLabel predicted={item.predictedRisk} actual={item.actualRisk} />
                       </div>
@@ -849,12 +882,12 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
               return (
                 <div key={item.mrIid} style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr" : "50px minmax(120px, 1fr) 80px 80px 100px",
-                  gap: isMobile ? 4 : 8, alignItems: "center",
-                  padding: "8px 12px", borderRadius: 6,
-                  background: isHovered ? `linear-gradient(135deg, ${outcomeColor}12, transparent)` : "rgba(255,255,255,0.01)",
-                  border: `1px solid ${isHovered ? `${outcomeColor}30` : "var(--overlay-04)"}`,
-                  boxShadow: isHovered ? `0 0 20px ${outcomeColor}10` : "none",
+                  gridTemplateColumns: "55px 1fr 90px 90px 130px",
+                  gap: 8, alignItems: "center",
+                  padding: "7px 12px", borderRadius: 5,
+                  background: isHovered ? `linear-gradient(135deg, ${outcomeColor}10, transparent)` : "rgba(255,255,255,0.01)",
+                  border: `1px solid ${isHovered ? `${outcomeColor}28` : "transparent"}`,
+                  boxShadow: isHovered ? `0 0 16px ${outcomeColor}08` : "none",
                   transition: "all 0.15s ease", cursor: "default",
                   animation: `fadeSlideUp 0.3s ${0.1 + i * 0.02}s cubic-bezier(0.16,1,0.3,1) both`,
                 }}
@@ -863,23 +896,23 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                     <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", fontFamily: "'JetBrains Mono', monospace" }}>!{item.mrIid}</span>
-                    {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.35)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(139,92,246,0.4)" }}>D</span>}
-                    {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.35)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(34,197,94,0.4)" }}>L</span>}
+                    {item.source === "demo" && <span style={{ fontSize: 8, fontWeight: 700, color: "#a78bfa", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(139,92,246,0.3)" }}>D</span>}
+                    {item.source === "live" && <span style={{ fontSize: 8, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 2, padding: "0 4px", textShadow: "0 0 6px rgba(34,197,94,0.3)" }}>L</span>}
                   </div>
-                  <div style={{ fontSize: 13, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.title}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingRight: 4 }}>{item.title}</div>
                   <div style={{ textAlign: "center" }}>
                     <RiskBadge score={item.predictedRisk} />
                   </div>
                   <div style={{ textAlign: "center" }}>
                     {item.actualRisk !== undefined ? <RiskBadge score={item.actualRisk} /> : <span style={{ fontSize: 13, color: "var(--text-tertiary)" }}>—</span>}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                     {item.actualRisk !== undefined && <VerdictLabel predicted={item.predictedRisk} actual={item.actualRisk} />}
                     <OutcomeBadge outcome={item.actualOutcome} />
                   </div>
                   {isHovered && item.evidence && (
                     <div style={{
-                      gridColumn: "1 / -1", marginTop: 4, padding: "5px 8px", borderRadius: 3,
+                      gridColumn: "1 / -1", marginTop: 3, padding: "5px 8px", borderRadius: 3,
                       background: "rgba(0,0,0,0.2)", borderLeft: `2px solid ${outcomeColor}44`,
                       fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.4,
                     }}>
