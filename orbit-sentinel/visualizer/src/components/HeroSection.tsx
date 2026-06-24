@@ -1,5 +1,6 @@
 import React from "react";
 import { RISK, riskScoreToKey } from "../utils/colors";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 function ConfidenceFactor({ label, value, status }: { label: string; value: string; status: "success" | "warning" | "error" }) {
   const colors = { success: { dot: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.15)" }, warning: { dot: "#eab308", bg: "rgba(234,179,8,0.1)", border: "rgba(234,179,8,0.15)" }, error: { dot: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.15)" } };
@@ -36,6 +37,7 @@ export default function HeroSection({
   const rk = riskScoreToKey(riskScore);
   const r = RISK[rk];
   const isHigh = rk === "critical" || rk === "high" || rk === "medium";
+  const isSmall = useMediaQuery("(max-width: 480px)");
 
   return (
     <div className="card" style={{
@@ -66,7 +68,7 @@ export default function HeroSection({
           <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", marginBottom: 3, textTransform: "uppercase" }}>Predicted Outcome</div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: r.hex, lineHeight: 1.3, textShadow: `0 0 20px ${r.glow}` }}>
+              <div style={{ fontSize: isSmall ? 16 : 18, fontWeight: 800, color: r.hex, lineHeight: 1.35, textShadow: `0 0 20px ${r.glow}` }}>
                 {predictedOutcome}
               </div>
             </div>
