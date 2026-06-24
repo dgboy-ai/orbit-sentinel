@@ -121,7 +121,7 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
         {q && (
           <div style={{
             padding: "6px 10px", borderRadius: 5, marginTop: 5,
-            background: "rgba(0,0,0,0.3)", borderLeft: `2px solid ${c.dot}55`,
+            background: "rgba(var(--bg-card-rgb),0.3)", borderLeft: `2px solid ${c.dot}55`,
             fontSize: 13, color: "var(--text-secondary)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.5, whiteSpace: "pre-line",
           }}>
             {q.result}
@@ -417,7 +417,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
-            <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)" }}>
+            <div style={{ padding: "10px 14px", borderRadius: 8, background: "rgba(var(--bg-card-rgb),0.2)", border: "1px solid var(--overlay-04)" }}>
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 4 }}>Predicted Outcome</div>
               <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: config.color, textShadow: `0 0 12px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.predictedOutcome}</div>
               <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
@@ -659,8 +659,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               {/* Score gauge card */}
               <div style={{
                 padding: "14px 16px", borderRadius: 8,
-                background: "linear-gradient(135deg, rgba(0,0,0,0.35), rgba(var(--bg-card-rgb),0.8))",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "linear-gradient(135deg, rgba(var(--bg-card-rgb),0.35), rgba(var(--bg-card-rgb),0.8))",
+                border: "1px solid var(--border)",
                 animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
@@ -698,7 +698,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               {/* Source verification grid */}
               <div style={{
                 padding: "12px 14px", borderRadius: 8,
-                background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.05)",
+                background: "rgba(var(--bg-card-rgb),0.25)", border: "1px solid var(--border)",
                 animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
               }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 8 }}>Source Verification</div>
@@ -831,7 +831,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           <div style={{
             display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12,
             marginBottom: 14, padding: "14px 16px", borderRadius: 8,
-            background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.05)"
+            background: "rgba(var(--bg-card-rgb),0.3)", border: "1px solid var(--border)"
           }}>
             {/* Traditional CI/CD */}
             <div style={{ padding: 4 }}>
@@ -921,7 +921,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           {/* Why explanation — stronger visual */}
           <div style={{
             marginBottom: 14, padding: "14px 16px", borderRadius: 8,
-            background: `linear-gradient(135deg, ${config.color}10, rgba(0,0,0,0.35))`,
+            background: `linear-gradient(135deg, ${config.color}10, rgba(var(--bg-card-rgb),0.35))`,
             border: `1px solid ${config.color}25`,
             boxShadow: `0 0 16px ${config.glow}`,
             animation: "fadeSlideUp 0.3s 0.22s cubic-bezier(0.16,1,0.3,1) both",
@@ -991,7 +991,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               {/* RIGHT — Risk Factor Breakdown */}
               <div style={{
                 padding: "10px 12px", borderRadius: 6,
-                background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.05)",
+                background: "rgba(var(--bg-card-rgb),0.25)", border: "1px solid var(--border)",
                 display: "flex", flexDirection: "column", gap: 6,
               }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.5px", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
