@@ -175,7 +175,7 @@ The visualizer is deployed as a static site to Vercel.
 
 The engine is deployed as a web service to Render.
 
-**Health Check**: https://orbit-sentinel-engine.onrender.com/health
+**Health Check**: https://orbit-sentinel-api.onrender.com/health
 
 **API Endpoints**:
 - `POST /api/analyze` - Analyze MR changes

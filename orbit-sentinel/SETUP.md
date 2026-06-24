@@ -66,7 +66,7 @@ Open `http://localhost:5173/?demo=true` for auto-play mode (cycles through all 8
 
 ## Enable Live Orbit Queries
 
-The engine (local or on **Render** at [orbit-sentinel.onrender.com](https://orbit-sentinel.onrender.com)) needs a `GITLAB_ACCESS_TOKEN` to query the real Orbit API.
+The engine (local or on **Render** at [orbit-sentinel-api.onrender.com](https://orbit-sentinel-api.onrender.com)) needs a `GITLAB_ACCESS_TOKEN` to query the real Orbit API.
 
 For the engine to query a real GitLab Orbit knowledge graph (vs. demo mode), you need:
 

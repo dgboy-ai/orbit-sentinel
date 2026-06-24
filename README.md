@@ -184,7 +184,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 
 | | |
 |--|--|
-| **Deployed** | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel.onrender.com) |
+| **Deployed** | Visualizer on [Vercel](https://orbit-sentinel.vercel.app), engine on [Render](https://orbit-sentinel-api.onrender.com) |
 | **Tests** | **135 passing** (105 engine · 30 visualizer) |
 | **Live Orbit Data** | Real graph data captured from a production GitLab project (206+ nodes, 172+ edges) |
 | **Quick Demos** | 3 pre-configured risk scenarios (Critical 🔴, Medium 🟡, Low 🟢) |
