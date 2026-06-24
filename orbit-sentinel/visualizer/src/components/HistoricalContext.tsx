@@ -65,12 +65,14 @@ function OutcomeBadge({ outcome }: { outcome: string }) {
   const isClosed = outcome === "Closed";
   return (
     <span style={{
-      fontSize: 12, padding: "2px 8px", borderRadius: 3, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3,
-      background: isClosed ? "rgba(239,68,68,0.12)" : "rgba(34,197,94,0.1)",
+      fontSize: 13, padding: "3px 10px", borderRadius: 4, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 4,
+      background: isClosed ? "linear-gradient(135deg, rgba(239,68,68,0.18), rgba(239,68,68,0.06))" : "linear-gradient(135deg, rgba(34,197,94,0.18), rgba(34,197,94,0.06))",
       color: isClosed ? "#ef4444" : "#22c55e",
-      border: `1px solid ${isClosed ? "rgba(239,68,68,0.22)" : "rgba(34,197,94,0.2)"}`,
+      border: `1px solid ${isClosed ? "rgba(239,68,68,0.35)" : "rgba(34,197,94,0.35)"}`,
+      boxShadow: `0 0 10px ${isClosed ? "rgba(239,68,68,0.15)" : "rgba(34,197,94,0.15)"}`,
+      textShadow: `0 0 6px ${isClosed ? "rgba(239,68,68,0.3)" : "rgba(34,197,94,0.3)"}`,
     }}>
-      {isClosed ? "🔒" : "✅"} {outcome}
+      <span style={{ fontSize: 14 }}>{isClosed ? "🔒" : "✅"}</span> {outcome}
     </span>
   );
 }
@@ -269,11 +271,11 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       </div>
 
       {/* CASE FILES */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 2px" }}>
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)" }}>Historical Case Files</span>
-          <div style={{ flex: 1, height: 1, background: "var(--overlay-06)" }} />
-          <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{incidents.length} files</span>
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-primary)", textShadow: "0 0 8px rgba(255,255,255,0.05)" }}>Historical Case Files</span>
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, var(--overlay-06), transparent)" }} />
+          <span style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 600 }}>{incidents.length} files</span>
         </div>
         {sorted.map((item, i) => {
           const isClosed = item.outcome === "Closed";
@@ -281,12 +283,12 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
           const isHovered = hoveredCase === item.mrIid;
           return (
             <div key={item.mrIid} className="card" style={{
-              padding: "12px 16px", position: "relative", overflow: "hidden",
-              borderColor: isHovered ? `${caseColor}44` : `${caseColor}25`,
+              padding: "13px 18px", position: "relative", overflow: "hidden",
+              borderColor: isHovered ? `${caseColor}55` : `${caseColor}30`,
               background: isHovered
-                ? `linear-gradient(135deg, ${caseColor}12, rgba(15,18,26,0.95), ${caseColor}06)`
-                : `linear-gradient(135deg, ${caseColor}08, rgba(15,18,26,0.95))`,
-              boxShadow: isHovered ? `0 0 24px ${caseColor}20` : `0 0 12px ${caseColor}12`,
+                ? `linear-gradient(135deg, ${caseColor}18, rgba(15,18,26,0.95), ${caseColor}08)`
+                : `linear-gradient(135deg, ${caseColor}0a, rgba(15,18,26,0.95))`,
+              boxShadow: isHovered ? `0 0 30px ${caseColor}30, inset 0 0 12px ${caseColor}10` : `0 0 16px ${caseColor}18, inset 0 0 4px ${caseColor}06`,
               transform: isHovered ? "translateY(-1px)" : "none",
               transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
               cursor: "default",
@@ -295,35 +297,47 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               onMouseEnter={() => setHoveredCase(item.mrIid)}
               onMouseLeave={() => setHoveredCase(null)}
             >
-              <GlowOrb color={`${caseColor}06`} top="-20%" right={i % 2 === 0 ? "-10%" : "auto"} left={i % 2 !== 0 ? "-10%" : "auto"} size={120} />
+              <GlowOrb color={`${caseColor}08`} top="-20%" right={i % 2 === 0 ? "-10%" : "auto"} left={i % 2 !== 0 ? "-10%" : "auto"} size={140} />
               <div style={{ position: "relative", zIndex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6, gap: 4, flexWrap: isMobile ? "wrap" : "nowrap" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8, gap: 4, flexWrap: isMobile ? "wrap" : "nowrap" }}>
                   <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 1 }}>
-                      <span style={{ fontSize: 15, fontWeight: 800, color: caseColor, letterSpacing: "0.3px" }}>Case File #{item.mrIid}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 2 }}>
+                      <span style={{ fontSize: 16, fontWeight: 800, color: caseColor, letterSpacing: "0.3px", textShadow: `0 0 10px ${caseColor}44` }}>Case File #{item.mrIid}</span>
                       <span style={{
-                        fontSize: 11, padding: "1px 6px", borderRadius: 3, fontWeight: 600,
-                        background: `${caseColor}12`, color: caseColor, border: `1px solid ${caseColor}22`,
+                        fontSize: 12, padding: "2px 8px", borderRadius: 4, fontWeight: 700,
+                        background: `${caseColor}18`, color: caseColor,
+                        border: `1px solid ${caseColor}44`,
+                        boxShadow: `0 0 8px ${caseColor}22`,
+                        textShadow: `0 0 6px ${caseColor}44`,
                       }}>{item.similarity}% match</span>
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{item.title}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", textShadow: "0 0 8px rgba(255,255,255,0.04)" }}>{item.title}</div>
                   </div>
                   <OutcomeBadge outcome={item.outcome} />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "1px 8px", fontSize: 13, lineHeight: 1.5, marginBottom: 6 }}>
-                  <span style={{ color: "var(--text-tertiary)", fontSize: 11, letterSpacing: "0.3px" }}>Root Cause</span>
-                  <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{item.rootCause}</span>
-                  <span style={{ color: "var(--text-tertiary)", fontSize: 11, letterSpacing: "0.3px" }}>Orbit Insight</span>
-                  <span style={{ color: "var(--accent-blue)", fontWeight: 500 }}>{formatOrdinal(i + 1)} occurrence of same branch pattern</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 8 }}>
+                  <div style={{
+                    display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "80px 1fr", gap: "2px 10px", fontSize: 13, lineHeight: 1.5,
+                    padding: "6px 8px", borderRadius: 4,
+                    background: "rgba(0,0,0,0.12)", border: "1px solid var(--overlay-04)",
+                  }}>
+                    <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, letterSpacing: "0.3px", textTransform: "uppercase" }}>Root Cause</span>
+                    <span style={{ color: "var(--text-primary)", fontWeight: 600, textShadow: "0 0 6px rgba(255,255,255,0.03)" }}>{item.rootCause}</span>
+                    <span style={{ color: "var(--text-tertiary)", fontSize: 11, fontWeight: 700, letterSpacing: "0.3px", textTransform: "uppercase" }}>Orbit Insight</span>
+                    <span style={{ color: "#60a5fa", fontWeight: 600, textShadow: "0 0 10px rgba(96,165,250,0.2)" }}>{formatOrdinal(i + 1)} occurrence of same branch pattern</span>
+                  </div>
                 </div>
                 <div style={{
-                  padding: "5px 8px", borderRadius: 4,
-                  background: "rgba(0,0,0,0.15)", borderLeft: `2px solid ${caseColor}33`,
-                  border: "1px solid var(--overlay-04)",
+                  padding: "7px 10px", borderRadius: 5,
+                  background: `linear-gradient(135deg, ${caseColor}08, rgba(0,0,0,0.15))`,
+                  border: `1px solid ${caseColor}22`,
+                  boxShadow: `0 0 10px ${caseColor}12`,
                 }}>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>Recommended Action</div>
-                  <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.3 }}>{item.recommendedAction}</div>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>{item.date}</div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+                    <span style={{ fontSize: 11, color: caseColor, fontWeight: 700, letterSpacing: "0.4px", textTransform: "uppercase", textShadow: `0 0 6px ${caseColor}33` }}>Recommended Action</span>
+                    <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600 }}>{item.date}</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: "var(--text-primary)", lineHeight: 1.4, fontWeight: 500 }}>{item.recommendedAction}</div>
                 </div>
               </div>
             </div>
