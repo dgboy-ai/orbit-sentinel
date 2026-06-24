@@ -83,16 +83,7 @@ export default function App() {
   const [data, setData] = useState<VisualizationData | null>(DEMO_DATA);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [dataMode, setDataMode] = useState<DataMode>(() => {
-    try {
-      const v = localStorage.getItem("orbit-sentinel-predictions");
-      if (v) {
-        const parsed = JSON.parse(v);
-        if (Array.isArray(parsed) && parsed.some((p: Record<string, unknown>) => p.source === "live")) return "live";
-      }
-    } catch { /* ignore */ }
-    return "demo";
-  });
+  const [dataMode, setDataMode] = useState<DataMode>("demo");
   const [showOnboarding, setShowOnboarding] = useState(() => {
     if (typeof window === "undefined") return false;
     return !safeGetItem("orbit-sentinel-onboarded") && new URLSearchParams(window.location.search).get("judge") !== "true";
@@ -112,10 +103,8 @@ export default function App() {
   const queuedDataRef = useRef<{ data: VisualizationData; label: string } | null>(null);
   const [showQueryLog, setShowQueryLog] = useState(false);
   const [showQueryInspector, setShowQueryInspector] = useState(false);
-const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
-    const dm = localStorage.getItem("orbit-sentinel-predictions");
-    const mode: "demo" | "live" = dm ? (() => { try { const p = JSON.parse(dm); return Array.isArray(p) && p.some((x: Record<string, unknown>) => x.source === "live") ? "live" : "demo"; } catch { return "demo"; } })() : "demo";
-    return loadPredictions(mode);
+  const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
+    return loadPredictions("demo");
   });
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [dark, setDark] = useState(() => {
