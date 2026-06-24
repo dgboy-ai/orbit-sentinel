@@ -619,23 +619,24 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
                   display: "flex", alignItems: "center", gap: 12,
                   padding: "16px 20px", fontSize: 16, fontWeight: 600, cursor: analyzing ? "not-allowed" : "pointer",
                   textAlign: "left",
-                  border: "1px solid rgba(34,197,94,0.2)",
+                  border: "1px solid rgba(34,197,94,0.4)",
                   borderRadius: 8,
-                  background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))",
+                  background: "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))",
                   color: "var(--text-primary)",
                   transition: "all 0.2s",
                   width: "100%",
                   opacity: analyzing ? 0.5 : 1,
+                  boxShadow: "0 0 24px rgba(34,197,94,0.12)",
                 }}
-                onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,197,94,0.06))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.35)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.12)"; }}}
-                onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.2)"; e.currentTarget.style.boxShadow = "none"; }}}
+                onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,197,94,0.06))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.5)"; e.currentTarget.style.boxShadow = "0 0 32px rgba(34,197,94,0.15)"; }}}
+                onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.4)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.12)"; }}}
               >
                 <span style={{ fontSize: 26 }}>🌐</span>
                 <div style={{ flex: 1, display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <span style={{ fontSize: 16 }}>
+                  <span style={{ fontSize: 16, fontWeight: 700 }}>
                     {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
                   </span>
-                  <span style={{ fontSize: 13, fontWeight: 400, color: "var(--text-tertiary)" }}>
+                  <span style={{ fontSize: 13, fontWeight: 400, color: "#22c55e" }}>
                     For any indexed GitLab project with a merge request
                   </span>
                 </div>

@@ -12,7 +12,7 @@ const MODE_CONFIG: Record<DataMode, { label: string; color: string; dotColor: st
   loading: { label: "Loading", color: "#8b8fa3", dotColor: "#8b8fa3", description: "Initializing Orbit Sentinel..." },
   connecting: { label: "Connecting", color: "#eab308", dotColor: "#eab308", description: "Engine warming up... (Render cold-start may take ~30s)" },
   live: { label: "Live", color: "#22c55e", dotColor: "#22c55e", description: "Real-time data from Orbit engine" },
-  demo: { label: "Demo", color: "#a78bfa", dotColor: "#a78bfa", description: "Representative scenario — engine live via Analyze button" },
+  demo: { label: "Demo", color: "#a78bfa", dotColor: "#a78bfa", description: "Representative scenario — use 'Analyze Live' button above for real Orbit data from any GitLab project" },
   error: { label: "Error", color: "#ef4444", dotColor: "#ef4444", description: "" },
   degraded: { label: "Degraded", color: "#f97316", dotColor: "#f97316", description: "Orbit unavailable — using file analysis fallback" },
 };

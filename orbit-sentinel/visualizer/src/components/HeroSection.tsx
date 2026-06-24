@@ -45,6 +45,36 @@ export default function HeroSection({
       boxShadow: isHigh ? `0 0 40px ${r.glow}` : undefined,
       transition: "box-shadow 1s ease",
     }}>
+      {!confidenceFactors || confidenceFactors.length === 0 ? (
+        <div style={{
+          margin: "12px 20px 0 20px",
+          padding: "12px 16px",
+          borderRadius: 8,
+          background: "linear-gradient(135deg, rgba(251,146,60,0.08), rgba(251,146,60,0.02))",
+          border: "1px solid rgba(251,146,60,0.2)",
+          boxShadow: "0 0 16px rgba(251,146,60,0.08)",
+          fontSize: 14,
+          lineHeight: 1.5,
+          color: "var(--text-secondary)",
+          position: "relative",
+          zIndex: 2
+        }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+            <span style={{ fontSize: 18, flexShrink: 0 }}>ℹ️</span>
+            <div>
+              <strong style={{ color: "#fb923c" }}>Demo Mode Active</strong> — This overview shows representative demo data.
+              <br />
+              <span style={{ color: "#fb923c" }}>
+                Try <strong>Live Analysis</strong> for real Orbit data:
+              </span>
+              <br />
+              • Paste any public GitLab MR URL above and click "Analyze Live"
+              • Or use <strong>MR #12</strong> (gitlab-ai-hackathon/transcend/39251857) for instant live demo
+              • For private repos, add a GitLab PAT token above
+            </div>
+          </div>
+        </div>
+      ) : null}
       <div style={{ height: 4, background: r.gradient, backgroundSize: "200% 200%", animation: "gradientShift 3s ease infinite" }} />
       <div className="resp-hero-column" style={{ padding: "20px 24px", position: "relative", zIndex: 2, display: "flex", gap: 20 }}>
         {/* LEFT: Narrative */}
