@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import type { RiskBreakdown, OrbitQueryEvidence, DecisionCenterData } from "../types";
-import TiltCard from "./TiltCard";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 
 function computeConfidence(evidence: OrbitQueryEvidence[]): string {
@@ -366,7 +365,6 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 2px" }}>
       {/* TOP HERO BANNER */}
-      <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
         padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
         borderColor: config.border,
@@ -436,7 +434,6 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
         </div>
       </div>
-      </TiltCard>
 
       {/* PREDICTED PATH TIMELINE */}
       <div className="card" style={{
@@ -566,7 +563,6 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       </div>
 
       {/* VERDICT */}
-      <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
         padding: isMobile ? "14px 16px" : "20px 24px", position: "relative", overflow: "hidden",
         borderColor: config.border,
@@ -757,7 +753,6 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
         </div>
       </div>
-      </TiltCard>
     </div>
   );
 }
