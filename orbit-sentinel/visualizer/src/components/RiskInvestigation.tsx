@@ -371,27 +371,39 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 2px" }}>
       {/* TOP HERO BANNER */}
       <div className="card" style={{
-        padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
-        borderColor: config.border,
-        background: config.bg,
+        padding: isMobile ? "18px 20px" : "28px 32px", position: "relative", overflow: "hidden",
+        borderColor: `color-mix(in srgb, ${config.color} 40%, transparent)`,
+        background: `linear-gradient(135deg, ${config.color}10 0%, rgba(15,18,26,0.92) 50%, ${config.color}05 100%)`,
+        boxShadow: `inset 0 0 80px ${config.glow}, 0 0 60px ${config.glow}`,
         ...fadeIn(0),
       }}>
-        <GlowOrb color={config.glow} top="-30%" right="-5%" size={isMobile ? 200 : 300} />
+        <GlowOrb color={config.glow} top="-40%" right="-10%" size={isMobile ? 220 : 380} />
+        <GlowOrb color={config.color} top="-20%" right="20%" size={isMobile ? 100 : 160} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12, flexDirection: isSmall ? "column" : "row", gap: isSmall ? 6 : 0 }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)", border: "1px solid var(--overlay-06)" }}>Orbit Forecast</span>
-                <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
-              </div>
-              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 900, color: config.color, textShadow: `0 0 40px ${config.glow}`, display: "flex", alignItems: "center", gap: 8 }}>
-                🔮 ORBIT FORECAST
-              </div>
+          {/* Top row: badge + MR number */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{
+                fontSize: 11, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase",
+                color: config.color, padding: "2px 8px", borderRadius: 4,
+                background: `${config.color}15`, border: `1px solid ${config.color}25`,
+                textShadow: `0 0 8px ${config.color}40`,
+              }}>🔮 Orbit Forecast</span>
+              <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
             </div>
-            <div style={{ textAlign: isSmall ? "left" : "right" }}>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 0 }}>Orbit Confidence</div>
-              <div style={{ fontSize: isMobile ? 16 : 22, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{cleanConfidence}</div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 10, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Confidence</div>
+              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.4)" }}>{cleanConfidence}</div>
             </div>
+          </div>
+
+          {/* Main forecast title */}
+          <div style={{ fontSize: isMobile ? 20 : 28, fontWeight: 900, color: config.color, textShadow: `0 0 50px ${config.color}60, 0 0 100px ${config.color}30`, display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+            {config.verdictIcon}
+            {isLow ? "SAFE TO DEPLOY" : isMedium ? "NEEDS ATTENTION" : "DO NOT DEPLOY"}
+            {isLow ? <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(34,197,94,0.2)" }}>LOW RISK</span>
+            : isMedium ? <span style={{ fontSize: 14, fontWeight: 700, color: "#eab308", background: "rgba(234,179,8,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(234,179,8,0.2)" }}>MEDIUM RISK</span>
+            : <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444", background: "rgba(239,68,68,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(239,68,68,0.2)" }}>HIGH RISK</span>}
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
@@ -442,37 +454,39 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
       {/* PREDICTED PATH TIMELINE */}
       <div className="card" style={{
-        padding: isMobile ? "10px 14px" : "14px 20px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "10px 14px" : "12px 16px", position: "relative", overflow: "hidden",
         borderColor: "var(--overlay-06)",
         background: "linear-gradient(135deg, var(--overlay-02), rgba(15,18,26,0.95))",
         ...fadeIn(0.04),
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 }}>
           {timelineSteps.map((step, i) => (
             <React.Fragment key={step.label}>
               <div style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, minWidth: 0,
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flex: 1, minWidth: 0,
                 animation: `fadeSlideUp 0.3s ${0.06 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
               }}>
                 <div style={{
-                  width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15,
-                  background: `${step.color}12`, border: `1px solid ${step.color}33`,
+                  width: 26, height: 26, borderRadius: "50%", flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
+                  background: `${step.color}18`, border: `1px solid ${step.color}30`,
+                  boxShadow: `0 0 10px ${step.color}22`,
                 }}>{step.icon}</div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
               </div>
-              {i < timelineSteps.length - 1 && <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${step.color}66, transparent)`, marginTop: -14 }} />}
+              {i < timelineSteps.length - 1 && <div style={{ flex: "0 0 10px", height: 1.5, minWidth: 10, background: `linear-gradient(90deg, ${step.color}55, ${step.color}11)`, marginTop: -12 }} />}
             </React.Fragment>
           ))}
-          <div style={{ flex: "0 0 12px", height: 1.5, minWidth: 12, background: `linear-gradient(90deg, ${timelineSteps[timelineSteps.length - 1].color}66, transparent)`, marginTop: -14 }} />
+          <div style={{ flex: "0 0 10px", height: 1.5, minWidth: 10, background: `linear-gradient(90deg, ${timelineSteps[timelineSteps.length - 1].color}55, var(--overlay-05))`, marginTop: -12 }} />
           <div style={{
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: "0 0 auto",
-            padding: "4px 8px", borderRadius: 5, marginLeft: 4,
-            background: `${timelinePredicted.color}12`, border: `1px solid ${timelinePredicted.color}25`,
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flex: "0 0 auto",
+            padding: "4px 10px", borderRadius: 5, marginLeft: 4,
+            background: `${timelinePredicted.color}15`, border: `1px solid ${timelinePredicted.color}30`,
+            boxShadow: `0 0 12px ${timelinePredicted.color}15`,
             animation: "fadeSlideUp 0.3s 0.3s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap" }}>Predicted</span>
-            <span style={{ fontSize: 14, fontWeight: 800, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace" }}>{timelinePredicted.label}</span>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap" }}>→ Predicted</span>
+            <span style={{ fontSize: 13, fontWeight: 800, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace" }}>{timelinePredicted.label}</span>
           </div>
         </div>
       </div>
@@ -614,51 +628,93 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
       {/* ORBIT CONCLUSION */}
       <div style={{
-        padding: "10px 18px", borderRadius: 8,
-        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(139,92,246,0.03))",
-        border: "1px solid rgba(96,165,250,0.12)",
-        display: "flex", alignItems: "center", gap: 8,
+        padding: "14px 20px", borderRadius: 10,
+        background: `linear-gradient(135deg, ${config.color}10, rgba(15,18,26,0.9), rgba(139,92,246,0.04))`,
+        border: `1px solid ${config.color}25`,
+        display: "flex", alignItems: "center", gap: 10,
+        boxShadow: `0 0 30px ${config.glow}`,
         ...fadeIn(0.18),
       }}>
-        <span style={{ fontSize: 22 }}>🎯</span>
-        <span style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.4 }}>
-          <strong style={{ color: "var(--accent-blue)" }}>Orbit Conclusion:</strong> All {evidence.length} query types independently support the same outcome.
-        </span>
+        <span style={{ fontSize: 26 }}>🎯</span>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-blue)", letterSpacing: "0.5px", marginBottom: 1 }}>ORBIT CONCLUSION</div>
+          <span style={{ fontSize: 15, color: "var(--text-primary)", lineHeight: 1.4, fontWeight: 500 }}>
+            All {evidence.length} query types independently support <strong style={{ color: config.color, textShadow: `0 0 12px ${config.glow}` }}>{isLow ? "safe deployment" : isMedium ? "a blocked path" : "this will not reach production"}</strong>.
+          </span>
+        </div>
       </div>
 
-      {/* VERDICT */}
+      {/* VERDICT — Most Important Section */}
       <div className="card" style={{
-        padding: isMobile ? "14px 16px" : "20px 24px", position: "relative", overflow: "hidden",
-        borderColor: config.border,
-        background: config.bg,
+        padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
+        borderColor: `color-mix(in srgb, ${config.color} 50%, transparent)`,
+        background: `linear-gradient(135deg, ${config.color}12 0%, rgba(15,18,26,0.92) 50%, ${config.color}06 100%)`,
+        boxShadow: `inset 0 0 60px ${config.glow}, 0 0 40px ${config.glow}`,
         ...fadeIn(0.2),
       }}>
-        <GlowOrb color={config.glow} top="-20%" right="-10%" size={isMobile ? 150 : 220} />
+        <GlowOrb color={config.glow} top="-30%" right="-15%" size={isMobile ? 180 : 280} />
+        <GlowOrb color={config.color} top="-10%" right="30%" size={isMobile ? 80 : 120} />
+
+        {/* Verdict banner — biggest, boldest element */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 8 : 14,
+          padding: isMobile ? "12px 16px" : "18px 32px", borderRadius: 12, marginBottom: 16,
+          background: `linear-gradient(135deg, ${config.color}20, ${config.color}08)`,
+          border: `1px solid ${config.color}30`,
+          boxShadow: `0 0 40px ${config.glow}, 0 0 80px ${config.glow}`,
+          animation: mounted ? "pulseGlow 4s ease-in-out infinite" : "none",
+          position: "relative",
+        }}>
+          <span style={{ fontSize: isMobile ? 28 : 36, flexShrink: 0, filter: "drop-shadow(0 0 8px rgba(255,255,255,0.2))" }}>{config.verdictIcon}</span>
+          <div style={{ textAlign: "center" }}>
+            <div style={{
+              fontSize: isMobile ? 10 : 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase",
+              color: "var(--text-tertiary)", marginBottom: 2,
+            }}>ORBIT SENTINEL VERDICT</div>
+            <div style={{
+              fontSize: isMobile ? 22 : 32, fontWeight: 900, color: config.color,
+              letterSpacing: "1px", textShadow: `0 0 30px ${config.color}80, 0 0 60px ${config.color}40`,
+            }}>{config.verdictLabel}</div>
+          </div>
+        </div>
+
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", padding: "1px 6px", borderRadius: 4, background: "var(--overlay-04)" }}>Orbit Verdict</span>
+          {/* Verdict badge row */}
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 6 : 10, marginBottom: 14, flexWrap: "wrap", justifyContent: "center" }}>
+            <span style={{
+              fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
+              color: "var(--accent-blue)", padding: "3px 10px", borderRadius: 4,
+              background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.2)",
+            }}>🔮 Orbit Sentinel</span>
+            <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>VS</span>
+            <span style={{
+              fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
+              color: "var(--text-secondary)", padding: "3px 10px", borderRadius: 4,
+              background: "var(--overlay-04)", border: "1px solid var(--overlay-06)",
+            }}>⚙️ Traditional CI/CD</span>
           </div>
 
-          {/* Traditional CI/CD and Orbit Sentinel Verdict Comparison */}
+          {/* Comparison: Traditional CI/CD vs Orbit Sentinel */}
           <div style={{
             display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12,
-            marginBottom: 12, padding: "12px", borderRadius: 8,
-            background: "rgba(0, 0, 0, 0.25)", border: "1px solid rgba(255, 255, 255, 0.05)"
+            marginBottom: 14, padding: "14px 16px", borderRadius: 8,
+            background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.05)"
           }}>
             {/* Traditional CI/CD */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: 4 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 4 }}>
-                <span>⚙️</span> Traditional CI/CD
+            <div style={{ padding: 4 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
+                <span style={{ fontSize: 16 }}>⚙️</span> Traditional CI/CD
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 15 }}>
-                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Build Passed</div>
-                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Tests Passed</div>
-                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Lint Passed</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Build Passed</div>
+                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Tests Passed</div>
+                <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Lint Passed</div>
               </div>
               <div style={{
-                marginTop: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34, 197, 94, 0.1)",
-                border: "1px solid rgba(34, 197, 94, 0.2)", fontSize: 13, fontWeight: 700, color: "#22c55e",
-                display: "inline-block", alignSelf: "flex-start"
+                marginTop: 6, padding: "4px 10px", borderRadius: 4,
+                background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)",
+                fontSize: 13, fontWeight: 700, color: "#22c55e", display: "inline-block",
+                boxShadow: "0 0 8px rgba(34,197,94,0.15)",
               }}>
                 Verdict: ✓ DEPLOYABLE
               </div>
@@ -666,150 +722,143 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
             {/* Orbit Sentinel */}
             <div style={{
-              display: "flex", flexDirection: "column", gap: 6, padding: 4,
-              borderLeft: isMobile ? "none" : "1px solid rgba(255, 255, 255, 0.08)",
-              borderTop: isMobile ? "1px solid rgba(255, 255, 255, 0.08)" : "none",
-              paddingTop: isMobile ? 12 : 4,
+              padding: 4,
+              borderLeft: isMobile ? "none" : "1px solid rgba(255,255,255,0.08)",
+              borderTop: isMobile ? "1px solid rgba(255,255,255,0.08)" : "none",
+              paddingTop: isMobile ? 10 : 4,
               paddingLeft: isMobile ? 4 : 12
             }}>
-              <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", display: "flex", alignItems: "center", gap: 4 }}>
-                <span>🔮</span> Orbit Sentinel
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)", display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
+                <span style={{ fontSize: 16 }}>🔮</span> Orbit Sentinel
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 15 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {isLow ? (
                   <>
-                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Isolated Change Scope</div>
-                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Head Pipeline Passed</div>
-                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Reviewers Approved</div>
-                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Active Dependency Graph Checked</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Isolated Change Scope</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Head Pipeline Passed</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Reviewers Approved</div>
+                    <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(34,197,94,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✓</span> Active Dependency Graph Checked</div>
                   </>
                 ) : isMedium ? (
                   <>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Empty Changes Diff</div>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Pipeline Execution</div>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Branch Abandonment Pattern</div>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Reviewer Chain</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> Empty Changes Diff</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> No Pipeline Execution</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> Branch Abandonment Pattern</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> No Reviewer Chain</div>
                   </>
                 ) : (
                   <>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Deployment Path</div>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Historical Failure Pattern</div>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> Empty Diff</div>
-                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✗</span> No Reviewer Chain</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> No Deployment Path</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> Historical Failure Pattern</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> Empty Diff</div>
+                    <div style={{ color: "#ef4444", display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4, background: "rgba(239,68,68,0.06)", fontSize: 14 }}><span style={{ fontWeight: 700 }}>✗</span> No Reviewer Chain</div>
                   </>
                 )}
               </div>
               <div style={{
-                marginTop: 6, padding: "4px 8px", borderRadius: 4,
-                background: isLow ? "rgba(34, 197, 94, 0.1)" : isMedium ? "rgba(234, 179, 8, 0.1)" : "rgba(239, 68, 68, 0.1)",
-                border: `1px solid ${isLow ? "rgba(34, 197, 94, 0.2)" : isMedium ? "rgba(234, 179, 8, 0.2)" : "rgba(239, 68, 68, 0.2)"}`,
-                fontSize: 13, fontWeight: 700, color: config.color,
-                display: "inline-block", alignSelf: "flex-start"
+                marginTop: 6, padding: "4px 10px", borderRadius: 4,
+                background: isLow ? "rgba(34,197,94,0.12)" : isMedium ? "rgba(234,179,8,0.12)" : "rgba(239,68,68,0.12)",
+                border: `1px solid ${isLow ? "rgba(34,197,94,0.2)" : isMedium ? "rgba(234,179,8,0.2)" : "rgba(239,68,68,0.2)"}`,
+                fontSize: 13, fontWeight: 700, color: config.color, display: "inline-block",
+                boxShadow: `0 0 8px ${config.glow}`,
               }}>
                 Verdict: {config.verdictLabel}
               </div>
             </div>
           </div>
 
+          {/* Why explanation — stronger visual */}
           <div style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: isMobile ? 6 : 10,
-            padding: isMobile ? "8px 16px" : "12px 28px", borderRadius: 10, marginBottom: 12, maxWidth: "100%", boxSizing: "border-box",
-            background: `linear-gradient(135deg, ${config.color}15, ${config.color}05)`,
+            marginBottom: 14, padding: "14px 16px", borderRadius: 8,
+            background: `linear-gradient(135deg, ${config.color}10, rgba(0,0,0,0.35))`,
             border: `1px solid ${config.color}25`,
-            animation: mounted ? "pulseGlow 4s ease-in-out infinite" : "none",
-          }}>
-            <span style={{ fontSize: isMobile ? 18 : 24, flexShrink: 0 }}>{config.verdictIcon}</span>
-            <span style={{ fontSize: isMobile ? 16 : 22, fontWeight: 900, color: config.color, letterSpacing: "0.8px", textShadow: `0 0 20px ${config.glow}`, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{config.verdictLabel}</span>
-          </div>
-
-          {/* One-click explanation (Judges skim) */}
-          <div style={{
-            marginBottom: 16, padding: "12px 14px", borderRadius: 8,
-            background: `linear-gradient(135deg, ${config.color}08, rgba(0, 0, 0, 0.35))`,
-            border: `1px solid ${config.color}20`,
+            boxShadow: `0 0 16px ${config.glow}`,
             animation: "fadeSlideUp 0.3s 0.22s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <span style={{ fontSize: 16, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase", textShadow: `0 0 12px ${config.glow}` }}>
                 {isLow ? "Why Orbit Approved This MR" : isMedium ? "Why Orbit Flagged This MR" : "Why Orbit Rejected This MR"}
               </span>
               <span style={{
-                fontSize: 13, padding: "2px 8px", borderRadius: 10,
-                background: isLow ? "rgba(34,197,94,0.1)" : isMedium ? "rgba(234,179,8,0.1)" : "rgba(239,68,68,0.1)",
-                color: config.color, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace"
+                fontSize: 14, padding: "3px 10px", borderRadius: 8,
+                background: isLow ? "rgba(34,197,94,0.15)" : isMedium ? "rgba(234,179,8,0.15)" : "rgba(239,68,68,0.15)",
+                color: config.color, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                border: `1px solid ${config.color}25`,
               }}>
                 {isLow ? "Closure Prob: 0%" : isMedium ? "Closure Prob: 78%" : "Closure Prob: 95%"}
               </span>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 15, color: "var(--text-primary)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 14, color: "var(--text-primary)" }}>
               {isLow ? (
                 <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>1.</span> Change scope is fully isolated in graph</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>2.</span> Head pipeline passed cleanly</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>3.</span> Reviewer approvals received</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>4.</span> Zero incident patterns matching files found</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>1.</span> Change scope is fully isolated in graph</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>2.</span> Head pipeline passed cleanly</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>3.</span> Reviewer approvals received</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4.</span> Zero incident patterns matching files found</div>
                 </>
               ) : isMedium ? (
                 <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>1.</span> Empty changes diff detected</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>2.</span> No pipeline execution triggered</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>3.</span> Branch abandonment history matches 9 prior closed MRs</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>4.</span> No reviewers assigned to the chain</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>1.</span> Empty changes diff detected</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>2.</span> No pipeline execution triggered</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>3.</span> Branch abandonment history matches 9 prior closed MRs</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4.</span> No reviewers assigned to the chain</div>
                 </>
               ) : (
                 <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>1.</span> Deployment path missing in graph twin</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>2.</span> No validated pipeline linked to commit</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>3.</span> Branch abandonment pattern matches 90% risk profile</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>4.</span> Ownership path or reviewers chain not found</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>1.</span> Deployment path missing in graph twin</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>2.</span> No validated pipeline linked to commit</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>3.</span> Branch abandonment pattern matches 90% risk profile</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4.</span> Ownership path or reviewers chain not found</div>
                 </>
               )}
             </div>
           </div>
 
-          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: isMobile ? 10 : 16 }}>
+          {/* Reasoning + Actions */}
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 10 : 14 }}>
             <div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Reasoning</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {config.reasoning.map((r, i) => (
                   <div key={r} style={{
                     display: "flex", alignItems: "center", gap: 6,
-                    padding: "5px 8px", borderRadius: 5,
-                    background: `${config.color}04`, border: `1px solid ${config.color}08`,
-                    fontSize: 15, color: "var(--text-primary)",
+                    padding: "6px 10px", borderRadius: 5,
+                    background: `${config.color}06`, border: `1px solid ${config.color}12`,
+                    fontSize: 14, color: "var(--text-primary)",
                     animation: `fadeSlideUp 0.3s ${0.25 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}>
-                    <span style={{ fontSize: 13, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 700 }}>{i + 1}.</span>
+                    <span style={{ fontSize: 13, color: config.color, fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, textShadow: `0 0 6px ${config.glow}` }}>{i + 1}.</span>
                     {r}
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Recommended Actions</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 6 }}>Recommended Actions</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
                 {actions.map((a, i) => (
                   <div key={a} style={{
                     display: "flex", alignItems: "center", gap: 6,
-                    padding: "5px 8px", borderRadius: 5,
-                    background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)",
-                    fontSize: 15, color: "var(--text-primary)",
+                    padding: "6px 10px", borderRadius: 5,
+                    background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.12)",
+                    fontSize: 14, color: "var(--text-primary)",
                     animation: `fadeSlideUp 0.3s ${0.35 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
                   }}>
-                    <span style={{ fontSize: 15, color: "#22c55e", fontWeight: 700 }}>✓</span>
+                    <span style={{ fontSize: 14, color: "#22c55e", fontWeight: 700, textShadow: "0 0 6px rgba(34,197,94,0.3)" }}>✓</span>
                     {a}
                   </div>
                 ))}
               </div>
               <div style={{
-                padding: "8px 14px", borderRadius: 8,
-                background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))",
-                border: "1px solid rgba(34,197,94,0.12)",
+                padding: "10px 14px", borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.04))",
+                border: "1px solid rgba(34,197,94,0.15)",
                 display: "flex", alignItems: "center", justifyContent: "space-between",
+                boxShadow: "0 0 16px rgba(34,197,94,0.05)",
                 animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both",
               }}>
                 <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>Expected Risk After Mitigation</span>
-                <span style={{ fontSize: isMobile ? 15 : 18, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.3)" }}>
+                <span style={{ fontSize: isMobile ? 16 : 20, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(34,197,94,0.4)" }}>
                   {(afterRisk * 100).toFixed(0)}%
                 </span>
               </div>
