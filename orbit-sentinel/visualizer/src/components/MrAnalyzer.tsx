@@ -335,47 +335,52 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         }} />
       )}
 
-      {/* Conditional Demo Message - Only show when in demo mode */}
-      {!apiAvailable && !(currentScenario && currentScenario.startsWith("Live")) && (
+      {/* Demo mode banner — shows only when in demo and no live analysis done yet */}
+      {!(currentScenario && currentScenario.startsWith("Live")) && (
         <div style={{
-          marginBottom: 16,
-          padding: "10px 14px",
+          padding: "8px 14px",
           borderRadius: 8,
-          background: "rgba(251,146,60,0.06)",
-          border: "1px solid rgba(251,146,60,0.2)",
+          background: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(167,139,250,0.03))",
+          border: "1px solid rgba(167,139,250,0.2)",
           fontSize: 13,
           color: "var(--text-secondary)",
           position: "relative",
-          zIndex: 2
+          zIndex: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
-            <div>
-              <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
-            </div>
-          </div>
+          <span style={{ fontSize: 15, flexShrink: 0 }}>🎭</span>
+          <span>
+            <strong style={{ color: "#a78bfa" }}>Demo mode</strong> — viewing a pre-built scenario.
+            {" "}<span style={{ color: "var(--text-tertiary)" }}>Paste any GitLab MR URL above and click <strong style={{ color: "#a78bfa" }}>Analyze Live</strong> to see real data.</span>
+          </span>
         </div>
       )}
-      
-      {/* Show live analysis complete message when custom MR is analyzed */}
+
+      {/* Live analysis complete banner — replaces demo banner when real MR is analyzed */}
       {currentScenario && currentScenario.startsWith("Live · MR !") && (
         <div style={{
-          marginBottom: 16,
-          padding: "10px 14px",
+          padding: "8px 14px",
           borderRadius: 8,
-          background: "rgba(34,197,94,0.06)",
-          border: "1px solid rgba(34,197,94,0.2)",
+          background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))",
+          border: "1px solid rgba(34,197,94,0.25)",
           fontSize: 13,
           color: "var(--text-secondary)",
           position: "relative",
-          zIndex: 2
+          zIndex: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          animation: "fadeSlideUp 0.4s ease both",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 16, flexShrink: 0 }}>✅</span>
-            <div>
-              <strong>Live analysis complete</strong> — viewing real data from MR {currentScenario.split("!")[1]}
-            </div>
-          </div>
+          <span style={{ fontSize: 15, flexShrink: 0 }}>✅</span>
+          <span>
+            <strong style={{ color: "#22c55e" }}>Live analysis complete</strong>
+            {" — "}
+            <span style={{ color: "var(--text-secondary)" }}>Viewing real Orbit data for MR <strong style={{ color: "#22c55e", fontFamily: "'JetBrains Mono', monospace" }}>!{currentScenario.split("!")[1]}</strong></span>
+          </span>
+          <span style={{ marginLeft: "auto", fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(34,197,94,0.12)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.25)", letterSpacing: "0.3px" }}>LIVE</span>
         </div>
       )}
 
@@ -393,21 +398,45 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             Paste any GitLab MR URL or try a preset below
           </span>
         </div>
-        {apiAvailable && (
-          <div style={{
-            marginLeft: "auto", display: "flex", alignItems: "center", gap: 4,
-            padding: "3px 10px", borderRadius: 20,
-            background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)",
-          }}>
-            <span style={{
-              width: 6, height: 6, borderRadius: "50%",
-              background: "#22c55e", display: "inline-block",
-              boxShadow: "0 0 8px rgba(34,197,94,0.6)",
-              animation: "pulseDot 2s ease-in-out infinite",
-            }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase" }}>Engine Live</span>
-          </div>
-        )}
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+          {/* Try This badge - always visible to encourage interaction */}
+          {!(currentScenario && currentScenario.startsWith("Live")) && (
+            <div style={{
+              display: "flex", alignItems: "center", gap: 5,
+              padding: "3px 10px", borderRadius: 20,
+              background: "linear-gradient(135deg, rgba(139,92,246,0.18), rgba(139,92,246,0.08))",
+              border: "1px solid rgba(139,92,246,0.3)",
+              boxShadow: "0 0 12px rgba(139,92,246,0.15)",
+              animation: "pulseGlow 3s ease-in-out infinite",
+            }}>
+              <span style={{ fontSize: 13 }}>🚀</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.5px" }}>Try This →</span>
+            </div>
+          )}
+          {/* Engine status pill */}
+          {apiAvailable && (
+            <div style={{
+              display: "flex", alignItems: "center", gap: 4,
+              padding: "3px 10px", borderRadius: 20,
+              background: currentScenario && currentScenario.startsWith("Live") ? "rgba(34,197,94,0.08)" : "rgba(59,130,246,0.08)",
+              border: currentScenario && currentScenario.startsWith("Live") ? "1px solid rgba(34,197,94,0.2)" : "1px solid rgba(59,130,246,0.2)",
+            }}>
+              <span style={{
+                width: 6, height: 6, borderRadius: "50%",
+                background: currentScenario && currentScenario.startsWith("Live") ? "#22c55e" : "#60a5fa",
+                display: "inline-block",
+                boxShadow: currentScenario && currentScenario.startsWith("Live") ? "0 0 8px rgba(34,197,94,0.6)" : "0 0 8px rgba(96,165,250,0.6)",
+                animation: "pulseDot 2s ease-in-out infinite",
+              }} />
+              <span style={{
+                fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase",
+                color: currentScenario && currentScenario.startsWith("Live") ? "#22c55e" : "#60a5fa",
+              }}>
+                {currentScenario && currentScenario.startsWith("Live") ? "Live" : "Connected to Render"}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 8, alignItems: "center", position: "relative", zIndex: 1 }}>
