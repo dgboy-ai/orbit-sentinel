@@ -314,41 +314,22 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         }} />
       )}
 
-      {/* Prominent Message Above MR Analyzer */}
+      {/* Small Box Above MR Analyzer */}
       <div style={{
-        marginBottom: 24,
-        padding: "20px 24px",
-        borderRadius: 12,
-        background: "linear-gradient(135deg, rgba(251,146,60,0.12), rgba(251,146,60,0.04))",
-        border: "2px solid rgba(251,146,60,0.4)",
-        boxShadow: "0 0 32px rgba(251,146,60,0.15), inset 0 1px 0 rgba(255,255,255,0.1)",
-        fontSize: 16,
-        lineHeight: 1.6,
-        color: "var(--text-primary)",
+        marginBottom: 16,
+        padding: "10px 14px",
+        borderRadius: 8,
+        background: "rgba(251,146,60,0.06)",
+        border: "1px solid rgba(251,146,60,0.2)",
+        fontSize: 13,
+        color: "var(--text-secondary)",
         position: "relative",
-        zIndex: 2,
-        animation: "pulseGlow 3s ease-in-out infinite",
+        zIndex: 2
       }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
-          <span style={{ fontSize: 24, flexShrink: 0, filter: "drop-shadow(0 0 12px rgba(251,146,60,0.6))" }}>🚨</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
           <div>
-            <div style={{ marginBottom: 12 }}>
-              <strong style={{ color: "#fb923c", fontSize: "18px", textShadow: "0 0 12px rgba(251,146,60,0.5)" }}>CURRENT DEMO — Use MR Analyzer to see live analysis</strong>
-            </div>
-            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fb923c", boxShadow: "0 0 12px rgba(251,146,60,0.8)", animation: "pulseDot 2s ease-in-out infinite" }} />
-                <span style={{ color: "#fb923c", fontWeight: 600 }}>Paste any GitLab MR URL</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fb923c", boxShadow: "0 0 12px rgba(251,146,60,0.8)", animation: "pulseDot 2s ease-in-out infinite" }} />
-                <span style={{ color: "#fb923c", fontWeight: 600 }}>Try MR #12 (trueboy)</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fb923c", boxShadow: "0 0 12px rgba(251,146,60,0.8)", animation: "pulseDot 2s ease-in-out infinite" }} />
-                <span style={{ color: "#fb923c", fontWeight: 600 }}>Add GitLab token for private repos</span>
-              </div>
-            </div>
+            <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
           </div>
         </div>
       </div>
