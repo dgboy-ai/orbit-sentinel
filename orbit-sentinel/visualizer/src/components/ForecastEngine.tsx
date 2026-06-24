@@ -409,12 +409,17 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               </div>
               <span style={{ fontSize: 11, color: "var(--text-tertiary)", opacity: 0.6 }}>Workflow blockers</span>
               <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                {[
-                  { show: !mrState.hasPipeline, label: "✗ No Pipeline", color: "#ef4444" },
-                  { show: true, label: "✗ No Reviewer", color: "#ef4444" },
-                  { show: mrState.noChanges, label: "⚠ Empty Diff", color: "#eab308" },
-                  { show: true, label: "✗ Draft Status", color: "#ef4444" },
-                ].filter(b => b.show).map(b => (
+                {(() => {
+                  const travText = (evidence.find(e => e.queryType === "TRAVERSAL")?.result || "").toLowerCase();
+                  const hasReviewer = travText.includes("reviewer") && (travText.includes("approved") || travText.includes("assigned"));
+                  const hasDraft = travText.includes("draft");
+                  return [
+                    { show: !mrState.hasPipeline, label: "✗ No Pipeline", color: "#ef4444" },
+                    { show: !hasReviewer, label: "✗ No Reviewer", color: "#ef4444" },
+                    { show: mrState.noChanges, label: "⚠ Empty Diff", color: "#eab308" },
+                    { show: hasDraft, label: "✗ Draft Status", color: "#ef4444" },
+                  ].filter(b => b.show);
+                })().map(b => (
                   <span key={b.label} style={{
                     fontSize: 11, padding: "3px 8px", borderRadius: 3,
                     background: `${b.color}15`, border: `1px solid ${b.color}30`,
@@ -807,28 +812,29 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               Why {confidence.split(" ")[0]}? (Explainable Confidence)
             </div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "4px 12px", fontSize: 15, color: "var(--text-primary)" }}>
-              {isLow ? (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>✓</span> Deployment path verified</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>✓</span> 0 historical incident matches</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>✓</span> Clean ecosystem pipeline trend</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#22c55e", fontWeight: "bold" }}>✓</span> Reviewer approvals validated</div>
-                </>
-              ) : isMedium ? (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>✓</span> Empty changes diff detected</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>✓</span> No active pipeline linked</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>✓</span> 9 historical closed MR matches</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#eab308", fontWeight: "bold" }}>✓</span> No reviewers assigned to MR</div>
-                </>
-              ) : (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>✓</span> Deployment path missing</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>✓</span> 9 historical closed MR matches</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>✓</span> 23 failed pipelines nearby</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: "#ef4444", fontWeight: "bold" }}>✓</span> Empty diff detected</div>
-                </>
-              )}
+              {(() => {
+                const travText = (evidence.find(e => e.queryType === "TRAVERSAL")?.result || "").toLowerCase();
+                const pathText = (evidence.find(e => e.queryType === "PATH_FINDING")?.result || "").toLowerCase();
+                const aggText = (evidence.find(e => e.queryType === "AGGREGATION")?.result || "").toLowerCase();
+                const hasDeployment = pathText.includes("passed") || pathText.includes("green") || pathText.includes("deployed");
+                const noDeployment = pathText.includes("no deployment") || pathText.includes("no linked pipeline") || pathText.includes("no pipeline");
+                const histMatch = travText.match(/(\d+)\s*(?:historical|similar)/);
+                const histCount = histMatch ? parseInt(histMatch[1]) : 0;
+                const failMatch = aggText.match(/(\d+)\s*failed/);
+                const failCount = failMatch ? parseInt(failMatch[1]) : 0;
+                const noReviewer = !decisionCenter?.reviewers || decisionCenter.reviewers.length <= 1;
+                const col = isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444";
+                const colBad = "#ef4444";
+                const check = (label: string) => <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: col, fontWeight: "bold" }}>✓</span> {label}</div>;
+                const cross = (label: string) => <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ color: colBad, fontWeight: "bold" }}>✗</span> {label}</div>;
+                return <>
+                  {hasDeployment ? check("Deployment path verified") : noDeployment ? cross("No deployment path") : check("No deployment data")}
+                  {histCount > 0 ? check(`${histCount} historical match${histCount !== 1 ? "es" : ""}`) : check("0 historical matches")}
+                  {failCount > 0 ? cross(`${failCount} failed pipeline${failCount !== 1 ? "s" : ""} nearby`) : check("No pipeline failures found")}
+                  {mrState.noChanges ? cross("Empty diff detected") : mrState.hasPipeline ? check("Pipeline active") : cross("No pipeline linked")}
+                  {noReviewer ? cross("No reviewer assigned") : check("Reviewer approvals validated")}
+                </>;
+              })()}
             </div>
           </div>
 

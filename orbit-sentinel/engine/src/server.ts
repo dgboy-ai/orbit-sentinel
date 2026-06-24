@@ -451,9 +451,9 @@ app.post('/api/probe-mr-files', async (req, res) => {
       });
     }
 
-    const data = await response.json() as { changes?: Array<{ new_path: string }> };
+    const data = await response.json() as { changes?: Array<{ new_path: string }>; source_branch?: string };
     const files = (data.changes || []).map(c => c.new_path);
-    return res.json({ files, count: files.length });
+    return res.json({ files, count: files.length, branch: data.source_branch ?? null });
   } catch (error) {
     return res.status(500).json({
       error: 'Failed to fetch MR files',

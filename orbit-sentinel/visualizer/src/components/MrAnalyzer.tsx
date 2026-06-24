@@ -70,6 +70,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       // Fetch actual changed files from GitLab API via engine (avoids CORS)
       let changedFiles: string[] = ["src/main.ts"];
       let totalFilesCount = 1;
+      let branchName: string | null = null;
       try {
         const probeRes = await fetch(`${API_BASE_URL}/api/probe-mr-files`, {
           method: "POST",
@@ -82,11 +83,12 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
           signal: AbortSignal.timeout(10000),
         });
         if (probeRes.ok) {
-          const probeData = await probeRes.json() as { files: string[] };
+          const probeData = await probeRes.json() as { files: string[]; branch?: string };
           if (probeData.files?.length) {
             changedFiles = probeData.files;
             totalFilesCount = probeData.files.length;
           }
+          if (probeData.branch) branchName = probeData.branch;
         }
       } catch { 
         if (!token) setLiveError("⚠ No GitLab token — using sample file data. Add a token above for real file analysis.");
@@ -110,6 +112,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         changedFiles,
         changeDescription: `Analyze MR !${parsed.mrIid} — ${changedFiles.length} file(s) changed`,
       };
+      if (branchName) body.branch = branchName;
       if (useCreds) body.gitlabToken = token;
 
       const res = await fetch(endpoint, {

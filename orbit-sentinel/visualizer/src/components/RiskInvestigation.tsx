@@ -166,63 +166,101 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
   const reviewersCount = decisionCenter?.reviewers?.length ?? 0;
   const hasNoReviewers = reviewersCount === 0;
 
-  const config = isLow ? {
-    color: "#22c55e",
-    bg: "linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(34,197,94,0.02) 100%)",
-    border: "rgba(34,197,94,0.25)",
-    glow: "rgba(34,197,94,0.12)",
-    predictedOutcome: "Safe to Deploy",
-    primaryWarn: "Primary: Change scope is isolated in graph.",
-    secondaryWarn: (hasNoPipelineData && hasNoReviewers)
-      ? "Secondary: No pipeline detected · No reviewers assigned"
-      : "Secondary: Reviewers approved, head pipeline passed.",
-    primaryColor: "#22c55e",
-    secondaryColor: "#22c55e",
-    verdictLabel: "SAFE TO DEPLOY",
-    verdictIcon: "✅",
-    reasoning: [
-      "All unit and integration tests pass",
-      "Full reviewer approvals received",
-      "Isolated scope has zero downstream risk",
-      "Historical similarity matches clean merges",
-    ],
-  } : isMedium ? {
-    color: "#eab308",
-    bg: "linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(234,179,8,0.02) 100%)",
-    border: "rgba(234,179,8,0.25)",
-    glow: "rgba(234,179,8,0.12)",
-    predictedOutcome: "Needs Review",
-    primaryWarn: "Primary: Empty changes diff detected.",
-    secondaryWarn: "Secondary: No pipeline execution triggered.",
-    primaryColor: "#eab308",
-    secondaryColor: "#eab308",
-    verdictLabel: "NEEDS REMEDIATION",
-    verdictIcon: "⚠️",
-    reasoning: [
-      "Empty changes diff detected",
-      "No pipeline execution triggered",
-      "Branch abandonment history match",
-      "No reviewers assigned to the MR",
-    ],
-  } : {
-    color: "#ef4444",
-    bg: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(239,68,68,0.02) 100%)",
-    border: "rgba(239,68,68,0.25)",
-    glow: "rgba(239,68,68,0.12)",
-    predictedOutcome: "Will Not Reach Production",
-    primaryWarn: "Primary: No deployment path exists.",
-    secondaryWarn: "Secondary: 9 prior MRs from this branch were abandoned.",
-    primaryColor: "#ef4444",
-    secondaryColor: "#f97316",
-    verdictLabel: "DO NOT DEPLOY",
-    verdictIcon: "🚫",
-    reasoning: [
-      "No deployment path exists",
-      "No validated pipeline exists",
-      "No meaningful code changes detected",
-      "Historical abandonment pattern detected",
-    ],
-  };
+  const evidenceInsights = (() => {
+    const neighText = (evidence.find(e => e.queryType === "NEIGHBORS")?.result || "").toLowerCase();
+    const pathText = (evidence.find(e => e.queryType === "PATH_FINDING")?.result || "").toLowerCase();
+    const travText = (evidence.find(e => e.queryType === "TRAVERSAL")?.result || "").toLowerCase();
+    const aggText = (evidence.find(e => e.queryType === "AGGREGATION")?.result || "").toLowerCase();
+    const hasPipeline = pathText.includes("passed") || pathText.includes("green");
+    const noPipeline = pathText.includes("no pipeline") || pathText.includes("no linked") || pathText.includes("no deployment");
+    const noChanges = neighText.includes("empty diff") || neighText.includes("no file changes") || neighText.includes("0 affected files");
+    const isolated = neighText.includes("no downstream") || neighText.includes("0 downstream") || neighText.includes("isolated");
+    const histMatch = travText.match(/(\d+)\s*(?:of\s*\d+\s*)?(?:similar|historical|prior)/);
+    const histCount = histMatch ? parseInt(histMatch[1]) : 0;
+    const abandonment = travText.includes("abandonment") || travText.includes("closed without merge");
+    const failMatch = aggText.match(/(\d+)\s*failed/);
+    const failCount = failMatch ? parseInt(failMatch[1]) : 0;
+    return { hasPipeline, noPipeline, noChanges, isolated, histCount, abandonment, failCount };
+  })();
+
+  const config = (() => {
+    const base = isLow ? {
+      color: "#22c55e",
+      bg: "linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(34,197,94,0.02) 100%)",
+      border: "rgba(34,197,94,0.25)",
+      glow: "rgba(34,197,94,0.12)",
+      primaryColor: "#22c55e",
+      secondaryColor: "#22c55e",
+      verdictIcon: "✅",
+    } : isMedium ? {
+      color: "#eab308",
+      bg: "linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(234,179,8,0.02) 100%)",
+      border: "rgba(234,179,8,0.25)",
+      glow: "rgba(234,179,8,0.12)",
+      primaryColor: "#eab308",
+      secondaryColor: "#eab308",
+      verdictIcon: "⚠️",
+    } : {
+      color: "#ef4444",
+      bg: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(239,68,68,0.02) 100%)",
+      border: "rgba(239,68,68,0.25)",
+      glow: "rgba(239,68,68,0.12)",
+      primaryColor: "#ef4444",
+      secondaryColor: "#f97316",
+      verdictIcon: "🚫",
+    };
+
+    const { hasPipeline, noPipeline, noChanges, isolated, histCount, abandonment, failCount } = evidenceInsights;
+
+    const predictedOutcome = noChanges
+      ? "Empty diff — nothing to deploy"
+      : noPipeline
+        ? "Blocked — no pipeline linked"
+        : hasNoReviewers
+          ? "Blocked — no reviewer assigned"
+          : isLow
+            ? "Safe to Deploy"
+            : isMedium
+              ? "Needs Review"
+              : "Will Not Reach Production";
+
+    const primaryWarn = noChanges
+      ? "Primary: Empty changes diff detected."
+      : noPipeline
+        ? "Primary: No deployment path exists."
+        : isolated
+          ? "Primary: Change scope is isolated in graph."
+          : "Primary: Downstream dependencies at risk.";
+
+    const secondaryWarn = hasNoReviewers
+      ? "Secondary: No reviewer assigned — blocking merge."
+      : hasPipeline
+        ? "Secondary: Pipeline passed, reviewers approved."
+        : "Secondary: No pipeline execution triggered.";
+
+    const verdictLabel = noChanges || noPipeline || hasNoReviewers
+      ? "DO NOT DEPLOY"
+      : isLow
+        ? "SAFE TO DEPLOY"
+        : isMedium
+          ? "NEEDS ATTENTION"
+          : "DO NOT DEPLOY";
+
+    const reasoning: string[] = [];
+    if (noChanges) reasoning.push("Empty changes diff detected");
+    else if (isolated) reasoning.push("Isolated scope has zero downstream risk");
+    else reasoning.push("Downstream dependencies identified");
+    if (noPipeline) reasoning.push("No pipeline linked to this MR");
+    else if (hasPipeline) reasoning.push("Pipeline passed all checks");
+    else reasoning.push("No pipeline data available");
+    if (hasNoReviewers) reasoning.push("No reviewer assigned — blocking merge");
+    else reasoning.push("Reviewer approvals received");
+    if (evidenceInsights.histCount > 0 && abandonment) reasoning.push(`${evidenceInsights.histCount} historical abandonment matches`);
+    else if (evidenceInsights.histCount > 0) reasoning.push(`${evidenceInsights.histCount} historical matches found`);
+    else reasoning.push("No historical incident patterns");
+
+    return { ...base, predictedOutcome, primaryWarn, secondaryWarn, verdictLabel, reasoning };
+  })();
 
   const baseCards: CardDef[] = isLow ? [
     {
@@ -332,17 +370,27 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           title = "Pipeline Passed";
         }
       } else if (card.queryType === "TRAVERSAL") {
-        if (r.includes("0 historical mr") || r.includes("0 merged") || r.includes("zero incident")) {
+        const histMatch = r.match(/(\d+)\s*(?:of\s*\d+\s*)?(?:similar|historical|prior)/);
+        const histCount = histMatch ? parseInt(histMatch[1]) : 0;
+        if (r.includes("0 historical mr") || r.includes("0 merged") || r.includes("zero incident") || histCount === 0) {
           finding = "No branch history patterns matching files";
           title = "Clean Merges History";
-        } else if (r.includes("abandonment")) {
-          finding = "9 prior MRs from this branch were closed without merge";
+        } else if (r.includes("abandonment") || r.includes("closed without merge")) {
+          finding = `${histCount} prior MRs from this branch were closed without merge`;
           title = "Branch Abandonment Pattern";
+        } else {
+          finding = `${histCount} historical matches found`;
+          title = "Historical Pattern Detected";
         }
       } else if (card.queryType === "AGGREGATION") {
-        if (r.includes("no pipeline data") || r.includes("no failures detected") || r.includes("0 pipeline failures")) {
+        const failMatch = r.match(/(\d+)\s*failed/);
+        const failCount = failMatch ? parseInt(failMatch[1]) : 0;
+        if (r.includes("no pipeline data") || r.includes("no failures detected") || r.includes("0 pipeline failures") || failCount === 0) {
           finding = "No codebase failures detected on target files";
           title = "Ecosystem Stability";
+        } else {
+          finding = `${failCount} failed pipelines in blast radius services`;
+          title = "Pipeline Failure Correlation";
         }
       }
 
@@ -374,22 +422,21 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
   });
 
-  const timelineSteps = isLow ? [
-    { label: "MR OPEN", color: "#22c55e", icon: "📝" },
-    { label: "PIPELINE PASSED", color: "#22c55e", icon: "✅" },
-    { label: "REVIEW APPROVED", color: "#22c55e", icon: "👍" },
-    { label: "READY TO MERGE", color: "#22c55e", icon: "🚀" },
-  ] : isMedium ? [
-    { label: "MR OPEN", color: "#eab308", icon: "📝" },
-    { label: "EMPTY DIFF", color: "#eab308", icon: "⚠️" },
-    { label: "NO PIPELINE", color: "#eab308", icon: "⏸" },
-    { label: "UNASSIGNED REVIEWERS", color: "#ef4444", icon: "⏳" },
-  ] : [
-    { label: "MR OPEN", color: "#22c55e", icon: "📝" },
-    { label: "PIPELINE MISSING", color: "#ef4444", icon: "✗" },
-    { label: "REVIEW NEVER STARTS", color: "#eab308", icon: "⏸" },
-    { label: "DEVELOPMENT STALLS", color: "#eab308", icon: "⏳" },
-  ];
+  const timelineSteps = (() => {
+    const pathText = (evidence.find(e => e.queryType === "PATH_FINDING")?.result || "").toLowerCase();
+    const hasPipeline = pathText.includes("passed") || pathText.includes("green");
+    const noPipeline = pathText.includes("no pipeline") || pathText.includes("no linked");
+    const hasReviewer = decisionCenter?.reviewers?.some(r => r.role?.toLowerCase().includes("approv")) ?? false;
+    const noReviewer = !decisionCenter?.reviewers || decisionCenter.reviewers.length <= 1;
+    const noChanges = riskData.breakdown?.some(b => b.category.toLowerCase().includes("empty") && b.value >= 7) ?? false;
+    const col = isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444";
+    return [
+      { label: "MR OPEN", color: "#22c55e", icon: "📝" },
+      ...(noChanges ? [{ label: "EMPTY DIFF", color: "#eab308", icon: "⚠️" }] : []),
+      { label: hasPipeline ? "PIPELINE PASSED" : noPipeline ? "NO PIPELINE" : "PIPELINE", color: hasPipeline ? "#22c55e" : noPipeline ? "#ef4444" : col, icon: hasPipeline ? "✅" : "⏸" },
+      { label: hasReviewer ? "REVIEW APPROVED" : noReviewer ? "UNASSIGNED REVIEWERS" : "REVIEW", color: hasReviewer ? "#22c55e" : noReviewer ? "#ef4444" : col, icon: hasReviewer ? "👍" : "⏳" },
+    ];
+  })();
 
   const timelinePredicted = isLow ? { label: "DEPLOYED", color: "#22c55e" } : { label: "CLOSED", color: "#ef4444" };
 
@@ -424,10 +471,10 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           {/* Main forecast title */}
           <div style={{ fontSize: isMobile ? 20 : 28, fontWeight: 900, color: config.color, textShadow: `0 0 50px ${config.color}60, 0 0 100px ${config.color}30`, display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
             {config.verdictIcon}
-            {isLow ? "SAFE TO DEPLOY" : isMedium ? "NEEDS ATTENTION" : "DO NOT DEPLOY"}
-            {isLow ? <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(34,197,94,0.2)" }}>LOW RISK</span>
-              : isMedium ? <span style={{ fontSize: 14, fontWeight: 700, color: "#eab308", background: "rgba(234,179,8,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(234,179,8,0.2)" }}>MEDIUM RISK</span>
-                : <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444", background: "rgba(239,68,68,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(239,68,68,0.2)" }}>HIGH RISK</span>}
+            {config.verdictLabel}
+            <span style={{ fontSize: 14, fontWeight: 700, color: config.color, background: `${config.color}18`, padding: "2px 10px", borderRadius: 4, border: `1px solid ${config.color}30` }}>
+              {riskData.level?.toUpperCase() ?? "UNKNOWN"}
+            </span>
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
@@ -501,8 +548,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               boxShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.12)"}`,
             }}>
               <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: isLow ? "#22c55e" : "#ef4444", boxShadow: `0 0 6px ${isLow ? "rgba(34,197,94,0.6)" : "rgba(239,68,68,0.6)"}` }} />
-              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: isLow ? "#22c55e" : "#ef4444" }}>
-                {isLow ? "CAN PROCEED TO PROD" : "CANNOT REACH PRODUCTION"}
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: isLow && !evidenceInsights.noChanges && !evidenceInsights.noPipeline && !hasNoReviewers ? "#22c55e" : "#ef4444" }}>
+                {isLow && !evidenceInsights.noChanges && !evidenceInsights.noPipeline && !hasNoReviewers ? "CAN PROCEED TO PROD" : "CANNOT REACH PRODUCTION"}
               </span>
             </div>
           </div>
@@ -552,12 +599,18 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
           </div>
 
           <div style={{ display: "flex", gap: 8, marginTop: 10, fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
-            {isLow ? (
+            {evidenceInsights.noChanges ? (
+              <span>🚫 Empty diff — nothing to deploy. MR cannot proceed.</span>
+            ) : evidenceInsights.noPipeline ? (
+              <span>🚫 No pipeline linked — changes not validated. MR cannot deploy.</span>
+            ) : hasNoReviewers ? (
+              <span>🚫 No reviewer assigned — merge blocked until review is complete.</span>
+            ) : isLow ? (
               <span>All lifecycle gates passed. MR is on track for production deployment.</span>
             ) : isMedium ? (
-              <span>⚠ {timelineSteps.some(s => s.label.includes("EMPTY") || s.label.includes("NO PIPELINE") || s.label.includes("UNASSIGNED")) ? "Blocked: pipeline, diff, or reviewer requirements not met." : "Warning signals detected in MR lifecycle."}</span>
+              <span>⚠ Warning signals detected in MR lifecycle.</span>
             ) : (
-              <span>🚫 {timelineSteps.some(s => s.label.includes("MISSING") || s.label.includes("STALLS") || s.label.includes("NEVER")) ? "Critical: multiple lifecycle failures prevent production deployment." : "MR cannot reach production due to blocked deployment path."}</span>
+              <span>🚫 MR cannot reach production due to blocked deployment path.</span>
             )}
           </div>
         </div>
@@ -657,14 +710,24 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                     <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
                   </div>
                   <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
-                    {isLow ? "All queries align — safe to deploy" : isMedium ? "Mixed signals — further investigation needed" : "Strong alignment — blocked from prod"}
+                    {evidenceInsights.noChanges
+                      ? "Empty diff — nothing to deploy"
+                      : evidenceInsights.noPipeline
+                        ? "No pipeline linked — deployment blocked"
+                        : hasNoReviewers
+                          ? "No reviewer assigned — merge blocked"
+                          : isLow
+                            ? "All queries align — safe to deploy"
+                            : isMedium
+                              ? "Mixed signals — further investigation needed"
+                              : "Strong alignment — blocked from prod"}
                   </div>
                 </div>
                 <span style={{
                   fontSize: 14, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace",
-                  color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e",
-                  textShadow: `0 0 14px ${isLow ? "rgba(34,197,94,0.4)" : isMedium ? "rgba(234,179,8,0.4)" : "rgba(34,197,94,0.4)"}`,
-                }}>{isLow ? "✓ STRONG" : isMedium ? "⚠ MIXED" : "✓ STRONG"}</span>
+                  color: evidenceInsights.noChanges || evidenceInsights.noPipeline || hasNoReviewers ? "#ef4444" : isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e",
+                  textShadow: `0 0 14px ${evidenceInsights.noChanges || evidenceInsights.noPipeline || hasNoReviewers ? "rgba(239,68,68,0.4)" : isLow ? "rgba(34,197,94,0.4)" : isMedium ? "rgba(234,179,8,0.4)" : "rgba(34,197,94,0.4)"}`,
+                }}>{evidenceInsights.noChanges || evidenceInsights.noPipeline || hasNoReviewers ? "✗ BLOCKED" : isLow ? "✓ STRONG" : isMedium ? "⚠ MIXED" : "✓ STRONG"}</span>
               </div>
             </div>
 
@@ -750,7 +813,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                     boxShadow: `0 0 8px ${isLow ? "rgba(34,197,94,0.5)" : isMedium ? "rgba(234,179,8,0.5)" : "rgba(239,68,68,0.5)"}`,
                   }} />
                   <span style={{ fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: "#60a5fa", letterSpacing: "0.5px" }}>
-                    VERDICT: {isLow ? "APPROVED" : isMedium ? "REQUIRES REVIEW" : "DENIED"}
+                    VERDICT: {evidenceInsights.noChanges || evidenceInsights.noPipeline || hasNoReviewers ? "BLOCKED" : isLow ? "APPROVED" : isMedium ? "REQUIRES REVIEW" : "DENIED"}
                   </span>
                 </div>
                 <span style={{
@@ -943,7 +1006,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
               <span style={{ fontSize: 15, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase", textShadow: `0 0 12px ${config.glow}`, display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ fontSize: 18 }}>{isLow ? "✅" : isMedium ? "⚠️" : "🚫"}</span>
-                {isLow ? "Why Orbit Approved This MR" : isMedium ? "Why Orbit Flagged This MR" : "Why Orbit Rejected This MR"}
+                {evidenceInsights.noChanges || evidenceInsights.noPipeline || hasNoReviewers ? "Why Orbit Blocked This MR" : isLow ? "Why Orbit Approved This MR" : isMedium ? "Why Orbit Flagged This MR" : "Why Orbit Rejected This MR"}
               </span>
               <span style={{
                 fontSize: 14, padding: "3px 10px", borderRadius: 8,
@@ -951,29 +1014,37 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 color: config.color, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
                 border: `1px solid ${config.color}25`,
               }}>
-                {isLow ? "Closure Prob: 0%" : isMedium ? "Closure Prob: 78%" : "Closure Prob: 95%"}
+                {evidenceInsights.noChanges ? "Closure Prob: 95%" : evidenceInsights.noPipeline || hasNoReviewers ? "Closure Prob: 85%" : isLow ? "Closure Prob: 0%" : isMedium ? "Closure Prob: 78%" : "Closure Prob: 95%"}
               </span>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
               {/* LEFT — numbered reasons */}
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {(() => {
-                  const items = isLow ? [
-                    { num: "1", text: "Change scope is fully isolated in graph", severity: "good" },
-                    { num: "2", text: "Head pipeline passed cleanly", severity: "good" },
-                    { num: "3", text: "Reviewer approvals received", severity: "good" },
-                    { num: "4", text: "Zero incident patterns matching files found", severity: "good" },
-                  ] : isMedium ? [
-                    { num: "1", text: "Empty changes diff detected", severity: "medium" },
-                    { num: "2", text: "No pipeline execution triggered", severity: "medium" },
-                    { num: "3", text: "Branch abandonment history — 9 prior closed MRs", severity: "high" },
-                    { num: "4", text: "No reviewers assigned to the chain", severity: "medium" },
-                  ] : [
-                    { num: "1", text: "Deployment path missing in graph twin", severity: "critical" },
-                    { num: "2", text: "No validated pipeline linked to commit", severity: "critical" },
-                    { num: "3", text: "Branch abandonment pattern — 90% risk profile", severity: "high" },
-                    { num: "4", text: "Ownership or reviewers chain not found", severity: "high" },
-                  ];
+                  const items = (() => {
+                    const neighText = (evidence.find(e => e.queryType === "NEIGHBORS")?.result || "").toLowerCase();
+                    const pathText = (evidence.find(e => e.queryType === "PATH_FINDING")?.result || "").toLowerCase();
+                    const travText = (evidence.find(e => e.queryType === "TRAVERSAL")?.result || "").toLowerCase();
+                    const hasPipeline = pathText.includes("passed") || pathText.includes("green");
+                    const noPipeline = pathText.includes("no pipeline") || pathText.includes("no linked");
+                    const noReviewer = !decisionCenter?.reviewers || decisionCenter.reviewers.length <= 1;
+                    const noChanges = riskData.breakdown?.some(b => b.category.toLowerCase().includes("empty") && b.value >= 7) ?? false;
+                    const histMatch = travText.match(/(\d+)\s*(?:of\s*\d+\s*)?(?:similar|historical|prior)/);
+                    const histCount = histMatch ? parseInt(histMatch[1]) : 0;
+                    const isolated = neighText.includes("no downstream") || neighText.includes("0 downstream") || neighText.includes("isolated");
+                    const result: { num: string; text: string; severity: string }[] = [];
+                    let idx = 1;
+                    if (isolated) result.push({ num: String(idx++), text: "Change scope is fully isolated in graph", severity: "good" });
+                    else result.push({ num: String(idx++), text: "Change scope has downstream dependencies", severity: "high" });
+                    if (hasPipeline) result.push({ num: String(idx++), text: "Head pipeline passed cleanly", severity: "good" });
+                    else if (noPipeline) result.push({ num: String(idx++), text: "No pipeline execution triggered", severity: noChanges ? "medium" : "critical" });
+                    else result.push({ num: String(idx++), text: "Pipeline status unknown", severity: "medium" });
+                    if (!noReviewer) result.push({ num: String(idx++), text: "Reviewer approvals received", severity: "good" });
+                    else result.push({ num: String(idx++), text: "No reviewers assigned to the chain", severity: "medium" });
+                    if (histCount > 0) result.push({ num: String(idx++), text: `Branch abandonment history — ${histCount} prior closed MRs`, severity: "high" });
+                    else result.push({ num: String(idx++), text: "No historical incident patterns matching files", severity: "good" });
+                    return result;
+                  })();
                   const sevColor = (s: string) => s === "critical" ? "#ef4444" : s === "high" ? "#f97316" : s === "medium" ? "#eab308" : "#22c55e";
                   const sevBg = (s: string) => s === "critical" ? "rgba(239,68,68,0.08)" : s === "high" ? "rgba(249,115,22,0.08)" : s === "medium" ? "rgba(234,179,8,0.08)" : "rgba(34,197,94,0.08)";
                   const sevBorder = (s: string) => s === "critical" ? "1px solid rgba(239,68,68,0.15)" : s === "high" ? "1px solid rgba(249,115,22,0.15)" : s === "medium" ? "1px solid rgba(234,179,8,0.15)" : "1px solid rgba(34,197,94,0.15)";
@@ -1012,22 +1083,12 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                   <span>📊</span> Risk Factor Breakdown
                 </div>
                 {(() => {
-                  const factors = isLow ? [
-                    { label: "Deployment Path", pct: 5, color: "#22c55e" },
-                    { label: "Code Quality", pct: 10, color: "#22c55e" },
-                    { label: "Historical Risk", pct: 8, color: "#22c55e" },
-                    { label: "Review Coverage", pct: 3, color: "#22c55e" },
-                  ] : isMedium ? [
-                    { label: "Empty Diff", pct: 100, color: "#ef4444" },
-                    { label: "Pipeline Gap", pct: 95, color: "#ef4444" },
-                    { label: "Abandonment History", pct: 90, color: "#f97316" },
-                    { label: "No Reviewer", pct: 75, color: "#eab308" },
-                  ] : [
-                    { label: "No Deployment Path", pct: 100, color: "#ef4444" },
-                    { label: "Pipeline Gap", pct: 95, color: "#ef4444" },
-                    { label: "Abandonment Risk", pct: 90, color: "#f97316" },
-                    { label: "Ownership Missing", pct: 85, color: "#f97316" },
-                  ];
+                  const factors = (riskData.breakdown || []).map(b => ({
+                    label: b.category,
+                    pct: Math.round((b.value / Math.max(b.maxValue, 1)) * 100),
+                    color: b.value >= 8 ? "#ef4444" : b.value >= 5 ? "#f97316" : b.value >= 3 ? "#eab308" : "#22c55e",
+                  }));
+                  if (factors.length === 0) return null;
                   return factors.map((f, i) => (
                     <div key={f.label} style={{ animation: `fadeSlideUp 0.25s ${0.28 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both` }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
@@ -1041,7 +1102,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                   ));
                 })()}
                 <div style={{ marginTop: 4, padding: "5px 8px", borderRadius: 4, background: `${config.color}10`, border: `1px solid ${config.color}15`, fontSize: 11, color: config.color, fontWeight: 600, textAlign: "center" }}>
-                  {isLow ? "All factors within safe thresholds" : isMedium ? "Multiple risk factors detected — intervention required" : "Critical risk factors block deployment path"}
+                  {evidenceInsights.noChanges ? "Empty diff — no changes to evaluate" : evidenceInsights.noPipeline ? "No pipeline — changes not validated" : hasNoReviewers ? "No reviewer — merge blocked" : isLow ? "All factors within safe thresholds" : isMedium ? "Multiple risk factors detected — intervention required" : "Critical risk factors block deployment path"}
                 </div>
               </div>
             </div>

@@ -86,7 +86,8 @@ function TimelineDot({ status, delay, label }: { status: string; delay: number; 
     return () => clearTimeout(t);
   }, [delay]);
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, flex: 1, position: "relative",
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", gap: 2, flex: 1, position: "relative",
       animation: `fadeSlideUp 0.4s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
     }}>
       <div style={{
@@ -180,10 +181,12 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
     { text: "Empty diff MRs rarely merge — no code changes = no deployment path", icon: "📝", color: "#60a5fa" },
     { text: "Missing pipeline strongly predicts closure — CI validation is a strong signal", icon: "🔄", color: "#a78bfa" },
     { text: "No reviewer assignment increases abandonment probability significantly", icon: "👤", color: "#22c55e" },
-    { text: closedCount > 0
-      ? `Same branch showed repeated failure — ${closedCount} of ${totalCount} MRs from this branch were closed without merge`
-      : `No branch failures yet — confidence is driven by graph signals (deployment path, pipeline, ownership)`,
-      icon: "🔀", color: "#f97316" },
+    {
+      text: closedCount > 0
+        ? `Same branch showed repeated failure — ${closedCount} of ${totalCount} MRs from this branch were closed without merge`
+        : `No branch failures yet — confidence is driven by graph signals (deployment path, pipeline, ownership)`,
+      icon: "🔀", color: "#f97316"
+    },
   ], [closedCount, mergedCount, totalCount]);
 
   return (
@@ -326,7 +329,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
                         border: `1px solid ${caseColor}44`,
                         boxShadow: `0 0 8px ${caseColor}22`,
                         textShadow: `0 0 6px ${caseColor}44`,
-                      }}>{item.similarity}% match</span>
+                      }}>{item.similarity}% match <span style={{ fontSize: 10, fontWeight: 700, color: "var(--text-tertiary)", marginLeft: 6 }}>← Jaccard Similarity (engine-computed)</span></span>
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", textShadow: "0 0 8px rgba(255,255,255,0.04)" }}>{item.title}</div>
                   </div>

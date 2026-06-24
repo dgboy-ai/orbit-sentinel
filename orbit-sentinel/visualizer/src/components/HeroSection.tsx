@@ -39,6 +39,18 @@ export default function HeroSection({
   const isHigh = rk === "critical" || rk === "high" || rk === "medium";
   const isSmall = useMediaQuery("(max-width: 480px)");
 
+  const lower = (s: string) => (s || "").toLowerCase();
+  const hasFactor = (pred: (f: { label: string; value: string; status: "success" | "warning" | "error" }) => boolean) => confidenceFactors.some(pred);
+
+  const pipelineMissing = hasFactor(f => lower(f.label).includes("pipeline") || lower(f.value).includes("pipeline")) && hasFactor(f => (lower(f.label).includes("pipeline") || lower(f.value).includes("pipeline")) && f.status === "error");
+  const testsMissing = hasFactor(f => lower(f.label).includes("test") || lower(f.value).includes("test")) && hasFactor(f => (lower(f.label).includes("test") || lower(f.value).includes("test")) && f.status === "error");
+  const reviewersMissing = hasFactor(f => lower(f.label).includes("review") || lower(f.value).includes("review")) && hasFactor(f => (lower(f.label).includes("review") || lower(f.value).includes("review")) && f.status === "error");
+
+  const fileChangesMissing = hasFactor(f => lower(f.label).includes("diff") || lower(f.label).includes("file") || lower(f.value).includes("empty") || lower(f.value).includes("no change"));
+  const deploymentPathMissing = hasFactor(f => lower(f.label).includes("deploy") || lower(f.value).includes("deploy")) && hasFactor(f => (lower(f.label).includes("deploy") || lower(f.value).includes("deploy")) && f.status === "error");
+
+  const anyInconclusive = pipelineMissing || testsMissing || reviewersMissing;
+
   return (
     <div className="card" style={{
       padding: 0, overflow: "hidden", position: "relative", animation: "fadeSlideDown 0.5s ease", height: "auto", minHeight: "100%",
@@ -80,26 +92,19 @@ export default function HeroSection({
             </div>
           </div>
 
-          {/* Status tags */}
+          {/* Status tags — driven by actual confidence factors, not risk level */}
           <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
-            {(() => {
-              const rl = riskLevel?.toLowerCase() ?? "";
-              if (rl === "low") return <>
-                <StatusBadge good icon="✓" label="Pipeline passing" />
-                <StatusBadge good icon="✓" label="All tests pass" />
-                <StatusBadge good icon="✓" label="No downstream impact" />
-              </>;
-              if (rl === "critical") return <>
-                <StatusBadge icon="✗" label="Pipeline failed" />
-                <StatusBadge icon="✗" label="7 downstream services" />
-                <StatusBadge icon="✗" label="No rollback plan" />
-              </>;
-              return <>
-                <StatusBadge icon="✗" label="Empty diff" />
-                <StatusBadge icon="✗" label="No pipeline" />
-                <StatusBadge warn icon="⚠" label="9 historical matches" />
-              </>;
-            })()}
+            {pipelineMissing
+              ? <StatusBadge icon="✗" label="No pipeline" />
+              : <StatusBadge good icon="✓" label="Pipeline passing" />}
+            {testsMissing
+              ? <StatusBadge icon="✗" label="No tests ran" />
+              : <StatusBadge good icon="✓" label="All tests pass" />}
+            {reviewersMissing
+              ? <StatusBadge icon="✗" label="No reviewer assigned" />
+              : <StatusBadge good icon="✓" label="Reviewer approved" />}
+            {fileChangesMissing && <StatusBadge icon="✗" label="Empty diff" />}
+            {deploymentPathMissing && <StatusBadge icon="✗" label="No deployment path" />}
           </div>
 
           {/* Divider */}

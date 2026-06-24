@@ -4,6 +4,33 @@ All notable changes to Orbit Sentinel are documented here.
 
 ---
 
+## Dynamic Data-Driven UI (June 24 — Live Mode Hardening)
+
+### Fixed
+
+- **Hero card status badges hardcoded by risk level** — "✓ Pipeline passing" / "✓ All tests pass" shown even when no pipeline or tests exist. Now derived from `confidenceFactors` engine data.
+- **Forecast "Explainable Confidence" hardcoded** — "✓ Reviewer approvals validated" shown when no reviewer assigned. Now checks `decisionCenter.reviewers` and shows "✗ No reviewer assigned" when appropriate.
+- **Forecast evidence summary hardcoded** — "9 historical closed MR matches" / "23 failed pipelines" hardcoded by risk level. Now extracts real counts from `evidence[]` text (TRAVERSAL, AGGREGATION, PATH_FINDING).
+- **Forecast workflow blockers always shown** — "✗ No Reviewer" / "✗ Draft Status` always displayed. Now derived from evidence text.
+- **Risk page verdict hardcoded** — "SAFE TO DEPLOY" / "DO NOT DEPLOY" shown regardless of actual MR state. Now checks empty diff, no pipeline, no reviewer before showing verdict.
+- **Risk page reasoning hardcoded** — "Full reviewer approvals received" / "No deployment path exists" static strings. Now derived from `evidenceInsights`.
+- **Risk page consensus hardcoded** — "All queries align — safe to deploy" hardcoded by risk level. Now shows "✗ BLOCKED" when empty diff, no pipeline, or no reviewer.
+- **Risk page lifecycle description hardcoded** — Now checks evidence for empty diff, no pipeline, no reviewer before showing lifecycle status.
+- **Risk page verdict labels hardcoded** — "VERDICT: APPROVED/REQUIRES REVIEW/DENIED" now checks evidenceInsights first.
+- **Risk page "Why Orbit" section hardcoded** — "Why Orbit Approved/Flagged/Rejected This MR" now shows "Why Orbit Blocked This MR" when appropriate.
+- **Risk page closure probability hardcoded** — "Closure Prob: 0%/78%/95%" now derived from evidence.
+- **Risk page risk factor summary hardcoded** — Now shows "Empty diff — no changes to evaluate" / "No pipeline — changes not validated" / "No reviewer — merge blocked" when appropriate.
+- **Branch name always "unknown"** — `probe-mr-files` endpoint now returns `source_branch` from GitLab API. MrAnalyzer sends branch in analyze request.
+
+### Changed
+
+- **Risk page verdict system** — Replaced hardcoded `isLow/isMedium` ternaries with `evidenceInsights` object derived from evidence text. Verdict, reasoning, warnings, and all sub-labels now respond to actual data.
+- **Risk page card findings** — `baseCards` now extract actual counts from evidence text (historical matches, failed pipelines) instead of using hardcoded defaults.
+- **Risk page timeline steps** — Now derived from evidence (pipeline status, reviewer status) instead of hardcoded by risk level.
+- **Risk page risk factor breakdown** — Now uses `riskData.breakdown[]` from engine instead of hardcoded percentages.
+
+---
+
 ## Submission Readiness & Data Integrity (June 23 — Final Cleanup)
 
 ### Fixed
