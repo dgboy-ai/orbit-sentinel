@@ -787,53 +787,94 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
           {/* Orbit Delta (Louder & Defensible Outcome Improvement) */}
           <div style={{
-            padding: "10px 14px", borderRadius: 8, marginBottom: 14,
-            background: "linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.03))",
-            border: "1px solid rgba(96,165,250,0.12)",
+            padding: "12px 14px", borderRadius: 8, marginBottom: 14, position: "relative", overflow: "hidden",
+            background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.04))",
+            border: "1px solid rgba(96,165,250,0.15)",
+            boxShadow: "0 0 20px rgba(96,165,250,0.04)",
           }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Delta</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", background: "rgba(34, 197, 94, 0.1)", padding: "1px 6px", borderRadius: 4 }}>Forecast Shift: Closed ➔ Merged</span>
-            </div>
-            <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-              <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.1)", textAlign: "center" }}>
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Current Success Prob.</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#ef4444" }}>{currentSuccessProb}%</div>
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{currentSuccessProb < 50 ? "Failure Expected" : "Marginal State"}</div>
+            <div style={{ position: "absolute", top: -40, right: -30, width: 140, height: 140, borderRadius: "50%", background: "rgba(96,165,250,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--accent-blue)" }}>🛰 Orbit Delta</span>
+                <span style={{
+                  fontSize: 11, fontWeight: 700, color: "#22c55e", padding: "2px 8px", borderRadius: 4,
+                  background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.15)",
+                  textShadow: "0 0 8px rgba(34,197,94,0.2)",
+                }}>Forecast Shift: {scenarios[0]?.outcome?.slice(0, 10) || "Closed"} ➔ {cfAll?.outcome?.slice(0, 10) || "Merged"}</span>
               </div>
-              <div style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.1)", textAlign: "center" }}>
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Target Success Prob.</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#22c55e" }}>{targetSuccessProb}%</div>
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>With Mitigations</div>
-              </div>
-              <div style={{ padding: "6px 10px", borderRadius: 6, background: "linear-gradient(135deg, rgba(96,165,250,0.08), rgba(139,92,246,0.04))", border: "1px solid rgba(96,165,250,0.15)", textAlign: "center" }}>
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Outcome Leap</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "var(--accent-blue)" }}>+{outcomeLeap}% pp</div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 1 }}>{riskReduction}% Risk Reduction</div>
+              <div className="resp-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                {[
+                  { label: "Current Success Prob.", value: `${currentSuccessProb}%`, color: "#ef4444", sub: currentSuccessProb < 50 ? "⚠ Failure Expected" : "Marginal State", bg: "rgba(239,68,68,0.06)", border: "rgba(239,68,68,0.12)" },
+                  { label: "Target Success Prob.", value: `${targetSuccessProb}%`, color: "#22c55e", sub: "✓ With Mitigations", bg: "rgba(34,197,94,0.06)", border: "rgba(34,197,94,0.12)" },
+                  { label: "Outcome Leap", value: `+${outcomeLeap}% pp`, color: "var(--accent-blue)", sub: `${riskReduction}% Risk Reduction`, bg: "linear-gradient(135deg, rgba(96,165,250,0.08), rgba(139,92,246,0.04))", border: "rgba(96,165,250,0.18)" },
+                ].map(d => (
+                  <div key={d.label} style={{
+                    padding: "8px 10px", borderRadius: 6, textAlign: "center", position: "relative", overflow: "hidden",
+                    background: d.bg, border: `1px solid ${d.border}`,
+                    transition: "all 0.2s ease",
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+                  >
+                    <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2 }}>{d.label}</div>
+                    <div style={{
+                      fontSize: 22, fontWeight: 900, color: d.color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1,
+                      textShadow: `0 0 12px ${d.color}30`,
+                      transition: "all 0.3s ease",
+                    }}>{d.value}</div>
+                    <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>{d.sub}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Engineering Cost of Inaction */}
+          {/* Engineering Cost of Inaction (Dynamic + Animated) */}
           <div style={{
-            padding: "10px 14px", borderRadius: 8,
-            background: "linear-gradient(135deg, rgba(239,68,68,0.04), rgba(0,0,0,0.15))",
-            border: "1px solid rgba(239,68,68,0.1)",
+            padding: "12px 14px", borderRadius: 8, position: "relative", overflow: "hidden",
+            background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02), rgba(0,0,0,0.18))",
+            border: "1px solid rgba(239,68,68,0.15)",
+            boxShadow: "0 0 20px rgba(239,68,68,0.06), inset 0 0 20px rgba(239,68,68,0.02)",
+            animation: "pulseGlow 3s ease-in-out infinite",
           }}>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444", marginBottom: 6 }}>Impact of Doing Nothing</div>
-            <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", gap: 8 }}>
-              {[
-                { label: "Dev Time Lost", value: "6-8 days", color: "#ef4444" },
-                { label: "Expected Outcome", value: "MR Closed", color: "#ef4444" },
-                { label: "Review Wasted", value: "1 cycle", color: "#eab308" },
-                { label: "Pipeline Execs", value: "0", color: "#8b949e" },
-                { label: "Production Impact", value: "Never ships", color: "#ef4444" },
-              ].map(d => (
-                <div key={d.label} style={{ padding: "5px 8px", borderRadius: 5, background: "rgba(0,0,0,0.2)", border: "1px solid var(--overlay-04)", textAlign: "center" }}>
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>{d.label}</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: d.color, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</div>
-                </div>
-              ))}
+            <style>{`@keyframes pulseGlow { 0%,100% { box-shadow: 0 0 20px rgba(239,68,68,0.06), inset 0 0 20px rgba(239,68,68,0.02); } 50% { box-shadow: 0 0 30px rgba(239,68,68,0.12), inset 0 0 25px rgba(239,68,68,0.04); } }`}</style>
+            <div style={{ position: "absolute", top: -30, right: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(239,68,68,0.05)", filter: "blur(40px)", pointerEvents: "none" }} />
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "#ef4444" }}>⚠ Impact of Doing Nothing</span>
+                <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontStyle: "italic" }}>If current path continues</span>
+              </div>
+              <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", gap: 8 }}>
+                {(() => {
+                  const devDays = Math.round(riskScore * 12 + 2);
+                  const baseOutcome = mrState.noChanges ? "MR Auto-Closed" : scenarios[0]?.outcome || "MR Closed";
+                  const reviewCycles = Math.max(historicalCount, Math.round(pipelinesTotal > 100 ? 2 : 1));
+                  const pipeNum = pipelinesTotal > 0 ? `${Math.min(pipelinesTotal, 999)}` : "0";
+                  const prodImpact = scenarios[0]?.outcome?.toLowerCase().includes("deploy") || scenarios[0]?.outcome?.toLowerCase().includes("merge") ? "Delayed ship" : "Never ships";
+                  return [
+                    { label: "Dev Time Lost", value: `${devDays}-${devDays + 3}d`, color: "#ef4444", icon: "⏱" },
+                    { label: "Expected Outcome", value: baseOutcome.length > 12 ? baseOutcome.slice(0, 12) + "…" : baseOutcome, color: "#ef4444", icon: "🎯" },
+                    { label: "Review Wasted", value: `${reviewCycles} cycle${reviewCycles > 1 ? "s" : ""}`, color: "#eab308", icon: "👤" },
+                    { label: "Pipeline Execs", value: pipeNum, color: "#8b949e", icon: "⚙️" },
+                    { label: "Production Impact", value: prodImpact, color: "#ef4444", icon: "🚀" },
+                  ].map(d => (
+                    <div key={d.label} style={{
+                      padding: "6px 6px", borderRadius: 5, textAlign: "center",
+                      background: "rgba(0,0,0,0.25)", border: "1px solid var(--overlay-04)",
+                      transition: "all 0.2s ease",
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = `${d.color}44`; e.currentTarget.style.background = `rgba(0,0,0,0.35)`; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; e.currentTarget.style.background = "rgba(0,0,0,0.25)"; }}
+                    >
+                      <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>{d.icon} {d.label}</div>
+                      <div style={{
+                        fontSize: 16, fontWeight: 800, color: d.color, fontFamily: "'JetBrains Mono', monospace",
+                        textShadow: `0 0 8px ${d.color}30`,
+                      }}>{d.value}</div>
+                    </div>
+                  ));
+                })()}
+              </div>
             </div>
           </div>
         </div>
