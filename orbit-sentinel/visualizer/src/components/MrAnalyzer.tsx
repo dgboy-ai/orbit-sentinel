@@ -695,31 +695,28 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             </div>
           )}
 
-          {/* Legend for Live vs Demo data distinction */}
-          <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid var(--overlay-05)" }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", marginBottom: 8 }}>
-              Data Legend:
-            </div>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+          {/* Compact Legend for Live vs Demo data distinction */}
+          <div style={{ marginTop: 12, paddingTop: 8, borderTop: "1px solid var(--overlay-05)" }}>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ 
-                  width: 10, 
-                  height: 10, 
+                  width: 8, 
+                  height: 8, 
                   borderRadius: "50%", 
                   background: "#22c55e",
-                  boxShadow: "0 0 6px rgba(34,197,94,0.4)"
+                  boxShadow: "0 0 4px rgba(34,197,94,0.3)"
                 }}></span>
-                <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>Live MRs (verified outcomes)</span>
+                <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Live MRs</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ 
-                  width: 10, 
-                  height: 10, 
+                  width: 8, 
+                  height: 8, 
                   borderRadius: "50%", 
                   background: "#a78bfa",
-                  boxShadow: "0 0 6px rgba(167,139,250,0.4)"
+                  boxShadow: "0 0 4px rgba(167,139,250,0.3)"
                 }}></span>
-                <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>Demo MRs (illustrated examples)</span>
+                <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>Demo MRs</span>
               </div>
             </div>
           </div>
