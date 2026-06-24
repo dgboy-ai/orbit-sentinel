@@ -314,25 +314,49 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         }} />
       )}
 
-      {/* Small Box Above MR Analyzer */}
-      <div style={{
-        marginBottom: 16,
-        padding: "10px 14px",
-        borderRadius: 8,
-        background: "rgba(251,146,60,0.06)",
-        border: "1px solid rgba(251,146,60,0.2)",
-        fontSize: 13,
-        color: "var(--text-secondary)",
-        position: "relative",
-        zIndex: 2
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
-          <div>
-            <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
+      {/* Conditional Demo Message - Only show when in demo mode */}
+      {!apiAvailable && (
+        <div style={{
+          marginBottom: 16,
+          padding: "10px 14px",
+          borderRadius: 8,
+          background: "rgba(251,146,60,0.06)",
+          border: "1px solid rgba(251,146,60,0.2)",
+          fontSize: 13,
+          color: "var(--text-secondary)",
+          position: "relative",
+          zIndex: 2
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
+            <div>
+              <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
+            </div>
           </div>
         </div>
-      </div>
+      )}
+      
+      {/* Show live analysis complete message when custom MR is analyzed */}
+      {currentScenario && currentScenario.startsWith("Live · MR !") && (
+        <div style={{
+          marginBottom: 16,
+          padding: "10px 14px",
+          borderRadius: 8,
+          background: "rgba(34,197,94,0.06)",
+          border: "1px solid rgba(34,197,94,0.2)",
+          fontSize: 13,
+          color: "var(--text-secondary)",
+          position: "relative",
+          zIndex: 2
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 16, flexShrink: 0 }}>✅</span>
+            <div>
+              <strong>Live analysis complete</strong> — viewing real data from MR {currentScenario.split("!")[1]}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, position: "relative", zIndex: 1 }}>
         <div style={{
