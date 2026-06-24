@@ -398,42 +398,45 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
       {/* WHAT ORBIT LEARNED */}
       <div className="card" style={{
-        padding: "12px 16px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(96,165,250,0.2)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.98), rgba(139,92,246,0.03))",
-        boxShadow: "0 0 14px rgba(96,165,250,0.12)",
+        padding: "14px 18px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(96,165,250,0.35)",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(15,18,26,0.98), rgba(139,92,246,0.04))",
+        boxShadow: "0 0 24px rgba(96,165,250,0.15), inset 0 0 12px rgba(96,165,250,0.04)",
         animation: "fadeSlideUp 0.45s 0.25s cubic-bezier(0.16,1,0.3,1) both",
       }}>
-        <GlowOrb color="rgba(96,165,250,0.05)" top="-30%" right="-5%" size={160} />
+        <GlowOrb color="rgba(96,165,250,0.07)" top="-30%" right="-5%" size={180} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 6, textShadow: "0 0 8px rgba(96,165,250,0.2)" }}>What Orbit Learned</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 8, textShadow: "0 0 12px rgba(96,165,250,0.3)" }}>What Orbit Learned</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {lessons.map((p, i) => (
               <div key={i} style={{
-                display: "flex", alignItems: "center", gap: 5,
-                padding: "4px 8px", borderRadius: 4,
-                background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
-                fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,
+                display: "flex", alignItems: "flex-start", gap: 6,
+                padding: "6px 10px", borderRadius: 5,
+                background: `linear-gradient(135deg, ${p.color}06, var(--overlay-02))`,
+                border: `1px solid ${p.color}22`,
+                fontSize: 13, color: "var(--text-primary)", lineHeight: 1.4, fontWeight: 500,
                 animation: `fadeSlideUp 0.3s ${0.27 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
-                transition: "border-color 0.2s ease, background 0.2s ease",
+                transition: "border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease",
+                boxShadow: `0 0 6px ${p.color}0d`,
               }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}22`; e.currentTarget.style.background = `${p.color}06`; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--overlay-04)"; e.currentTarget.style.background = "var(--overlay-02)"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${p.color}44`; e.currentTarget.style.background = `linear-gradient(135deg, ${p.color}10, var(--overlay-02))`; e.currentTarget.style.boxShadow = `0 0 16px ${p.color}22`; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${p.color}22`; e.currentTarget.style.background = `linear-gradient(135deg, ${p.color}06, var(--overlay-02))`; e.currentTarget.style.boxShadow = `0 0 6px ${p.color}0d`; }}
               >
-                <span style={{ fontSize: 14, flexShrink: 0, width: 16, textAlign: "center" }}>{p.icon}</span>
-                <span style={{ borderLeft: `1px solid ${p.color}22`, paddingLeft: 6 }}>{p.text}</span>
+                <span style={{ fontSize: 15, flexShrink: 0, width: 18, textAlign: "center", marginTop: 1, filter: `drop-shadow(0 0 3px ${p.color}44)` }}>{p.icon}</span>
+                <span style={{ borderLeft: `1px solid ${p.color}33`, paddingLeft: 7 }}>{p.text}</span>
               </div>
             ))}
           </div>
           <div style={{
-            marginTop: 8, padding: "5px 10px", borderRadius: 4,
-            background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(59,130,246,0.04))",
-            border: "1px solid rgba(34,197,94,0.1)",
+            marginTop: 10, padding: "7px 12px", borderRadius: 5,
+            background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(59,130,246,0.06))",
+            border: "1px solid rgba(34,197,94,0.2)",
+            boxShadow: "0 0 12px rgba(34,197,94,0.08)",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             animation: "fadeSlideUp 0.3s 0.4s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500, letterSpacing: "0.3px" }}>Forecast Contribution</span>
-            <span style={{ fontSize: 19, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>
+            <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Forecast Contribution</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4), 0 0 40px rgba(34,197,94,0.15)" }}>
               +{closeRate}% confidence
             </span>
           </div>
@@ -442,92 +445,97 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
       {/* ORBIT'S UNIQUE ANGLE */}
       <div style={{
-        display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto 1fr", gap: isMobile ? 4 : 8, alignItems: "center",
+        display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto 1fr", gap: isMobile ? 5 : 10, alignItems: "center",
         animation: "fadeSlideUp 0.4s 0.3s cubic-bezier(0.16,1,0.3,1) both",
       }}>
         <div style={{
-          padding: "7px 10px", borderRadius: 6, textAlign: "center",
-          background: "var(--overlay-02)", border: "1px solid var(--overlay-08)",
-          boxShadow: "0 0 8px var(--overlay-05)",
-          transition: "transform 0.2s ease",
+          padding: "9px 12px", borderRadius: 6, textAlign: "center",
+          background: "linear-gradient(135deg, var(--overlay-04), rgba(15,18,26,0.95))",
+          border: "1px solid var(--overlay-10)",
+          boxShadow: "0 0 12px var(--overlay-06), inset 0 0 4px var(--overlay-04)",
+          transition: "transform 0.2s ease, box-shadow 0.2s ease",
         }}
-          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
-          onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 0 20px var(--overlay-08), inset 0 0 6px var(--overlay-04)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 0 12px var(--overlay-06), inset 0 0 4px var(--overlay-04)"; }}
         >
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>Traditional Git History</div>
-          <div style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 500 }}>Shows what happened</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 3, textShadow: "0 0 6px rgba(255,255,255,0.04)" }}>Traditional Git History</div>
+          <div style={{ fontSize: 14, color: "var(--text-primary)", fontWeight: 600 }}>Shows what happened</div>
         </div>
         <div style={{
-          width: 24, height: 24, borderRadius: "50%",
-          background: "linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.12))",
-          border: "1px solid rgba(96,165,250,0.25)",
-          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15,
-          flexShrink: 0,
-          boxShadow: "0 0 10px rgba(96,165,250,0.15)",
+          width: 30, height: 30, borderRadius: "50%",
+          background: "linear-gradient(135deg, rgba(59,130,246,0.25), rgba(139,92,246,0.18))",
+          border: "1.5px solid rgba(96,165,250,0.35)",
+          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, fontWeight: 700,
+          flexShrink: 0, color: "var(--accent-blue)",
+          boxShadow: "0 0 16px rgba(96,165,250,0.25), inset 0 0 6px rgba(96,165,250,0.1)",
           animation: "pulseGlow 4s ease-in-out infinite",
         }}>→</div>
         <div style={{
-          padding: "7px 10px", borderRadius: 6, textAlign: "center",
-          background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.04))",
-          border: "1px solid rgba(96,165,250,0.15)",
-          boxShadow: "0 0 8px rgba(96,165,250,0.1)",
-          transition: "transform 0.2s ease",
+          padding: "9px 12px", borderRadius: 6, textAlign: "center",
+          background: "linear-gradient(135deg, rgba(59,130,246,0.10), rgba(139,92,246,0.06))",
+          border: "1px solid rgba(96,165,250,0.25)",
+          boxShadow: "0 0 16px rgba(96,165,250,0.12), inset 0 0 6px rgba(96,165,250,0.04)",
+          transition: "transform 0.2s ease, box-shadow 0.2s ease",
         }}
-          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
-          onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(96,165,250,0.2), inset 0 0 8px rgba(96,165,250,0.06)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 0 16px rgba(96,165,250,0.12), inset 0 0 6px rgba(96,165,250,0.04)"; }}
         >
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 2 }}>Orbit Repository Memory</div>
-          <div style={{ fontSize: 14, color: "var(--accent-blue)", fontWeight: 500 }}>Explains why and predicts what happens next</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", marginBottom: 3, textShadow: "0 0 8px rgba(96,165,250,0.2)" }}>Orbit Repository Memory</div>
+          <div style={{ fontSize: 14, color: "var(--accent-blue)", fontWeight: 600, textShadow: "0 0 6px rgba(96,165,250,0.1)" }}>Explains why and predicts what happens next</div>
         </div>
       </div>
 
       {/* COUNTERFACTUAL LEARNING */}
       <div className="card" style={{
-        padding: "12px 16px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(167,139,250,0.18)",
-        background: "linear-gradient(135deg, rgba(167,139,250,0.04), rgba(15,18,26,0.97), rgba(59,130,246,0.03))",
-        boxShadow: "0 0 12px rgba(167,139,250,0.12)",
+        padding: "14px 18px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(167,139,250,0.3)",
+        background: "linear-gradient(135deg, rgba(167,139,250,0.06), rgba(15,18,26,0.97), rgba(59,130,246,0.04))",
+        boxShadow: "0 0 20px rgba(167,139,250,0.15), inset 0 0 10px rgba(167,139,250,0.03)",
         animation: "fadeSlideUp 0.45s 0.34s cubic-bezier(0.16,1,0.3,1) both",
       }}>
-        <GlowOrb color="rgba(167,139,250,0.06)" top="-20%" right="-10%" size={140} />
+        <GlowOrb color="rgba(167,139,250,0.08)" top="-20%" right="-10%" size={160} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#a78bfa", textShadow: "0 0 6px rgba(167,139,250,0.2)" }}>Counterfactual Learning</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "#a78bfa", textShadow: "0 0 10px rgba(167,139,250,0.3)" }}>Counterfactual Learning</div>
             <div style={{
-              fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px",
-              padding: "2px 7px", borderRadius: 3,
-              background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.15)",
+              fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: "0.3px",
+              padding: "3px 10px", borderRadius: 4,
+              background: "linear-gradient(135deg, rgba(167,139,250,0.12), rgba(167,139,250,0.04))",
+              border: "1px solid rgba(167,139,250,0.25)",
+              boxShadow: "0 0 8px rgba(167,139,250,0.08)",
+              textShadow: "0 0 6px rgba(167,139,250,0.2)",
             }}>
               What if MR #9 had CI + reviewer?
             </div>
           </div>
-          <div style={{ display: "flex", gap: 8, flexDirection: isMobile ? "column" : "row" }}>
+          <div style={{ display: "flex", gap: 10, flexDirection: isMobile ? "column" : "row" }}>
             <div style={{
-              flex: 1, padding: "8px 10px", borderRadius: 6, textAlign: "center",
-              background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)",
-              boxShadow: "0 0 8px rgba(239,68,68,0.1)",
-              transition: "transform 0.2s ease",
+              flex: 1, padding: "10px 12px", borderRadius: 6, textAlign: "center",
+              background: "linear-gradient(135deg, rgba(239,68,68,0.10), rgba(239,68,68,0.04))",
+              border: "1px solid rgba(239,68,68,0.22)",
+              boxShadow: "0 0 12px rgba(239,68,68,0.12), inset 0 0 6px rgba(239,68,68,0.04)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(239,68,68,0.2), inset 0 0 8px rgba(239,68,68,0.06)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 0 12px rgba(239,68,68,0.12), inset 0 0 6px rgba(239,68,68,0.04)"; }}
             >
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Actual</div>
-              <div style={{ fontSize: 19, fontWeight: 800, color: "#ef4444", textShadow: "0 0 6px rgba(239,68,68,0.3)" }}>Closed</div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{highestSimilarity}% match</div>
+              <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2, fontWeight: 600 }}>Actual</div>
+              <div style={{ fontSize: 21, fontWeight: 800, color: "#ef4444", textShadow: "0 0 10px rgba(239,68,68,0.4), 0 0 30px rgba(239,68,68,0.15)" }}>Closed</div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>{highestSimilarity}% match</div>
             </div>
             <div style={{
-              flex: 1, padding: "8px 10px", borderRadius: 6, textAlign: "center",
-              background: "linear-gradient(135deg, rgba(34,197,94,0.08), rgba(59,130,246,0.05))",
-              border: "1px solid rgba(34,197,94,0.15)",
-              boxShadow: "0 0 10px rgba(34,197,94,0.12)",
-              transition: "transform 0.2s ease",
+              flex: 1, padding: "10px 12px", borderRadius: 6, textAlign: "center",
+              background: "linear-gradient(135deg, rgba(34,197,94,0.10), rgba(59,130,246,0.06))",
+              border: "1px solid rgba(34,197,94,0.22)",
+              boxShadow: "0 0 14px rgba(34,197,94,0.15), inset 0 0 6px rgba(34,197,94,0.04)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 0 22px rgba(34,197,94,0.25), inset 0 0 8px rgba(34,197,94,0.06)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 0 14px rgba(34,197,94,0.15), inset 0 0 6px rgba(34,197,94,0.04)"; }}
             >
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Estimate</div>
-              <div style={{ fontSize: 19, fontWeight: 800, color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>67% Merged</div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>if mitigations applied</div>
+              <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: "0.3px", textTransform: "uppercase", marginBottom: 2, fontWeight: 600 }}>Orbit Estimate</div>
+              <div style={{ fontSize: 21, fontWeight: 800, color: "#22c55e", textShadow: "0 0 12px rgba(34,197,94,0.4), 0 0 30px rgba(34,197,94,0.15)" }}>67% Merged</div>
+              <div style={{ fontSize: 12, color: "var(--text-primary)", fontWeight: 500, textShadow: "0 0 6px rgba(255,255,255,0.04)" }}>if mitigations applied</div>
             </div>
           </div>
         </div>
