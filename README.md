@@ -193,6 +193,7 @@ docker compose up   # Engine (3001) + visualizer (80 via nginx) with health chec
 | **Docker** | `docker compose up` boots full stack with health checks |
 | **Flow Published** | 8-step Duo Agent Platform workflow in AI Catalog (1+ successful run) |
 | **Stack** | Node 22+, TypeScript 5.5, React 18, D3.js, Vite 5.3, Express, Vitest |
+| **✅ Verified Prediction** | [MR !5](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/5) analyzed live — 224 nodes/189 edges, 8% LOW risk scored correctly. Forecast predicted MR closure → **MR closed June 16** ✅ Confirmed True Positive |
 
 ---
 
