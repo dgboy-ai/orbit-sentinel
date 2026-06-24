@@ -154,6 +154,18 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
   const isLow = riskData.level?.toLowerCase() === "low";
   const isMedium = riskData.level?.toLowerCase() === "medium" || riskData.level?.toLowerCase() === "warning";
 
+  const hasNoPipelineData = (() => {
+    const pathFinding = evidence.find(e => e.queryType === "PATH_FINDING");
+    const noPipelineText = evidence.some(e => {
+      const t = (e.result || "").toLowerCase();
+      return t.includes("no pipeline") || t.includes("no linked pipeline") || t.includes("no deployment path") || t.includes("0 deployment paths") || t.includes("no pipeline data returned");
+    });
+    return (pathFinding?.result || "").toLowerCase().includes("no linked pipeline") || noPipelineText;
+  })();
+
+  const reviewersCount = decisionCenter?.reviewers?.length ?? 0;
+  const hasNoReviewers = reviewersCount === 0;
+
   const config = isLow ? {
     color: "#22c55e",
     bg: "linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(34,197,94,0.02) 100%)",
@@ -161,7 +173,9 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     glow: "rgba(34,197,94,0.12)",
     predictedOutcome: "Safe to Deploy",
     primaryWarn: "Primary: Change scope is isolated in graph.",
-    secondaryWarn: "Secondary: Reviewers approved, head pipeline passed.",
+    secondaryWarn: (hasNoPipelineData && hasNoReviewers)
+      ? "Secondary: No pipeline detected · No reviewers assigned"
+      : "Secondary: Reviewers approved, head pipeline passed.",
     primaryColor: "#22c55e",
     secondaryColor: "#22c55e",
     verdictLabel: "SAFE TO DEPLOY",
@@ -412,8 +426,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             {config.verdictIcon}
             {isLow ? "SAFE TO DEPLOY" : isMedium ? "NEEDS ATTENTION" : "DO NOT DEPLOY"}
             {isLow ? <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(34,197,94,0.2)" }}>LOW RISK</span>
-            : isMedium ? <span style={{ fontSize: 14, fontWeight: 700, color: "#eab308", background: "rgba(234,179,8,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(234,179,8,0.2)" }}>MEDIUM RISK</span>
-            : <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444", background: "rgba(239,68,68,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(239,68,68,0.2)" }}>HIGH RISK</span>}
+              : isMedium ? <span style={{ fontSize: 14, fontWeight: 700, color: "#eab308", background: "rgba(234,179,8,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(234,179,8,0.2)" }}>MEDIUM RISK</span>
+                : <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444", background: "rgba(239,68,68,0.12)", padding: "2px 10px", borderRadius: 4, border: "1px solid rgba(239,68,68,0.2)" }}>HIGH RISK</span>}
           </div>
 
           <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>

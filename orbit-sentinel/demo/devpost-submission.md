@@ -86,7 +86,7 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 - 8 interactive views, responsive across 3 breakpoints (360px to 768px)
 - Design token system: centralized colors, z-index tiers, animation presets, spacing scale
 - Judge's Tour (`?judge=true`) 🧑‍⚖️ — guided walkthrough, Space for auto-demo, ← → / 1-8 to navigate
-- Theme toggle (light/dark) persisted to localStorage 🌗
+- Theme toggle (light/dark) persisted to localStorage �-
 - 30 component tests (27 component + 3 app) covering DataModeBanner, PredictionsTracker, OrbitQueryInspector, DigitalTwinGraph, and all major views
 
 **Duo Agent Platform** 🔌:
