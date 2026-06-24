@@ -286,7 +286,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
       padding: 20, display: "flex", flexDirection: "column", gap: 12,
       animation: "fadeSlideUp 0.5s ease both",
       position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(15,15,30,0.95) 50%, rgba(139,92,246,0.03) 100%)",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(var(--bg-card-rgb),0.95) 50%, rgba(139,92,246,0.03) 100%)",
       border: "1px solid rgba(139,92,246,0.2)",
       boxShadow: "0 0 30px rgba(139,92,246,0.08), inset 0 0 60px rgba(139,92,246,0.02)",
     }}>
@@ -355,7 +355,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
             style={{
               width: "100%", padding: "10px 14px", fontSize: 16, borderRadius: 8,
               border: "1px solid rgba(139,92,246,0.15)", outline: "none",
-              background: "rgba(0,0,0,0.3)", color: "var(--text-primary)",
+              background: "rgba(var(--bg-card-rgb),0.3)", color: "var(--text-primary)",
               fontFamily: "'JetBrains Mono', monospace",
               transition: "all 0.2s",
               boxShadow: url && parsed ? "0 0 20px rgba(139,92,246,0.06)" : "none",
@@ -471,7 +471,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
               style={{
                 flex: 1, padding: "6px 10px", fontSize: 14, borderRadius: 6,
                 border: "1px solid rgba(139,92,246,0.1)", outline: "none",
-                background: "rgba(0,0,0,0.2)", color: "var(--text-primary)",
+                background: "rgba(var(--bg-card-rgb),0.2)", color: "var(--text-primary)",
                 fontFamily: "'JetBrains Mono', monospace",
                 transition: "border-color 0.2s",
               }}
