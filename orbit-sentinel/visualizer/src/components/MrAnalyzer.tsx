@@ -504,8 +504,8 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         }}>
           <span style={{ fontSize: 22, flexShrink: 0 }}>🔍</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <div style={{ fontWeight: 700, color: "#60a5fa" }}>Orbit is running graph queries…</div>
-            <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>NEIGHBORS → PATH_FINDING → TRAVERSAL → AGGREGATION</div>
+            <div style={{ fontWeight: 700, color: "#60a5fa" }}>Render free tier cold start in progress…</div>
+            <div style={{ fontSize: 13, color: "var(--text-tertiary)" }}>One-time 30s spin-up. This only happens after inactivity.</div>
           </div>
         </div>
       )}
