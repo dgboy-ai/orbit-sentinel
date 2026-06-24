@@ -388,8 +388,6 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         boxShadow: `inset 0 0 80px ${config.glow}, 0 0 60px ${config.glow}`,
         ...fadeIn(0),
       }}>
-        <GlowOrb color={config.glow} top="-20%" left="-15%" size={isMobile ? 180 : 300} />
-        <GlowOrb color={config.color} bottom="-20%" right="10%" size={isMobile ? 120 : 200} />
         <div style={{ position: "relative", zIndex: 1 }}>
           {/* Top row: badge + MR number */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
@@ -663,8 +661,6 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         boxShadow: `inset 0 0 60px ${config.glow}, 0 0 40px ${config.glow}`,
         ...fadeIn(0.2),
       }}>
-        <GlowOrb color={config.glow} top="-30%" right="-15%" size={isMobile ? 180 : 280} />
-        <GlowOrb color={config.color} top="-10%" right="30%" size={isMobile ? 80 : 120} />
 
         {/* Verdict banner — biggest, boldest element */}
         <div style={{
