@@ -715,12 +715,6 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
               )}
             </>
           )}
-              </button>
-              <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>
-                💡 Tip: Use the "● Live Only" filter above to show only your verified MRs
-              </div>
-            </div>
-          )}
 
           {/* Compact Legend for Live vs Demo data distinction */}
           <div style={{ marginTop: 12, paddingTop: 8, borderTop: "1px solid var(--overlay-05)" }}>
@@ -747,9 +741,7 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
               </div>
             </div>
           </div>
-        </>
-      )}
-    </div>
+      </div>
   );
 }
 
