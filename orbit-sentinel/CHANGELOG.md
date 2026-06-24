@@ -207,7 +207,7 @@ The `.gitlab-ci.yml` went through several iterations before stabilizing:
 - Fixed incorrect `rules:` syntax (`when: always` placement, missing merge request conditions)
 - Corrected workspace paths so both `engine/` and `visualizer/` were scoped properly
 - Added separate jobs for engine testing, engine linting, visualizer linting, and both builds
-- All 6 jobs across 4 stages now pass consistently (pipeline #2606601215 confirmed green)
+- All 7 jobs across 4 stages now pass consistently (pipeline #2606601215 confirmed green)
 
 ### Token and Authentication
 
@@ -286,8 +286,8 @@ Added a complete error classification and recovery system:
 ## Test Results
 
 ```
- Engine:   ✓  95 tests passed (15 files)
- Visualizer: ✓ 29 tests passed (2 files)
+ Engine:   ✓ 105 tests passed (17 files)
+ Visualizer: ✓ 30 tests passed (2 files)
 ```
 
 | Test File | Tests | What It Covers |
@@ -305,8 +305,12 @@ Added a complete error classification and recovery system:
 | `reporter.test.ts` | 4 | Report generation |
 | `config.test.ts` | 3 | Configuration validation |
 | `simulator.test.ts` | 3 | Change simulation |
+| `flow-yaml.test.ts` | 11 | Flow YAML validation |
+| `server-integration.test.ts` | 9 | Server endpoints and integration |
+| `errors.test.ts` | 8 | Error classification and recovery |
+| `duo-configs.test.ts` | 2 | Duo Agent Platform configs |
 | `App.test.tsx` | 3 | App navigation, export button, onboarding dismiss |
-| `components.test.tsx` | 26 | DataModeBanner, PredictionsTracker, SetupWizard, ImpactReport, OrbitQueryInspector, DigitalTwinGraph, AgentFlowProgress, BlastRadiusExplorer, ForecastEngine, HistoricalContext, LoadingSkeleton, HeroSection, DecisionCenter, CounterfactualSimulation, ArchitectureDiagram, MrAnalyzer, SimulateWebhook, RealityCheck, TaglineBanner, EngineStatus, ProblemSection, JudgesTour, OnboardingOverlay, ImpactCalculator, ErrorBoundary, ScanLine |
+| `components.test.tsx` | 27 | DataModeBanner, PredictionsTracker, SetupWizard, ImpactReport, OrbitQueryInspector, DigitalTwinGraph, AgentFlowProgress, BlastRadiusExplorer, ForecastEngine, HistoricalContext, LoadingSkeleton, HeroSection, DecisionCenter, CounterfactualSimulation, ArchitectureDiagram, MrAnalyzer, SimulateWebhook, RealityCheck, TaglineBanner, EngineStatus, ProblemSection, JudgesTour, OnboardingOverlay, ImpactCalculator, ErrorBoundary, ScanLine |
 
 ---
 
@@ -334,7 +338,7 @@ Added a complete error classification and recovery system:
 |---|---|---|
 | `AGENTS.md` | Rewritten as concise agent behavior specification |
 | `.gitlab-ci.yml` | Fixed syntax, added engine jobs, corrected paths |
-| `engine/package.json` | Added express, cors, zod dependencies |
+| `engine/package.json` | Added express, cors dependencies |
 | `engine/src/index.ts` | Added `DataVisualizer` export, removed broken server re-export |
 | `engine/src/reporter/visualizer.ts` | Full rewrite — produces complete VisualizationData with all 10 fields |
 | `engine/src/server.ts` | Uses DataVisualizer transform; demo endpoint returns VisualizationData shape |
