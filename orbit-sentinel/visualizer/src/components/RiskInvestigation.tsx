@@ -377,8 +377,8 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         boxShadow: `inset 0 0 80px ${config.glow}, 0 0 60px ${config.glow}`,
         ...fadeIn(0),
       }}>
-        <GlowOrb color={config.glow} top="-40%" right="-10%" size={isMobile ? 220 : 380} />
-        <GlowOrb color={config.color} top="-20%" right="20%" size={isMobile ? 100 : 160} />
+        <GlowOrb color={config.glow} top="-20%" left="-15%" size={isMobile ? 180 : 300} />
+        <GlowOrb color={config.color} bottom="-20%" right="10%" size={isMobile ? 120 : 200} />
         <div style={{ position: "relative", zIndex: 1 }}>
           {/* Top row: badge + MR number */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
