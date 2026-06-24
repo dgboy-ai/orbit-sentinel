@@ -175,8 +175,8 @@ export default function ProblemSection() {
         {[
           { label: "Orbit Query Types", value: "4", color: "#a78bfa" },
           { label: "Digital Twin Nodes", value: "23", color: "#60a5fa" },
-          { label: "Total Tests", value: "135", color: "#34d399" },
-          { label: "Time per MR", value: "~5m", color: "#fbbf24" },
+          { label: "Total Tests", value: "30", color: "#34d399" },
+          { label: "Edges Discovered", value: "43", color: "#f59e0b" },
         ].map(stat => (
           <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <span style={{ fontSize: 16, fontWeight: 800, color: stat.color, fontFamily: "'JetBrains Mono', monospace" }}>{stat.value}</span>

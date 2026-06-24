@@ -18,6 +18,7 @@ interface Props {
   decisionCenter: DecisionCenterData;
   confidence: string;
   mrIid: number;
+  dataMode?: "live" | "demo";
 }
 
 interface CardDef {
@@ -144,7 +145,7 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
   );
 }
 
-export default function RiskInvestigation({ riskData, evidence, decisionCenter, confidence, mrIid }: Props) {
+export default function RiskInvestigation({ riskData, evidence, decisionCenter, confidence, mrIid, dataMode }: Props) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
   const isMobile = useMediaQuery("(max-width: 900px)");
@@ -461,166 +462,291 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
         </div>
       </div>
 
-      {/* PREDICTED PATH TIMELINE */}
+      {/* MR STATE TIMELINE */}
       <div className="card" style={{
-        padding: isMobile ? "10px 14px" : "12px 16px", position: "relative", overflow: "hidden",
+        padding: isMobile ? "14px 16px" : "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "var(--overlay-06)",
-        background: "linear-gradient(135deg, var(--overlay-02), rgba(15,18,26,0.95))",
+        background: `linear-gradient(135deg, ${config.color}08, rgba(15,18,26,0.95), ${config.color}03)`,
+        boxShadow: `inset 0 0 40px ${config.glow}`,
         ...fadeIn(0.04),
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 }}>
-          {timelineSteps.map((step, i) => (
-            <React.Fragment key={step.label}>
-              <div style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flex: 1, minWidth: 0,
-                animation: `fadeSlideUp 0.3s ${0.06 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
-              }}>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-primary)" }}>MR State Timeline</span>
+              <span style={{ fontSize: 10, color: "var(--text-tertiary)", background: "var(--overlay-04)", padding: "1px 6px", borderRadius: 3, fontWeight: 600, letterSpacing: "0.3px" }}>Lifecycle</span>
+              {dataMode === "demo" && (
+                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.5px", padding: "2px 6px", borderRadius: 3, background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}>DEMO</span>
+              )}
+            </div>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "4px 12px", borderRadius: 5,
+              background: isLow ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.12)",
+              border: `1px solid ${isLow ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.25)"}`,
+              boxShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.12)"}`,
+            }}>
+              <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: isLow ? "#22c55e" : "#ef4444", boxShadow: `0 0 6px ${isLow ? "rgba(34,197,94,0.6)" : "rgba(239,68,68,0.6)"}` }} />
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: isLow ? "#22c55e" : "#ef4444" }}>
+                {isLow ? "CAN PROCEED TO PROD" : "CANNOT REACH PRODUCTION"}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 6 }}>
+            {timelineSteps.map((step, i) => (
+              <React.Fragment key={step.label}>
                 <div style={{
-                  width: 26, height: 26, borderRadius: "50%", flexShrink: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13,
-                  background: `${step.color}18`, border: `1px solid ${step.color}30`,
-                  boxShadow: `0 0 10px ${step.color}22`,
-                }}>{step.icon}</div>
-                <span style={{ fontSize: 10, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.2, whiteSpace: "nowrap" }}>{step.label}</span>
-              </div>
-              {i < timelineSteps.length - 1 && <div style={{ flex: "0 0 10px", height: 1.5, minWidth: 10, background: `linear-gradient(90deg, ${step.color}55, ${step.color}11)`, marginTop: -12 }} />}
-            </React.Fragment>
-          ))}
-          <div style={{ flex: "0 0 10px", height: 1.5, minWidth: 10, background: `linear-gradient(90deg, ${timelineSteps[timelineSteps.length - 1].color}55, var(--overlay-05))`, marginTop: -12 }} />
-          <div style={{
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flex: "0 0 auto",
-            padding: "4px 10px", borderRadius: 5, marginLeft: 4,
-            background: `${timelinePredicted.color}15`, border: `1px solid ${timelinePredicted.color}30`,
-            boxShadow: `0 0 12px ${timelinePredicted.color}15`,
-            animation: "fadeSlideUp 0.3s 0.3s cubic-bezier(0.16,1,0.3,1) both",
-          }}>
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap" }}>→ Predicted</span>
-            <span style={{ fontSize: 13, fontWeight: 800, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace" }}>{timelinePredicted.label}</span>
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: 1, minWidth: 0,
+                  animation: `fadeSlideUp 0.4s ${0.06 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both`,
+                }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+                    display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17,
+                    background: `${step.color}20`, border: `2px solid ${step.color}50`,
+                    boxShadow: `0 0 18px ${step.color}33, 0 0 40px ${step.color}11`,
+                  }}>{step.icon}</div>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: step.color, textAlign: "center", letterSpacing: "0.3px", lineHeight: 1.3, whiteSpace: "nowrap", textShadow: `0 0 8px ${step.color}44` }}>{step.label}</span>
+                  {i === 0 && (
+                    <span style={{ fontSize: 9, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0.4px", textTransform: "uppercase", padding: "1px 5px", borderRadius: 3, background: "var(--overlay-03)" }}>Current</span>
+                  )}
+                </div>
+                {i < timelineSteps.length - 1 && (
+                  <div style={{
+                    flex: "0 0 28px", height: 2.5, minWidth: 28, borderRadius: 2, marginTop: -22,
+                    background: `linear-gradient(90deg, ${step.color}77, ${timelineSteps[i + 1].color}33)`,
+                    boxShadow: `0 0 6px ${step.color}44`,
+                  }} />
+                )}
+              </React.Fragment>
+            ))}
+            <div style={{
+              flex: "0 0 28px", height: 2.5, minWidth: 28, borderRadius: 2, marginTop: -22,
+              background: `linear-gradient(90deg, ${timelineSteps[timelineSteps.length - 1].color}55, var(--overlay-05))`,
+            }} />
+            <div style={{
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: "0 0 auto",
+              padding: "8px 16px", borderRadius: 8, marginLeft: 6,
+              background: `linear-gradient(135deg, ${timelinePredicted.color}18, ${timelinePredicted.color}08)`,
+              border: `1.5px solid ${timelinePredicted.color}40`,
+              boxShadow: `0 0 20px ${timelinePredicted.color}20, inset 0 0 20px ${timelinePredicted.color}10`,
+              animation: "fadeSlideUp 0.4s 0.35s cubic-bezier(0.16,1,0.3,1) both",
+            }}>
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: timelinePredicted.color, whiteSpace: "nowrap", textShadow: `0 0 8px ${timelinePredicted.color}44` }}>→ Predicted</span>
+              <span style={{ fontSize: 16, fontWeight: 900, color: timelinePredicted.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${timelinePredicted.color}44` }}>{timelinePredicted.label}</span>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 8, marginTop: 10, fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+            {isLow ? (
+              <span>All lifecycle gates passed. MR is on track for production deployment.</span>
+            ) : isMedium ? (
+              <span>⚠ {timelineSteps.some(s => s.label.includes("EMPTY") || s.label.includes("NO PIPELINE") || s.label.includes("UNASSIGNED")) ? "Blocked: pipeline, diff, or reviewer requirements not met." : "Warning signals detected in MR lifecycle."}</span>
+            ) : (
+              <span>🚫 {timelineSteps.some(s => s.label.includes("MISSING") || s.label.includes("STALLS") || s.label.includes("NEVER")) ? "Critical: multiple lifecycle failures prevent production deployment." : "MR cannot reach production due to blocked deployment path."}</span>
+            )}
           </div>
         </div>
+        <GlowOrb color={config.glow} top="-10%" left="10%" size={160} />
       </div>
 
-      {/* CROSS-QUERY VERIFICATION (INDEPENDENT CONSENSUS) */}
+      {/* CROSS-QUERY VERIFICATION */}
       <div className="card" style={{
-        padding: isMobile ? "10px 14px" : "16px 20px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(96,165,250,0.15)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.05), rgba(15,18,26,0.95), rgba(139,92,246,0.04))",
+        padding: isMobile ? "14px 16px" : "22px 24px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(96,165,250,0.2)",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(15,18,26,0.96), rgba(139,92,246,0.05))",
+        boxShadow: "inset 0 0 60px rgba(96,165,250,0.06)",
         ...fadeIn(0.05),
       }}>
-        <GlowOrb color="rgba(96,165,250,0.08)" top="-50%" left="-15%" size={200} />
-        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
-          {/* LEFT HALF — Per-query score bars + Overall Consensus */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Cross-Query Verification</span>
-              <span style={{ fontSize: 10, color: "var(--text-tertiary)", background: "var(--overlay-04)", padding: "1px 5px", borderRadius: 3 }}>Independent Consensus</span>
+        <GlowOrb color="rgba(96,165,250,0.1)" top="-60%" left="-20%" size={240} />
+        <GlowOrb color="rgba(139,92,246,0.06)" bottom="-40%" right="-10%" size={180} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          {/* SECTION HEADER */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center",
+                background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.2)",
+                fontSize: 16,
+              }}>🔎</div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: "0.3px", color: "var(--text-primary)" }}>Cross-Query Verification</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Independent consensus across all {evidence.length} Orbit query types</div>
+              </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              {dataMode === "demo" && (
+                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.5px", padding: "2px 7px", borderRadius: 3, background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}>DEMO</span>
+              )}
+              <span style={{ fontSize: 10, color: "var(--text-tertiary)", background: "var(--overlay-04)", padding: "2px 7px", borderRadius: 3, fontWeight: 600, letterSpacing: "0.3px" }}>
+                {evidence.filter(e => { const t = (e.result || "").toLowerCase(); return t.length > 0 && !t.includes("no data") && !t.includes("no pipeline data returned") && !t.includes("0 nodes"); }).length}/{evidence.length} Active
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: 16 }}>
+            {/* LEFT — Per-query detail cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {(() => {
                 const CONF_COLORS: Record<string, string> = { PATH_FINDING: "#60a5fa", TRAVERSAL: "#a78bfa", NEIGHBORS: "#22c55e", AGGREGATION: "#f97316" };
                 const CONF_PCTS: Record<string, number> = { PATH_FINDING: 95, TRAVERSAL: 90, NEIGHBORS: 91, AGGREGATION: 75 };
+                const QUERY_ICONS: Record<string, string> = { PATH_FINDING: "🔗", TRAVERSAL: "📜", NEIGHBORS: "🌐", AGGREGATION: "📊" };
+                const QUERY_DESC: Record<string, string> = { PATH_FINDING: "Deployment path trace", TRAVERSAL: "Historical incident match", NEIGHBORS: "Blast radius analysis", AGGREGATION: "Pipeline ecosystem risk" };
                 return evidence.map((e, i) => {
                   const color = CONF_COLORS[e.queryType] ?? "#8b949e";
                   const pct = CONF_PCTS[e.queryType] ?? 50;
+                  const icon = QUERY_ICONS[e.queryType] ?? "🔍";
+                  const desc = QUERY_DESC[e.queryType] ?? "Orbit query evidence";
+                  const hasData = !(e.result || "").toLowerCase().includes("no data");
                   return (
-                    <div key={e.queryType} style={{ display: "flex", alignItems: "center", gap: 6, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                      <span style={{ fontSize: 10, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: isSmall ? 60 : 85 }}>{e.queryType}</span>
-                      <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden" }}>
-                        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 10px ${color}44` }} />
+                    <div key={e.queryType} style={{
+                      display: "flex", alignItems: "center", gap: 8,
+                      padding: "8px 10px", borderRadius: 6,
+                      background: `${color}08`, border: `1px solid ${color}18`,
+                      animation: `fadeSlideUp 0.3s ${0.08 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
+                    }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: 6, flexShrink: 0,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        background: `${color}15`, fontSize: 14,
+                      }}>{icon}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, letterSpacing: "0.3px" }}>{e.queryType}</span>
+                            <span style={{ fontSize: 9, color: "var(--text-tertiary)", whiteSpace: "nowrap" }}>{desc}</span>
+                          </div>
+                          <span style={{ fontSize: 13, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", color, textShadow: `0 0 8px ${color}55`, flexShrink: 0 }}>{pct}%</span>
+                        </div>
+                        <div style={{ height: 5, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden", boxShadow: "inset 0 1px 2px rgba(0,0,0,0.3)" }}>
+                          <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 10px ${color}44` }} />
+                        </div>
+                        <div style={{ fontSize: 10, color: hasData ? "#22c55e" : "#eab308", marginTop: 2, fontWeight: 600 }}>
+                          {hasData ? "✓ Data available" : "△ Limited data"}
+                        </div>
                       </div>
-                      <span style={{ width: 30, fontSize: 14, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0, textShadow: `0 0 8px ${color}44` }}>{pct}%</span>
                     </div>
                   );
                 });
               })()}
-            </div>
-            <div style={{
-              marginTop: 8, padding: "8px 12px", borderRadius: 6,
-              background: isLow ? "rgba(34,197,94,0.1)" : isMedium ? "rgba(234,179,8,0.1)" : "rgba(34,197,94,0.1)",
-              border: `1px solid ${isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e"}20`,
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
-            }}>
-              <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
-                <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
-              </span>
-              <span style={{
-                fontSize: 13, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace",
-                color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e",
-                textShadow: `0 0 14px ${isLow ? "rgba(34,197,94,0.4)" : isMedium ? "rgba(234,179,8,0.4)" : "rgba(34,197,94,0.4)"}`,
-              }}>{isLow ? "STRONG CONSENSUS" : isMedium ? "WEAK CONSENSUS" : "STRONG CONSENSUS"}</span>
-            </div>
-          </div>
 
-          {/* RIGHT HALF — Orbit Evidence Score */}
-          <div style={{
-            padding: "12px 14px", borderRadius: 8,
-            background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.06)",
-            display: "flex", flexDirection: "column", justifyContent: "center",
-            animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <span style={{ fontSize: 20 }}>⚖️</span>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.5px" }}>Orbit Evidence Score</div>
-                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Aggregate confidence across all sources</div>
+              {/* Overall Consensus */}
+              <div style={{
+                marginTop: 6, padding: "10px 14px", borderRadius: 6,
+                background: isLow ? "rgba(34,197,94,0.08)" : isMedium ? "rgba(234,179,8,0.08)" : "rgba(34,197,94,0.08)",
+                border: `1px solid ${isLow ? "rgba(34,197,94,0.2)" : isMedium ? "rgba(234,179,8,0.2)" : "rgba(34,197,94,0.2)"}`,
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                animation: "fadeSlideUp 0.3s 0.25s cubic-bezier(0.16,1,0.3,1) both",
+              }}>
+                <div>
+                  <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 2 }}>
+                    <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+                    {isLow ? "All queries align — safe to deploy" : isMedium ? "Mixed signals — further investigation needed" : "Strong alignment — blocked from prod"}
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: 14, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace",
+                  color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e",
+                  textShadow: `0 0 14px ${isLow ? "rgba(34,197,94,0.4)" : isMedium ? "rgba(234,179,8,0.4)" : "rgba(34,197,94,0.4)"}`,
+                }}>{isLow ? "✓ STRONG" : isMedium ? "⚠ MIXED" : "✓ STRONG"}</span>
               </div>
             </div>
 
-            {/* Big circular gauge */}
-            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 10 }}>
-              <div style={{ position: "relative", width: 64, height: 64, flexShrink: 0 }}>
-                <svg width={64} height={64} style={{ transform: "rotate(-90deg)", position: "absolute", top: 0, left: 0 }}>
-                  <circle cx={32} cy={32} r={26} fill="none" stroke="var(--overlay-04)" strokeWidth={5} />
-                  <circle cx={32} cy={32} r={26} fill="none" stroke="#60a5fa" strokeWidth={5}
-                    strokeDasharray={163.36} strokeDashoffset={163.36 * (1 - avgPct / 100)}
-                    strokeLinecap="round"
-                    style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)", filter: "drop-shadow(0 0 6px rgba(96,165,250,0.5))" }}
-                  />
-                </svg>
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-                  <span style={{ fontSize: 18, fontWeight: 800, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.5)" }}>{Math.round(avgPct)}%</span>
+            {/* RIGHT — Orbit Evidence Score + Source Breakdown */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {/* Score gauge card */}
+              <div style={{
+                padding: "14px 16px", borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(0,0,0,0.35), rgba(15,18,26,0.8))",
+                border: "1px solid rgba(255,255,255,0.06)",
+                animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                  <span style={{ fontSize: 22 }}>⚖️</span>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.3px" }}>Orbit Evidence Score</div>
+                    <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Aggregate confidence across all {evidence.length} sources</div>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
+                    <svg width={72} height={72} style={{ transform: "rotate(-90deg)", position: "absolute", top: 0, left: 0 }}>
+                      <circle cx={36} cy={36} r={30} fill="none" stroke="var(--overlay-04)" strokeWidth={6} />
+                      <circle cx={36} cy={36} r={30} fill="none" stroke="#60a5fa" strokeWidth={6}
+                        strokeDasharray={188.5} strokeDashoffset={188.5 * (1 - avgPct / 100)}
+                        strokeLinecap="round"
+                        style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)", filter: "drop-shadow(0 0 8px rgba(96,165,250,0.5))" }}
+                      />
+                    </svg>
+                    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+                      <span style={{ fontSize: 20, fontWeight: 800, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.5)" }}>{Math.round(avgPct)}%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600 }}>Aggregate Score</div>
+                    <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>~{Math.round(avgPct)}% confidence</div>
+                    <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 4, lineHeight: 1.4 }}>
+                      {isLow ? "High agreement across all query types. Verdict: SAFE." : isMedium ? "Divergent signals. Verdict: NEEDS REVIEW." : "Strong negative consensus. Verdict: BLOCKED."}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div>
-                <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600 }}>Aggregate Score</div>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 1 }}>~{Math.round(avgPct)}% confidence</div>
-              </div>
-            </div>
 
-            {/* 4 evidence sources with checkmarks */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3px 8px", marginBottom: 8 }}>
-              {[
-                { label: "Historical Matches", color: "#22c55e" },
-                { label: "Deployment Graph", color: "#22c55e" },
-                { label: "Pipeline Ecosystem", color: "#22c55e" },
-                { label: "Ownership Chain", color: "#22c55e" },
-              ].map((src, i) => (
-                <div key={src.label} style={{
-                  display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4,
-                  background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.12)",
-                  animation: `fadeSlideUp 0.25s ${0.2 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
+              {/* Source verification grid */}
+              <div style={{
+                padding: "12px 14px", borderRadius: 8,
+                background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.05)",
+                animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 8 }}>Source Verification</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px 8px" }}>
+                  {[
+                    { label: "Historical Matches", color: "#22c55e", status: "verified", queryType: "TRAVERSAL" },
+                    { label: "Deployment Graph", color: evidence.some(e => e.queryType === "PATH_FINDING" && !(e.result || "").toLowerCase().includes("no data")) ? "#22c55e" : "#eab308", status: evidence.some(e => e.queryType === "PATH_FINDING" && !(e.result || "").toLowerCase().includes("no data")) ? "verified" : "limited", queryType: "PATH_FINDING" },
+                    { label: "Pipeline Ecosystem", color: evidence.some(e => e.queryType === "AGGREGATION" && !(e.result || "").toLowerCase().includes("no data")) ? "#22c55e" : "#eab308", status: evidence.some(e => e.queryType === "AGGREGATION" && !(e.result || "").toLowerCase().includes("no data")) ? "verified" : "limited", queryType: "AGGREGATION" },
+                    { label: "Ownership Chain", color: evidence.some(e => e.queryType === "NEIGHBORS" && !(e.result || "").toLowerCase().includes("no data")) ? "#22c55e" : "#eab308", status: evidence.some(e => e.queryType === "NEIGHBORS" && !(e.result || "").toLowerCase().includes("no data")) ? "verified" : "limited", queryType: "NEIGHBORS" },
+                  ].map((src, i) => (
+                    <div key={src.label} style={{
+                      display: "flex", alignItems: "center", gap: 5, padding: "4px 8px", borderRadius: 4,
+                      background: `${src.color}10`, border: `1px solid ${src.color}18`,
+                      animation: `fadeSlideUp 0.25s ${0.25 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
+                    }}>
+                      <span style={{ color: src.color, fontWeight: 700, fontSize: 13 }}>{src.status === "verified" ? "✓" : "△"}</span>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-primary)" }}>{src.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Status summary */}
+              <div style={{
+                padding: "10px 14px", borderRadius: 6,
+                background: "linear-gradient(135deg, rgba(96,165,250,0.08), rgba(139,92,246,0.05))",
+                border: "1px solid rgba(96,165,250,0.15)",
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                animation: "fadeSlideUp 0.3s 0.3s cubic-bezier(0.16,1,0.3,1) both",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{
+                    display: "inline-block", width: 7, height: 7, borderRadius: "50%",
+                    background: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444",
+                    boxShadow: `0 0 8px ${isLow ? "rgba(34,197,94,0.5)" : isMedium ? "rgba(234,179,8,0.5)" : "rgba(239,68,68,0.5)"}`,
+                  }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: "#60a5fa", letterSpacing: "0.5px" }}>
+                    VERDICT: {isLow ? "APPROVED" : isMedium ? "REQUIRES REVIEW" : "DENIED"}
+                  </span>
+                </div>
+                <span style={{
+                  fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                  color: isLow ? "#22c55e" : "#ef4444",
+                  textShadow: `0 0 8px ${isLow ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}`,
                 }}>
-                  <span style={{ color: "#22c55e", fontWeight: 700, fontSize: 13 }}>✓</span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>{src.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{
-              marginTop: 6, padding: "7px 10px", borderRadius: 5, display: "flex", justifyContent: "space-between", alignItems: "center",
-              background: "linear-gradient(135deg, rgba(96,165,250,0.1), rgba(139,92,246,0.05))",
-              border: "1px solid rgba(96,165,250,0.15)",
-            }}>
-              <span style={{
-                fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-                color: "#60a5fa", textShadow: "0 0 8px rgba(96,165,250,0.3)",
-                letterSpacing: "0.5px",
-              }}>STATUS: VALIDATED</span>
-              <span style={{
-                fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
-                color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)",
-              }}>4 / 4 ✓</span>
+                  {evidence.filter(e => { const t = (e.result || "").toLowerCase(); return t.length > 0 && !t.includes("no data") && !t.includes("no pipeline data returned") && !t.includes("0 nodes"); }).length} / {evidence.length} ✓
+                </span>
+              </div>
             </div>
           </div>
         </div>
