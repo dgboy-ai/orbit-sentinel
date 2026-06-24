@@ -9,20 +9,20 @@
 
 ## ✅ Proof of Live Execution
 
-Validated across **4 merge requests** via the GitLab Duo Agent Platform and live dashboard — not mocks, not a single demo run.
+Validated across **4 merge requests** via the GitLab Duo Agent Platform and live dashboard — not mocks, not a single demo run. (Note: Session references are located inside our workspace repository at `orbit-sentinel/docs/orbit-traversal-results.md` to avoid external authentication barriers).
 
-| MR | Duo Session | What Was Proven |
-|----|-------------|------------------|
-| !10 | [Session #10](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/10) | All 4 Orbit query types executed; report posted as MR note. Ecosystem: 132,059 pipelines (17.8% failure rate), 50+ historical MRs (90% abandonment rate) |
-| !12 | [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) | Peak scale: 206 nodes / 172 edges; 51 nodes / 29 edges confirmed live — report auto-posted to MR |
-| !3 | [Session #3](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/3) | Full graph traversal: 22 nodes / 40 relationships, 7 distinct risk signals detected |
-| !5 | [MR !5](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/5) | **Real-time dashboard verification** — 224 nodes / 189 edges discovered live. Orbit Sentinel correctly scored 8% LOW risk (Draft MR, 1 file, no pipeline). Forecast Engine predicted MR would close — **it did (closed June 16)**. Closed-loop prediction confirmed. |
+| MR | Summary | What Was Proven |
+|----|---------|------------------|
+| !10 | Duo Session 10 | All 4 Orbit query types executed; report posted as MR note. Ecosystem: 132,059 pipelines (17.8% failure rate), 50+ historical MRs (90% abandonment rate) |
+| !12 | Duo Session 4587076 | 51 nodes / 29 edges confirmed live — report auto-posted to MR |
+| !3 | Duo Session 3 | Full graph traversal: 22 nodes / 40 relationships, 7 distinct risk signals detected |
+| !5 | Live Dashboard Run | **Real-time dashboard verification** — 224 nodes / 189 edges discovered live. Orbit Sentinel correctly scored 8% LOW risk (Draft MR, 1 file, no pipeline). Forecast Engine predicted MR would close — **it did (closed June 16)**. Closed-loop prediction confirmed. |
 
 → Full traversal log: [orbit-traversal-results.md](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/blob/main/orbit-sentinel/docs/orbit-traversal-results.md)
 
 ### 🔮 Real Prediction Verified: MR !5 Closed-Loop Accuracy
 
-Orbit Sentinel analyzed [MR !5](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/-/merge_requests/5) (`Draft: Test sentinel`) live on June 24, 2026. Every prediction matched reality:
+Orbit Sentinel analyzed MR !5 (`Draft: Test sentinel`) live on June 24, 2026. Every prediction matched reality:
 
 | Prediction | Actual Outcome | Result |
 |---|---|---|
@@ -72,7 +72,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
                │                                     │
                ▼                                     │
       GitLab Orbit Knowledge Graph ◀─────────────────◘
-      (Baseline: 23 nodes/43 edges; peak observed: 206 nodes/172 edges)
+      (Baseline: 23 nodes/43 edges; peak observed: 224 nodes/189 edges)
 ```
 
 **Engine** ⚙️ — TypeScript, Express, custom validation, 8 classified error types with exponential backoff:
@@ -116,7 +116,7 @@ GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D
 
 **135 tests.** Orbit client retry logic, all 4 query types, similarity engine edge cases, digital twin construction, component rendering state coverage. No coverage theater.
 
-**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The baseline demo graph is calibrated to 23 nodes + 43 edges for optimal visual layout and performance, while our live test runs on MR !12 reached a peak observed scale of **206 nodes + 172 edges** across 18 node types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
+**Live Orbit data, not mocks.** The engine queries a real GitLab Orbit knowledge graph. The baseline demo graph is calibrated to 23 nodes + 43 edges for optimal visual layout and performance, while our live test runs on MR !5 reached a peak observed scale of **224 nodes + 189 edges** across 18 node types. [Session #4587076](https://gitlab.com/gitlab-ai-hackathon/transcend/39251857/duo/sessions/4587076) confirmed live execution: 51 nodes, 29 edges, report posted as MR !12 note.
 
 **Closed-loop accuracy.** We don't predict and disappear. Every prediction is tracked post-merge with a 7-day survival window. Accuracy rate, risk trends, vulnerability-adjusted forecasts — all surfaced in the Predictions Tracker. This is the difference between a demo and a tool. 🎯
 
