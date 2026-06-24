@@ -397,7 +397,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
               <>
                 <ErrorBoundary><ProblemSection /></ErrorBoundary>
                 <div className="resp-grid-2 resp-stack" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: isMobile ? 8 : 12 }}>
-                  <div className="section-accent" style={{ position: "relative" }}><ErrorBoundary><HeroSection {...data.hero} /></ErrorBoundary></div>
+                  <div className="section-accent" style={{ position: "relative" }}><ErrorBoundary><HeroSection {...data.hero} generatedUsing={`GitLab Orbit · ${data.graph.nodes.length} nodes · ${data.graph.links.length} edges · all 4 queries`} /></ErrorBoundary></div>
                   {!isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
                 </div>
                 {isMobile && <ErrorBoundary><TaglineBanner /></ErrorBoundary>}
