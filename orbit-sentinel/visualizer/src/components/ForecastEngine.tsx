@@ -289,7 +289,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       <div className="card" style={{
         padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
         borderColor: `${curCol}55`,
-        background: `linear-gradient(135deg, ${curCol}10 0%, rgba(10,12,20,0.95) 50%, rgba(59,130,246,0.04) 100%)`,
+        background: `linear-gradient(135deg, ${curCol}10 0%, rgba(var(--bg-card-rgb),0.95) 50%, rgba(59,130,246,0.04) 100%)`,
         boxShadow: `0 0 60px ${curCol}12, inset 0 0 60px ${curCol}06`,
       }}>
         <div style={{ position: "absolute", top: -80, left: -60, width: 400, height: 400, borderRadius: "50%", background: `${curCol}12`, filter: "blur(80px)", pointerEvents: "none" }} />
