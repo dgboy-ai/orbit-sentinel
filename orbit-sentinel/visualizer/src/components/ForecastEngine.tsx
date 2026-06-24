@@ -531,123 +531,154 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
         </div>
       </div>
 
-      {/* SIGNAL EVIDENCE GRID — 4 query types with severity-coded cards from real Orbit data */}
+      {/* ORBIT EVIDENCE — 4 query types */}
       <style>{`
-        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
         @keyframes pulseBadge { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @keyframes glowPulse { 0%,100% { box-shadow: var(--glow-base); } 50% { box-shadow: var(--glow-peak); } }
       `}</style>
-      <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        {[
-          {
-            type: "NEIGHBORS", icon: "🌐", color: "#22c55e", severity: "info", severityLabel: "Info",
-            title: `${totalNodes} Nodes + ${totalEdges} Edges Mapped`,
-            finding: evidenceSummary.NEIGHBORS?.finding?.slice(0, 60) || "Graph discovery complete",
-            detail: `${totalNodes} nodes, ${totalEdges} edges discovered in digital twin`,
-            pct: 100, signalText: "Graph health OK",
-          },
-          {
-            type: "PATH_FINDING", icon: "🛣", color: "#ef4444", severity: "critical", severityLabel: "Critical",
-            title: mrState.hasPipeline ? "Deployment Path Detected" : "No Deployment Path Exists",
-            finding: evidenceSummary.PATH_FINDING?.finding?.slice(0, 60) || "MR → Pipeline relation missing",
-            detail: mrState.hasPipeline ? "Validated production deployment route exists" : "No validated production deployment route exists",
-            pct: 95, signalText: "Blocking deployment",
-          },
-          {
-            type: "TRAVERSAL", icon: "📚", color: "#f97316", severity: "high", severityLabel: "High",
-            title: `${historicalCount} Historical Match${historicalCount !== 1 ? "es" : ""} Found`,
-            finding: evidenceSummary.TRAVERSAL?.finding?.slice(0, 60) || "Branch abandonment pattern detected",
-            detail: `${historicalCount} of 10 prior MRs from this branch were closed without merge`,
-            pct: 90, signalText: "Requires attention",
-          },
-          {
-            type: "AGGREGATION", icon: "📊", color: "#eab308", severity: "medium", severityLabel: "Medium",
-            title: `${failureRate}% Pipeline Failure Rate`,
-            finding: evidenceSummary.AGGREGATION?.finding?.slice(0, 60) || `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`,
-            detail: `${failureRate}% historical failure rate across ${pipelinesTotal.toLocaleString("en-US")} pipelines — used for calibration`,
-            pct: 75, signalText: failureRate === "N/A" ? "Insufficient data" : `${pipelinesTotal} pipelines tracked`,
-          },
-        ].map((signal, i) => (
-          <div key={signal.type} className="card" style={{
-            padding: isMobile ? "10px 12px" : "14px 16px", position: "relative", overflow: "hidden",
-            borderColor: `${signal.color}20`,
-            background: `linear-gradient(135deg, ${signal.color}08, rgba(15,18,26,0.95), ${signal.color}04)`,
-            boxShadow: signal.severity === "critical" ? `0 0 20px ${signal.color}15` : `0 0 12px ${signal.color}08`,
-            animation: `fadeSlideUp 0.35s ${0.04 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
-            transition: "all 0.25s ease",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = `${signal.color}55`; e.currentTarget.style.boxShadow = `0 0 30px ${signal.color}20`; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = `${signal.color}20`; e.currentTarget.style.boxShadow = signal.severity === "critical" ? `0 0 20px ${signal.color}15` : `0 0 12px ${signal.color}08`; e.currentTarget.style.transform = "none"; }}
-          >
-            <GlowOrb color={`${signal.color}12`} top={i % 2 === 0 ? "-30%" : "50%"} left={i < 2 ? "-15%" : "auto"} right={i >= 2 ? "-15%" : "auto"} size={160} />
-            <div style={{ position: "relative", zIndex: 1 }}>
-              {/* Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ fontSize: 19 }}>{signal.icon}</span>
+      <div className="card" style={{
+        padding: isMobile ? "10px 12px" : "14px 18px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(96,165,250,0.1)",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95), rgba(139,92,246,0.02))",
+        ...fadeIn(0.06),
+      }}>
+        <GlowOrb color="rgba(96,165,250,0.06)" top="-35%" left="-5%" size={200} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          {/* Section header */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 16 }}>🛰</span>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Orbit Evidence</span>
+              <span style={{ fontSize: 11, color: "var(--text-tertiary)", background: "var(--overlay-04)", padding: "1px 6px", borderRadius: 3, fontFamily: "'JetBrains Mono', monospace" }}>4 queries</span>
+            </div>
+            <span style={{ fontSize: 11, color: "#22c55e", fontStyle: "italic" }}>All independently supportive</span>
+          </div>
+
+          {/* 4 compact stat cards in a row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
+            {[
+              { type: "NEIGHBORS", icon: "🌐", color: "#22c55e", severity: "info", severityLabel: "Info", metric: `${totalNodes}N · ${totalEdges}E`, sub: "Graph Mapped" },
+              { type: "PATH_FINDING", icon: "🛣", color: "#ef4444", severity: "critical", severityLabel: "Critical", metric: mrState.hasPipeline ? "✓ Route" : "✗ Blocked", sub: mrState.hasPipeline ? "Deploy Path" : "No Pipeline" },
+              { type: "TRAVERSAL", icon: "📚", color: "#f97316", severity: "high", severityLabel: "High", metric: `${historicalCount}`, sub: "Historical Matches" },
+              { type: "AGGREGATION", icon: "📊", color: "#eab308", severity: "medium", severityLabel: "Medium", metric: `${failureRate}%`, sub: "Pipeline Fail Rate" },
+            ].map((st, i) => (
+              <div key={st.type} style={{
+                padding: "8px 10px", borderRadius: 6, position: "relative", overflow: "hidden",
+                background: `linear-gradient(135deg, ${st.color}08, rgba(15,18,26,0.9))`,
+                border: `1px solid ${st.color}18`,
+                animation: `fadeSlideUp 0.3s ${0.06 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                transition: "all 0.2s ease",
+                cursor: "default",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${st.color}44`; e.currentTarget.style.boxShadow = `0 0 18px ${st.color}15`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${st.color}18`; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "none"; }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <span style={{ fontSize: 15 }}>{st.icon}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: st.color, letterSpacing: "0.3px" }}>{st.type}</span>
+                  </div>
                   <span style={{
-                    fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: signal.color,
-                    padding: "1px 6px", borderRadius: 3, background: `${signal.color}18`, border: `1px solid ${signal.color}30`,
-                  }}>{signal.type}</span>
-                </div>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase",
-                  padding: "2px 7px", borderRadius: 3,
-                  animation: signal.severity === "critical" || signal.severity === "high" ? "pulseBadge 2s ease-in-out infinite" : "none",
-                  background: signal.severity === "critical" ? "rgba(239,68,68,0.15)"
-                    : signal.severity === "high" ? "rgba(249,115,22,0.12)"
-                    : signal.severity === "medium" ? "rgba(234,179,8,0.12)"
-                    : "rgba(34,197,94,0.1)",
-                  color: signal.severity === "critical" ? "#ef4444"
-                    : signal.severity === "high" ? "#f97316"
-                    : signal.severity === "medium" ? "#eab308"
-                    : "#22c55e",
-                  border: signal.severity === "critical" ? `1px solid rgba(239,68,68,0.25)`
-                    : signal.severity === "high" ? `1px solid rgba(249,115,22,0.25)`
-                    : signal.severity === "medium" ? `1px solid rgba(234,179,8,0.2)`
-                    : `1px solid rgba(34,197,94,0.2)`,
-                  boxShadow: signal.severity === "critical" ? `0 0 8px rgba(239,68,68,0.2)` : "none",
-                }}>
-                  {signal.severity === "critical" ? "🔴" : signal.severity === "high" ? "🟠" : signal.severity === "medium" ? "🟡" : "🟢"} {signal.severityLabel}
-                </span>
-              </div>
-              {/* Title + animated count */}
-              <div style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3, display: "flex", alignItems: "center", gap: 4 }}>
-                {signal.type === "NEIGHBORS" ? <><AnimatedNum value={totalNodes} color={signal.color} /> Nodes + <AnimatedNum value={totalEdges} color={signal.color} /> Edges Mapped</>
-                : signal.type === "TRAVERSAL" ? <><AnimatedNum value={historicalCount} color={signal.color} /> Historical Match{historicalCount !== 1 ? "es" : ""} Found</>
-                : signal.title}</div>
-              {/* Finding */}
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 6, lineHeight: 1.4, fontStyle: "italic", borderLeft: `2px solid ${signal.color}44`, paddingLeft: 8, position: "relative" }}>
-                <div style={{ position: "absolute", left: -2, top: 0, bottom: 0, width: 2, background: signal.color, boxShadow: `0 0 6px ${signal.color}55`, borderRadius: 1 }} />
-                {signal.finding}
-              </div>
-              {/* Detail */}
-              <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginBottom: 8, lineHeight: 1.4 }}>{signal.detail}</div>
-              {/* Confidence bar */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 11, color: "var(--text-tertiary)", letterSpacing: "0.3px", textTransform: "uppercase", width: 66, flexShrink: 0 }}>Orbit Confidence</span>
-                <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden", position: "relative" }}>
-                  <div style={{
-                    width: `${signal.pct}%`, height: "100%", borderRadius: 2,
-                    background: `linear-gradient(90deg, ${signal.color}, ${signal.color}88)`,
-                    boxShadow: `0 0 8px ${signal.color}44`,
-                    transition: "width 1s ease",
-                  }} />
-                </div>
-                <span style={{ fontSize: 14, fontWeight: 700, color: signal.color, fontFamily: "'JetBrains Mono', monospace", width: 28, textAlign: "right", flexShrink: 0 }}>{signal.pct}%</span>
-              </div>
-              {/* Divider + Action */}
-              <div style={{ marginTop: 8, paddingTop: 6, borderTop: "1px solid var(--overlay-04)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <span style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Signal</span>
-                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${signal.color}33, transparent)` }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: signal.color, textShadow: `0 0 8px ${signal.color}33` }}>
-                    {signal.signalText}
+                    fontSize: 9, fontWeight: 700, padding: "1px 5px", borderRadius: 2, textTransform: "uppercase", letterSpacing: "0.4px",
+                    background: st.severity === "critical" ? "rgba(239,68,68,0.15)" : st.severity === "high" ? "rgba(249,115,22,0.12)" : st.severity === "medium" ? "rgba(234,179,8,0.12)" : "rgba(34,197,94,0.1)",
+                    color: st.severity === "critical" ? "#ef4444" : st.severity === "high" ? "#f97316" : st.severity === "medium" ? "#eab308" : "#22c55e",
+                    border: `1px solid ${st.color}25`,
+                    animation: st.severity === "critical" || st.severity === "high" ? "pulseBadge 2s ease-in-out infinite" : "none",
+                  }}>
+                    {st.severity === "critical" ? "🔴" : st.severity === "high" ? "🟠" : st.severity === "medium" ? "🟡" : "🟢"} {st.severityLabel}
                   </span>
                 </div>
+                <div style={{ fontSize: isSmall ? 13 : 16, fontWeight: 800, color: st.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 10px ${st.color}30`, lineHeight: 1.2 }}>
+                  {st.metric}
+                </div>
+                <div style={{ fontSize: 10, color: "var(--text-tertiary)", marginTop: 2 }}>{st.sub}</div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+
+          {/* 2-column detail cards */}
+          <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {[
+              {
+                type: "NEIGHBORS", icon: "🌐", color: "#22c55e", severity: "info", severityLabel: "Info",
+                title: `${totalNodes} Nodes + ${totalEdges} Edges Mapped`,
+                finding: evidenceSummary.NEIGHBORS?.finding?.slice(0, 60) || "Graph discovery complete",
+                detail: `${totalNodes} nodes, ${totalEdges} edges discovered in digital twin`,
+                pct: 100, signalText: "Graph health OK",
+              },
+              {
+                type: "PATH_FINDING", icon: "🛣", color: "#ef4444", severity: "critical", severityLabel: "Critical",
+                title: mrState.hasPipeline ? "Deployment Path Detected" : "No Deployment Path Exists",
+                finding: evidenceSummary.PATH_FINDING?.finding?.slice(0, 60) || "MR → Pipeline relation missing",
+                detail: mrState.hasPipeline ? "Validated production deployment route exists" : "No validated production deployment route exists",
+                pct: 95, signalText: "Blocking deployment",
+              },
+              {
+                type: "TRAVERSAL", icon: "📚", color: "#f97316", severity: "high", severityLabel: "High",
+                title: `${historicalCount} Historical Match${historicalCount !== 1 ? "es" : ""} Found`,
+                finding: evidenceSummary.TRAVERSAL?.finding?.slice(0, 60) || "Branch abandonment pattern detected",
+                detail: `${historicalCount} of 10 prior MRs from this branch were closed without merge`,
+                pct: 90, signalText: "Requires attention",
+              },
+              {
+                type: "AGGREGATION", icon: "📊", color: "#eab308", severity: "medium", severityLabel: "Medium",
+                title: `${failureRate}% Pipeline Failure Rate`,
+                finding: evidenceSummary.AGGREGATION?.finding?.slice(0, 60) || `${pipelinesTotal.toLocaleString("en-US")} pipelines analyzed`,
+                detail: `${failureRate}% historical failure rate across ${pipelinesTotal.toLocaleString("en-US")} pipelines — used for calibration`,
+                pct: 75, signalText: failureRate === "N/A" ? "Insufficient data" : `${pipelinesTotal} pipelines tracked`,
+                showMini: true,
+              },
+            ].map((signal, i) => (
+              <div key={signal.type} className="card" style={{
+                padding: isMobile ? "8px 10px" : "10px 12px", position: "relative", overflow: "hidden",
+                borderColor: `${signal.color}18`,
+                background: `linear-gradient(135deg, ${signal.color}06, rgba(15,18,26,0.9), ${signal.color}03)`,
+                boxShadow: `0 0 8px ${signal.color}08`,
+                animation: `fadeSlideUp 0.3s ${0.12 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
+                transition: "all 0.2s ease",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = `${signal.color}44`; e.currentTarget.style.boxShadow = `0 0 20px ${signal.color}15`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = `${signal.color}18`; e.currentTarget.style.boxShadow = `0 0 8px ${signal.color}08`; e.currentTarget.style.transform = "none"; }}
+              >
+                <GlowOrb color={`${signal.color}10`} top={i % 2 === 0 ? "-25%" : "45%"} left={i < 2 ? "-10%" : "auto"} right={i >= 2 ? "-10%" : "auto"} size={140} />
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  {/* Header row: icon + type + severity + inline confidence */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                    <span style={{ fontSize: 16 }}>{signal.icon}</span>
+                    <span style={{
+                      fontSize: 11, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color: signal.color,
+                      padding: "1px 5px", borderRadius: 3, background: `${signal.color}14`, border: `1px solid ${signal.color}25`,
+                    }}>{signal.type}</span>
+                    <div style={{ flex: 1 }} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <div style={{ width: 36, height: 3, borderRadius: 2, background: "var(--overlay-04)", overflow: "hidden" }}>
+                        <div style={{ width: `${signal.pct}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${signal.color}, ${signal.color}88)` }} />
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: signal.color, fontFamily: "'JetBrains Mono', monospace", minWidth: 22, textAlign: "right" }}>{signal.pct}%</span>
+                    </div>
+                  </div>
+                  {/* Title */}
+                  <div style={{ fontSize: isSmall ? 11 : 13, fontWeight: 800, color: "var(--text-primary)", marginBottom: 3, lineHeight: 1.3, display: "flex", alignItems: "center", gap: 3 }}>
+                    {signal.type === "NEIGHBORS" ? <><AnimatedNum value={totalNodes} color={signal.color} /> Nodes + <AnimatedNum value={totalEdges} color={signal.color} /> Edges</>
+                    : signal.type === "TRAVERSAL" ? <><AnimatedNum value={historicalCount} color={signal.color} /> Historical Match{historicalCount !== 1 ? "es" : ""}</>
+                    : signal.title}
+                  </div>
+                  {/* Finding + detail inline */}
+                  <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.4, display: "flex", gap: 6, alignItems: "flex-start" }}>
+                    <span style={{ width: 2, minWidth: 2, height: "1em", background: signal.color, borderRadius: 1, marginTop: 4, boxShadow: `0 0 4px ${signal.color}44` }} />
+                    <span>{signal.finding}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 3, lineHeight: 1.3 }}>{signal.detail}</div>
+                  {/* Signal text */}
+                  <div style={{ marginTop: 5, paddingTop: 4, borderTop: "1px solid var(--overlay-03)", display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
+                    <span style={{ fontSize: 10, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px", textTransform: "uppercase" }}>Signal</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: signal.color, textShadow: `0 0 6px ${signal.color}33` }}>{signal.signalText}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* DIGITAL TWIN STATE TRANSITION + SCENARIOS */}
