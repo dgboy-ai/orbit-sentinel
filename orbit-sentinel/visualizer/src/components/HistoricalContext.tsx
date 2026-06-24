@@ -543,190 +543,361 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
       {/* ORBIT MEMORY VERDICT — CLIMAX */}
       <div style={{
-        padding: isMobile ? "16px 14px" : "24px 28px", position: "relative", overflow: "hidden",
-        borderRadius: 12,
+        padding: isMobile ? "18px 16px" : "28px 32px", position: "relative", overflow: "hidden",
+        borderRadius: 14,
         border: `2px solid rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.4)`,
         background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.12), rgba(15,18,26,0.98), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.06))`,
-        boxShadow: `0 0 40px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2), inset 0 0 20px var(--overlay-02)`,
+        boxShadow: `0 0 60px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.25), inset 0 0 30px var(--overlay-02)`,
         opacity: verdictVisible ? 1 : 0,
-        transform: verdictVisible ? "translateY(0)" : "translateY(12px)",
-        transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)",
+        transform: verdictVisible ? "translateY(0)" : "translateY(16px)",
+        transition: "opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)",
       }}>
-        {/* Rotating border glow effect */}
+        {/* Rotating border glow */}
         <div style={{
-          position: "absolute", inset: -1, borderRadius: 12, padding: 2, pointerEvents: "none",
-          background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.3), transparent 40%, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.1), transparent 60%, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2))`,
+          position: "absolute", inset: -1, borderRadius: 14, padding: 2, pointerEvents: "none",
+          background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.35), transparent 35%, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.15), transparent 65%, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.25))`,
           mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
           WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
           WebkitMaskComposite: "xor",
           maskComposite: "exclude",
           animation: "spin 4s linear infinite",
         }} />
-        <GlowOrb color={`rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.08)`} top="-30%" left="-5%" size={280} />
+        <GlowOrb color={`rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.1)`} top="-30%" left="-5%" size={320} />
+        <GlowOrb color={`rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.06)`} bottom="-20%" right="-10%" size={200} />
+
         <div style={{ position: "relative", zIndex: 1 }}>
-          {/* Title */}
-          <div style={{
-            fontSize: isMobile ? 10 : 12, fontWeight: 900, letterSpacing: "2px", textTransform: "uppercase",
-            color: "#fff", marginBottom: 14, textAlign: "center",
-            textShadow: `0 0 20px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.5), 0 4px 8px rgba(0,0,0,0.5)`,
-          }}>
-            Orbit Memory Verdict
+          {/* ── CINEMATIC TITLE ── */}
+          <div style={{ textAlign: "center", marginBottom: 18 }}>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "4px 16px 4px 14px", borderRadius: 20,
+              background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.12), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.04))`,
+              border: `1px solid rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2)`,
+              marginBottom: 10,
+            }}>
+              <span style={{ fontSize: 10, opacity: 0.6 }}>⬡</span>
+              <span style={{
+                fontSize: isMobile ? 10 : 11, fontWeight: 900, letterSpacing: "3px", textTransform: "uppercase",
+                color: "#fff",
+                textShadow: `0 0 24px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.5), 0 0 60px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2)`,
+              }}>
+                Orbit Memory Verdict
+              </span>
+              <span style={{ fontSize: 10, opacity: 0.6 }}>⬡</span>
+            </div>
+            <div style={{
+              fontSize: isMobile ? 12 : 14, color: "var(--text-secondary)", fontWeight: 400, letterSpacing: "0.5px",
+              maxWidth: 480, margin: "0 auto",
+            }}>
+              {closeRate > 70
+                ? "Historical branch analysis predicts closure — mitigations can alter trajectory"
+                : "Branch history supports merge — graph signals reinforce positive outcome"
+              }
+            </div>
           </div>
-          
-          {/* Evidence Confidence Breakdown — replaces the contradictory "Pattern Match Score 0% / HIGH" */}
-          <div style={{ marginBottom: 14 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 6, textAlign: "center" }}>Evidence Confidence Breakdown</div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 6 }}>
+
+          {/* ── EVIDENCE CONFIDENCE BREAKDOWN ── */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 8, textAlign: "center" }}>
+              Evidence Confidence Breakdown
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 8 }}>
               {[
-                { label: "Historical Similarity", value: `${highestSimilarity}%`, numVal: highestSimilarity, color: highestSimilarity > 50 ? "#ef4444" : highestSimilarity > 0 ? "#eab308" : "#60a5fa", suffix: "%", note: highestSimilarity === 0 ? "No prior matches" : `${closedCount} case${closedCount !== 1 ? "s" : ""}` },
-                { label: "Graph Evidence", value: `${Math.min(100, Math.round(highestSimilarity * 1.1))}%`, numVal: Math.min(100, Math.round(highestSimilarity * 1.1)), color: "#22c55e", suffix: "%", note: "Deployment path" },
-                { label: "Path Evidence", value: `${Math.round((closedCount / Math.max(1, totalCount)) * 100)}%`, numVal: Math.round((closedCount / Math.max(1, totalCount)) * 100), color: "#60a5fa", suffix: "%", note: "No route found" },
+                { label: "Historical\nSimilarity", value: `${highestSimilarity}%`, numVal: highestSimilarity, color: highestSimilarity > 50 ? "#ef4444" : highestSimilarity > 0 ? "#eab308" : "#60a5fa", suffix: "%", note: highestSimilarity === 0 ? "No prior matches" : `${closedCount} case${closedCount !== 1 ? "s" : ""}` },
+                { label: "Graph\nEvidence", value: `${Math.min(100, Math.round(highestSimilarity * 1.1))}%`, numVal: Math.min(100, Math.round(highestSimilarity * 1.1)), color: "#22c55e", suffix: "%", note: "Deployment path" },
+                { label: "Path\nEvidence", value: `${Math.round((closedCount / Math.max(1, totalCount)) * 100)}%`, numVal: Math.round((closedCount / Math.max(1, totalCount)) * 100), color: "#60a5fa", suffix: "%", note: "No route found" },
                 { label: "Aggregation", value: `${Math.min(95, Math.round(highestSimilarity * 0.85))}%`, numVal: Math.min(95, Math.round(highestSimilarity * 0.85)), color: "#f97316", suffix: "%", note: "Pipeline trend" },
               ].map(s => (
-                <div key={s.label} style={{ textAlign: "center", padding: "6px 6px 4px", borderRadius: 6, background: "rgba(0,0,0,0.25)", border: `1px solid ${s.color}22`, position: "relative" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{s.label}</div>
+                <div key={s.label} style={{
+                  textAlign: "center", padding: "8px 6px 6px", borderRadius: 8,
+                  background: `linear-gradient(135deg, ${s.color}08, rgba(0,0,0,0.3), ${s.color}04)`,
+                  border: `1px solid ${s.color}22`,
+                  boxShadow: `0 0 12px ${s.color}0d, inset 0 0 8px ${s.color}06`,
+                  position: "relative",
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 3, whiteSpace: "pre-line", lineHeight: 1.2 }}>{s.label}</div>
                   <AnimatedCounter target={s.numVal} suffix={s.suffix} color={s.color} duration={1400} />
-                  <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{s.note}</div>
-                  <div style={{ height: 2, borderRadius: 1, background: "var(--overlay-04)", margin: "4px 0 0", overflow: "hidden" }}>
-                    <div style={{ width: `${s.numVal}%`, height: "100%", background: `linear-gradient(90deg, ${s.color}88, ${s.color})`, transition: "width 1.2s ease" }} />
+                  <div style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2, fontWeight: 600 }}>{s.note}</div>
+                  <div style={{ height: 3, borderRadius: 2, background: "rgba(0,0,0,0.3)", margin: "6px 0 0", overflow: "hidden" }}>
+                    <div style={{
+                      width: `${s.numVal}%`, height: "100%",
+                      background: `linear-gradient(90deg, ${s.color}66, ${s.color})`,
+                      boxShadow: `0 0 6px ${s.color}44`,
+                      transition: "width 1.4s ease",
+                      borderRadius: 2,
+                    }} />
                   </div>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 6, padding: "4px 10px", borderRadius: 5, background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>
-                {highestSimilarity === 0 ? "Historical similarity: 0% — confidence driven by graph + path evidence" : `Historical patterns reinforce graph signals`}
+
+            {/* Overall Verdict Badge */}
+            <div style={{
+              marginTop: 10, padding: "8px 14px", borderRadius: 8,
+              background: `linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03))`,
+              border: "1px solid rgba(34,197,94,0.2)",
+              boxShadow: "0 0 16px rgba(34,197,94,0.08)",
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              flexWrap: isMobile ? "wrap" : "nowrap", gap: 6,
+            }}>
+              <span style={{ fontSize: 13, color: "var(--text-primary)", fontWeight: 500 }}>
+                {highestSimilarity === 0
+                  ? "Historical similarity: 0% — confidence driven by graph + path evidence"
+                  : "Historical patterns reinforce graph signals"
+                }
               </span>
-              <span style={{ fontSize: 16, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>Overall: HIGH</span>
-            </div>
-          </div>
-          
-          {/* Signal Badges */}
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "flex-start", marginBottom: 14 }}>
-            <div>
-              <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 4 }}>Current MR exhibits the same signals:</div>
-              <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-                {[
-                  { label: "No deployment path", color: "#ef4444" },
-                  { label: "No CI validation", color: "#ef4444" },
-                  { label: "No ownership", color: "#ef4444" },
-                ].map(b => (
-                  <div key={b.label} style={{
-                    padding: "2px 8px", borderRadius: 4,
-                    background: `rgba(239,68,68,0.1)`, border: `1px solid rgba(239,68,68,0.25)`,
-                    fontSize: 13, color: b.color, fontWeight: 600,
-                    animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
-                  }}>{b.label}</div>
-                ))}
+              <div style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "3px 14px 3px 10px", borderRadius: 20,
+                background: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))",
+                border: "1px solid rgba(34,197,94,0.3)",
+                boxShadow: "0 0 16px rgba(34,197,94,0.15), 0 0 40px rgba(34,197,94,0.06)",
+              }}>
+                <span style={{
+                  width: 8, height: 8, borderRadius: "50%",
+                  background: "#22c55e",
+                  boxShadow: "0 0 8px rgba(34,197,94,0.6)",
+                  animation: "pulseGlow 3s ease-in-out infinite",
+                }} />
+                <span style={{
+                  fontSize: 14, fontWeight: 900, color: "#22c55e", letterSpacing: "1px",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  textShadow: "0 0 12px rgba(34,197,94,0.4), 0 0 40px rgba(34,197,94,0.15)",
+                }}>
+                  Overall: HIGH
+                </span>
               </div>
             </div>
+          </div>
+
+          {/* ── SIGNAL BADGES ── */}
+          <div style={{ marginBottom: 16 }}>
             <div style={{
-              padding: "5px 14px", borderRadius: 6,
-              background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)",
-              textAlign: "center", whiteSpace: "nowrap",
-              animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
+              display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 10, alignItems: "flex-start",
             }}>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 500, letterSpacing: "0.3px" }}>Pattern Occurred</div>
-              <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 800, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(234,179,8,0.3)" }}>{closedCount}× before</div>
+              <div>
+                <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 5, letterSpacing: "0.3px" }}>
+                  Current MR exhibits the same signals:
+                </div>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {[
+                    { label: "No deployment path", color: "#ef4444" },
+                    { label: "No CI validation", color: "#ef4444" },
+                    { label: "No ownership", color: "#ef4444" },
+                  ].map(b => (
+                    <div key={b.label} style={{
+                      padding: "3px 10px", borderRadius: 5,
+                      background: `linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.04))`,
+                      border: `1px solid rgba(239,68,68,0.3)`,
+                      boxShadow: "0 0 8px rgba(239,68,68,0.1)",
+                      fontSize: 13, color: b.color, fontWeight: 700,
+                      textShadow: "0 0 6px rgba(239,68,68,0.15)",
+                      animation: "fadeSlideUp 0.3s 0.1s cubic-bezier(0.16,1,0.3,1) both",
+                    }}>⚠ {b.label}</div>
+                  ))}
+                </div>
+              </div>
+              <div style={{
+                padding: "6px 16px", borderRadius: 8,
+                background: "linear-gradient(135deg, rgba(234,179,8,0.12), rgba(234,179,8,0.04))",
+                border: "1px solid rgba(234,179,8,0.25)",
+                boxShadow: "0 0 12px rgba(234,179,8,0.08)",
+                textAlign: "center", whiteSpace: "nowrap",
+                animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
+              }}>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px", marginBottom: 1 }}>Pattern Occurred</div>
+                <div style={{ fontSize: isMobile ? 15 : 18, fontWeight: 900, color: "#eab308", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(234,179,8,0.4), 0 0 40px rgba(234,179,8,0.12)" }}>{closedCount}× before</div>
+              </div>
             </div>
           </div>
-          
-          {/* Pattern Flow — built dynamically from real incident data */}
+
+          {/* ── BRANCH HISTORY FLOW ── */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginBottom: 8, textAlign: "center", letterSpacing: "0.3px" }}>Branch History Visualization</div>
+            <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 10, textAlign: "center", letterSpacing: "0.4px", textTransform: "uppercase" }}>
+              Branch History Visualization
+            </div>
             {patternNodes.length > 1 ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, overflowX: isMobile ? "auto" : "visible", WebkitOverflowScrolling: "touch", paddingBottom: isMobile ? 4 : 0 }}>
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                gap: 2, overflowX: isMobile ? "auto" : "visible",
+                WebkitOverflowScrolling: "touch", paddingBottom: isMobile ? 4 : 0,
+              }}>
                 {patternNodes.map((m, i) => (
                   <React.Fragment key={m.label}>
-                    <div style={{ textAlign: "center", minWidth: isMobile ? 40 : 52, animation: `fadeSlideUp 0.3s ${0.2 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                      <div style={{ fontSize: isMobile ? 7 : 8, color: "var(--text-tertiary)" }}>{m.label}</div>
+                    <div style={{
+                      textAlign: "center", minWidth: isMobile ? 48 : 64,
+                      padding: "6px 8px 4px", borderRadius: 6,
+                      background: m.isCurrent ? "rgba(59,130,246,0.06)" : "transparent",
+                      border: m.isCurrent ? "1px solid rgba(59,130,246,0.12)" : "none",
+                      animation: `fadeSlideUp 0.3s ${0.2 + i * 0.05}s cubic-bezier(0.16,1,0.3,1) both`,
+                    }}>
+                      <div style={{ fontSize: isMobile ? 8 : 10, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 4, letterSpacing: "0.2px" }}>{m.label}</div>
                       <div style={{
-                        width: 28, height: 28, borderRadius: "50%", margin: "3px auto",
+                        width: 32, height: 32, borderRadius: "50%", margin: "0 auto",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        background: m.isCurrent ? "rgba(59,130,246,0.15)" : m.status === "CLOSED" ? "rgba(239,68,68,0.15)" : "rgba(34,197,94,0.15)",
-                        border: m.isCurrent ? "2px solid rgba(59,130,246,0.4)" : m.status === "CLOSED" ? "2px solid rgba(239,68,68,0.4)" : "2px solid rgba(34,197,94,0.4)",
-                        boxShadow: m.isCurrent ? "0 0 12px rgba(59,130,246,0.25)" : m.status === "CLOSED" ? "0 0 10px rgba(239,68,68,0.2)" : "0 0 10px rgba(34,197,94,0.2)",
-                        fontSize: 15, color: m.color, fontWeight: 800,
+                        background: m.isCurrent
+                          ? "linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.08))"
+                          : m.status === "CLOSED"
+                            ? "linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.08))"
+                            : "linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.08))",
+                        border: m.isCurrent
+                          ? "2px solid rgba(59,130,246,0.5)"
+                          : m.status === "CLOSED"
+                            ? "2px solid rgba(239,68,68,0.5)"
+                            : "2px solid rgba(34,197,94,0.5)",
+                        boxShadow: m.isCurrent
+                          ? "0 0 20px rgba(59,130,246,0.3), inset 0 0 6px rgba(59,130,246,0.1)"
+                          : m.status === "CLOSED"
+                            ? "0 0 14px rgba(239,68,68,0.25), inset 0 0 4px rgba(239,68,68,0.08)"
+                            : "0 0 14px rgba(34,197,94,0.25), inset 0 0 4px rgba(34,197,94,0.08)",
+                        fontSize: isMobile ? 12 : 14, color: m.color, fontWeight: 800,
                         transition: "transform 0.2s ease, box-shadow 0.2s ease",
                       }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.15)"; e.currentTarget.style.boxShadow = `0 0 20px ${m.color}44`; }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.2)"; e.currentTarget.style.boxShadow = `0 0 28px ${m.color}44, inset 0 0 8px ${m.color}15`; }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
                       >●</div>
-                      <div style={{ fontSize: 11, color: m.color, fontWeight: 600, letterSpacing: "0.2px" }}>{m.status}</div>
+                      <div style={{ fontSize: 11, color: m.color, fontWeight: 700, marginTop: 4, textShadow: `0 0 6px ${m.color}33` }}>{m.status}</div>
                     </div>
                     {i < patternNodes.length - 1 && (
-                      <div style={{ fontSize: 16, color: "var(--text-tertiary)", marginTop: -10, animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both" }}>→</div>
+                      <div style={{
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        marginTop: isMobile ? -16 : -18, gap: 0,
+                        animation: "fadeSlideUp 0.3s 0.45s cubic-bezier(0.16,1,0.3,1) both",
+                      }}>
+                        <svg width={isMobile ? 20 : 28} height={isMobile ? 18 : 22} viewBox="0 0 28 22" fill="none">
+                          <line x1="0" y1="11" x2="24" y2="11" stroke={`rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.2)`} strokeWidth="1.5" strokeDasharray="3 2" />
+                          <polygon points="24,6 28,11 24,16" fill={`rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.3)`} />
+                        </svg>
+                      </div>
                     )}
                   </React.Fragment>
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: "center", padding: "10px", fontSize: 13, color: "var(--text-tertiary)", fontStyle: "italic" }}>
+              <div style={{ textAlign: "center", padding: "12px", fontSize: 13, color: "var(--text-tertiary)", fontStyle: "italic" }}>
                 No historical MRs from this branch yet — first occurrence
               </div>
             )}
-            <div style={{ textAlign: "center", fontSize: 13, color: "var(--text-secondary)", marginTop: 6 }}>
+            <div style={{ textAlign: "center", fontSize: 14, color: "var(--text-primary)", marginTop: 8, fontWeight: 500 }}>
               {closedCount > 0
-                ? <><strong style={{ color: "#ef4444", fontSize: 18, fontFamily: "'JetBrains Mono', monospace" }}>{closedCount}</strong> of {totalCount} prior MRs closed without merge</>  
+                ? <><span style={{ fontWeight: 300, color: "var(--text-secondary)" }}>Result: </span><strong style={{ color: "#ef4444", fontSize: 20, fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 8px rgba(239,68,68,0.3)" }}>{closedCount}</strong><span style={{ color: "var(--text-secondary)" }}> of </span><strong style={{ color: "#fff", fontSize: 20, fontFamily: "'JetBrains Mono', monospace" }}>{totalCount}</strong><span style={{ color: "var(--text-secondary)" }}> prior MRs closed without merge</span></>
                 : closedCount === 0 && totalCount > 0
                   ? <><strong style={{ color: "#22c55e", fontSize: 18, fontFamily: "'JetBrains Mono', monospace" }}>{mergedCount}/{totalCount}</strong> prior MRs merged — risk driven by graph signals</>
                   : <span style={{ color: "var(--text-tertiary)" }}>No branch history — prediction from graph analysis only</span>
               }
             </div>
           </div>
-          
-          {/* Prediction */}
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8, marginBottom: 14 }}>
+
+          {/* ── OUTCOME PREDICTION ── */}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, marginBottom: 16 }}>
+            {/* No Action */}
             <div style={{
-              padding: isMobile ? "10px 12px" : "12px 16px", borderRadius: 8, textAlign: "center",
-              background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)",
-              boxShadow: "0 0 16px rgba(239,68,68,0.1)",
-              transition: "transform 0.2s ease",
+              padding: isMobile ? "12px 14px" : "14px 18px", borderRadius: 10, textAlign: "center", position: "relative",
+              background: "linear-gradient(135deg, rgba(239,68,68,0.10), rgba(0,0,0,0.2), rgba(239,68,68,0.04))",
+              border: "1px solid rgba(239,68,68,0.25)",
+              boxShadow: "0 0 20px rgba(239,68,68,0.12), inset 0 0 12px rgba(239,68,68,0.04)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              overflow: "hidden",
             }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 0 32px rgba(239,68,68,0.2), inset 0 0 16px rgba(239,68,68,0.06)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 0 20px rgba(239,68,68,0.12), inset 0 0 12px rgba(239,68,68,0.04)"; }}
             >
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#ef4444", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>If No Action</div>
-              <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(239,68,68,0.4)" }}>Closed</div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 3 }}>within 7 days</div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>{closeRate}% probability</div>
+              <div style={{
+                position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)",
+                padding: "1px 14px", borderRadius: 10,
+                background: "linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.06))",
+                border: "1px solid rgba(239,68,68,0.2)",
+              }}>
+                <span style={{ fontSize: 10, fontWeight: 900, letterSpacing: "1.5px", textTransform: "uppercase", color: "#ef4444", textShadow: "0 0 8px rgba(239,68,68,0.3)" }}>
+                  If No Action
+                </span>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <div style={{ fontSize: isMobile ? 22 : 26, fontWeight: 900, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(239,68,68,0.5), 0 0 60px rgba(239,68,68,0.15)" }}>
+                  Closed
+                </div>
+                <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4, fontWeight: 600 }}>within 7 days</div>
+                <div style={{ marginTop: 6, display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                  <div style={{
+                    height: 4, flex: 1, maxWidth: 120, borderRadius: 2,
+                    background: "rgba(0,0,0,0.3)", overflow: "hidden",
+                  }}>
+                    <div style={{ width: `${closeRate}%`, height: "100%", background: "linear-gradient(90deg, #ef444488, #ef4444)", borderRadius: 2, boxShadow: "0 0 6px rgba(239,68,68,0.3)" }} />
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: "#ef4444", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 6px rgba(239,68,68,0.2)" }}>{closeRate}%</span>
+                </div>
+              </div>
             </div>
+            {/* With Mitigations */}
             <div style={{
-              padding: "12px 16px", borderRadius: 8, textAlign: "center",
-              background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)",
-              boxShadow: "0 0 16px rgba(34,197,94,0.12)",
-              transition: "transform 0.2s ease",
+              padding: isMobile ? "12px 14px" : "14px 18px", borderRadius: 10, textAlign: "center", position: "relative",
+              background: "linear-gradient(135deg, rgba(34,197,94,0.10), rgba(0,0,0,0.2), rgba(59,130,246,0.04))",
+              border: "1px solid rgba(34,197,94,0.25)",
+              boxShadow: "0 0 20px rgba(34,197,94,0.15), inset 0 0 12px rgba(34,197,94,0.04)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              overflow: "hidden",
             }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)" }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "none" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 0 32px rgba(34,197,94,0.25), inset 0 0 16px rgba(34,197,94,0.06)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 0 20px rgba(34,197,94,0.15), inset 0 0 12px rgba(34,197,94,0.04)"; }}
             >
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>With Mitigations</div>
-              <div style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(34,197,94,0.4)" }}>88% Merged</div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 3 }}>with CI + reviewer + changes</div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>Risk: {Math.round(riskScore * 100)}% → {Math.max(2, Math.round(Math.round(riskScore * 100) * 0.18))}%</div>
+              <div style={{
+                position: "absolute", top: -8, left: "50%", transform: "translateX(-50%)",
+                padding: "1px 14px", borderRadius: 10,
+                background: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.06))",
+                border: "1px solid rgba(34,197,94,0.2)",
+              }}>
+                <span style={{ fontSize: 10, fontWeight: 900, letterSpacing: "1.5px", textTransform: "uppercase", color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)" }}>
+                  With Mitigations
+                </span>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <div style={{ fontSize: isMobile ? 22 : 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(34,197,94,0.5), 0 0 60px rgba(34,197,94,0.15)" }}>
+                  88% Merged
+                </div>
+                <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4, fontWeight: 600 }}>with CI + reviewer + changes</div>
+                <div style={{ fontSize: 13, color: "var(--text-primary)", marginTop: 6, fontWeight: 500 }}>
+                  Risk: <span style={{ color: "#ef4444", fontWeight: 700 }}>{Math.round(riskScore * 100)}%</span>
+                  <span style={{ color: "var(--text-secondary)", margin: "0 4px" }}>→</span>
+                  <span style={{ color: "#22c55e", fontWeight: 700 }}>{Math.max(2, Math.round(Math.round(riskScore * 100) * 0.18))}%</span>
+                </div>
+              </div>
             </div>
           </div>
-          
-          {/* Evidence Sources */}
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "center" }}>
+
+          {/* ── EVIDENCE SOURCES ── */}
+          <div style={{
+            padding: "10px 14px", borderRadius: 8,
+            background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(0,0,0,0.15))",
+            border: "1px solid rgba(96,165,250,0.12)",
+            display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: 8, alignItems: "center",
+          }}>
             <div>
-              <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 3 }}>Evidence Sources</div>
-              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+              <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 4 }}>
+                Evidence Sources
+              </div>
+              <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                 {["Traversal", "Historical Similarity", "Neighbors", "Path Finding"].map(src => (
                   <div key={src} style={{
-                    padding: "2px 7px", borderRadius: 4,
-                    background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)",
-                    fontSize: 12, color: "#22c55e", fontWeight: 600,
-                  }}>✓ {src}</div>
+                    padding: "2px 8px", borderRadius: 4,
+                    background: "linear-gradient(135deg, rgba(34,197,94,0.10), rgba(34,197,94,0.04))",
+                    border: "1px solid rgba(34,197,94,0.2)",
+                    fontSize: 12, color: "#22c55e", fontWeight: 700, letterSpacing: "0.2px",
+                    textShadow: "0 0 4px rgba(34,197,94,0.15)",
+                  }}>
+                    <span style={{ filter: "drop-shadow(0 0 3px rgba(34,197,94,0.3))" }}>✓</span> {src}
+                  </div>
                 ))}
               </div>
             </div>
             <div style={{
-              padding: "5px 12px", borderRadius: 6,
-              background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)",
-              fontSize: 12, color: "var(--text-tertiary)", maxWidth: 240,
+              padding: "4px 12px", borderRadius: 6,
+              background: "linear-gradient(135deg, rgba(96,165,250,0.10), rgba(96,165,250,0.04))",
+              border: "1px solid rgba(96,165,250,0.15)",
+              textAlign: "center",
             }}>
-              <strong style={{ color: "var(--accent-blue)" }}>Query Types Used:</strong> All 4 Orbit query types
+              <span style={{ fontSize: 12, color: "var(--text-primary)", fontWeight: 600 }}>
+                <span style={{ color: "var(--accent-blue)" }}>4/4</span> Query Types Used
+              </span>
             </div>
           </div>
         </div>
