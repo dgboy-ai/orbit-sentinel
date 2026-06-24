@@ -46,7 +46,7 @@
 | **4 Orbit query types** | NEIGHBORS + PATH_FINDING + TRAVERSAL + AGGREGATION — all 4 cross-referenced per MR | Single-query or no graph data |
 | **Fallback resilience** | `orbitOrFallback()` on every query — grep-based file analysis when Orbit is down | Fails on Orbit downtime |
 | **Test coverage** | **135 tests** (105 engine + 30 visualizer) — zero `as any` in production code | Minimal or no test suite |
-| **Deployment** | Vercel + Render, Docker Compose, CI/CD (6 jobs, 4 stages) | Manual setup |
+| **Deployment** | Vercel + Render, Docker Compose, CI/CD (8 jobs, 4 stages) | Manual setup |
 | **Onboarding** | Judge's Tour, auto-demo, setup wizard, keyboard shortcuts | No UX |
 
 ---
