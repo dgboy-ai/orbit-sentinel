@@ -67,7 +67,7 @@ export default function SimulateWebhook({ data, dataMode }: { data?: Visualizati
     <div className="card" style={{
       padding: "14px 18px", position: "relative", overflow: "hidden",
       borderColor: running ? "rgba(96,165,250,0.2)" : "var(--overlay-06)",
-      background: running ? "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(15,18,26,0.95))" : undefined,
+      background: running ? "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(var(--bg-card-rgb),0.95))" : undefined,
       animation: "fadeSlideUp 0.5s 0.1s ease both",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>

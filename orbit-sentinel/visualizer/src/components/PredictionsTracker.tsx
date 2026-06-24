@@ -75,7 +75,7 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
               <polygon points={area} fill={`url(#pg-a-${s.color.replace("#", "")})`} />
               <polyline points={pts} fill="none" stroke={s.color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity={0.9} filter={`url(#glow-${s.color.replace("#", "")})`} />
               {s.data.map((v, i) => (
-                <circle key={i} cx={xTick(i)} cy={yTick(v)} r={4.5} fill="rgba(15,18,26,0.95)" stroke={s.color} strokeWidth="2.2" opacity={0.95} />
+                <circle key={i} cx={xTick(i)} cy={yTick(v)} r={4.5} fill="rgba(var(--bg-card-rgb),0.95)" stroke={s.color} strokeWidth="2.2" opacity={0.95} />
               ))}
             </g>
           );
@@ -91,7 +91,7 @@ function DualSparkline({ series, labels, height = 120 }: { series: { data: numbe
                 <g key={`hv-${s.label}`}>
                   <circle cx={xTick(hoverX)} cy={yTick(v)} r={8} fill={s.color} opacity={0.12} />
                   <circle cx={xTick(hoverX)} cy={yTick(v)} r={5} fill={s.color} opacity={0.9} />
-                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={2.5} fill="rgba(15,18,26,0.95)" />
+                  <circle cx={xTick(hoverX)} cy={yTick(v)} r={2.5} fill="rgba(var(--bg-card-rgb),0.95)" />
                 </g>
               );
             })}
@@ -302,7 +302,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* HERO HEADER */}
       <div className="card" style={{
         padding: isMobile ? "18px 18px" : "22px 24px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(59,130,246,0.1), rgba(15,18,26,0.96), rgba(139,92,246,0.06))",
+        background: "linear-gradient(135deg, rgba(59,130,246,0.1), rgba(var(--bg-card-rgb),0.96), rgba(139,92,246,0.06))",
         border: "1px solid rgba(59,130,246,0.2)",
         boxShadow: "0 0 40px rgba(59,130,246,0.08)",
         ...fadeIn(0),
@@ -377,7 +377,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         {/* CLOSED-LOOP ENGINE */}
         <div style={{
           padding: "12px 16px", borderRadius: 8, position: "relative", overflow: "hidden",
-          background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.96))",
+          background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(var(--bg-card-rgb),0.96))",
           border: "1px solid rgba(139,92,246,0.25)",
           boxShadow: "0 0 30px rgba(139,92,246,0.08), inset 0 0 20px rgba(139,92,246,0.03)",
         }}>
@@ -419,7 +419,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         {/* CONFUSION MATRIX — 2x2 grid */}
         <div className="card" style={{
           padding: "14px 16px", position: "relative", overflow: "hidden",
-          background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
+          background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(var(--bg-card-rgb),0.95))",
           border: "1px solid rgba(96,165,250,0.12)",
           boxShadow: "0 0 20px rgba(96,165,250,0.04)",
         }}>
@@ -508,7 +508,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         {/* TREND CHART */}
         <div className="card" style={{
           padding: "14px 16px", position: "relative", overflow: "hidden",
-          background: "linear-gradient(135deg, rgba(59,130,246,0.05), rgba(15,18,26,0.95))",
+          background: "linear-gradient(135deg, rgba(59,130,246,0.05), rgba(var(--bg-card-rgb),0.95))",
           border: "1px solid rgba(59,130,246,0.25)",
           boxShadow: "0 0 30px rgba(59,130,246,0.08), inset 0 0 20px rgba(59,130,246,0.03)",
         }}>
@@ -540,7 +540,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* ACCURACY INSIGHTS */}
       <div className="card" style={{
         padding: "16px 18px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.97), rgba(59,130,246,0.04))",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(var(--bg-card-rgb),0.97), rgba(59,130,246,0.04))",
         border: "1px solid rgba(139,92,246,0.15)",
         boxShadow: "inset 0 0 40px rgba(139,92,246,0.04)",
         ...fadeIn(0.06),
@@ -619,7 +619,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* VULNERABILITY-ADJUSTED PREDICTIONS */}
       <div className="card" style={{
         padding: "14px 16px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(239,68,68,0.05), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(239,68,68,0.05), rgba(var(--bg-card-rgb),0.95))",
         border: "1px solid rgba(239,68,68,0.2)",
         boxShadow: "0 0 24px rgba(239,68,68,0.06), inset 0 0 15px rgba(239,68,68,0.03)",
         ...fadeIn(0.07),
@@ -674,7 +674,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* POST-MERGE VERIFICATION */}
       <div className="card" style={{
         padding: "14px 16px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.05), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.05), rgba(var(--bg-card-rgb),0.95))",
         border: "1px solid rgba(34,197,94,0.2)",
         boxShadow: "0 0 24px rgba(34,197,94,0.06), inset 0 0 15px rgba(34,197,94,0.03)",
         ...fadeIn(0.08),
@@ -767,7 +767,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* MR PREDICTIONS LEDGER */}
       <div className="card" style={{
         padding: "16px 18px", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(var(--bg-card-rgb),0.95))",
         border: "1px solid rgba(96,165,250,0.15)",
         boxShadow: "0 0 24px rgba(96,165,250,0.05), inset 0 0 15px rgba(96,165,250,0.02)",
         ...fadeIn(0.1),
@@ -929,7 +929,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       {/* FOOTER */}
       <div style={{
         padding: "14px 18px", textAlign: "center", position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.96), rgba(139,92,246,0.03))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(var(--bg-card-rgb),0.96), rgba(139,92,246,0.03))",
         borderRadius: 8, border: "1px solid rgba(96,165,250,0.1)",
         ...fadeIn(0.12),
       }}>

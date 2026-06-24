@@ -453,7 +453,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       <div className="card" style={{
         padding: isMobile ? "10px 14px" : "14px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.1)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(var(--bg-card-rgb),0.95))",
         ...fadeIn(0.03),
       }}>
         <GlowOrb color="rgba(96,165,250,0.05)" top="-30%" left="-10%" size={180} />
@@ -530,7 +530,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       <div className="card" style={{
         padding: isMobile ? "10px 12px" : "14px 18px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.1)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.95), rgba(139,92,246,0.02))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(var(--bg-card-rgb),0.95), rgba(139,92,246,0.02))",
         ...fadeIn(0.06),
       }}>
         <GlowOrb color="rgba(96,165,250,0.06)" top="-35%" left="-5%" size={200} />
@@ -555,7 +555,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             ].map((st, i) => (
               <div key={st.type} style={{
                 padding: "10px 12px", borderRadius: 8, position: "relative", overflow: "hidden",
-                background: `linear-gradient(135deg, ${st.color}0c, rgba(15,18,26,0.9))`,
+                background: `linear-gradient(135deg, ${st.color}0c, rgba(var(--bg-card-rgb),0.9))`,
                 border: `1px solid ${st.color}28`,
                 boxShadow: `0 0 16px ${st.color}0a`,
                 animation: `fadeSlideUp 0.3s ${0.06 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
@@ -625,7 +625,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
               <div key={signal.type} className="card" style={{
                 padding: isMobile ? "8px 10px" : "12px 14px", position: "relative", overflow: "hidden",
                 borderColor: `${signal.color}25`,
-                background: `linear-gradient(135deg, ${signal.color}0a, rgba(15,18,26,0.9), ${signal.color}04)`,
+                background: `linear-gradient(135deg, ${signal.color}0a, rgba(var(--bg-card-rgb),0.9), ${signal.color}04)`,
                 boxShadow: `0 0 16px ${signal.color}0c`,
                 animation: `fadeSlideUp 0.3s ${0.12 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both`,
                 transition: "all 0.2s ease",
@@ -748,7 +748,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       <div className="card" style={{
         padding: isMobile ? "12px 14px" : "16px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.18)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.05), rgba(15,18,26,0.95), rgba(139,92,246,0.03))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.05), rgba(var(--bg-card-rgb),0.95), rgba(139,92,246,0.03))",
         boxShadow: "0 0 24px rgba(96,165,250,0.06)",
         ...fadeIn(0.08),
       }}>
@@ -765,7 +765,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
             {queryConfidence.map(q => (
               <div key={q.type} style={{
                 padding: isSmall ? "4px 8px" : "7px 12px", borderRadius: 6,
-                background: `linear-gradient(135deg, ${q.color}0a, rgba(15,18,26,0.9))`,
+                background: `linear-gradient(135deg, ${q.color}0a, rgba(var(--bg-card-rgb),0.9))`,
                 border: `1px solid ${q.color}20`,
                 boxShadow: `0 0 10px ${q.color}08`,
                 display: "flex", alignItems: "center", gap: 10,
@@ -856,7 +856,7 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       <div className="card" style={{
         padding: isMobile ? "12px 14px" : "18px 22px", position: "relative", overflow: "hidden",
         borderColor: "rgba(34,197,94,0.12)",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(15,18,26,0.95), rgba(59,130,246,0.02))",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(var(--bg-card-rgb),0.95), rgba(59,130,246,0.02))",
         ...fadeIn(0.18),
       }}>
         <GlowOrb color="rgba(34,197,94,0.08)" top="-30%" right="-10%" size={isMobile ? 120 : 200} />

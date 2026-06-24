@@ -148,7 +148,7 @@ function MissionStep({ data }: { data?: any }) {
       <div style={{
         position: "relative", overflow: "hidden",
         padding: "22px 24px", borderRadius: 12,
-        background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(15,18,26,0.95), rgba(45,212,191,0.04))",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(var(--bg-card-rgb),0.95), rgba(45,212,191,0.04))",
         border: "1px solid rgba(139,92,246,0.15)",
         boxShadow: "0 0 40px rgba(139,92,246,0.06)",
         ...s(0),
@@ -181,7 +181,7 @@ function MissionStep({ data }: { data?: any }) {
       <div className="card" style={{
         padding: "18px 22px", position: "relative", overflow: "hidden",
         borderColor: "rgba(239,68,68,0.12)",
-        background: "linear-gradient(135deg, rgba(239,68,68,0.03), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(239,68,68,0.03), rgba(var(--bg-card-rgb),0.95))",
         ...s(0.06),
       }}>
         <div style={{
@@ -225,7 +225,7 @@ function MissionStep({ data }: { data?: any }) {
       <div className="card" style={{
         padding: "18px 22px", position: "relative", overflow: "hidden",
         borderColor: `${TEAL}18`,
-        background: `linear-gradient(135deg, ${TEAL_BG}, rgba(15,18,26,0.95))`,
+        background: `linear-gradient(135deg, ${TEAL_BG}, rgba(var(--bg-card-rgb),0.95))`,
         ...s(0.12),
       }}>
         <div style={{
@@ -276,7 +276,7 @@ function MissionStep({ data }: { data?: any }) {
       <div className="card" style={{
         padding: "18px 22px", position: "relative", overflow: "hidden",
         borderColor: "rgba(34,197,94,0.10)",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.03), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.03), rgba(var(--bg-card-rgb),0.95))",
         ...s(0.18),
       }}>
         <div style={{
@@ -382,7 +382,7 @@ function ArchitectureStep() {
         {layers.map((layer, i) => (
           <div key={layer.title} className="card" style={{
             padding: "14px 16px", borderColor: `${layer.color}18`,
-            background: `linear-gradient(135deg, ${layer.color}06, rgba(15,18,26,0.95))`,
+            background: `linear-gradient(135deg, ${layer.color}06, rgba(var(--bg-card-rgb),0.95))`,
             ...s(0.06 + i * 0.04),
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
@@ -408,7 +408,7 @@ function ArchitectureStep() {
 
       <div className="card" style={{
         padding: "14px 18px", borderColor: "rgba(96,165,250,0.12)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(var(--bg-card-rgb),0.95))",
         ...s(0.2),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
@@ -473,7 +473,7 @@ function SetupStep() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{
         padding: "14px 18px", borderRadius: 10, ...s(0),
-        background: "linear-gradient(135deg, rgba(45,212,191,0.06), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(45,212,191,0.06), rgba(var(--bg-card-rgb),0.95))",
         border: "1px solid rgba(45,212,191,0.12)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -528,7 +528,7 @@ function SetupStep() {
 
       <div className="card" style={{
         padding: "12px 16px", borderColor: "rgba(34,197,94,0.12)",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(var(--bg-card-rgb),0.95))",
         ...s(0.16),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -571,7 +571,7 @@ function LaunchStep() {
       <div className="card" style={{
         padding: "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(45,212,191,0.2)",
-        background: `linear-gradient(135deg, ${TEAL_BG}, rgba(15,18,26,0.95), rgba(45,212,191,0.03))`,
+        background: `linear-gradient(135deg, ${TEAL_BG}, rgba(var(--bg-card-rgb),0.95), rgba(45,212,191,0.03))`,
         ...s(0),
       }}>
         <GlowDot color="rgba(45,212,191,0.08)" top="-40%" left="-10%" size={250} />
@@ -630,7 +630,7 @@ function LaunchStep() {
 
       <div className="card" style={{
         padding: "14px 18px", borderColor: "rgba(34,197,94,0.12)",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.04), rgba(var(--bg-card-rgb),0.95))",
         ...s(0.16),
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -657,7 +657,7 @@ function WinsStep() {
       <div className="card" style={{
         padding: "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(139,92,246,0.25)",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.98), rgba(96,165,250,0.02))",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(var(--bg-card-rgb),0.98), rgba(96,165,250,0.02))",
         ...s(0),
       }}>
         <GlowDot color="rgba(139,92,246,0.08)" top="-30%" left="30%" size={250} />

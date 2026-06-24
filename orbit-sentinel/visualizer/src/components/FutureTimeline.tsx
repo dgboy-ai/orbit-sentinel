@@ -31,7 +31,7 @@ export default function FutureTimeline({ events, confidence }: { events: FutureT
     <div className="card" style={{
       padding: 20, display: "flex", flexDirection: "column",
       height: "100%", position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(15,18,26,0.98))",
+      background: "linear-gradient(135deg, rgba(96,165,250,0.03), rgba(var(--bg-card-rgb),0.98))",
       borderColor: "var(--overlay-06)",
     }}>
       <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(96,165,250,0.05)", filter: "blur(60px)", pointerEvents: "none" }} />

@@ -66,7 +66,7 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
       padding: 20, display: "flex", flexDirection: "column",
       height: "100%", position: "relative", overflow: "hidden",
       animation: "fadeSlideUp 0.5s ease",
-      background: `linear-gradient(135deg, ${isBroken ? "rgba(239,68,68,0.03)" : "rgba(34,197,94,0.03)"}, rgba(15,18,26,0.98))`,
+      background: `linear-gradient(135deg, ${isBroken ? "rgba(239,68,68,0.03)" : "rgba(34,197,94,0.03)"}, rgba(var(--bg-card-rgb),0.98))`,
       borderColor: isBroken ? "rgba(239,68,68,0.1)" : "var(--overlay-06)",
     }}>
       <div style={{ position: "absolute", top: -50, right: -50, width: 220, height: 220, borderRadius: "50%", background: isBroken ? "rgba(239,68,68,0.05)" : "rgba(34,197,94,0.04)", filter: "blur(70px)", pointerEvents: "none" }} />
@@ -105,7 +105,7 @@ export default function PathBrokenAnimation({ mrIid = 10, evidence }: { mrIid?: 
                 background: step.broken && visible > i
                   ? "linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.03))"
                   : visible > i
-                  ? "linear-gradient(135deg, var(--overlay-02), rgba(15,18,26,0.9))"
+                  ? "linear-gradient(135deg, var(--overlay-02), rgba(var(--bg-card-rgb),0.9))"
                   : "transparent",
                 border: step.broken && visible > i
                   ? "1px solid rgba(239,68,68,0.25)"

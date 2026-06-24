@@ -120,7 +120,7 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
       <div className="card" style={{
         padding: "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(45,212,191,0.25)",
-        background: "linear-gradient(135deg, rgba(45,212,191,0.06), rgba(15,18,26,0.95), rgba(96,165,250,0.04))",
+        background: "linear-gradient(135deg, rgba(45,212,191,0.06), rgba(var(--bg-card-rgb),0.95), rgba(96,165,250,0.04))",
         boxShadow: "0 0 30px rgba(45,212,191,0.06)",
         ...s(0),
       }}>
@@ -267,7 +267,7 @@ export default function ImpactCalculator({ riskScore, evidenceCount, counterfact
       <div className="card" style={{
         padding: "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.2)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(var(--bg-card-rgb),0.95))",
         boxShadow: "0 0 24px rgba(96,165,250,0.04)",
         ...s(0.06),
       }}>

@@ -54,7 +54,7 @@ export default function ProblemSection() {
   return (
     <div className="card" style={{
       padding: 0, overflow: "hidden",
-      background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(15,18,26,0.98))",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.04), rgba(var(--bg-card-rgb),0.98))",
       animation: "fadeSlideUp 0.5s 0.1s ease both",
       position: "relative",
       border: "1px solid rgba(139,92,246,0.1)",

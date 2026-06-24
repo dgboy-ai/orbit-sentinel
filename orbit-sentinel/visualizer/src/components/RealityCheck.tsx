@@ -26,7 +26,7 @@ export default function RealityCheck() {
     <div className="card" style={{
       padding: "20px", position: "relative", overflow: "hidden",
       borderColor: "rgba(139,92,246,0.25)",
-      background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(15,18,26,0.96), rgba(59,130,246,0.04))",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.06), rgba(var(--bg-card-rgb),0.96), rgba(59,130,246,0.04))",
       boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(139,92,246,0.08)",
       animation: "fadeSlideUp 0.5s 0.08s ease both",
     }}>

@@ -13,7 +13,7 @@ export function exportAsHtml(data: VisualizationData) {
       h3 { font-size: 13px; color: #a78bfa; margin: 16px 0 6px; }
       .meta { color: rgba(255,255,255,0.45); font-size: 11px; margin-bottom: 24px; }
       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
-      .card { background: rgba(15,18,26,0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; }
+      .card { background: rgba(var(--bg-card-rgb),0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; }
       .card h4 { font-size: 12px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
       .card .value { font-size: 20px; font-weight: 700; color: #e8e8ed; }
       ul { padding-left: 18px; font-size: 12px; color: rgba(255,255,255,0.6); }

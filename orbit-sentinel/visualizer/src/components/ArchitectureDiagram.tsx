@@ -47,10 +47,10 @@ function ArchNodeCard({ node, index, selected, onSelect }: {
       <div style={{
         width: 50, height: 50, borderRadius: 14, cursor: "pointer",
         background: isOpen
-          ? `linear-gradient(135deg, ${node.color}22, ${node.color}0a, rgba(15,18,26,0.6))`
+          ? `linear-gradient(135deg, ${node.color}22, ${node.color}0a, rgba(var(--bg-card-rgb),0.6))`
           : hovered
-          ? `linear-gradient(135deg, ${node.color}0e, rgba(15,18,26,0.5))`
-          : "linear-gradient(135deg, var(--overlay-03), rgba(15,18,26,0.4))",
+          ? `linear-gradient(135deg, ${node.color}0e, rgba(var(--bg-card-rgb),0.5))`
+          : "linear-gradient(135deg, var(--overlay-03), rgba(var(--bg-card-rgb),0.4))",
         border: isOpen
           ? `1.5px solid ${node.color}55`
           : hovered
@@ -172,7 +172,7 @@ export default function ArchitectureDiagram() {
     <div className="card" style={{
       padding: "16px 20px",
       borderColor: "rgba(139,92,246,0.08)",
-      background: "linear-gradient(135deg, rgba(139,92,246,0.03), rgba(15,18,26,0.95))",
+      background: "linear-gradient(135deg, rgba(139,92,246,0.03), rgba(var(--bg-card-rgb),0.95))",
       animation: mounted ? "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both" : "none",
       position: "relative", overflow: "hidden",
     }}>

@@ -355,7 +355,7 @@ const [predictions, setPredictions] = useState<PredictionRecord[]>(() => {
   }, [startDemo]);
 
   const onTourNavigate = useCallback((stepIndex: number) => {
-    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "predictions", "overview", "setup", "overview"];
+    const tourViews: View[] = ["overview", "overview", "overview", "blast-radius", "risk", "overview", "overview", "simulation", "historical", "predictions", "overview", "setup", "report", "overview"];
     if (stepIndex < tourViews.length) {
       setView(tourViews[stepIndex]);
     }

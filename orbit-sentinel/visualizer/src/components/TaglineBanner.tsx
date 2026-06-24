@@ -5,7 +5,7 @@ export default function TaglineBanner() {
     <div className="card" style={{
       padding: "16px 18px", display: "flex", flexDirection: "column",
       justifyContent: "center", maxWidth: 260, flexShrink: 0, position: "relative", overflow: "hidden",
-      background: "linear-gradient(145deg, rgba(59,130,246,0.08), rgba(139,92,246,0.06), rgba(15,18,26,0.95))",
+      background: "linear-gradient(145deg, rgba(59,130,246,0.08), rgba(139,92,246,0.06), rgba(var(--bg-card-rgb),0.95))",
       border: "1px solid rgba(59,130,246,0.2)",
       boxShadow: "0 0 30px rgba(59,130,246,0.06), inset 0 0 40px rgba(59,130,246,0.02)",
       animation: "fadeSlideDown 0.5s 0.1s ease both",

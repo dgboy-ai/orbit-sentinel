@@ -21,7 +21,7 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
       padding: 20, display: "flex", flexDirection: "column",
       animation: "fadeSlideUp 0.5s 0.1s ease both", height: "100%", overflow: "auto",
       position: "relative", borderColor: "var(--overlay-06)",
-      background: "linear-gradient(135deg, rgba(249,115,22,0.04), rgba(15,18,26,0.98))",
+      background: "linear-gradient(135deg, rgba(249,115,22,0.04), rgba(var(--bg-card-rgb),0.98))",
     }}>
       <div style={{ position: "absolute", top: -40, left: -40, width: 200, height: 200, borderRadius: "50%", background: `${verdict.color}08`, filter: "blur(70px)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: -30, right: -30, width: 140, height: 140, borderRadius: "50%", background: "rgba(59,130,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
@@ -79,7 +79,7 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
         {/* Actions Required */}
         <div style={{
           padding: "10px 14px", borderRadius: 8, marginBottom: 8, flex: 1,
-          background: "linear-gradient(135deg, var(--overlay-02), rgba(15,18,26,0.8))",
+          background: "linear-gradient(135deg, var(--overlay-02), rgba(var(--bg-card-rgb),0.8))",
           border: "1px solid var(--overlay-06)",
         }}>
           <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 5 }}>
@@ -115,7 +115,7 @@ export default function DecisionCenter({ d }: { d: DecisionCenterData }) {
         {/* Risk After Mitigation */}
         <div style={{
           padding: "10px 14px", borderRadius: 8, marginTop: "auto",
-          background: `linear-gradient(135deg, ${aftCol}08, rgba(15,18,26,0.8))`,
+          background: `linear-gradient(135deg, ${aftCol}08, rgba(var(--bg-card-rgb),0.8))`,
           border: `1px solid ${aftCol}18`,
         }}>
           <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", marginBottom: 5 }}>

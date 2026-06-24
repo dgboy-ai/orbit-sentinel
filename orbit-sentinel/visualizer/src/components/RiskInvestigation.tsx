@@ -156,7 +156,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
   const config = isLow ? {
     color: "#22c55e",
-    bg: "linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(34,197,94,0.02) 100%)",
+    bg: "linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(34,197,94,0.02) 100%)",
     border: "rgba(34,197,94,0.25)",
     glow: "rgba(34,197,94,0.12)",
     predictedOutcome: "Safe to Deploy",
@@ -174,7 +174,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     ],
   } : isMedium ? {
     color: "#eab308",
-    bg: "linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(234,179,8,0.02) 100%)",
+    bg: "linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(234,179,8,0.02) 100%)",
     border: "rgba(234,179,8,0.25)",
     glow: "rgba(234,179,8,0.12)",
     predictedOutcome: "Needs Review",
@@ -192,7 +192,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
     ],
   } : {
     color: "#ef4444",
-    bg: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(15,18,26,0.9) 50%, rgba(239,68,68,0.02) 100%)",
+    bg: "linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(var(--bg-card-rgb),0.9) 50%, rgba(239,68,68,0.02) 100%)",
     border: "rgba(239,68,68,0.25)",
     glow: "rgba(239,68,68,0.12)",
     predictedOutcome: "Will Not Reach Production",
@@ -385,7 +385,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       <div className="card" style={{
         padding: isMobile ? "18px 20px" : "28px 32px", position: "relative", overflow: "hidden",
         borderColor: `color-mix(in srgb, ${config.color} 40%, transparent)`,
-        background: `linear-gradient(135deg, ${config.color}10 0%, rgba(15,18,26,0.92) 50%, ${config.color}05 100%)`,
+        background: `linear-gradient(135deg, ${config.color}10 0%, rgba(var(--bg-card-rgb),0.92) 50%, ${config.color}05 100%)`,
         boxShadow: `inset 0 0 80px ${config.glow}, 0 0 60px ${config.glow}`,
         ...fadeIn(0),
       }}>
@@ -466,7 +466,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       <div className="card" style={{
         padding: isMobile ? "14px 16px" : "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "var(--overlay-06)",
-        background: `linear-gradient(135deg, ${config.color}08, rgba(15,18,26,0.95), ${config.color}03)`,
+        background: `linear-gradient(135deg, ${config.color}08, rgba(var(--bg-card-rgb),0.95), ${config.color}03)`,
         boxShadow: `inset 0 0 40px ${config.glow}`,
         ...fadeIn(0.04),
       }}>
@@ -554,7 +554,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       <div className="card" style={{
         padding: isMobile ? "14px 16px" : "22px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.2)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(15,18,26,0.96), rgba(139,92,246,0.05))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(var(--bg-card-rgb),0.96), rgba(139,92,246,0.05))",
         boxShadow: "inset 0 0 60px rgba(96,165,250,0.06)",
         ...fadeIn(0.05),
       }}>
@@ -659,7 +659,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
               {/* Score gauge card */}
               <div style={{
                 padding: "14px 16px", borderRadius: 8,
-                background: "linear-gradient(135deg, rgba(0,0,0,0.35), rgba(15,18,26,0.8))",
+                background: "linear-gradient(135deg, rgba(0,0,0,0.35), rgba(var(--bg-card-rgb),0.8))",
                 border: "1px solid rgba(255,255,255,0.06)",
                 animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
               }}>
@@ -764,7 +764,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       {/* ORBIT CONCLUSION */}
       <div style={{
         padding: "14px 20px", borderRadius: 10,
-        background: `linear-gradient(135deg, ${config.color}10, rgba(15,18,26,0.9), rgba(139,92,246,0.04))`,
+        background: `linear-gradient(135deg, ${config.color}10, rgba(var(--bg-card-rgb),0.9), rgba(139,92,246,0.04))`,
         border: `1px solid ${config.color}25`,
         display: "flex", alignItems: "center", gap: 10,
         boxShadow: `0 0 30px ${config.glow}`,
@@ -783,7 +783,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
       <div className="card" style={{
         padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
         borderColor: `color-mix(in srgb, ${config.color} 50%, transparent)`,
-        background: `linear-gradient(135deg, ${config.color}12 0%, rgba(15,18,26,0.92) 50%, ${config.color}06 100%)`,
+        background: `linear-gradient(135deg, ${config.color}12 0%, rgba(var(--bg-card-rgb),0.92) 50%, ${config.color}06 100%)`,
         boxShadow: `inset 0 0 60px ${config.glow}, 0 0 40px ${config.glow}`,
         ...fadeIn(0.2),
       }}>

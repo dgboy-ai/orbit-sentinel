@@ -192,7 +192,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       <div className="card" style={{
         padding: isMobile ? "16px 18px" : "20px 24px", position: "relative", overflow: "hidden",
         borderColor: "rgba(139,92,246,0.35)",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(15,18,26,0.96), rgba(59,130,246,0.06))",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(var(--bg-card-rgb),0.96), rgba(59,130,246,0.06))",
         animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)",
         boxShadow: "0 0 40px rgba(139,92,246,0.08), inset 0 0 50px rgba(59,130,246,0.03)",
       }}>
@@ -242,7 +242,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       <div className="card" style={{
         padding: isMobile ? "12px 14px" : "14px 18px", position: "relative", overflow: "hidden",
         borderColor: "rgba(234,179,8,0.3)",
-        background: "linear-gradient(135deg, rgba(234,179,8,0.06), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(234,179,8,0.06), rgba(var(--bg-card-rgb),0.95))",
         animation: "fadeSlideUp 0.4s 0.04s cubic-bezier(0.16,1,0.3,1) both",
         boxShadow: "0 0 30px rgba(234,179,8,0.06), inset 0 0 20px rgba(234,179,8,0.03)",
       }}>
@@ -303,8 +303,8 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               padding: "13px 18px", position: "relative", overflow: "hidden",
               borderColor: isHovered ? `${caseColor}55` : `${caseColor}30`,
               background: isHovered
-                ? `linear-gradient(135deg, ${caseColor}18, rgba(15,18,26,0.95), ${caseColor}08)`
-                : `linear-gradient(135deg, ${caseColor}0a, rgba(15,18,26,0.95))`,
+                ? `linear-gradient(135deg, ${caseColor}18, rgba(var(--bg-card-rgb),0.95), ${caseColor}08)`
+                : `linear-gradient(135deg, ${caseColor}0a, rgba(var(--bg-card-rgb),0.95))`,
               boxShadow: isHovered ? `0 0 30px ${caseColor}30, inset 0 0 12px ${caseColor}10` : `0 0 16px ${caseColor}18, inset 0 0 4px ${caseColor}06`,
               transform: isHovered ? "translateY(-1px)" : "none",
               transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
@@ -366,7 +366,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       <div className="card" style={{
         padding: "12px 16px", position: "relative", overflow: "hidden",
         borderColor: "rgba(34,197,94,0.3)",
-        background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(15,18,26,0.95))",
+        background: "linear-gradient(135deg, rgba(34,197,94,0.06), rgba(var(--bg-card-rgb),0.95))",
         boxShadow: "0 0 16px rgba(34,197,94,0.15)",
         animation: "fadeSlideUp 0.45s 0.2s cubic-bezier(0.16,1,0.3,1) both",
       }}>
@@ -417,7 +417,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       <div className="card" style={{
         padding: "14px 18px", position: "relative", overflow: "hidden",
         borderColor: "rgba(96,165,250,0.35)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(15,18,26,0.98), rgba(139,92,246,0.04))",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.06), rgba(var(--bg-card-rgb),0.98), rgba(139,92,246,0.04))",
         boxShadow: "0 0 24px rgba(96,165,250,0.15), inset 0 0 12px rgba(96,165,250,0.04)",
         animation: "fadeSlideUp 0.45s 0.25s cubic-bezier(0.16,1,0.3,1) both",
       }}>
@@ -467,7 +467,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       }}>
         <div style={{
           padding: "9px 12px", borderRadius: 6, textAlign: "center",
-          background: "linear-gradient(135deg, var(--overlay-04), rgba(15,18,26,0.95))",
+          background: "linear-gradient(135deg, var(--overlay-04), rgba(var(--bg-card-rgb),0.95))",
           border: "1px solid var(--overlay-10)",
           boxShadow: "0 0 12px var(--overlay-06), inset 0 0 4px var(--overlay-04)",
           transition: "transform 0.2s ease, box-shadow 0.2s ease",
@@ -506,7 +506,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
       <div className="card" style={{
         padding: "14px 18px", position: "relative", overflow: "hidden",
         borderColor: "rgba(167,139,250,0.3)",
-        background: "linear-gradient(135deg, rgba(167,139,250,0.06), rgba(15,18,26,0.97), rgba(59,130,246,0.04))",
+        background: "linear-gradient(135deg, rgba(167,139,250,0.06), rgba(var(--bg-card-rgb),0.97), rgba(59,130,246,0.04))",
         boxShadow: "0 0 20px rgba(167,139,250,0.15), inset 0 0 10px rgba(167,139,250,0.03)",
         animation: "fadeSlideUp 0.45s 0.34s cubic-bezier(0.16,1,0.3,1) both",
       }}>
@@ -563,7 +563,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
         padding: isMobile ? "18px 16px" : "28px 32px", position: "relative", overflow: "hidden",
         borderRadius: 14,
         border: `2px solid rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.4)`,
-        background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.12), rgba(15,18,26,0.98), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.06))`,
+        background: `linear-gradient(135deg, rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.12), rgba(var(--bg-card-rgb),0.98), rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.06))`,
         boxShadow: `0 0 60px rgba(${closeRate > 70 ? "239,68,68" : "34,197,94"},0.25), inset 0 0 30px var(--overlay-02)`,
         opacity: verdictVisible ? 1 : 0,
         transform: verdictVisible ? "translateY(0)" : "translateY(16px)",

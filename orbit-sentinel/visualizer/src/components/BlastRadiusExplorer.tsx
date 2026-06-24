@@ -433,7 +433,7 @@ export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
       <div className="card" style={{
         padding: "16px 20px", position: "relative", overflow: "hidden",
         borderColor: "rgba(249,115,22,0.3)",
-        background: "linear-gradient(135deg, rgba(249,115,22,0.06), rgba(15,18,26,0.95), rgba(59,130,246,0.04))",
+        background: "linear-gradient(135deg, rgba(249,115,22,0.06), rgba(var(--bg-card-rgb),0.95), rgba(59,130,246,0.04))",
         boxShadow: "0 0 24px rgba(249,115,22,0.08)",
         animation: "fadeSlideUp 0.4s ease",
       }}>
