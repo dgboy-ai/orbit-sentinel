@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type { OrbitQueryEvidence, FutureTimelineEvent, CounterfactualScenario, DecisionCenterData } from "../types";
 import { riskScoreToColor, riskScoreToGlow } from "../utils/colors";
-import TiltCard from "./TiltCard";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 
 interface Props {
@@ -15,6 +14,7 @@ interface Props {
   mrIid: number;
   pipelinesTotal: number;
   failureCount?: number;
+  dataMode?: "live" | "demo";
 }
 
 interface ScenarioDetail {
@@ -141,7 +141,7 @@ function ScenarioCard({ s, active, onClick, touched, onTouch }: { s: ScenarioDet
   );
 }
 
-export default function ForecastEngine({ evidence, futureTimeline, decisionCenter, confidence, riskScore, riskLevel, mrIid, pipelinesTotal, failureCount: fc, counterfactuals }: Props) {
+export default function ForecastEngine({ evidence, futureTimeline, decisionCenter, confidence, riskScore, riskLevel, mrIid, pipelinesTotal, failureCount: fc, counterfactuals, dataMode }: Props) {
   const [activeScenario, setActiveScenario] = useState<string>("current");
   const [animRisk, setAnimRisk] = useState(riskScore);
   const [touchedCard, setTouchedCard] = useState<string | null>(null);
@@ -285,126 +285,178 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "0 2px" }}>
-      {/* HERO FORECAST */}
-      <TiltCard maxTilt={3} glare={false}>
+      {/* HERO FORECAST — Premium redesign */}
       <div className="card" style={{
         padding: isMobile ? "16px 18px" : "24px 28px", position: "relative", overflow: "hidden",
-        borderColor: `${curCol}33`,
-        background: `linear-gradient(135deg, ${curCol}08 0%, rgba(15,18,26,0.9) 50%, rgba(96,165,250,0.03) 100%)`,
-        transition: "border-color 0.5s ease, background 0.5s ease",
-        ...fadeIn(0),
+        borderColor: `${curCol}44`,
+        background: `linear-gradient(135deg, ${curCol}10 0%, rgba(10,12,20,0.95) 50%, rgba(59,130,246,0.04) 100%)`,
+        boxShadow: `0 0 40px ${curCol}10, inset 0 0 60px ${curCol}04`,
       }}>
-        <GlowOrb color={`${curCol}22`} top="-30%" left="-5%" size={isMobile ? 200 : 320} />
-        <GlowOrb color="rgba(96,165,250,0.1)" top="50%" right="-10%" size={isMobile ? 120 : 200} />
+        <div style={{ position: "absolute", top: -80, left: -60, width: 400, height: 400, borderRadius: "50%", background: `${curCol}12`, filter: "blur(80px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -40, right: -20, width: 250, height: 250, borderRadius: "50%", background: "rgba(59,130,246,0.06)", filter: "blur(60px)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
+          {/* Header row */}
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Forecast Engine</span>
-                <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace" }}>v2.0</span>
-                <span style={{ fontSize: 12, padding: "1px 7px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>● Live</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{
+                  fontSize: 13, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase",
+                  padding: "3px 10px", borderRadius: 4,
+                  background: "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(139,92,246,0.08))",
+                  border: "1px solid rgba(96,165,250,0.2)",
+                  color: "var(--accent-blue)",
+                  boxShadow: "0 0 12px rgba(96,165,250,0.08)",
+                }}>Forecast Engine</span>
+                <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.5px" }}>v2.0</span>
+                {dataMode && (
+                  <span style={{
+                    fontSize: 11, fontWeight: 700, letterSpacing: "0.5px", padding: "2px 8px", borderRadius: 3,
+                    background: dataMode === "live" ? "rgba(34,197,94,0.12)" : "rgba(167,139,250,0.12)",
+                    color: dataMode === "live" ? "#22c55e" : "#a78bfa",
+                    border: `1px solid ${dataMode === "live" ? "rgba(34,197,94,0.2)" : "rgba(167,139,250,0.2)"}`,
+                    textTransform: "uppercase",
+                  }}>{dataMode === "live" ? "● LIVE" : "◆ DEMO"}</span>
+                )}
               </div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 10, letterSpacing: "-0.3px" }}>
+              <div style={{ fontSize: isMobile ? 22 : 30, fontWeight: 800, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: 12, letterSpacing: "-0.3px" }}>
                 🧪 Digital Twin Forecast
-                <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0", marginLeft: 4 }}>MR !{mrIid}</span>
+                <span style={{ fontSize: 16, fontWeight: 600, color: "var(--text-tertiary)", letterSpacing: "0", fontFamily: "'JetBrains Mono', monospace" }}>MR !{mrIid}</span>
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 1 }}>Orbit Confidence</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 20px rgba(59,130,246,0.3)" }}>{confidence.split(" ")[0]}</div>
+              <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.8px", textTransform: "uppercase", marginBottom: 2 }}>Orbit Confidence</div>
+              <div style={{
+                fontSize: isMobile ? 22 : 30, fontWeight: 800, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace",
+                textShadow: "0 0 24px rgba(59,130,246,0.3)",
+              }}>{confidence.split(" ")[0]}</div>
             </div>
           </div>
-          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${curCol}22, transparent)`, margin: "0 0 10px 0" }} />
-          {/* Live Data Badge */}
-          <div style={{ display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" }}>
+          <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${curCol}33, transparent)`, margin: "0 0 14px 0" }} />
+          {/* Metric badges with glow */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
             {[
-              { label: "Nodes", value: totalNodes, color: "var(--accent-blue)" },
-              { label: "Edges", value: totalEdges, color: "#a78bfa" },
-              { label: "Queries", value: evidence.length, color: "#22c55e" },
-              { label: "Pipelines", value: pipelinesTotal.toLocaleString("en-US"), color: "#f97316" },
+              { label: "Nodes", value: totalNodes, color: "var(--accent-blue)", glow: "rgba(59,130,246,0.2)" },
+              { label: "Edges", value: totalEdges, color: "#a78bfa", glow: "rgba(167,139,250,0.2)" },
+              { label: "Queries", value: evidence.length, color: "#22c55e", glow: "rgba(34,197,94,0.2)" },
+              { label: "Pipelines", value: pipelinesTotal.toLocaleString("en-US"), color: "#f97316", glow: "rgba(249,115,22,0.2)" },
             ].map(d => (
-              <div key={d.label} style={{ padding: "4px 10px", borderRadius: 5, background: "var(--overlay-03)", border: "1px solid var(--overlay-06)", display: "flex", alignItems: "center", gap: 5 }}>
-                <span style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 600, letterSpacing: "0.3px" }}>{d.label}</span>
-                <span style={{ fontSize: 18, fontWeight: 800, color: d.color, fontFamily: "'JetBrains Mono', monospace" }}>{d.value}</span>
+              <div key={d.label} style={{
+                padding: "6px 12px", borderRadius: 6,
+                background: `${d.color}08`, border: `1px solid ${d.color}20`,
+                display: "flex", alignItems: "center", gap: 6,
+                boxShadow: `0 0 12px ${d.glow}`,
+                transition: "all 0.2s ease",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 0 20px ${d.glow}`; e.currentTarget.style.borderColor = `${d.color}44`; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = `0 0 12px ${d.glow}`; e.currentTarget.style.borderColor = `${d.color}20`; }}
+              >
+                <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.3px" }}>{d.label}</span>
+                <span style={{
+                  fontSize: 20, fontWeight: 800, color: d.color, fontFamily: "'JetBrains Mono', monospace",
+                  textShadow: `0 0 10px ${d.glow}`,
+                }}>{d.value}</span>
               </div>
             ))}
           </div>
-          {/* THREE-DIMENSION RISK BREAKDOWN — separates code risk, process risk, and outcome */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12 }}>
-            {/* Row 1: Operational Risk (code/graph) */}
+          {/* THREE-DIMENSION RISK BREAKDOWN */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+            {/* Row 1: Operational Risk */}
             <div style={{
-              padding: "8px 12px", borderRadius: 8,
-              background: "linear-gradient(135deg, rgba(0,0,0,0.25), rgba(0,0,0,0.1))",
-              border: "1px solid var(--overlay-05)",
-              display: "flex", alignItems: "center", gap: 10,
-            }}>
-              <div style={{ width: 110, flexShrink: 0 }}>
+              padding: "10px 14px", borderRadius: 8,
+              background: "linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.12))",
+              border: `1px solid ${gaugeColor}22`,
+              display: "flex", alignItems: "center", gap: 12,
+              boxShadow: `inset 0 0 20px ${gaugeColor}04`,
+              transition: "all 0.3s ease",
+            }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = `${gaugeColor}44`; e.currentTarget.style.background = "linear-gradient(135deg, rgba(0,0,0,0.35), rgba(0,0,0,0.15))"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = `${gaugeColor}22`; e.currentTarget.style.background = "linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.12))"; }}
+            >
+              <div style={{ width: 120, flexShrink: 0 }}>
                 <div style={{ fontSize: 11, color: "var(--text-tertiary)", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Operational Risk</div>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>Code changes · Graph health</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic", opacity: 0.7 }}>Code changes · Graph health</div>
               </div>
-              <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--overlay-05)", overflow: "hidden" }}>
+              <div style={{ flex: 1, height: 8, borderRadius: 4, background: "var(--overlay-05)", overflow: "hidden", position: "relative" }}>
                 <div style={{
-                  width: `${animRisk * 100}%`, height: "100%", borderRadius: 3,
+                  width: `${animRisk * 100}%`, height: "100%", borderRadius: 4,
                   background: `linear-gradient(90deg, ${riskScoreToColor(Math.max(animRisk - 0.2, 0))}, ${gaugeColor})`,
-                  transition: "width 0.1s linear", boxShadow: `0 0 8px ${riskScoreToGlow(animRisk)}`,
+                  transition: "width 0.1s linear",
+                  boxShadow: `0 0 12px ${riskScoreToGlow(animRisk)}`,
                 }} />
               </div>
-              <div style={{ fontSize: isMobile ? 14 : 16, fontWeight: 800, color: gaugeColor, fontFamily: "'JetBrains Mono', monospace", transition: "color 0.1s linear", width: 38, textAlign: "right", flexShrink: 0, textShadow: `0 0 12px ${riskScoreToGlow(animRisk)}` }}>
+              <div style={{
+                fontSize: isMobile ? 14 : 18, fontWeight: 800, color: gaugeColor, fontFamily: "'JetBrains Mono', monospace",
+                width: 42, textAlign: "right", flexShrink: 0,
+                textShadow: `0 0 14px ${riskScoreToGlow(animRisk)}`,
+                transition: "all 0.1s linear",
+              }}>
                 {(animRisk * 100).toFixed(0)}%
               </div>
             </div>
-
-            {/* Row 2: Process Risk (pipeline/reviewer/draft) */}
+            {/* Row 2: Process Risk */}
             <div style={{
-              padding: "8px 12px", borderRadius: 8,
-              background: "linear-gradient(135deg, rgba(239,68,68,0.05), rgba(0,0,0,0.1))",
-              border: "1px solid rgba(239,68,68,0.12)",
-              display: "flex", alignItems: "center", gap: 10,
+              padding: "10px 14px", borderRadius: 8,
+              background: "linear-gradient(135deg, rgba(239,68,68,0.06), rgba(0,0,0,0.15))",
+              border: "1px solid rgba(239,68,68,0.15)",
+              display: "flex", alignItems: "center", gap: 12,
+              boxShadow: "inset 0 0 20px rgba(239,68,68,0.04)",
             }}>
-              <div style={{ width: 110, flexShrink: 0 }}>
+              <div style={{ width: 120, flexShrink: 0 }}>
                 <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1 }}>Process Risk</div>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>Workflow blockers</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic", opacity: 0.7 }}>Workflow blockers</div>
               </div>
-              <div style={{ flex: 1, display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
-                {!mrState.hasPipeline && (
-                  <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Pipeline</span>
-                )}
-                <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ No Reviewer</span>
-                {mrState.noChanges && (
-                  <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(234,179,8,0.1)", border: "1px solid rgba(234,179,8,0.2)", color: "#eab308", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>⚠ Empty Diff</span>
-                )}
-                <span style={{ fontSize: 12, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 3 }}>✗ Draft Status</span>
+              <div style={{ flex: 1, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                {[
+                  { show: !mrState.hasPipeline, label: "✗ No Pipeline", color: "#ef4444" },
+                  { show: true, label: "✗ No Reviewer", color: "#ef4444" },
+                  { show: mrState.noChanges, label: "⚠ Empty Diff", color: "#eab308" },
+                  { show: true, label: "✗ Draft Status", color: "#ef4444" },
+                ].filter(b => b.show).map(b => (
+                  <span key={b.label} style={{
+                    fontSize: 12, padding: "3px 8px", borderRadius: 3,
+                    background: `${b.color}12`, border: `1px solid ${b.color}25`,
+                    color: b.color, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 3,
+                    boxShadow: `0 0 6px ${b.color}15`,
+                  }}>{b.label}</span>
+                ))}
               </div>
-              <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, flexShrink: 0 }}>HIGH</div>
+              <div style={{
+                fontSize: 12, color: "#ef4444", fontWeight: 800, flexShrink: 0,
+                padding: "2px 8px", borderRadius: 3, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.15)",
+                letterSpacing: "0.5px",
+                animation: "pulseBadge 2s ease-in-out infinite",
+              }}>HIGH</div>
             </div>
-
             {/* Row 3: Outcome Prediction */}
             <div style={{
-              padding: "8px 12px", borderRadius: 8,
-              background: `linear-gradient(135deg, ${curCol}08, rgba(0,0,0,0.15))`,
-              border: `1px solid ${curCol}22`,
-              display: "flex", alignItems: "center", gap: 10,
+              padding: "10px 14px", borderRadius: 8,
+              background: `linear-gradient(135deg, ${curCol}0C, rgba(0,0,0,0.18))`,
+              border: `1px solid ${curCol}33`,
+              display: "flex", alignItems: "center", gap: 12,
+              boxShadow: `inset 0 0 20px ${curCol}06`,
               transition: "all 0.4s ease",
             }}>
-              <div style={{ width: 110, flexShrink: 0 }}>
+              <div style={{ width: 120, flexShrink: 0 }}>
                 <div style={{ fontSize: 11, color: curCol, fontWeight: 700, letterSpacing: "0.6px", textTransform: "uppercase", marginBottom: 1, transition: "color 0.4s ease" }}>Outcome Prediction</div>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>7-day horizon · {sel.probability}% prob.</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic", opacity: 0.7 }}>7-day horizon · {sel.probability}% prob.</div>
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 800, color: curCol, transition: "color 0.4s ease", display: "flex", alignItems: "center", gap: 6 }}>
-                  <span>{sel.icon}</span>
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sel.outcome}</span>
+                <div style={{ fontSize: isMobile ? 13 : 16, fontWeight: 800, color: curCol, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 20 }}>{sel.icon}</span>
+                  <span style={{
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                    textShadow: `0 0 12px ${curCol}50`,
+                  }}>{sel.outcome}</span>
                 </div>
               </div>
               <div style={{ textAlign: "right", flexShrink: 0 }}>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>{evidence.length} queries</div>
-                <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.3px" }}>4 types</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{evidence.length} queries</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4 types</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      </TiltCard>
 
       {/* LIFECYCLE TIMELINE — 5 stages of MR lifecycle with Orbit prediction */}
       <div className="card" style={{
@@ -766,7 +818,6 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
       </div>
 
       {/* ENGINEERING FUTURES + COST OF INACTION + ORBIT DELTA */}
-      <TiltCard maxTilt={3} glare={false}>
       <div className="card" style={{
         padding: isMobile ? "12px 14px" : "18px 22px", position: "relative", overflow: "hidden",
         borderColor: "rgba(34,197,94,0.12)",
@@ -911,7 +962,6 @@ export default function ForecastEngine({ evidence, futureTimeline, decisionCente
           </div>
         </div>
       </div>
-      </TiltCard>
 
       {/* FOOTNOTE */}
       <div style={{
