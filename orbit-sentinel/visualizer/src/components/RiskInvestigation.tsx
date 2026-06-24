@@ -45,88 +45,99 @@ function EvidenceCard({ card, evidence, isMobile }: { card: CardDef; evidence: O
   const q = evidence.find(e => e.queryType === card.queryType);
   const [touched, setTouched] = useState(false);
   const severityColors = {
-    critical: { dot: "#ef4444", bg: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))", border: "rgba(239,68,68,0.2)", label: "CRITICAL SIGNAL", glow: "rgba(239,68,68,0.15)" },
-    high: { dot: "#f97316", bg: "linear-gradient(135deg, rgba(249,115,22,0.08), rgba(249,115,22,0.02))", border: "rgba(249,115,22,0.2)", label: "HIGH SIGNAL", glow: "rgba(249,115,22,0.15)" },
-    medium: { dot: "#eab308", bg: "linear-gradient(135deg, rgba(234,179,8,0.08), rgba(234,179,8,0.02))", border: "rgba(234,179,8,0.2)", label: "MEDIUM SIGNAL", glow: "rgba(234,179,8,0.15)" },
+    critical: { dot: "#ef4444", bg: "linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.03))", border: "rgba(239,68,68,0.35)", label: "CRITICAL SIGNAL", glow: "rgba(239,68,68,0.25)" },
+    high: { dot: "#f97316", bg: "linear-gradient(135deg, rgba(249,115,22,0.1), rgba(249,115,22,0.03))", border: "rgba(249,115,22,0.3)", label: "HIGH SIGNAL", glow: "rgba(249,115,22,0.2)" },
+    medium: { dot: "#eab308", bg: "linear-gradient(135deg, rgba(234,179,8,0.1), rgba(234,179,8,0.03))", border: "rgba(234,179,8,0.3)", label: "MEDIUM SIGNAL", glow: "rgba(234,179,8,0.2)" },
   };
   const c = severityColors[card.severity];
   return (
     <div style={{
-      padding: isMobile ? "12px 14px" : "16px 18px", borderRadius: 12, position: "relative", overflow: "hidden",
-      background: touched ? `${c.dot}12` : c.bg, border: `1px solid ${touched ? c.dot : c.border}`,
+      padding: isMobile ? "12px 14px" : "16px 18px", borderRadius: 10, position: "relative", overflow: "hidden",
+      background: touched ? `${c.dot}18` : c.bg, border: `1px solid ${touched ? c.dot : c.border}`,
+      boxShadow: touched ? `0 0 30px ${c.glow}, inset 0 0 20px ${c.glow}` : `0 0 16px ${c.glow}`,
       animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1) both",
       display: "flex", flexDirection: "column", gap: 8,
       transition: "border-color 0.2s ease, box-shadow 0.2s ease",
       WebkitTapHighlightColor: "transparent",
     }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = c.dot; e.currentTarget.style.boxShadow = `0 0 24px ${c.glow}`; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = "none"; }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = c.dot; e.currentTarget.style.boxShadow = `0 0 40px ${c.glow}, inset 0 0 30px ${c.glow}`; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.boxShadow = `0 0 16px ${c.glow}`; }}
       onTouchStart={() => setTouched(true)} onTouchEnd={() => setTouched(false)}
     >
-      <GlowOrb color={c.glow} top="-30%" left="-20%" size={140} />
+      {/* Left accent bar */}
+      <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: c.dot, boxShadow: `0 0 10px ${c.dot}`, borderRadius: "2px 0 0 2px" }} />
+      <GlowOrb color={c.glow} top="-25%" left="-15%" size={120} />
       <div style={{ position: "relative", zIndex: 1 }}>
+        {/* Header row: severity icon + label + title */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
           <span style={{
             width: 28, height: 28, borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19,
-            background: `${c.dot}18`, border: `1px solid ${c.dot}33`,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17,
+            background: `${c.dot}20`, border: `1px solid ${c.dot}44`,
+            boxShadow: `0 0 8px ${c.glow}`,
           }}>
             {card.severity === "critical" ? "🔴" : card.severity === "high" ? "🟠" : "🟡"}
           </span>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: c.dot, marginBottom: 1 }}>{c.label}</div>
-            <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: "var(--text-primary)" }}>{card.title}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: c.dot, marginBottom: 1, textShadow: `0 0 8px ${c.glow}` }}>{c.label}</div>
+            <div style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "var(--text-primary)" }}>{card.title}</div>
           </div>
         </div>
 
+        {/* Badge row */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 6 }}>
           <span style={{
-            fontSize: 13, padding: "2px 8px", borderRadius: 4,
-            background: "rgba(96,165,250,0.1)", color: "var(--accent-blue)",
-            border: "1px solid rgba(96,165,250,0.15)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
+            fontSize: 12, padding: "2px 8px", borderRadius: 4,
+            background: "rgba(96,165,250,0.12)", color: "#93c5fd",
+            border: "1px solid rgba(96,165,250,0.2)", fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
+            textShadow: "0 0 6px rgba(96,165,250,0.3)",
           }}>
             {card.evidenceSource}
           </span>
           {q && (
             <span style={{
-              fontSize: 13, padding: "2px 8px", borderRadius: 4,
-              background: `${c.dot}12`, color: c.dot,
-              border: `1px solid ${c.dot}22`, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
+              fontSize: 12, padding: "2px 8px", borderRadius: 4,
+              background: `${c.dot}15`, color: c.dot,
+              border: `1px solid ${c.dot}30`, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600,
+              textShadow: `0 0 6px ${c.glow}`,
             }}>
               {q.queryType}
             </span>
           )}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "60px 1fr", gap: "3px 8px", fontSize: isMobile ? 10 : 11, lineHeight: 1.5 }}>
-          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 13 }}>Finding</span>
-          <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{card.finding}</span>
-          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 13 }}>Orbit Evidence</span>
-          <span style={{ color: "var(--accent-blue)", fontWeight: 500, fontFamily: "'JetBrains Mono', monospace", fontSize: 14 }}>{card.orbitEvidence}</span>
-          <span style={{ color: "var(--text-tertiary)", fontWeight: 500, fontSize: 13 }}>Impact</span>
-          <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{card.impact}</span>
+        {/* Detail grid */}
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "auto 1fr" : "70px 1fr", gap: "4px 8px", fontSize: 14, lineHeight: 1.5 }}>
+          <span style={{ color: "var(--text-tertiary)", fontWeight: 600, fontSize: 12, letterSpacing: "0.3px", textTransform: "uppercase" }}>Finding</span>
+          <span style={{ color: "var(--text-primary)", fontWeight: 500, fontSize: 14 }}>{card.finding}</span>
+          <span style={{ color: "var(--text-tertiary)", fontWeight: 600, fontSize: 12, letterSpacing: "0.3px", textTransform: "uppercase" }}>Orbit Evidence</span>
+          <span style={{ color: "#93c5fd", fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", fontSize: 14, textShadow: "0 0 8px rgba(96,165,250,0.3)" }}>{card.orbitEvidence}</span>
+          <span style={{ color: "var(--text-tertiary)", fontWeight: 600, fontSize: 12, letterSpacing: "0.3px", textTransform: "uppercase" }}>Impact</span>
+          <span style={{ color: "var(--text-primary)", fontWeight: 500, fontSize: 14 }}>{card.impact}</span>
         </div>
 
+        {/* Raw query result */}
         {q && (
           <div style={{
-            padding: "5px 10px", borderRadius: 5, marginTop: 4,
-            background: "rgba(0,0,0,0.2)", borderLeft: `2px solid ${c.dot}33`,
-            fontSize: 13, color: "var(--text-tertiary)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.4, whiteSpace: "pre-line",
+            padding: "6px 10px", borderRadius: 5, marginTop: 5,
+            background: "rgba(0,0,0,0.3)", borderLeft: `2px solid ${c.dot}55`,
+            fontSize: 13, color: "var(--text-secondary)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.5, whiteSpace: "pre-line",
           }}>
             {q.result}
           </div>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: "var(--overlay-05)", overflow: "hidden" }}>
+        {/* Confidence bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 5 }}>
+          <div style={{ flex: 1, height: 5, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden", boxShadow: "inset 0 1px 2px rgba(0,0,0,0.3)" }}>
             <div style={{
-              width: `${card.confidence}%`, height: "100%", borderRadius: 2,
-              background: `linear-gradient(90deg, ${c.dot}, ${c.dot}88)`,
+              width: `${card.confidence}%`, height: "100%", borderRadius: 3,
+              background: `linear-gradient(90deg, ${c.dot}, ${c.dot}bb)`,
               transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)",
-              boxShadow: `0 0 6px ${c.dot}44`,
+              boxShadow: `0 0 8px ${c.dot}66`,
             }} />
           </div>
-          <span style={{ fontSize: 15, fontWeight: 700, color: c.dot, fontFamily: "'JetBrains Mono', monospace" }}>{card.confidence}%</span>
+          <span style={{ fontSize: 16, fontWeight: 800, color: c.dot, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 8px ${c.glow}` }}>{card.confidence}%</span>
         </div>
       </div>
     </div>
