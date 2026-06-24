@@ -131,7 +131,7 @@ describe("DataModeBanner", () => {
   it("renders demo mode", () => {
     render(<DataModeBanner mode="demo" />);
     expect(screen.getByText("Demo")).toBeInTheDocument();
-    expect(screen.getByText("Representative scenario — engine live via Analyze button")).toBeInTheDocument();
+    expect(screen.getByText("Use MR Analyzer Live for real data")).toBeInTheDocument();
   });
 
   it("renders loading mode with animation", () => {
