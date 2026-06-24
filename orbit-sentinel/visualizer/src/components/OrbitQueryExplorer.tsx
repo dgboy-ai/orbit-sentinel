@@ -109,31 +109,49 @@ export default function OrbitQueryExplorer({ evidence, onRefresh }: OrbitQueryEx
               {current.result}
             </div>
 
-            {/* Visual query type indicator */}
-            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+            {/* Query status strip — which queries ran */}
+            <div style={{
+              display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 4,
+              padding: "4px 0",
+            }}>
               {QUERY_ORDER.map(qt => {
                 const m = QUERY_META[qt];
                 const exists = ordered.find(e => e.queryType === qt);
                 const isActive = current.queryType === qt;
                 return (
-                  <span key={qt} style={{
-                    fontSize: 12, padding: "1px 5px", borderRadius: 3,
-                    background: exists ? (isActive ? m.color + "22" : "var(--overlay-03)") : "var(--overlay-02)",
-                    color: exists ? (isActive ? m.color : "var(--text-tertiary)") : "var(--text-tertiary)",
-                    border: isActive ? `1px solid ${m.color}44` : "1px solid transparent",
-                    fontWeight: isActive ? 600 : 400,
+                  <div key={qt} style={{
+                    padding: "5px 6px", borderRadius: 4, textAlign: "center",
+                    background: exists ? (isActive ? `${m.color}18` : "var(--overlay-02)") : "var(--overlay-02)",
+                    border: isActive ? `1px solid ${m.color}30` : "1px solid transparent",
                     opacity: exists ? 1 : 0.4,
-                    textDecoration: exists ? "none" : "line-through",
                   }}>
-                    {m.icon} {qt}
-                  </span>
+                    <div style={{ fontSize: 13, marginBottom: 1 }}>{m.icon}</div>
+                    <div style={{
+                      fontSize: 9, fontWeight: isActive ? 700 : 500,
+                      color: exists ? (isActive ? m.color : "var(--text-tertiary)") : "var(--text-tertiary)",
+                      fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.3px",
+                    }}>{qt}</div>
+                    <div style={{
+                      fontSize: 8, color: exists ? (isActive ? m.color + "88" : "var(--text-tertiary)") : "var(--text-tertiary)",
+                      marginTop: 1,
+                    }}>{exists ? (isActive ? "● active" : "✓ loaded") : "—"}</div>
+                  </div>
                 );
               })}
             </div>
 
-            {/* Query JSON preview — shows there's a real query behind the scenes */}
-            <details style={{ fontSize: 13, color: "var(--text-tertiary)" }}>
-              <summary style={{ cursor: "pointer", padding: "2px 0", fontWeight: 600 }}>View raw Orbit query payload</summary>
+            {/* View raw query payload — styled button */}
+            <details style={{
+              fontSize: 13, color: "var(--text-tertiary)", marginTop: 2,
+            }}>
+              <summary style={{
+                cursor: "pointer", padding: "5px 10px", borderRadius: 4,
+                background: "var(--overlay-02)", border: "1px solid var(--overlay-04)",
+                fontWeight: 600, fontSize: 12, color: "var(--text-secondary)",
+                display: "flex", alignItems: "center", gap: 5,
+              }}>
+                <span style={{ fontSize: 11 }}>📦</span> View raw Orbit query payload
+              </summary>
               <pre style={{
                 marginTop: 4, padding: "8px 10px", borderRadius: 4, fontSize: 13, lineHeight: 1.5,
                 background: "rgba(0,0,0,0.3)", border: "1px solid var(--border)",

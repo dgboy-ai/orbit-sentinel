@@ -793,8 +793,9 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
             boxShadow: `0 0 16px ${config.glow}`,
             animation: "fadeSlideUp 0.3s 0.22s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase", textShadow: `0 0 12px ${config.glow}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <span style={{ fontSize: 15, fontWeight: 800, color: config.color, letterSpacing: "0.5px", textTransform: "uppercase", textShadow: `0 0 12px ${config.glow}`, display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 18 }}>{isLow ? "✅" : isMedium ? "⚠️" : "🚫"}</span>
                 {isLow ? "Why Orbit Approved This MR" : isMedium ? "Why Orbit Flagged This MR" : "Why Orbit Rejected This MR"}
               </span>
               <span style={{
@@ -806,29 +807,96 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
                 {isLow ? "Closure Prob: 0%" : isMedium ? "Closure Prob: 78%" : "Closure Prob: 95%"}
               </span>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 14, color: "var(--text-primary)" }}>
-              {isLow ? (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>1.</span> Change scope is fully isolated in graph</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>2.</span> Head pipeline passed cleanly</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>3.</span> Reviewer approvals received</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(34,197,94,0.05)" }}><span style={{ color: "#22c55e", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4.</span> Zero incident patterns matching files found</div>
-                </>
-              ) : isMedium ? (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>1.</span> Empty changes diff detected</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>2.</span> No pipeline execution triggered</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>3.</span> Branch abandonment history matches 9 prior closed MRs</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(234,179,8,0.05)" }}><span style={{ color: "#eab308", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4.</span> No reviewers assigned to the chain</div>
-                </>
-              ) : (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>1.</span> Deployment path missing in graph twin</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>2.</span> No validated pipeline linked to commit</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>3.</span> Branch abandonment pattern matches 90% risk profile</div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 4, background: "rgba(239,68,68,0.05)" }}><span style={{ color: "#ef4444", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>4.</span> Ownership path or reviewers chain not found</div>
-                </>
-              )}
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
+              {/* LEFT — numbered reasons */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {(() => {
+                  const items = isLow ? [
+                    { num: "1", text: "Change scope is fully isolated in graph", severity: "good" },
+                    { num: "2", text: "Head pipeline passed cleanly", severity: "good" },
+                    { num: "3", text: "Reviewer approvals received", severity: "good" },
+                    { num: "4", text: "Zero incident patterns matching files found", severity: "good" },
+                  ] : isMedium ? [
+                    { num: "1", text: "Empty changes diff detected", severity: "medium" },
+                    { num: "2", text: "No pipeline execution triggered", severity: "medium" },
+                    { num: "3", text: "Branch abandonment history — 9 prior closed MRs", severity: "high" },
+                    { num: "4", text: "No reviewers assigned to the chain", severity: "medium" },
+                  ] : [
+                    { num: "1", text: "Deployment path missing in graph twin", severity: "critical" },
+                    { num: "2", text: "No validated pipeline linked to commit", severity: "critical" },
+                    { num: "3", text: "Branch abandonment pattern — 90% risk profile", severity: "high" },
+                    { num: "4", text: "Ownership or reviewers chain not found", severity: "high" },
+                  ];
+                  const sevColor = (s: string) => s === "critical" ? "#ef4444" : s === "high" ? "#f97316" : s === "medium" ? "#eab308" : "#22c55e";
+                  const sevBg = (s: string) => s === "critical" ? "rgba(239,68,68,0.08)" : s === "high" ? "rgba(249,115,22,0.08)" : s === "medium" ? "rgba(234,179,8,0.08)" : "rgba(34,197,94,0.08)";
+                  const sevBorder = (s: string) => s === "critical" ? "1px solid rgba(239,68,68,0.15)" : s === "high" ? "1px solid rgba(249,115,22,0.15)" : s === "medium" ? "1px solid rgba(234,179,8,0.15)" : "1px solid rgba(34,197,94,0.15)";
+                  const sevDot = (s: string) => s === "critical" ? "🔴" : s === "high" ? "🟠" : s === "medium" ? "🟡" : "🟢";
+                  return items.map((item, i) => (
+                    <div key={item.num} style={{
+                      display: "flex", alignItems: "center", gap: 8,
+                      padding: "6px 10px", borderRadius: 5,
+                      background: sevBg(item.severity),
+                      border: sevBorder(item.severity),
+                      fontSize: 14, color: "var(--text-primary)",
+                      animation: `fadeSlideUp 0.25s ${0.24 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
+                    }}>
+                      <span style={{
+                        width: 22, height: 22, borderRadius: "50%", flexShrink: 0,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 11, fontWeight: 800,
+                        background: sevColor(item.severity) + "20",
+                        color: sevColor(item.severity),
+                        fontFamily: "'JetBrains Mono', monospace",
+                      }}>{item.num}</span>
+                      <span style={{ flex: 1 }}>{item.text}</span>
+                      <span style={{ fontSize: 11, flexShrink: 0 }}>{sevDot(item.severity)}</span>
+                    </div>
+                  ));
+                })()}
+              </div>
+
+              {/* RIGHT — Risk Factor Breakdown */}
+              <div style={{
+                padding: "10px 12px", borderRadius: 6,
+                background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.05)",
+                display: "flex", flexDirection: "column", gap: 6,
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)", letterSpacing: "0.5px", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
+                  <span>📊</span> Risk Factor Breakdown
+                </div>
+                {(() => {
+                  const factors = isLow ? [
+                    { label: "Deployment Path", pct: 5, color: "#22c55e" },
+                    { label: "Code Quality", pct: 10, color: "#22c55e" },
+                    { label: "Historical Risk", pct: 8, color: "#22c55e" },
+                    { label: "Review Coverage", pct: 3, color: "#22c55e" },
+                  ] : isMedium ? [
+                    { label: "Empty Diff", pct: 100, color: "#ef4444" },
+                    { label: "Pipeline Gap", pct: 95, color: "#ef4444" },
+                    { label: "Abandonment History", pct: 90, color: "#f97316" },
+                    { label: "No Reviewer", pct: 75, color: "#eab308" },
+                  ] : [
+                    { label: "No Deployment Path", pct: 100, color: "#ef4444" },
+                    { label: "Pipeline Gap", pct: 95, color: "#ef4444" },
+                    { label: "Abandonment Risk", pct: 90, color: "#f97316" },
+                    { label: "Ownership Missing", pct: 85, color: "#f97316" },
+                  ];
+                  return factors.map((f, i) => (
+                    <div key={f.label} style={{ animation: `fadeSlideUp 0.25s ${0.28 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both` }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
+                        <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500 }}>{f.label}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: f.color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 6px ${f.color}44` }}>{f.pct}%</span>
+                      </div>
+                      <div style={{ height: 5, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden" }}>
+                        <div style={{ width: `${f.pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${f.color}, ${f.color}88)`, boxShadow: `0 0 6px ${f.color}44`, transition: "width 1s ease" }} />
+                      </div>
+                    </div>
+                  ));
+                })()}
+                <div style={{ marginTop: 4, padding: "5px 8px", borderRadius: 4, background: `${config.color}10`, border: `1px solid ${config.color}15`, fontSize: 11, color: config.color, fontWeight: 600, textAlign: "center" }}>
+                  {isLow ? "All factors within safe thresholds" : isMedium ? "Multiple risk factors detected — intervention required" : "Critical risk factors block deployment path"}
+                </div>
+              </div>
             </div>
           </div>
 
