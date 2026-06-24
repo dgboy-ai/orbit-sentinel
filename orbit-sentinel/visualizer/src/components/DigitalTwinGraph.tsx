@@ -286,7 +286,7 @@ export default function DigitalTwinGraph({ graph: propGraph }: Props) {
       <div className="resp-graph-info" style={{
         position:"absolute", top:8, right:8, zIndex:20, width: 210,
         padding: "8px 12px", borderRadius: 8,
-        background: "rgba(8,9,13,0.92)", backdropFilter: "blur(16px)",
+        background: "var(--bg-elevated)", backdropFilter: "blur(16px)",
         border: `1px solid ${selected ? nodeColor(selected) + "44" : "var(--overlay-06)"}`,
         boxShadow: selected ? `0 4px 24px rgba(0,0,0,0.6), 0 0 12px ${nodeColor(selected)}11` : "none",
         animation: "fadeSlideDown 0.2s ease",

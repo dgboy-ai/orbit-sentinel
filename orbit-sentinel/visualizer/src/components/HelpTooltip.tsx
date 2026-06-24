@@ -49,7 +49,7 @@ export default function HelpTooltip({ text, wide }: { text: string; wide?: boole
           ...tooltipStyle,
           zIndex: 1000, width: wide ? 260 : 180,
           padding: "6px 10px", borderRadius: 6,
-          background: "rgba(8,9,13,0.95)", backdropFilter: "blur(12px)",
+          background: "var(--bg-elevated)", backdropFilter: "blur(12px)",
           border: "1px solid var(--overlay-10)",
           boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
           fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.4,

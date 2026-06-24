@@ -49,7 +49,7 @@ export default function OrbitEvidencePanel({ evidence, graph }: { evidence: Orbi
       padding: 22, display: "flex", flexDirection: "column",
       animation: "fadeSlideUp 0.5s 0.05s ease both", height: "100%", overflow: "auto", position: "relative",
       borderColor: isAlert ? "rgba(239,68,68,0.2)" : "var(--overlay-08)",
-      background: "linear-gradient(180deg, var(--bg-card), rgba(8,9,13,0.95))",
+      background: "linear-gradient(180deg, var(--bg-card), var(--bg-elevated))",
     }}>
       <div style={{
         position: "absolute", top: 0, right: 0, width: 200, height: 200, borderRadius: "50%",

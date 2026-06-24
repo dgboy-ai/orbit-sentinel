@@ -480,7 +480,7 @@ export default function ImpactReport({ data }: Props) {
       }}>
         <div className="card" style={{
           padding: "8px 16px", display: "flex", alignItems: "center", gap: 4,
-          background: "rgba(8,9,13,0.85)", backdropFilter: "blur(16px)",
+          background: "var(--bg-elevated)", backdropFilter: "blur(16px)",
         }}>
           <div style={{ display: "flex", gap: 3, flex: 1, overflowX: "auto", whiteSpace: "nowrap", scrollbarWidth: "none", msOverflowStyle: "none" }}>
             {navSections.map(s => (
