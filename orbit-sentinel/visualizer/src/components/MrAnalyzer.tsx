@@ -585,109 +585,136 @@ export default function MrAnalyzer({ onSelectScenario, apiAvailable, currentScen
         </div>
       )}
 
-      {demosHidden ? (
-        <button onClick={() => setDemosHidden(false)}
-          style={{
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            padding: "8px 16px", fontSize: 15, fontWeight: 600, cursor: "pointer",
-            border: "1px dashed rgba(139,92,246,0.2)", borderRadius: 8,
-            background: "rgba(139,92,246,0.04)", color: "#a78bfa",
-            transition: "all 0.2s", width: "100%", position: "relative", zIndex: 1,
-            letterSpacing: "0.3px",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(139,92,246,0.08)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.35)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "rgba(139,92,246,0.04)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)"; }}
-        >
-          <span>🔄</span>
-          Try Another Scenario
-        </button>
-      ) : (
-        <>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, zIndex: 1, position: "relative" }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "1px" }}>⚡ Quick Demos</span>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.2), transparent)" }} />
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, zIndex: 1, position: "relative" }}>
-            {SCENARIOS.map(s => {
-              const active = currentScenario === s.id || currentScenario === s.label;
-              return (
-                <button key={s.id} onClick={() => handlePreset(s)}
-                  style={{
-                    display: "flex", flexDirection: "column", gap: 8,
-                    padding: "14px", fontSize: 14, fontWeight: 600, cursor: "pointer",
-                    textAlign: "left",
-                    border: active
-                      ? `1.5px solid ${s.color}88`
-                      : "1px solid var(--overlay-06)",
-                    borderRadius: 8,
-                    background: active
-                      ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)`
-                      : "var(--overlay-02)",
-                    color: active ? s.color : "var(--text-primary)",
-                    transition: "all 0.2s",
-                    width: "100%",
-                    boxShadow: active ? `0 0 24px ${s.color}18` : "none",
-                    borderTop: active ? `2px solid ${s.color}` : "2px solid transparent",
-                  }}
-                  onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.borderTopColor = s.color; }}}
-                  onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "var(--overlay-02)"; e.currentTarget.style.borderTopColor = "transparent"; }}}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 22 }}>{s.icon}</span>
-                    <span style={{ fontSize: 15, fontWeight: 700 }}>{s.label}</span>
+          {demosHidden ? (
+            <button onClick={() => setDemosHidden(false)}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                padding: "8px 16px", fontSize: 15, fontWeight: 600, cursor: "pointer",
+                border: "1px dashed rgba(139,92,246,0.2)", borderRadius: 8,
+                background: "rgba(139,92,246,0.04)", color: "#a78bfa",
+                transition: "all 0.2s", width: "100%", position: "relative", zIndex: 1,
+                letterSpacing: "0.3px",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(139,92,246,0.08)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.35)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(139,92,246,0.04)"; e.currentTarget.style.borderColor = "rgba(139,92,246,0.2)"; }}
+            >
+              <span>🔄</span>
+              Try Another Scenario
+            </button>
+          ) : (
+            <>
+              {/* Small Box Above MR Analyzer - Current Demo Mode */}
+              <div style={{
+                marginBottom: 16,
+                padding: "10px 14px",
+                borderRadius: 8,
+                background: "rgba(251,146,60,0.06)",
+                border: "1px solid rgba(251,146,60,0.2)",
+                fontSize: 13,
+                color: "var(--text-secondary)",
+                position: "relative",
+                zIndex: 2
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
+                  <div>
+                    <strong>Currently demo mode</strong> — use live demo or check your public/private MR by pasting in input
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 400, color: active ? `${s.color}cc` : "var(--text-tertiary)", lineHeight: 1.4 }}>
-                    {s.description}
-                  </span>
-                  <div style={{ marginTop: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
-                    {s.id === "critical" && <Tag t="7 services at risk" c="#ef4444" />}
-                    {s.id === "critical" && <Tag t="No rollback" c="#ef4444" />}
-                    {s.id === "medium" && <Tag t="Empty diff" c="#eab308" />}
-                    {s.id === "medium" && <Tag t="No pipeline" c="#eab308" />}
-                    {s.id === "safe" && <Tag t="Tests passed" c="#22c55e" />}
-                    {s.id === "safe" && <Tag t="Approved" c="#22c55e" />}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {apiAvailable && (
-            <div style={{ marginTop: 10, zIndex: 1, position: "relative" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
-                <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.2), transparent)" }} />
-              </div>
-              <button onClick={runLiveDemo} disabled={analyzing}
-                style={{
-                  display: "flex", alignItems: "center", gap: 12,
-                  padding: "16px 20px", fontSize: 16, fontWeight: 600, cursor: analyzing ? "not-allowed" : "pointer",
-                  textAlign: "left",
-                  border: "1px solid rgba(34,197,94,0.4)",
-                  borderRadius: 8,
-                  background: "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))",
-                  color: "var(--text-primary)",
-                  transition: "all 0.2s",
-                  width: "100%",
-                  opacity: analyzing ? 0.5 : 1,
-                  boxShadow: "0 0 24px rgba(34,197,94,0.12)",
-                }}
-                onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,197,94,0.06))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.5)"; e.currentTarget.style.boxShadow = "0 0 32px rgba(34,197,94,0.15)"; }}}
-                onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.4)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.12)"; }}}
-              >
-                <span style={{ fontSize: 26 }}>🌐</span>
-                <div style={{ flex: 1, display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700 }}>
-                    {analyzing ? "Running live Orbit queries…" : "Run Live Analysis"}
-                  </span>
-                  <span style={{ fontSize: 13, fontWeight: 400, color: "#22c55e" }}>
-                    Live demo for real MR12 of trueboy — try yours in input section
-                  </span>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", padding: "2px 8px", borderRadius: 4, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)", letterSpacing: "0.5px", textTransform: "uppercase" }}>Live</span>
-                {analyzing && (
-                  <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
-                )}
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, zIndex: 1, position: "relative" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "1px" }}>⚡ Quick Demos</span>
+                <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(139,92,246,0.2), transparent)" }} />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, zIndex: 1, position: "relative" }}>
+                {SCENARIOS.map(s => {
+                  const active2 = currentScenario === s.id || currentScenario === s.label;
+                  return (
+                    <button key={s.id} onClick={() => handlePreset(s)}
+                      style={{
+                        display: "flex", flexDirection: "column", gap: 8,
+                        padding: "14px", fontSize: 14, fontWeight: 600, cursor: "pointer",
+                        textAlign: "left",
+                        border: active2
+                          ? `1.5px solid ${s.color}88`
+                          : "1px solid var(--overlay-06)",
+                        borderRadius: 8,
+                        background: active2
+                          ? `linear-gradient(135deg, ${s.color}15, ${s.color}08)`
+                          : "var(--overlay-02)",
+                        color: active2 ? s.color : "var(--text-primary)",
+                        transition: "all 0.2s",
+                        width: "100%",
+                        boxShadow: active2 ? `0 0 24px ${s.color}18` : "none",
+                        borderTop: active2 ? `2px solid ${s.color}` : "2px solid transparent",
+                      }}
+                      onMouseEnter={e => { if (!active2) { e.currentTarget.style.background = "var(--overlay-04)"; e.currentTarget.style.borderTopColor = s.color; }}}
+                      onMouseLeave={e => { if (!active2) { e.currentTarget.style.background = "var(--overlay-02)"; e.currentTarget.style.borderTopColor = "transparent"; }}}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: 22 }}>{s.icon}</span>
+                        <span style={{ fontSize: 15, fontWeight: 700 }}>{s.label}</span>
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: 400, color: active2 ? `${s.color}cc` : "var(--text-tertiary)", lineHeight: 1.4 }}>
+                        {s.description}
+                      </span>
+                      <div style={{ marginTop: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
+                        {s.id === "critical" && <Tag t="7 services at risk" c="#ef4444" />}
+                        {s.id === "critical" && <Tag t="No rollback" c="#ef44444" />}
+                        {s.id === "medium" && <Tag t="Empty diff" c="#eab308" />}
+                        {s.id === "medium" && <Tag t="No pipeline" c="#eab308" />}
+                        {s.id === "safe" && <Tag t="Tests passed" c="#22c55e" />}
+                        {s.id === "safe" && <Tag t="Approved" c="#22c55e" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {apiAvailable && (
+                <div style={{ marginTop: 10, zIndex: 1, position: "relative" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "1px" }}>🌐 Live Demo</span>
+                    <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(34,197,94,0.2), transparent)" }} />
+                  </div>
+                  <button onClick={runLiveDemo} disabled={analyzing}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 12,
+                      padding: "16px 20px", fontSize: 16, fontWeight: 600, cursor: analyzing ? "not-allowed" : "pointer",
+                      textAlign: "left",
+                      border: "1px solid rgba(34,197,94,0.4)",
+                      borderRadius: 8,
+                      background: "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))",
+                      color: "var(--text-primary)",
+                      transition: "all 0.2s",
+                      width: "100%",
+                      opacity: analyzing ? 0.5 : 1,
+                    }}
+                    onMouseEnter={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(34,197,94,0.06))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.35)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.12)"; }}}
+                    onMouseLeave={e => { if (!analyzing) { e.currentTarget.style.background = "linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04))"; e.currentTarget.style.borderColor = "rgba(34,197,94,0.4)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.12)"; }}}
+                  >
+                    <span style={{ fontSize: 26 }}>🌐</span>
+                    <div style={{ flex: 1, display: "flex", alignItems: "baseline", gap: 8 }}>
+                      <span style={{ fontSize: 16, fontWeight: 700 }}>
+                        {analyzing ? "Running live Orbit queries…" : "Run Live  analysis"}
+                      </span>
+                      <span style={{ fontSize: 13, fontWeight: 400, color: "#22c55e" }}>
+                        Live demo for real MR12 of trueboy — try yours in input section
+                      </span>
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "#22c55e", padding: "2px 8px", borderRadius: 4, background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.2)", letterSpacing: "0.5px", textTransform: "uppercase" }}>Live</span>
+                    {analyzing && (
+                      <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", border: "2px solid rgba(34,197,94,0.3)", borderTopColor: "#22c55e", animation: "spin 0.6s linear infinite" }} />
+                    )}
+                  </button>
+                  <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                    💡 Tip: Use the "● Live Only" filter above to show only your verified MRs
+                  </div>
+                </div>
+              )}
+            </>
+          )}
               </button>
               <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-tertiary)", fontStyle: "italic" }}>
                 💡 Tip: Use the "● Live Only" filter above to show only your verified MRs
