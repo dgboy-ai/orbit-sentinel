@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 import { riskScoreToKey, RISK } from "../utils/colors";
 import { categorizePrediction } from "../utils/predictions";
@@ -228,6 +228,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
   const [filterOutcome, setFilterOutcome] = useState<string>("all");
   const [showOnlyLive, setShowOnlyLive] = useState(false);
   const items = preds ?? [];
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
 
   const displayItems = useMemo(() => {
     if (!showOnlyLive) return items;
@@ -272,7 +274,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
     if (isNaN(iid)) return;
     setVerifying(true);
     setTimeout(() => {
-      const found = items.find(p => p.mrIid === iid);
+      const found = itemsRef.current.find(p => p.mrIid === iid);
       if (found) {
         let outcome = found.actualOutcome === "verified" || found.actualOutcome === "failed" ? found.actualOutcome : null;
         if (!outcome) {
@@ -290,7 +292,7 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
       }
       setVerifying(false);
     }, 1200);
-  }, [verifyMrIid, items, onVerify]);
+  }, [verifyMrIid, onVerify]);
 
   const fadeIn = (delay: number) => ({
     animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
