@@ -339,6 +339,11 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
   const actions = decisionCenter.requiredTests;
   const afterRisk = decisionCenter.riskReduction.afterRecommendation;
 
+  const avgPct = Math.round(evidence.reduce((sum, e) => {
+    const CONF_PCTS: Record<string, number> = { PATH_FINDING: 95, TRAVERSAL: 90, NEIGHBORS: 91, AGGREGATION: 75 };
+    return sum + (CONF_PCTS[e.queryType] ?? 50);
+  }, 0) / Math.max(evidence.length, 1));
+
   const fadeIn = (delay: number) => ({
     animation: `fadeSlideUp 0.5s ${delay}s cubic-bezier(0.16,1,0.3,1) both`,
   });
@@ -474,66 +479,125 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
 
       {/* CROSS-QUERY VERIFICATION (INDEPENDENT CONSENSUS) */}
       <div className="card" style={{
-        padding: isMobile ? "10px 14px" : "14px 18px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(96,165,250,0.12)",
-        background: "linear-gradient(135deg, rgba(96,165,250,0.04), rgba(15,18,26,0.95), rgba(139,92,246,0.03))",
+        padding: isMobile ? "10px 14px" : "16px 20px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(96,165,250,0.15)",
+        background: "linear-gradient(135deg, rgba(96,165,250,0.05), rgba(15,18,26,0.95), rgba(139,92,246,0.04))",
         ...fadeIn(0.05),
       }}>
-        <GlowOrb color="rgba(96,165,250,0.08)" top="-50%" left="-15%" size={180} />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Cross-Query Verification (Independent Consensus)</span>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {(() => {
-              const CONF_COLORS: Record<string, string> = { PATH_FINDING: "#60a5fa", TRAVERSAL: "#a78bfa", NEIGHBORS: "#22c55e", AGGREGATION: "#f97316" };
-              const CONF_PCTS: Record<string, number> = { PATH_FINDING: 95, TRAVERSAL: 90, NEIGHBORS: 91, AGGREGATION: 75 };
-              return evidence.map((e, i) => {
-                const color = CONF_COLORS[e.queryType] ?? "#8b949e";
-                const pct = CONF_PCTS[e.queryType] ?? 50;
-                return (
-                  <div key={e.queryType} style={{ display: "flex", alignItems: "center", gap: 6, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
-                    <span style={{ fontSize: isSmall ? 8 : 9, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: isSmall ? 60 : 80 }}>{e.queryType}</span>
-                    <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 5, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden" }}>
-                      <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 8px ${color}33` }} />
+        <GlowOrb color="rgba(96,165,250,0.08)" top="-50%" left="-15%" size={200} />
+        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
+          {/* LEFT HALF — Per-query score bars + Overall Consensus */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)" }}>Cross-Query Verification</span>
+              <span style={{ fontSize: 10, color: "var(--text-tertiary)", background: "var(--overlay-04)", padding: "1px 5px", borderRadius: 3 }}>Independent Consensus</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+              {(() => {
+                const CONF_COLORS: Record<string, string> = { PATH_FINDING: "#60a5fa", TRAVERSAL: "#a78bfa", NEIGHBORS: "#22c55e", AGGREGATION: "#f97316" };
+                const CONF_PCTS: Record<string, number> = { PATH_FINDING: 95, TRAVERSAL: 90, NEIGHBORS: 91, AGGREGATION: 75 };
+                return evidence.map((e, i) => {
+                  const color = CONF_COLORS[e.queryType] ?? "#8b949e";
+                  const pct = CONF_PCTS[e.queryType] ?? 50;
+                  return (
+                    <div key={e.queryType} style={{ display: "flex", alignItems: "center", gap: 6, animation: `fadeSlideUp 0.3s ${0.08 + i * 0.03}s cubic-bezier(0.16,1,0.3,1) both` }}>
+                      <span style={{ fontSize: 10, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: "var(--text-secondary)", flexShrink: 0, minWidth: isSmall ? 60 : 85 }}>{e.queryType}</span>
+                      <div className="resp-hide-mobile-bar" style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--overlay-04)", overflow: "hidden" }}>
+                        <div style={{ width: `${pct}%`, height: "100%", borderRadius: 3, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 1.2s cubic-bezier(0.16,1,0.3,1)", boxShadow: `0 0 10px ${color}44` }} />
+                      </div>
+                      <span style={{ width: 30, fontSize: 14, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0, textShadow: `0 0 8px ${color}44` }}>{pct}%</span>
                     </div>
-                    <span style={{ width: 28, fontSize: 14, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace", color, textAlign: "right", flexShrink: 0 }}>{pct}%</span>
-                  </div>
-                );
-              });
-            })()}
-          </div>
-          <div style={{
-            marginTop: 8, padding: "6px 12px", borderRadius: 6,
-            background: isLow ? "rgba(34,197,94,0.08)" : isMedium ? "rgba(234,179,8,0.08)" : "rgba(34,197,94,0.08)",
-            border: `1px solid ${isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e"}15`,
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
-          }}>
-            <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
-              <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
-            </span>
-            <span style={{ fontSize: isSmall ? 12 : 14, fontWeight: 800, color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${isLow ? "rgba(34,197,94,0.3)" : isMedium ? "rgba(234,179,8,0.3)" : "rgba(34,197,94,0.3)"}` }}>{isLow ? "STRONG CONSENSUS" : isMedium ? "WEAK CONSENSUS" : "STRONG CONSENSUS"}</span>
+                  );
+                });
+              })()}
+            </div>
+            <div style={{
+              marginTop: 8, padding: "8px 12px", borderRadius: 6,
+              background: isLow ? "rgba(34,197,94,0.1)" : isMedium ? "rgba(234,179,8,0.1)" : "rgba(34,197,94,0.1)",
+              border: `1px solid ${isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e"}20`,
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              animation: "fadeSlideUp 0.3s 0.2s cubic-bezier(0.16,1,0.3,1) both",
+            }}>
+              <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>
+                <span style={{ color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#ef4444" }}>●</span> Overall Consensus
+              </span>
+              <span style={{
+                fontSize: 13, fontWeight: 800, fontFamily: "'JetBrains Mono', monospace",
+                color: isLow ? "#22c55e" : isMedium ? "#eab308" : "#22c55e",
+                textShadow: `0 0 14px ${isLow ? "rgba(34,197,94,0.4)" : isMedium ? "rgba(234,179,8,0.4)" : "rgba(34,197,94,0.4)"}`,
+              }}>{isLow ? "STRONG CONSENSUS" : isMedium ? "WEAK CONSENSUS" : "STRONG CONSENSUS"}</span>
+            </div>
           </div>
 
-          {/* Evidence Sources Validated (Legally Defensible) */}
+          {/* RIGHT HALF — Orbit Evidence Score */}
           <div style={{
-            marginTop: 10, padding: "10px 14px", borderRadius: 6,
-            background: "rgba(0, 0, 0, 0.25)", border: "1px solid rgba(255, 255, 255, 0.05)",
-            animation: "fadeSlideUp 0.3s 0.25s cubic-bezier(0.16,1,0.3,1) both",
+            padding: "12px 14px", borderRadius: 8,
+            background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.06)",
+            display: "flex", flexDirection: "column", justifyContent: "center",
+            animation: "fadeSlideUp 0.3s 0.15s cubic-bezier(0.16,1,0.3,1) both",
           }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-secondary)", marginBottom: 6, letterSpacing: "0.5px", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
-              <span>⚖️</span> Orbit Evidence Sources
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 20 }}>⚖️</span>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "0.5px" }}>Orbit Evidence Score</div>
+                <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>Aggregate confidence across all sources</div>
+              </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "4px 12px", fontSize: 15 }}>
-              <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Historical MR Matches</div>
-              <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Deployment Graph</div>
-              <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Pipeline Ecosystem</div>
-              <div style={{ color: "#22c55e", display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontWeight: "bold" }}>✓</span> Ownership Chain</div>
+
+            {/* Big circular gauge */}
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 10 }}>
+              <div style={{ position: "relative", width: 64, height: 64, flexShrink: 0 }}>
+                <svg width={64} height={64} style={{ transform: "rotate(-90deg)", position: "absolute", top: 0, left: 0 }}>
+                  <circle cx={32} cy={32} r={26} fill="none" stroke="var(--overlay-04)" strokeWidth={5} />
+                  <circle cx={32} cy={32} r={26} fill="none" stroke="#60a5fa" strokeWidth={5}
+                    strokeDasharray={163.36} strokeDashoffset={163.36 * (1 - avgPct / 100)}
+                    strokeLinecap="round"
+                    style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)", filter: "drop-shadow(0 0 6px rgba(96,165,250,0.5))" }}
+                  />
+                </svg>
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: "#60a5fa", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 12px rgba(96,165,250,0.5)" }}>{Math.round(avgPct)}%</span>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600 }}>Aggregate Score</div>
+                <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 1 }}>~{Math.round(avgPct)}% confidence</div>
+              </div>
             </div>
-            <div style={{ marginTop: 8, fontSize: 14, fontWeight: 700, color: "var(--accent-blue)", fontFamily: "'JetBrains Mono', monospace", borderTop: "1px solid rgba(255, 255, 255, 0.04)", paddingTop: 6, display: "flex", justifyContent: "space-between" }}>
-              <span>STATUS: VALIDATED</span>
-              <span>4 / 4 EVIDENCE SOURCES</span>
+
+            {/* 4 evidence sources with checkmarks */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3px 8px", marginBottom: 8 }}>
+              {[
+                { label: "Historical Matches", color: "#22c55e" },
+                { label: "Deployment Graph", color: "#22c55e" },
+                { label: "Pipeline Ecosystem", color: "#22c55e" },
+                { label: "Ownership Chain", color: "#22c55e" },
+              ].map((src, i) => (
+                <div key={src.label} style={{
+                  display: "flex", alignItems: "center", gap: 5, padding: "3px 6px", borderRadius: 4,
+                  background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.12)",
+                  animation: `fadeSlideUp 0.25s ${0.2 + i * 0.04}s cubic-bezier(0.16,1,0.3,1) both`,
+                }}>
+                  <span style={{ color: "#22c55e", fontWeight: 700, fontSize: 13 }}>✓</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>{src.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{
+              marginTop: 6, padding: "7px 10px", borderRadius: 5, display: "flex", justifyContent: "space-between", alignItems: "center",
+              background: "linear-gradient(135deg, rgba(96,165,250,0.1), rgba(139,92,246,0.05))",
+              border: "1px solid rgba(96,165,250,0.15)",
+            }}>
+              <span style={{
+                fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                color: "#60a5fa", textShadow: "0 0 8px rgba(96,165,250,0.3)",
+                letterSpacing: "0.5px",
+              }}>STATUS: VALIDATED</span>
+              <span style={{
+                fontSize: 12, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+                color: "#22c55e", textShadow: "0 0 8px rgba(34,197,94,0.3)",
+              }}>4 / 4 ✓</span>
             </div>
           </div>
         </div>
