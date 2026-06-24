@@ -33,23 +33,30 @@ function AnimatedCounter({ target, suffix = "", duration = 1200, color }: { targ
     }
     requestAnimationFrame(tick);
   }, [target, duration]);
-  return <span style={{ fontSize: 24, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${color}40` }}>{val}{suffix}</span>;
+  return <span style={{ fontSize: 26, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 20px ${color}60, 0 0 60px ${color}20` }}>{val}{suffix}</span>;
 }
 
 function AnimatedStatCard({ label, value, sub, color, target, suffix = "" }: { label: string; value: string; sub?: string; color: string; target?: number; suffix?: string }) {
   return (
     <div style={{
-      padding: "7px 10px", borderRadius: 6, textAlign: "center",
-      background: `linear-gradient(135deg, ${color}12, ${color}04)`,
-      border: `1px solid ${color}25`,
-      boxShadow: `0 0 12px ${color}15`,
+      padding: "10px 12px", borderRadius: 8, textAlign: "center", position: "relative", overflow: "hidden",
+      background: `linear-gradient(145deg, ${color}14, ${color}05)`,
+      border: `1px solid ${color}35`,
+      boxShadow: `0 0 24px ${color}10, inset 0 0 20px ${color}04`,
       animation: "fadeSlideUp 0.3s ease both",
-    }}>
-      {target !== undefined
-        ? <AnimatedCounter target={target} suffix={suffix} color={color} />
-        : <div style={{ fontSize: 24, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 8px ${color}30` }}>{value}</div>}
-      <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 500, marginTop: 1 }}>{label}</div>
-      {sub && <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 0 }}>{sub}</div>}
+      transition: "transform 0.15s, box-shadow 0.15s",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 0 32px ${color}20, inset 0 0 20px ${color}08`; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 0 24px ${color}10, inset 0 0 20px ${color}04`; }}
+    >
+      <div style={{ position: "absolute", top: -20, right: -20, width: 70, height: 70, borderRadius: "50%", background: `${color}06`, pointerEvents: "none" }} />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {target !== undefined
+          ? <AnimatedCounter target={target} suffix={suffix} color={color} />
+          : <div style={{ fontSize: 26, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 18px ${color}50, 0 0 50px ${color}20` }}>{value}</div>}
+        <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, marginTop: 2, lineHeight: 1.2 }}>{label}</div>
+        {sub && <div style={{ fontSize: 11, color: `${color}aa`, marginTop: 1, fontWeight: 500 }}>{sub}</div>}
+      </div>
     </div>
   );
 }
@@ -161,31 +168,47 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "0 2px" }}>
-      {/* HEADER */}
+      {/* HEADER — Repository Memory Intelligence */}
       <div className="card" style={{
-        padding: isMobile ? "14px 16px" : "16px 20px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(139,92,246,0.3)",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(15,18,26,0.95), rgba(59,130,246,0.05))",
+        padding: isMobile ? "16px 18px" : "20px 24px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(139,92,246,0.35)",
+        background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(15,18,26,0.96), rgba(59,130,246,0.06))",
         animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)",
-        boxShadow: "0 0 20px rgba(139,92,246,0.1)",
+        boxShadow: "0 0 40px rgba(139,92,246,0.08), inset 0 0 50px rgba(59,130,246,0.03)",
       }}>
-        <GlowOrb color="rgba(139,92,246,0.08)" top="-40%" left="-10%" size={isMobile ? 160 : 240} />
+        <GlowOrb color="rgba(139,92,246,0.1)" top="-40%" left="-10%" size={isMobile ? 200 : 300} />
+        <GlowOrb color="rgba(59,130,246,0.06)" bottom="-30%" right="-5%" size={isMobile ? 140 : 200} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--accent-blue)", padding: "2px 8px", borderRadius: 4, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.15)" }}>Repository Memory Intelligence</span>
-            <span style={{ fontSize: 11, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.15)", fontWeight: 600, letterSpacing: "0.3px" }}>● Live</span>
+          {/* Badge row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+            <span style={{
+              fontSize: 11, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase",
+              color: "var(--accent-blue)", padding: "3px 10px", borderRadius: 4,
+              background: "linear-gradient(135deg, rgba(96,165,250,0.15), rgba(96,165,250,0.05))",
+              border: "1px solid rgba(96,165,250,0.25)",
+              boxShadow: "0 0 12px rgba(96,165,250,0.06)",
+            }}>Repository Memory Intelligence</span>
+            <span style={{
+              fontSize: 11, padding: "2px 8px", borderRadius: 3,
+              background: "rgba(34,197,94,0.12)", color: "#22c55e",
+              border: "1px solid rgba(34,197,94,0.2)",
+              fontWeight: 700, letterSpacing: "0.3px",
+              textShadow: "0 0 8px rgba(34,197,94,0.3)",
+            }}>● Live</span>
           </div>
-          <div style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.5, marginBottom: 12, maxWidth: "90%" }}>
+          {/* Description */}
+          <div style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 14, maxWidth: "92%" }}>
             Orbit analysed{" "}
-            <strong style={{ color: "var(--text-primary)" }}>{totalCount} historical repository precedents</strong>.
-            {closedCount > 0 && <span style={{ color: "#ef4444", fontWeight: 600 }}> {closedCount} closed without merge</span>}
+            <strong style={{ color: "var(--text-primary)", textShadow: "0 0 12px rgba(255,255,255,0.05)" }}>{totalCount} historical repository precedents</strong>.
+            {closedCount > 0 && <span style={{ color: "#ef4444", fontWeight: 700, textShadow: "0 0 8px rgba(239,68,68,0.2)" }}> {closedCount} closed without merge</span>}
             {closedCount > 0 && mergedCount > 0 && <span style={{ color: "var(--text-tertiary)" }}>,</span>}
-            {mergedCount > 0 && <span style={{ color: "#22c55e", fontWeight: 600 }}> {mergedCount} successfully merged</span>}
+            {mergedCount > 0 && <span style={{ color: "#22c55e", fontWeight: 700, textShadow: "0 0 8px rgba(34,197,94,0.2)" }}> {mergedCount} successfully merged</span>}
             {closedCount === 0 && mergedCount === 0 && totalCount > 0 && <span style={{ color: "var(--text-tertiary)" }}> — verdict driven by graph signals, not historical failures</span>}
             {totalCount === 0 && <span style={{ color: "var(--text-tertiary)" }}> — no prior history found, prediction based on graph signals only</span>}
             .
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 5 }}>
+          {/* Stat cards */}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 6 }}>
             <AnimatedStatCard label="MRs Analyzed" value={String(totalCount)} target={totalCount} sub="From same branch" color="#60a5fa" />
             <AnimatedStatCard label="Closed Without Merge" value={String(closedCount)} target={closedCount} sub={`Out of ${totalCount}`} color="#ef4444" />
             <AnimatedStatCard label="Abandonment Rate" value={`${closeRate}%`} suffix="%" color="#f97316" />
