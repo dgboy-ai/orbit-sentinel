@@ -140,29 +140,42 @@ function AnimatedCounter({ target, suffix = "", duration = 1200, color }: { targ
   return <span style={{ fontSize: 30, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 16px ${color}50` }}>{val}{suffix}</span>;
 }
 
-function StatCard({ label, value, sub, color, target, suffix = "", icon }: { label: string; value: string; sub?: string; color: string; target?: number; suffix?: string; icon?: string }) {
+function StatCard({ label, value, sub, color, target, suffix = "", icon, badge, bars }: { label: string; value: string; sub?: string; color: string; target?: number; suffix?: string; icon?: string; badge?: string; bars?: { label: string; value: number; color: string }[] }) {
   return (
     <div style={{
       padding: "14px 16px", borderRadius: 10, position: "relative", overflow: "hidden",
-      background: `linear-gradient(145deg, ${color}10, ${color}03)`,
-      border: `1px solid ${color}20`,
-      boxShadow: `0 0 20px ${color}10`,
+      background: `linear-gradient(145deg, ${color}12, ${color}04)`,
+      border: `1px solid ${color}25`,
+      boxShadow: `0 0 24px ${color}08`,
       animation: "fadeSlideUp 0.35s ease both",
       transition: "transform 0.15s, box-shadow 0.15s",
     }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 0 30px ${color}18`; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 0 20px ${color}10`; }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 0 36px ${color}18`; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = `0 0 24px ${color}08`; }}
     >
-      <div style={{ position: "absolute", top: -30, right: -30, width: 80, height: 80, borderRadius: "50%", background: `${color}08`, pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 10 }}>
-        {icon && <span style={{ fontSize: 26, opacity: 0.6 }}>{icon}</span>}
-        <div style={{ flex: 1 }}>
-          {target !== undefined
-            ? <AnimatedCounter target={target} suffix={suffix || ""} color={color} />
-            : <div style={{ fontSize: 30, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 10px ${color}40` }}>{value}</div>}
-          <div style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 500, marginTop: 2, lineHeight: 1.3 }}>{label}</div>
-          {sub && <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 0 }}>{sub}</div>}
-        </div>
+      <div style={{ position: "absolute", top: -20, right: -20, width: 90, height: 90, borderRadius: "50%", background: `${color}06`, pointerEvents: "none" }} />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {icon && <span style={{ fontSize: 22, opacity: 0.5, display: "block", marginBottom: 2 }}>{icon}</span>}
+        {target !== undefined
+          ? <AnimatedCounter target={target} suffix={suffix || ""} color={color} />
+          : <div style={{ fontSize: 28, fontWeight: 800, color: `${color}cc`, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.1, textShadow: `0 0 14px ${color}30` }}>{value}</div>}
+        <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500, marginTop: 2, lineHeight: 1.3 }}>{label}</div>
+        {sub && <div style={{ fontSize: 12, color: `${color}aa`, marginTop: 1, fontWeight: 500 }}>{sub}</div>}
+        {badge && (
+          <div style={{ marginTop: 4, display: "inline-flex", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontWeight: 700, background: `${color}15`, color, border: `1px solid ${color}25`, letterSpacing: "0.3px" }}>{badge}</div>
+        )}
+        {bars && (
+          <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
+            {bars.map(b => (
+              <div key={b.label} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ fontSize: 10, color: "var(--text-tertiary)", minWidth: 20 }}>{b.label}</span>
+                <div style={{ flex: 1, height: 3, borderRadius: 2, background: `${b.color}12`, overflow: "hidden" }}>
+                  <div style={{ width: `${Math.min(b.value * 100, 100)}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${b.color}, ${b.color}77)`, transition: "width 0.6s ease" }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -295,30 +308,38 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         boxShadow: "0 0 40px rgba(59,130,246,0.08)",
         animation: "fadeSlideUp 0.5s cubic-bezier(0.16,1,0.3,1)",
       }}>
-        <div style={{ position: "absolute", top: -80, left: -40, width: 260, height: 260, borderRadius: "50%", background: "rgba(59,130,246,0.06)", filter: "blur(80px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.05)", filter: "blur(60px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, left: -40, width: 260, height: 260, borderRadius: "50%", background: "rgba(59,130,246,0.08)", filter: "blur(80px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -60, right: -20, width: 200, height: 200, borderRadius: "50%", background: "rgba(139,92,246,0.06)", filter: "blur(60px)", pointerEvents: "none" }} />
 
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
             <div style={{
-              display: "flex", alignItems: "center", gap: 8,
-              padding: "6px 14px 6px 10px", borderRadius: 20,
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "6px 16px 6px 10px", borderRadius: 20,
               background: "linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04))",
-              border: "1px solid rgba(59,130,246,0.15)",
+              border: "1px solid rgba(59,130,246,0.18)",
             }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 12px rgba(34,197,94,0.6)", animation: "pulseDot 2s ease-in-out infinite" }} />
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.5px", textTransform: "uppercase" }}>Prediction Scoreboard</span>
-              <span style={{ fontSize: 12, padding: "2px 8px", borderRadius: 10, background: "rgba(96,165,250,0.15)", color: "#60a5fa", fontWeight: 700, border: "1px solid rgba(96,165,250,0.2)" }}>TRACKING</span>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 14px rgba(34,197,94,0.7)", animation: "pulseDot 2s ease-in-out infinite" }} />
+              <span style={{ fontSize: 16, fontWeight: 700, color: "#60a5fa", letterSpacing: "0.5px", textTransform: "uppercase" }}>Prediction Scoreboard</span>
+              <span style={{ fontSize: 12, padding: "2px 10px", borderRadius: 10, background: "rgba(96,165,250,0.15)", color: "#60a5fa", fontWeight: 700, border: "1px solid rgba(96,165,250,0.25)" }}>TRACKING</span>
             </div>
-            <div style={{ fontSize: 14, color: "var(--text-tertiary)" }}>
-              Tracking <strong style={{ color: "var(--text-primary)" }}>{displayItems.length}</strong> MRs{stats.demoCount > 0 && stats.liveCount > 0 ? <>
-                · <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.liveCount}</span> live · <span style={{ color: "#a78bfa", fontWeight: 600 }}>{stats.demoCount}</span> demo
-              </> : null} · <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.verified}</span> shipped · <span style={{ color: "#ef4444", fontWeight: 600 }}>{stats.failed}</span> failed
+            <div style={{ fontSize: 14, color: "var(--text-tertiary)", display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+              <span>Tracking <strong style={{ color: "var(--text-primary)" }}>{displayItems.length}</strong> MRs</span>
+              {stats.demoCount > 0 && stats.liveCount > 0 ? <>
+                <span style={{ color: "var(--overlay-08)" }}>·</span>
+                <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.liveCount} live</span>
+                <span style={{ color: "var(--overlay-08)" }}>·</span>
+                <span style={{ color: "#a78bfa", fontWeight: 600 }}>{stats.demoCount} demo</span>
+              </> : null}
+              <span style={{ color: "var(--overlay-08)" }}>·</span>
+              <span style={{ color: "#22c55e", fontWeight: 600 }}>{stats.verified} shipped</span>
+              <span style={{ color: "var(--overlay-08)" }}>·</span>
+              <span style={{ color: "#ef4444", fontWeight: 600 }}>{stats.failed} failed</span>
             </div>
             <button onClick={() => setShowOnlyLive(!showOnlyLive)}
               style={{
                 padding: "4px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer", borderRadius: 4,
-                border: `1px solid ${showOnlyLive ? "rgba(34,197,94,0.3)" : "var(--overlay-08)"}`,
+                border: `1px solid ${showOnlyLive ? "rgba(34,197,94,0.35)" : "var(--overlay-08)"}`,
                 background: showOnlyLive ? "rgba(34,197,94,0.1)" : "transparent",
                 color: showOnlyLive ? "#22c55e" : "var(--text-tertiary)",
                 transition: "all 0.15s",
@@ -329,11 +350,11 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: 8 }}>
-            <StatCard label="Total MRs Tracked" value={String(displayItems.length)} target={displayItems.length} color="#60a5fa" icon="📋" />
-            <StatCard label="Stayed Shipped" value={String(stats.verified)} target={stats.verified} sub="Passed 7-day window" color="#22c55e" icon="✅" />
+            <StatCard label="Total MRs Tracked" value={String(displayItems.length)} target={displayItems.length} color="#60a5fa" icon="📋" badge="Live + Demo" sub={stats.liveCount > 0 ? `${stats.liveCount} live · ${stats.demoCount} demo` : undefined} />
+            <StatCard label="Stayed Shipped" value={String(stats.verified)} target={stats.verified} sub="Passed 7-day window" color="#22c55e" icon="✅" bars={stats.verified > 0 ? [{ label: "Live", value: displayItems.filter(i => i.actualOutcome === "verified" && i.source === "live").length / Math.max(stats.verified, 1), color: "#22c55e" }, { label: "Demo", value: displayItems.filter(i => i.actualOutcome === "verified" && i.source === "demo").length / Math.max(stats.verified, 1), color: "#a78bfa" }] : undefined} />
             <StatCard label="Reverted / Hotfixed" value={String(stats.failed)} target={stats.failed} sub="Failed within window" color="#ef4444" icon="❌" />
-            <StatCard label="Prediction Accuracy" value={`${stats.accuracy}%`} suffix="%" color="#fbbf24" icon="🎯" />
-            <StatCard label="Avg Risk Score" value={`${Math.round(stats.avgPredicted * 100)}%`} sub={`Actual: ${stats.hasActual ? `${Math.round(stats.avgActual * 100)}%` : "—"}`} color="#a78bfa" icon="📊" />
+            <StatCard label="Prediction Accuracy" value={`${stats.accuracy}%`} suffix="%" color="#fbbf24" icon="🎯" badge={stats.accuracy >= 70 ? "Reliable" : "Needs data"} bars={[{ label: "TP", value: stats.tp / Math.max(stats.tp + stats.fp + stats.tn + stats.fn, 1), color: "#22c55e" }, { label: "TN", value: stats.tn / Math.max(stats.tp + stats.fp + stats.tn + stats.fn, 1), color: "#60a5fa" }, { label: "FP", value: stats.fp / Math.max(stats.tp + stats.fp + stats.tn + stats.fn, 1), color: "#eab308" }, { label: "FN", value: stats.fn / Math.max(stats.tp + stats.fp + stats.tn + stats.fn, 1), color: "#ef4444" }]} />
+            <StatCard label="Avg Risk Score" value={`${Math.round(stats.avgPredicted * 100)}%`} sub={`Actual: ${stats.hasActual ? `${Math.round(stats.avgActual * 100)}%` : "Pending verification"}`} color="#a78bfa" icon="📊" />
           </div>
         </div>
       </div>
@@ -342,7 +363,8 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         <div style={{
           display: "flex", alignItems: "center", gap: 8,
           padding: "8px 14px", borderRadius: 6,
-          background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.12)",
+          background: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(167,139,250,0.02))",
+          border: "1px solid rgba(167,139,250,0.15)",
           fontSize: 13, color: "var(--text-secondary)", animation: "fadeSlideUp 0.3s ease",
         }}>
           <span style={{ fontSize: 14 }}>💡</span>
@@ -357,22 +379,34 @@ export default function PredictionsTracker({ predictions: preds, onVerify }: Pre
         border: "1px solid rgba(139,92,246,0.12)",
         animation: "fadeSlideUp 0.4s 0.03s cubic-bezier(0.16,1,0.3,1) both",
       }}>
-        <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 26 }}>🔄</span>
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#a78bfa", marginBottom: 2 }}>Closed-Loop Prediction Engine</div>
-            <div style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-              <strong style={{ color: "#60a5fa" }}>Predict</strong> → <strong style={{ color: "#eab308" }}>Ship</strong> → <strong style={{ color: "#22c55e" }}>Verify (7-day window)</strong> → <strong style={{ color: "#a78bfa" }}>Learn</strong>.
-              Accuracy metrics are calibrated against operator-verified production outcomes (e.g. manual status logging of 'failed' or 'shipped') across a 7-day survival window post-merge.
+        <div style={{ position: "absolute", bottom: -30, right: 40, width: 140, height: 140, borderRadius: "50%", background: "rgba(139,92,246,0.04)", filter: "blur(50px)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <span style={{ fontSize: 24 }}>🔄</span>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#a78bfa" }}>Closed-Loop Prediction Engine</div>
+              <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 1 }}>Predict → Ship → Verify → Learn — accuracy calibrated against production outcomes</div>
+            </div>
+            <div style={{ marginLeft: "auto", padding: "4px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, background: `linear-gradient(135deg, ${stats.accuracy >= 70 ? "rgba(34,197,94,0.12)" : "rgba(234,179,8,0.12)"}, ${stats.accuracy >= 70 ? "rgba(34,197,94,0.04)" : "rgba(234,179,8,0.04)"})`, border: `1px solid ${stats.accuracy >= 70 ? "rgba(34,197,94,0.2)" : "rgba(234,179,8,0.2)"}`, color: stats.accuracy >= 70 ? "#22c55e" : "#eab308", letterSpacing: "0.3px" }}>
+              {stats.accuracy}% Accuracy
             </div>
           </div>
-          <div style={{
-            padding: "4px 14px", borderRadius: 20, fontSize: 13, fontWeight: 700,
-            background: "linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.06))",
-            border: "1px solid rgba(139,92,246,0.15)",
-            color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.5px",
-          }}>
-            {stats.accuracy}% Accuracy
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {[
+              { step: "Predict", icon: "🔮", color: "#60a5fa", desc: "Risk score via Orbit graph" },
+              { step: "Ship", icon: "🚀", color: "#eab308", desc: "MR merged to target branch" },
+              { step: "Verify", icon: "✅", color: "#22c55e", desc: "7-day survival window" },
+              { step: "Learn", icon: "🧠", color: "#a78bfa", desc: "Calibrate accuracy model" },
+            ].map((s, i) => (
+              <div key={s.step} style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, background: `${s.color}08`, border: `1px solid ${s.color}15`, flex: 1, minWidth: 120 }}>
+                <span style={{ fontSize: 15 }}>{s.icon}</span>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: s.color }}>{s.step}</div>
+                  <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{s.desc}</div>
+                </div>
+                {i < 3 && <span style={{ color: "var(--overlay-08)", fontSize: 13, marginLeft: "auto" }}>→</span>}
+              </div>
+            ))}
           </div>
         </div>
       </div>

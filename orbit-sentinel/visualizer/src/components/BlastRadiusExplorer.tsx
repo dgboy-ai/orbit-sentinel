@@ -28,18 +28,26 @@ function GlowOrb({ color, top, left, right, bottom, size }: { color: string; top
   );
 }
 
-function StatPill({ label, value, color, sub }: { label: string; value: string; color: string; sub?: string }) {
+function StatPill({ label, value, color, sub, icon, bar }: { label: string; value: string; color: string; sub?: string; icon?: string; bar?: number }) {
   return (
     <div style={{
-      padding: "8px 12px", borderRadius: 8, textAlign: "center",
+      padding: "12px 14px", borderRadius: 8, position: "relative", overflow: "hidden",
       background: `linear-gradient(135deg, ${color}10, ${color}04)`,
       border: `1px solid ${color}20`,
-      boxShadow: `0 0 12px ${color}10`,
+      boxShadow: `0 0 16px ${color}08`,
       animation: "fadeSlideUp 0.4s ease both",
     }}>
-      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 2 }}>{label}</div>
-      <div style={{ fontSize: 28, fontWeight: 900, color, fontFamily: "'JetBrains Mono', monospace", textShadow: `0 0 12px ${color}30`, lineHeight: 1.1 }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 1 }}>{sub}</div>}
+      {icon && <span style={{ position: "absolute", top: -6, right: -4, fontSize: 28, opacity: 0.08, pointerEvents: "none", lineHeight: 1 }}>{icon}</span>}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: 22, fontWeight: 800, color, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.2, marginBottom: 2, textShadow: `0 0 20px ${color}40` }}>{value}</div>
+        <div style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600, marginBottom: sub ? 2 : 0 }}>{label}</div>
+        {sub && <div style={{ fontSize: 11, color: `${color}99`, fontWeight: 500 }}>{sub}</div>}
+        {bar !== undefined && (
+          <div style={{ marginTop: 6, height: 2, borderRadius: 1, background: `${color}15`, overflow: "hidden" }}>
+            <div style={{ width: `${Math.min(bar * 100, 100)}%`, height: "100%", borderRadius: 1, background: `linear-gradient(90deg, ${color}, ${color}88)`, transition: "width 0.6s ease" }} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -423,27 +431,30 @@ export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
       )}
       {/* HEADER STATS */}
       <div className="card" style={{
-        padding: "14px 20px", position: "relative", overflow: "hidden",
-        borderColor: "rgba(249,115,22,0.25)",
+        padding: "16px 20px", position: "relative", overflow: "hidden",
+        borderColor: "rgba(249,115,22,0.3)",
         background: "linear-gradient(135deg, rgba(249,115,22,0.06), rgba(15,18,26,0.95), rgba(59,130,246,0.04))",
-        boxShadow: "0 0 20px rgba(249,115,22,0.08)",
+        boxShadow: "0 0 24px rgba(249,115,22,0.08)",
         animation: "fadeSlideUp 0.4s ease",
       }}>
-        <GlowOrb color="rgba(249,115,22,0.15)" top="-40%" left="-10%" size={180} />
+        <GlowOrb color="rgba(249,115,22,0.12)" top="-40%" left="-10%" size={200} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <div className="card-header-icon" style={{ background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.2)" }}>💥</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <div className="card-header-icon" style={{ background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.2)", fontSize: 20 }}>💥</div>
             <div>
               <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>Orbit Graph</div>
-              <div style={{ fontSize: 14, color: "var(--text-secondary)" }}>NEIGHBORS query — digital twin impact analysis</div>
+              <div style={{ fontSize: 14, color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: 6 }}>
+                <span>NEIGHBORS query — digital twin impact analysis</span>
+                {br && <><span style={{ color: "var(--overlay-08)" }}>·</span><span style={{ color: "var(--text-tertiary)", fontSize: 13 }}>{br.nodes.length} nodes · {br.links.length} edges</span></>}
+              </div>
             </div>
           </div>
           <div className="resp-grid-5" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
-            <StatPill label="Affected Nodes" value={String(Math.round(animNodes))} color="#60a5fa" sub={br ? `${fileCount} files, ${serviceCount} services` : undefined} />
-            <StatPill label="Dependency Edges" value={String(Math.round(animLinks))} color="#a78bfa" sub="Direct + indirect" />
-            <StatPill label="High / Critical Risk" value={String(Math.round(animRisk))} color="#ef4444" sub={br ? `${((riskCount / Math.max(br.nodes.length, 1)) * 100).toFixed(0)}% of affected` : undefined} />
-            <StatPill label="Security Findings" value={hasVulnerabilities ? `${criticalCount} crit, ${highCount} high` : "Clean"} color="#ef4444" sub={hasVulnerabilities ? `${criticalCount + highCount} findings` : "No vulnerabilities"} />
-            <StatPill label="Search Depth" value={String(Math.round(animDepth))} color="#f97316" sub="hops from root" />
+            <StatPill label="Affected Nodes" value={String(Math.round(animNodes))} color="#60a5fa" sub={br ? `${fileCount} files, ${serviceCount} services` : undefined} icon="📦" bar={br ? animNodes / Math.max(graph.nodes.length, 1) : 0} />
+            <StatPill label="Dependency Edges" value={String(Math.round(animLinks))} color="#a78bfa" sub="Direct + indirect" icon="🔗" bar={br ? animLinks / Math.max(animNodes * 3, 1) : 0} />
+            <StatPill label="High / Critical Risk" value={String(Math.round(animRisk))} color="#ef4444" sub={br ? `${((riskCount / Math.max(br.nodes.length, 1)) * 100).toFixed(0)}% of affected` : undefined} icon="🔴" bar={br ? riskCount / Math.max(br.nodes.length, 1) : 0} />
+            <StatPill label="Security Findings" value={hasVulnerabilities ? `${criticalCount} crit, ${highCount} high` : "Clean"} color="#ef4444" sub={hasVulnerabilities ? `${criticalCount + highCount} findings` : "No vulnerabilities"} icon="🛡️" bar={hasVulnerabilities ? (criticalCount + highCount) / Math.max(graph.nodes.length, 1) : 0} />
+            <StatPill label="Search Depth" value={String(Math.round(animDepth))} color="#f97316" sub="hops from root" icon="🔍" bar={animDepth / 10} />
           </div>
         </div>
       </div>
@@ -576,23 +587,70 @@ export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
                 </div>
               </div>
 
-              {/* Risk Breakdown */}
-              <div className="card" style={{ padding: "10px 12px", flexShrink: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 6 }}>Impact Summary</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                  {[
-                    { label: "Services Affected", value: serviceCount, color: "#fb923c" },
-                    { label: "Files Changed", value: fileCount, color: "#4ade80" },
-                    { label: "Critical Risk", value: br.nodes.filter(n => n.riskLevel === "critical").length, color: "#ef4444" },
-                    { label: "High Risk", value: br.nodes.filter(n => n.riskLevel === "high").length, color: "#f97316" },
-                    { label: "Medium Risk", value: br.nodes.filter(n => n.riskLevel === "medium").length, color: "#eab308" },
-                    { label: "Low Risk", value: br.nodes.filter(n => n.riskLevel === "low").length, color: "#22c55e" },
-                  ].map(s => (
-                    <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "2px 4px" }}>
-                      <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{s.label}</span>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
-                    </div>
-                  ))}
+              {/* Impact Summary */}
+              <div className="card" style={{ padding: "12px 14px", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+                <GlowOrb color="rgba(96,165,250,0.06)" top="-30%" right="-20%" size={140} />
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.8px", textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                    <span>📊 Impact Summary</span>
+                    {br && <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text-tertiary)", letterSpacing: 0 }}>· {br.nodes.length} total nodes</span>}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {/* Scope section */}
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 2 }}>Scope</div>
+                    {[
+                      { label: "Services Affected", value: serviceCount, color: "#fb923c", icon: "⚙️" },
+                      { label: "Files Changed", value: fileCount, color: "#4ade80", icon: "📄" },
+                    ].map(s => {
+                      const maxScope = Math.max(serviceCount, fileCount, 1);
+                      return (
+                        <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 6px", borderRadius: 6, background: `${s.color}08` }}>
+                          <span style={{ fontSize: 14, flexShrink: 0 }}>{s.icon}</span>
+                          <span style={{ flex: 1, fontSize: 13, color: "var(--text-secondary)" }}>{s.label}</span>
+                          <span style={{ fontSize: 16, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace", minWidth: 20, textAlign: "right" }}>{s.value}</span>
+                          <div style={{ width: 60, height: 4, borderRadius: 2, background: `${s.color}15`, overflow: "hidden", flexShrink: 0 }}>
+                            <div style={{ width: `${(s.value / maxScope) * 100}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${s.color}, ${s.color}88)`, transition: "width 0.6s ease" }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Risk Breakdown section */}
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.6px", marginTop: 4, marginBottom: 2 }}>Risk Breakdown</div>
+                    {[
+                      { label: "Critical", value: br.nodes.filter(n => n.riskLevel === "critical").length, color: "#ef4444", icon: "🔴" },
+                      { label: "High", value: br.nodes.filter(n => n.riskLevel === "high").length, color: "#f97316", icon: "🟠" },
+                      { label: "Medium", value: br.nodes.filter(n => n.riskLevel === "medium").length, color: "#eab308", icon: "🟡" },
+                      { label: "Low", value: br.nodes.filter(n => n.riskLevel === "low").length, color: "#22c55e", icon: "🟢" },
+                    ].map(s => {
+                      const maxRisk = Math.max(...["critical","high","medium","low"].map(l => br.nodes.filter(n => n.riskLevel === l).length), 1);
+                      return (
+                        <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 6px", borderRadius: 6 }}>
+                          <span style={{ fontSize: 11, flexShrink: 0 }}>{s.icon}</span>
+                          <span style={{ flex: 1, fontSize: 13, color: "var(--text-secondary)" }}>{s.label}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono', monospace", minWidth: 16, textAlign: "right" }}>{s.value}</span>
+                          <div style={{ width: 50, height: 4, borderRadius: 2, background: `${s.color}12`, overflow: "hidden", flexShrink: 0 }}>
+                            <div style={{ width: `${(s.value / maxRisk) * 100}%`, height: "100%", borderRadius: 2, background: `linear-gradient(90deg, ${s.color}, ${s.color}88)`, transition: "width 0.6s ease" }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Total row */}
+                    {(() => {
+                      const critical = br.nodes.filter(n => n.riskLevel === "critical").length;
+                      const high = br.nodes.filter(n => n.riskLevel === "high").length;
+                      const total = br.nodes.length;
+                      const riskScore = total > 0 ? ((critical * 4 + high * 3) / (total * 4)) * 100 : 0;
+                      const severityColor = riskScore >= 50 ? "#ef4444" : riskScore >= 25 ? "#f97316" : riskScore >= 10 ? "#eab308" : "#22c55e";
+                      return (
+                        <div style={{ marginTop: 4, padding: "5px 8px", borderRadius: 6, background: `${severityColor}08`, border: `1px solid ${severityColor}15`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: severityColor, textTransform: "uppercase", letterSpacing: "0.5px" }}>Impact Score</span>
+                          <span style={{ fontSize: 14, fontWeight: 800, color: severityColor, fontFamily: "'JetBrains Mono', monospace" }}>{riskScore.toFixed(0)}%</span>
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
               </div>
 
