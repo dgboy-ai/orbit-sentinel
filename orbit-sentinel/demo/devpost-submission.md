@@ -67,13 +67,15 @@ Paste any GitLab MR URL. Orbit Sentinel builds a living digital twin of the affe
 
 ## How we built it
 
+```mermaid
+graph TD
+    A[GitLab MR] --> B[Engine: Node.js/TS, 105 tests]
+    B --> C[Visualizer: React/D3, 30 tests]
+    B --> D[GitLab Orbit Knowledge Graph]
+    C --> D
+    style D fill:#1e1b4b,stroke:#a78bfa,stroke-width:2px,color:#fff
 ```
-GitLab MR ──▶ Engine (Node.js/TS, 105 tests) ──▶ Visualizer (React/D3, 30 tests)
-               │                                     │
-               ▼                                     │
-      GitLab Orbit Knowledge Graph ◀─────────────────◘
-      (Baseline: 23 nodes/43 edges; peak observed: 224 nodes/189 edges)
-```
+*(Graph Scale: 23 nodes / 43 edges baseline, scaling to 224 nodes / 189 edges live peak)*
 
 **Engine** ⚙️ — TypeScript, Express, custom validation, 8 classified error types with exponential backoff:
 - `DigitalTwinBuilder` — orchestrates all 4 Orbit queries, merges into unified graph via `orbitOrFallback()`
