@@ -7,7 +7,7 @@ import { useAnimatedValue } from "../hooks/useAnimatedValue";
 import { useVulnerabilities } from "../hooks/useVulnerabilities";
 import { DEMO_DATA } from "../data/demoData";
 
-interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
+interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] }; dataMode?: string }
 
 type DN = d3.SimulationNodeDatum & GraphNode;
 type DL = d3.SimulationLinkDatum<DN> & GraphLink;
@@ -367,7 +367,7 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
   );
 }
 
-export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
+export default function BlastRadiusExplorer({ graph: propGraph, dataMode }: Props) {
   const isEmpty = !propGraph.nodes || propGraph.nodes.length === 0;
   const graph = propGraph;
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -426,7 +426,10 @@ export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
           animation: "fadeSlideUp 0.4s cubic-bezier(0.16,1,0.3,1)",
         }}>
           <span style={{ fontSize: 15 }}>⚠️</span>
-          <span><strong>Showing sample twin:</strong> Add a GitLab token or select a demo scenario to load live graph data.</span>
+          <span>{dataMode === "live"
+            ? <><strong>No blast radius data.</strong> The project may not be indexed in Orbit, or the MR has no file changes to trace dependencies.</>
+            : <><strong>Showing sample twin:</strong> Add a GitLab token or select a demo scenario to load live graph data.</>
+          }</span>
         </div>
       )}
       {/* HEADER STATS */}

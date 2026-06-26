@@ -421,7 +421,7 @@ export default function App() {
                 <div className="resp-grid-2" style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.5fr", gap: isMobile ? 8 : 12 }}>
                   <ErrorBoundary><OrbitEvidencePanel evidence={data.evidence} graph={data.graph} /></ErrorBoundary>
                   <div style={{ height: isMobile ? 300 : "auto", minHeight: isMobile ? "auto" : 580, display: "flex", flexDirection: "column" }}>
-                    <ErrorBoundary><Suspense fallback={<PanelFallback height={580} />}><DigitalTwinGraph graph={data.graph} /></Suspense></ErrorBoundary>
+                    <ErrorBoundary><Suspense fallback={<PanelFallback height={580} />}><DigitalTwinGraph graph={data.graph} dataMode={dataMode} /></Suspense></ErrorBoundary>
                   </div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>
@@ -439,7 +439,7 @@ export default function App() {
             {showQueryInspector && <ErrorBoundary><OrbitQueryInspector evidence={data.evidence} timings={data.queryTimings} /></ErrorBoundary>}
           </div>
         );
-      case "blast-radius": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><BlastRadiusExplorer graph={data.graph} /></Suspense></ErrorBoundary>;
+      case "blast-radius": return <ErrorBoundary><Suspense fallback={<PanelFallback height={400} />}><BlastRadiusExplorer graph={data.graph} dataMode={dataMode} /></Suspense></ErrorBoundary>;
       case "risk":
         return (
           <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 8 : 12 }}>

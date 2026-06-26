@@ -5,7 +5,7 @@ import { NODE_COLORS, riskLevelToColor } from "../utils/colors";
 import { useAnimatedValue } from "../hooks/useAnimatedValue";
 import { DEMO_DATA } from "../data/demoData";
 
-interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] } }
+interface Props { graph: { nodes: GraphNode[]; links: GraphLink[] }; dataMode?: string }
 
 type DN = d3.SimulationNodeDatum & GraphNode;
 type DL = d3.SimulationLinkDatum<DN> & GraphLink;
@@ -52,7 +52,7 @@ function Stat({ icon, label, value, color }: { icon: string; label: string; valu
   );
 }
 
-export default function DigitalTwinGraph({ graph: propGraph }: Props) {
+export default function DigitalTwinGraph({ graph: propGraph, dataMode }: Props) {
   const isEmpty = !propGraph.nodes || propGraph.nodes.length === 0;
   const graph = propGraph;
   const svgRef = useRef<SVGSVGElement>(null);
@@ -248,7 +248,10 @@ export default function DigitalTwinGraph({ graph: propGraph }: Props) {
           animation: "fadeSlideUp 0.4s cubic-bezier(0.16,1,0.3,1)",
         }}>
           <span style={{ fontSize: 15 }}>⚠️</span>
-          <span><strong>Showing sample twin:</strong> Add a GitLab token or select a demo scenario to load live graph data.</span>
+          <span>{dataMode === "live"
+            ? <><strong>No graph data for this MR.</strong> The project may not be indexed in Orbit yet, or the MR has no file changes to analyze.</>
+            : <><strong>Showing sample twin:</strong> Add a GitLab token or select a demo scenario to load live graph data.</>
+          }</span>
         </div>
       )}
       <DigitalTwinStatus graph={graph} />
