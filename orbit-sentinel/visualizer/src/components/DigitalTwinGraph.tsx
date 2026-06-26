@@ -54,7 +54,7 @@ function Stat({ icon, label, value, color }: { icon: string; label: string; valu
 
 export default function DigitalTwinGraph({ graph: propGraph }: Props) {
   const isEmpty = !propGraph.nodes || propGraph.nodes.length === 0;
-  const graph = isEmpty ? DEMO_DATA.graph : propGraph;
+  const graph = propGraph;
   const svgRef = useRef<SVGSVGElement>(null);
   const [selected, setSelected] = useState<GraphNode | null>(null);
   const rafRef = useRef<number>(0);

@@ -369,7 +369,7 @@ function DependencyChain({ links, allNodes, rootId }: { links: GraphLink[]; allN
 
 export default function BlastRadiusExplorer({ graph: propGraph }: Props) {
   const isEmpty = !propGraph.nodes || propGraph.nodes.length === 0;
-  const graph = isEmpty ? DEMO_DATA.graph : propGraph;
+  const graph = propGraph;
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [depth, setDepth] = useState(3);
   const [highlight, setHighlight] = useState<string | null>(null);
