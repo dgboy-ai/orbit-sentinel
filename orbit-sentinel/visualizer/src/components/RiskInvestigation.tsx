@@ -164,7 +164,7 @@ export default function RiskInvestigation({ riskData, evidence, decisionCenter, 
   })();
 
   const reviewersCount = decisionCenter?.reviewers?.length ?? 0;
-  const hasReviewerAssigned = (decisionCenter?.reviewers ?? []).some(r => r.role?.toLowerCase().includes("approv") || r.role?.toLowerCase().includes("reviewer"));
+  const hasReviewerAssigned = (decisionCenter?.reviewers ?? []).some(r => !r.name?.toLowerCase().includes("unassigned") && !r.role?.toLowerCase().includes("needed") && (r.role?.toLowerCase().includes("approv") || r.role?.toLowerCase().includes("reviewer")));
   const hasNoReviewers = !hasReviewerAssigned;
 
   const evidenceInsights = (() => {
