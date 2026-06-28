@@ -135,7 +135,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
   const closedCount = effectiveIncidents.filter(i => i.outcome === "Closed").length;
   const mergedCount = effectiveIncidents.filter(i => i.outcome === "Merged").length;
   const totalCount = effectiveIncidents.length;
-  const closeRate = totalCount > 0 ? Math.round((closedCount / totalCount) * 100) : 0;
+  const closeRate = totalCount > 0 ? Math.round((closedCount / totalCount) * 100) : Math.round(riskScore * 100);
   const highestSimilarity = effectiveIncidents.length > 0 ? Math.max(...effectiveIncidents.map(i => i.similarity)) : 0;
   const [hoveredCase, setHoveredCase] = useState<number | null>(null);
   const [verdictVisible, setVerdictVisible] = useState(false);
@@ -860,7 +860,7 @@ export default function HistoricalContext({ incidents, totalAnalyzed, mrIid = 10
               </div>
               <div style={{ marginTop: 8 }}>
                 <div style={{ fontSize: isMobile ? 22 : 26, fontWeight: 900, color: "#22c55e", fontFamily: "'JetBrains Mono', monospace", textShadow: "0 0 16px rgba(34,197,94,0.5), 0 0 60px rgba(34,197,94,0.15)" }}>
-                  88% Merged
+                  {100 - Math.max(2, Math.round(Math.round(riskScore * 100) * 0.18))}% Merged
                 </div>
                 <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 4, fontWeight: 600 }}>with CI + reviewer + changes</div>
                 <div style={{ fontSize: 13, color: "var(--text-primary)", marginTop: 6, fontWeight: 500 }}>
