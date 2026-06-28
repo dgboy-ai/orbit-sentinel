@@ -28,11 +28,13 @@ function StatusBadge({ icon, label, good, warn }: { icon: string; label: string;
 }
 
 export default function HeroSection({
-  mrIid, riskLevel, riskScore, predictedOutcome, recommendedAction, confidence, generatedUsing, confidenceFactors,
+  mrIid, riskLevel, riskScore, predictedOutcome, recommendedAction, confidence, generatedUsing, confidenceFactors, evidence, decisionCenter,
 }: {
   mrIid: number; riskLevel: string; riskScore: number; predictedOutcome: string;
   recommendedAction: string; confidence: string; generatedUsing: string;
   confidenceFactors: { label: string; value: string; status: "success" | "warning" | "error" }[];
+  evidence?: { queryType: string; result: string }[];
+  decisionCenter?: { reviewers?: { name: string; role: string }[] };
 }) {
   const rk = riskScoreToKey(riskScore);
   const r = RISK[rk];
@@ -42,9 +44,13 @@ export default function HeroSection({
   const lower = (s: string) => (s || "").toLowerCase();
   const hasFactor = (pred: (f: { label: string; value: string; status: "success" | "warning" | "error" }) => boolean) => confidenceFactors.some(pred);
 
-  const pipelineMissing = hasFactor(f => lower(f.label).includes("pipeline") || lower(f.value).includes("pipeline")) && hasFactor(f => (lower(f.label).includes("pipeline") || lower(f.value).includes("pipeline")) && f.status === "error");
-  const testsMissing = hasFactor(f => lower(f.label).includes("test") || lower(f.value).includes("test")) && hasFactor(f => (lower(f.label).includes("test") || lower(f.value).includes("test")) && f.status === "error");
-  const reviewersMissing = hasFactor(f => lower(f.label).includes("review") || lower(f.value).includes("review")) && hasFactor(f => (lower(f.label).includes("review") || lower(f.value).includes("review")) && f.status === "error");
+  const pipelineMissing = hasFactor(f => lower(f.label).includes("pipeline") || lower(f.value).includes("pipeline")) && hasFactor(f => (lower(f.label).includes("pipeline") || lower(f.value).includes("pipeline")) && f.status === "error")
+    || (evidence?.some(e => lower(e.result).includes("no pipeline") || lower(e.result).includes("no linked pipeline")) ?? false);
+  const testsMissing = hasFactor(f => lower(f.label).includes("test") || lower(f.value).includes("test")) && hasFactor(f => (lower(f.label).includes("test") || lower(f.value).includes("test")) && f.status === "error")
+    || (evidence?.some(e => lower(e.result).includes("no test") || lower(e.result).includes("0 test")) ?? false)
+    || pipelineMissing;
+  const reviewersMissing = hasFactor(f => lower(f.label).includes("review") || lower(f.value).includes("review")) && hasFactor(f => (lower(f.label).includes("review") || lower(f.value).includes("review")) && f.status === "error")
+    || !(decisionCenter?.reviewers ?? []).some(r => r.role?.toLowerCase().includes("approv") || r.role?.toLowerCase().includes("reviewer"));
 
   const fileChangesMissing = hasFactor(f => lower(f.label).includes("diff") || lower(f.label).includes("file") || lower(f.value).includes("empty") || lower(f.value).includes("no change"));
   const deploymentPathMissing = hasFactor(f => lower(f.label).includes("deploy") || lower(f.value).includes("deploy")) && hasFactor(f => (lower(f.label).includes("deploy") || lower(f.value).includes("deploy")) && f.status === "error");
