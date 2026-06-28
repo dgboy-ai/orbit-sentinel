@@ -50,7 +50,7 @@ export default function HeroSection({
     || (evidence?.some(e => lower(e.result).includes("no test") || lower(e.result).includes("0 test")) ?? false)
     || pipelineMissing;
   const reviewersMissing = hasFactor(f => lower(f.label).includes("review") || lower(f.value).includes("review")) && hasFactor(f => (lower(f.label).includes("review") || lower(f.value).includes("review")) && f.status === "error")
-    || !(decisionCenter?.reviewers ?? []).some(r => r.role?.toLowerCase().includes("approv") || r.role?.toLowerCase().includes("reviewer"));
+    || (decisionCenter?.reviewers ?? []).length <= 1 && (decisionCenter?.reviewers ?? []).some(r => r.name?.toLowerCase().includes("unassigned") || r.role?.toLowerCase().includes("needed"));
 
   const fileChangesMissing = hasFactor(f => lower(f.label).includes("diff") || lower(f.label).includes("file") || lower(f.value).includes("empty") || lower(f.value).includes("no change"));
   const deploymentPathMissing = hasFactor(f => lower(f.label).includes("deploy") || lower(f.value).includes("deploy")) && hasFactor(f => (lower(f.label).includes("deploy") || lower(f.value).includes("deploy")) && f.status === "error");
